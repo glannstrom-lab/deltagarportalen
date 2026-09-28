@@ -1,0 +1,135 @@
+Hoppa till innehållet
+Jobin
+Boka ett samtal
+Jobin
+Ni ser personen först när hen själv sagt ja
+
+Jobin är portalen som arbetsmarknadsenheter och Rusta och matcha-leverantörer använder för att hitta praktikplatser och anställningar åt sina deltagare. Som arbetsgivare får ni ett konto genom en inbjudan från konsulenten, inte genom att skapa ett själva. Ni ser aldrig en lista att välja bland — en person föreslås åt gången, och namnet syns först sedan hen själv tackat ja.
+
+Drift i EU
+WCAG 2.1 AA — vår ambition
+Inget konto utan inbjudan
+Boka ett samtal
+Vad personen ni tar emot har med sig
+
+Innan någon kommer till er har hen kunnat förbereda sig i Jobin. Portalen är kostnadsfri för deltagaren och kräver bara ett konto med e-post.
+
+CV-byggare med flera mallar och export till PDF
+Personligt brev anpassat efter en specifik annons
+Intervjuträning där man svarar med rösten och får skriftlig återkoppling
+Kompetensanalys mot ett konkret jobb eller yrke
+Jobbsökning mot Arbetsförmedlingens platsbank
+
+Se alla verktyg deltagaren har tillgång till
+
+Vad konsulenten sköter åt er
+
+En arbetskonsulent på en arbetsmarknadsenhet eller hos en Rusta och matcha-leverantör lägger upp era platser i Jobin och föreslår personer till dem — inte ni själva.
+
+Föreslår en person till en av era platser, en i taget, aldrig en lista att välja bland
+Personen godkänner förslaget och väljer själv vilka uppgifter som visas för er — kontaktuppgifter, sammanfattning, kompetenser, erfarenhet och utbildning väljs var för sig
+Håller i journal och avstämningar på sin sida, så ni slipper föra dubbel dokumentation
+Är den ni når i Meddelanden-fliken om en placering
+
+Kontakten med den föreslagna personen går i dagsläget via konsulenten. Det är ett medvetet första steg i hur företagskontot är byggt, inte en teknisk begränsning.
+
+Er sida i Jobin: sju flikar
+
+När kontot är skapat loggar ni in på jobin.se och möts av en yta byggd för er roll, inte konsulentens.
+
+Översikt — det som väntar på ert svar
+Våra platser — praktikplatser och tjänster ni har lagt upp
+Förslag — personer konsulenten föreslagit, synliga för er först sedan de tackat ja
+Pågående — placeringar som är igång, med avstämningar vid vecka 12 och vecka 24
+Meddelanden — kontakten med konsulenten om en placering
+Stöd och regler — de vanligaste anställningsstöden, utan belopp, med länk vidare till Arbetsförmedlingen
+Om företaget — er profil och vilka kollegor som har tillgång
+
+Läs vår guide om praktik som väg in, skriven ur deltagarens perspektiv
+
+Personuppgifter och AI — så är läget
+
+Det här är statusen i skrivande stund, inte ett säljlöfte. Vi vill hellre säga för mycket här än för lite.
+
+Klart i dag
+Databas, inloggning och lagrade filer ligger hos Supabase i Irland (EU).
+Serverfunktionerna körs hos Vercel i Frankfurt (EU).
+Ert företagskonto har ingen AI-funktion i sig — inga förslag, sammanfattningar eller texter i /foretag skapas av en modell.
+Använder personen ni tar emot en AI-funktion i sin egen del av Jobin sker det efter eget samtycke, mellan hen och Jobin — inte något ni behöver hantera.
+Pågår
+Konsekvensbedömningen (DPIA) och AI Act-klassificeringen är interna utkast som ännu inte formellt godkänts av en personuppgiftsansvarig.
+Registret över personuppgiftsbehandling (Art. 30) finns och uppdateras löpande i takt med granskningar.
+
+Läs hela integritetspolicyn
+
+Tillgänglighet
+
+WCAG 2.1 nivå AA är vårt uttalade mål, inte en uppnådd certifiering. Bedömningen hittills är en intern granskning — automatiserad testning kombinerad med manuell tangentbordstestning — inte en oberoende expertgranskning, och ingen test med riktig skärmläsare är ännu gjord.
+
+Läs hela tillgänglighetsredogörelsen
+
+Så går det till
+
+Ett konto skapas inte i förväg — det börjar med ett samtal och en plats.
+
+Ett samtal cirka 30 minuter
+
+Vi pratar om vilka platser eller tjänster ni har, vilket stöd som kan vara aktuellt, och vad ni behöver av den som kommer.
+
+Konsulenten lägger upp era platser tillsammans med er
+
+En arbetskonsulent hos en arbetsmarknadsenhet eller Rusta och matcha-leverantör registrerar era platser i Jobin och bjuder in er kontaktperson.
+
+Ni loggar in från mejlet
+
+Kontot är klart direkt. Ni fyller i er profil under Om företaget och ser era platser under Våra platser.
+
+Konsulenten föreslår en person när det finns en match
+
+Förslaget går först till personen. Ni ser det bara om hen tackat ja, och bara de uppgifter hen valt att dela.
+
+Ni svarar, och placeringen börjar i Förslag-fliken
+
+Tackar ni ja flyttas placeringen till Pågående, med avstämningar vid vecka 12 och vecka 24 och kontakt med konsulenten i Meddelanden.
+
+Vanliga frågor
+Kan vi söka eller bläddra bland deltagarna?
+
+Nej. Det finns ingen sökfunktion, ingen lista och ingen rankning av personer i Jobin. Er konsulent föreslår en person till en av era platser, och ni ser förslaget bara om personen själv har godkänt det.
+
+Vad ser vi om en person, och när?
+
+Innan personen har godkänt förslaget ser ni ingenting. Efteråt ser ni bara de delar personen valt att dela — kontaktuppgifter, en sammanfattning, kompetenser, erfarenhet och utbildning väljs var för sig, inte som ett paket.
+
+Hur skapar vi ett konto?
+
+Ni skapar inget konto själva. Det kommer via en inbjudan från konsulenten på den arbetsmarknadsenhet eller Rusta och matcha-leverantör ni redan har kontakt med, oftast när ni har en plats de vill föreslå någon till. Har ni redan fått en inbjudan loggar ni in som vanligt på jobin.se med uppgifterna i mejlet.
+
+Vad kostar det?
+
+Vi har inget fastställt pris för företagskonton ännu. Boka ett samtal så pratar vi om er verksamhet och vad som är rimligt.
+
+Vilka anställningsstöd kan bli aktuella om vi anställer?
+
+De vanligaste är nystartsjobb, introduktionsjobb, lönebidrag, OSA och SIUS. Vilket som passar, och beslutet om det, ligger hos Arbetsförmedlingen — det beskriver vi inte i belopp här.
+
+Kan vi kontakta personen direkt, utan konsulenten?
+
+I dagsläget går kontakten om en föreslagen eller pågående placering via konsulenten, i Meddelanden-fliken. Det är ett medvetet första steg i hur företagskontot är byggt.
+
+Läs mer
+Praktik som väg in i arbetslivet
+Hur du hittar, söker och maximerar praktik för att få foten innanför dörren. · 3 min
+SIUS – stöd när du ska introduceras i ett nytt jobb
+En SIUS-konsulent hjälper dig komma in i ett nytt jobb, både innan och efter att du börjat. Så blir du… · 4 min
+Vill ni prata om en plats ni har?
+
+Ett samtal räcker för att se om det passar. Inget konto att skapa själva, inget krångel.
+
+Boka ett samtal
+
+Mår du dåligt? Du behöver inte vara i akut kris för att ringa, och du kan vara anonym. Självmordslinjen 901 01 svarar dygnet runt. Sjukvårdsrådgivningen når du på 1177. Är det fara för liv — ring 112.
+
+Jobin — stöd och verktyg för dig som söker jobb. Alla guider · Alla verktyg
+
+Integritet · Tillgänglighet · Om oss

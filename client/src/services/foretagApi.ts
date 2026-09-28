@@ -388,6 +388,23 @@ export const foretagApi = {
    * databasen är fortfarande den riktiga gränsen, det här är bara till för att
    * samma person inte ska betala för samma öppning två gånger.
    */
+  /**
+   * SL3 (skarpt test 2026-09-28): notisklockan stod kvar på samma antal efter att
+   * företaget öppnat och besvarat förslagen. Notiserna bär `data.proposal_id`; när
+   * förslaget eller dess tråd öppnas är de lästa. Typen avgör vilka (förslag / meddelande).
+   */
+  async lasNotiser(proposalId: string, typ: 'foretag_forslag' | 'foretag_meddelande'): Promise<void> {
+    const uid = await requireUserId()
+    const { error } = await supabase
+      .from('notifications')
+      .update({ read: true, read_at: new Date().toISOString() })
+      .eq('user_id', uid)
+      .eq('type', typ)
+      .eq('read', false)
+      .filter('data->>proposal_id', 'eq', proposalId)
+    if (error) throw new Error(foretagFelText(error))
+  },
+
   async markeraOppnad(id: string): Promise<void> {
     if (redanRaknadVisning(id)) return
     await requireUserId()

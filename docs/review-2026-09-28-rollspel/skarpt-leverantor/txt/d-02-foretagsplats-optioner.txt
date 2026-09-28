@@ -1,0 +1,202 @@
+Hoppa till huvudinnehåll
+Hoppa till navigation
+jobin.se
+Översikt
+Deltagare
+Platser
+Rapporter
+Kommunikation
+Sök …
+Ctrl K
+8
+D
+
+Demo — påhittade personer — Det här är en demo med påhittade personer. Allt du ändrar återställs varje natt. Ingen AI och inga mejl går ut härifrån.
+
+Konsultportal
+
+Hantera och följ upp dina deltagare
+
+Översikt
+Deltagare
+Platser
+Rapporter
+Kommunikation
+Resurser
+Inställningar
+Platser
+
+2 totalt · 0 pågående
+
+En plats registreras här, inte i aktivitetsplanen. Pass med en arbetsplats i planen blir inte en plats av sig själva — deltagarens Aktivitet-flik visar vilka platser som saknas här och vilka som saknar pass i planen.
+
+Lägg till plats
+Alla insatstyper
+Praktik
+Arbetsträning
+Arbetsprövning
+Subventionerad anställning
+Alla statusar
+Planerad
+Pågående
+Avslutad
+Avbruten
+Nordfrakt Logistik (demo)
+
+Sara Exempel · Arbetsträning · SL-skarpt Kontor 2026-09-28
+
+Företagskonto: Nordfrakt Logistik (demo)
+Planerad
+Uppföljning
+Redigera
+Ta bort
+Föreslå deltagaren för företaget
+Förslag till företaget
+Deltagaren sa ja
+Företaget: Tackade nej
+Skickat 2026-09-28 · besvarat 2026-09-28
+
+Företagets meddelande: Tyvärr har vi inte plats för fler på kontoret just nu. Skarpt funktionstest 2026-09-28.
+
+Föreslaget att dela: Kompetenser, Arbetslivserfarenhet
+
+Öppna tråd
+Vilka anställningsstöd kan vara aktuella?
+Nordfrakt Logistik (demo)
+
+Jonas Demo · Praktik · SL-skarpt Lager 2026-09-28
+
+Företagskonto: Nordfrakt Logistik (demo)
+Planerad
+Uppföljning
+Redigera
+Ta bort
+Föreslå deltagaren för företaget
+Förslag till företaget
+Deltagaren sa ja
+Företaget: Vill gå vidare
+Skickat 2026-09-28 · besvarat 2026-09-28
+
+Företagets meddelande: Ja tack, vi vill gärna ta emot Jonas på lagret. Skarpt funktionstest 2026-09-28.
+
+Föreslaget att dela: Kompetenser, Arbetslivserfarenhet
+
+Öppna tråd
+Företagets avstämningar
+Vecka 12
+2026-09-28
+Vill fortsätta
+
+Går bra: Jonas är på plats i tid och lär sig lagerrutinerna snabbt. Skarpt funktionstest.
+
+Bekymmer: Inget särskilt.
+
+Vilka anställningsstöd kan vara aktuella?
+Ny plats
+Välj bland företagens platser (valfritt)
+Fyll i manuellt…
+Nordfrakt Logistik (demo) — SL-skarpt Kontor 2026-09-28 · Arbetsträning
+Nordfrakt Logistik (demo) — Lagermedarbetare, dagtid · Praktik · Fraktvägen 4, Demostad
+
+En plats företaget själv lagt upp. Fälten nedan fylls i från den och platsen kopplas till företagskontot — du kan ändra allt innan du sparar.
+
+Deltagare *
+Välj deltagare…
+Sara Exempel
+Jonas Demo
+Amina Fiktiv
+Peter Testsson
+Insatstyp *
+Praktik
+Deltagaren prövar yrket och meriterar sig — behåller sin ersättning.
+Arbetsträning
+Lägre krav — rutiner, uthållighet och att bygga arbetsförmåga.
+Arbetsprövning
+Syftet är att ta reda på vad personen klarar — underlag till en bedömning.
+Subventionerad anställning
+Riktig anställning med stöd (nystartsjobb, introduktionsjobb, lönebidrag, OSA).
+Arbetsplatsen
+Företagsnamn *
+Yrke
+Bransch
+Kontaktperson
+Telefon
+E-post
+Adress
+Omfattning och tider
+Startdatum
+Slutdatum
+Timmar/vecka
+
+Praktik är normalt max en månad.
+
+Vilka dagar
+Möjlighet att trappa upp
+Avgörande för den som börjar på låg omfattning, t.ex. 25 %.
+Fysiska krav och tempo
+
+Det som oftast fäller en placering för den här målgruppen, och det som sällan står nedskrivet någonstans. Fyll i det du vet.
+
+Kräver tunga lyft
+Kräver att stå upp
+Skiftarbete
+Temperatur
+Ej satt
+Normal
+Kyla
+Värme
+Buller
+Ej satt
+Låg
+Mellan
+Hög
+Tempo
+Ej satt
+Lågt
+Mellan
+Högt
+Övrigt om fysiska krav
+Handledningsbehov
+
+En matchning mellan vad deltagaren behöver och vad arbetsplatsen kan ge.
+
+Deltagarens behov av stöd
+Ej satt
+Lågt
+Mellan
+Högt
+Arbetsplatsens kapacitet att handleda
+Ej satt
+Låg
+Mellan
+Hög
+Anteckningar om handledning
+Språkkrav och behörigheter
+Språkkrav
+Körkort krävs
+Övriga behörigheter
+Praktiskt
+Ring sjuk — telefon
+Ring sjuk — vad ska sägas/till vem
+Instruktioner till arbetsplatsen (VAD) — får delas med arbetsgivaren
+
+Skriv vad arbetsplatsen ska göra — utan orsak. Det här är det enda av de här två fälten som får skickas till arbetsgivaren.
+
+Bakgrund till anpassningen (VARFÖR) — internt, delas ALDRIG med arbetsgivaren
+
+Internt underlag. Når aldrig en arbetsgivare.
+
+Vem har arbetsmiljöansvaret
+Övriga anteckningar
+Arbetsgivarens motivation
+
+Säljargumentet, och det som avgör om placeringen leder någonstans. Konsulentens interna underlag — inget av det här skickas till arbetsgivaren.
+
+Arbetsgivarens framtida behov
+Intresse för anställning efteråt
+Positiv
+Avvaktande
+Ej aktuellt
+Okänt än
+Avbryt
+Skapa plats

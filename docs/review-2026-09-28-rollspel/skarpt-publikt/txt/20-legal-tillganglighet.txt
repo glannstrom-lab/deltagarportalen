@@ -1,0 +1,70 @@
+Du är nu på Tillgänglighet
+Tillbaka till startsidan
+Tillgänglighetsredogörelse
+
+Sidan senast redigerad: 2026-09-12
+
+Bedömningen bygger på en granskning genomförd: 2026-08-17
+
+Vår ambition
+
+Jobin.se ska kunna användas av alla — oavsett funktionsförmåga. Vi följer EU:s tillgänglighetsdirektiv (European Accessibility Act, direktiv 2019/882, svensk lag 2023:254). När portalen används av en kommun eller annan offentlig aktör gäller dessutom lagen om tillgänglighet till digital offentlig service (DOS-lagen, 2018:1937) och standarden EN 301 549 — den här redogörelsen är skriven för att duga som underlag även där. Vi strävar efter att uppfylla WCAG 2.1 nivå AA. Vår målgrupp inkluderar personer med fysiska och kognitiva utmaningar, vilket gör tillgänglighet centralt för vår verksamhet.
+
+Hur bedömningen är gjord
+
+Detta är en intern granskning, inte en oberoende expertgranskning. Metoden är automatiserad testning med axe-core (via Playwright, i riktig Chromium) kompletterad med manuell tangentbordstestning — 48 sidvyer, 22 sidor tangentbordstestade, 19 sidor kontrastmätta. Ingen granskning med riktig skärmläsare (NVDA, VoiceOver, TalkBack) har ännu genomförts; automatiserade verktyg kan avgöra om något annonseras för hjälpmedel, inte om det är begripligt.
+
+Automatiserade verktyg som axe fångar ungefär en tredjedel av WCAG-kraven — resten kräver manuell bedömning, som vi gör löpande men inte har täckt fullt ut ännu (bland annat konsulentvyn och diagrammens textalternativ).
+
+Vad som fungerar
+Publika sidor: Startsidan, verktygssidorna och de 133 guidesidor som fanns vid mätningen 2026-08-17 hade noll axe-överträdelser. Guiderna är i dag 239; de som tillkommit sedan dess är inte mätta i en full omgång ännu.
+Fokusindikator: Synlig på alla testade tabbstopp, med god kontrast mot bakgrunden.
+Reducerad rörelse: Animationer stängs av automatiskt om du har "prefers-reduced-motion" aktiverat i ditt operativsystem.
+Inga tidsgränser: Ingen nedräkning i intervjusimulatorn, CV-byggaren sparar automatiskt.
+Lugnt läge (Calm Mode): Tonad färgpalett och minskat informationsflöde för kognitiv tillgänglighet.
+Fokusläge: En sak i taget, för dig som behöver mindre stimuli.
+Energianpassning: Du kan ange din dagsenergi och portalen anpassar omfattningen.
+Två språk: Svenska och engelska. Du kan byta när som helst.
+Mörkt läge: Följer ditt systemval eller manuellt val.
+Kända brister
+
+Vi är ärliga med var vi inte är fullt ut tillgängliga ännu. Det här är de brister som är mätta och bekräftade — vi arbetar med att åtgärda dem, med de allvarligaste först:
+
+Vissa knappar saknar namn för skärmläsare: Ett fåtal ikonknappar läses upp bara som "knapp" utan att säga vad de gör, till exempel att radera ett dagboksinlägg.
+Jobbkort med flera funktioner i ett: Jobbkorten i jobbsökningen och några kort i karriärverktygen har flera klickbara delar (spara, ansök, skriv brev) inuti ett större klickbart kort, vilket kan tolkas olika av olika skärmläsare.
+Färgkontrast: Ett antal mindre textelement (bland annat siffror i chips och räknare på flera sidor) har inte tillräcklig kontrast mot sin bakgrund enligt WCAG 2.1 AA (4.5:1).
+Rubrikstruktur: På flera sidor hoppar rubriknivåerna (till exempel från H1 direkt till H3), vilket gör det svårare att navigera med rubriktangenten i en skärmläsare.
+Komplex visualisering: Diagram (RIASEC-radar, lönedata) saknar fullständigt textalternativ.
+PDF-export: Genererade CV-PDF:er har inte verifierad tagging för skärmläsare.
+Röststyrning: Stöds endast i intervjusimulator, inte i hela portalen.
+Lättläst (klarspråk): En lättläst guide finns publikt, men det finns ingen lättläst-version av verktygen inne i portalen.
+Riktig skärmläsartestning: Vi har ännu inte genomfört och verifierat en fullständig testomgång med NVDA, VoiceOver eller TalkBack — bara automatiserade och tangentbordsbaserade tester.
+Konsulentvyn och några ytor (bland annat spontanansökan, nätverk, en pågående intervjusession) har inte hunnit granskas i den senaste omgången.
+WCAG 2.1 — vår status per princip
+Möjligt att uppfatta (Perceivable): Delvis uppfyllt. Alt-text på bilder, men diagram saknar fullständig beskrivning och vissa texter har för låg kontrast (se Kända brister).
+Hanterbart (Operable): Delvis uppfyllt. Tangentbordsnavigering fungerar överlag, men skip-länkens synlighet och mobilmenyns fokusordning är kända brister.
+Begripligt (Understandable): Delvis uppfyllt. Klart språk och konsekvent navigation, men registreringsformulärets fel når inte fram till hjälpmedel och vissa rubrikstrukturer hoppar.
+Robust: Delvis uppfyllt. Semantisk HTML och ARIA används på de flesta ställen, men några knappar saknar tillgängligt namn och några kort har nästlade interaktiva element.
+Hur du kan navigera
+Tab — flytta fokus framåt
+Shift + Tab — bakåt
+Enter / Space — aktivera knapp/länk
+Esc — stäng modaler och dialoger
+Pilarna — navigera i listor och menyer
+Hjälpmedel vi testat med
+
+Vi har ännu inte genomfört och verifierat en testomgång med en riktig skärmläsare som NVDA, VoiceOver eller TalkBack — det är en känd brist (se ovan) och vår viktigaste kvarstående lucka. Det vi har testat är tangentbordsnavigering direkt i webbläsaren och skärmläsarträdet via utvecklarverktyg, i Chrome. Vi siktar på att genomföra riktiga skärmläsartester och uppdatera den här sidan när det är gjort. Browserstöd: Chrome, Firefox, Safari, Edge.
+
+Tillsynsmyndighet
+
+Om du tycker att vi inte uppfyller tillgänglighetskraven kan du anmäla det till oss (se kontaktuppgifter nedan). Du kan också anmäla till Myndigheten för digital förvaltning (DIGG) som har tillsyn för offentlig sektor, eller till Diskrimineringsombudsmannen (DO) eftersom bristande tillgänglighet är diskriminering enligt diskrimineringslagen (2008:567).
+
+DIGG: digg.se
+DO: do.se
+Kontakta oss om tillgänglighet
+
+Hittar du något som inte fungerar? Hör av dig — vi prioriterar tillgänglighetsbuggar.
+
+Email: tillganglighet@jobin.se
+
+Denna redogörelse upprättades ursprungligen 2026-05-15 enligt EU:s tillgänglighetsdirektiv (2019/882) och svensk lag (2023:254), skrevs om 2026-08-12 efter den interna granskningen 2026-08-09, och uppdaterades 2026-08-17 när tre av de listade bristerna hade åtgärdats: skip-länken blir numera synlig när den får fokus, mobilmenyns element ligger inte längre kvar i tabbordningen när menyn är stängd, och registreringsformulärets felmeddelanden är kopplade till sina fält. Den 2026-09-11 lades hänvisningen till DOS-lagen (2018:1937) och EN 301 549 till, eftersom portalen erbjuds kommuner; kraven i EN 301 549 kapitel 9 (webb) motsvarar WCAG 2.1 AA, som redan är vår måttstock. Den 2026-09-12 hittade den automatiska kontrollen (axe, inloggade sidor) två brister som inte stod här: förloppsmätarna i CV-byggaren och på profilsidan saknade namn för skärmläsare, och intresselistan på profilen hade text inuti en lista utan att vara ett listobjekt — båda rättade samma dag. Se "Hur bedömningen är gjord" ovan. Vi uppdaterar redogörelsen vid varje större granskning, minst årligen.

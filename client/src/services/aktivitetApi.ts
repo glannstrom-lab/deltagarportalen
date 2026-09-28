@@ -540,6 +540,10 @@ export const aktivitetsplanApi = {
   /** Närvaro sätts bara av konsulenten. `attendance: null` nollställer. */
   async markAttendance(sessionId: string, input: AttendanceInput): Promise<ActivitySession> {
     const user = await requireUser()
+    // SKK2 (skarpt test 2026-09-28): samma utfall en gång till (t.ex. för att ändra
+    // anteckningen) skickade en ny notis om ogiltig frånvaro varje gång. Notisen går
+    // bara när markeringen BLIR ogiltig frånvaro.
+    const { data: fore } = await supabase.from('activity_sessions').select('attendance').eq('id', sessionId).maybeSingle()
     const { data, error } = await supabase
       .from('activity_sessions')
       .update({
@@ -554,7 +558,7 @@ export const aktivitetsplanApi = {
       .single()
     if (error) throw error
     const markerad = mapSession(data as Record<string, unknown>)
-    if (input.attendance === 'absent_invalid') {
+    if (input.attendance === 'absent_invalid' && fore?.attendance !== 'absent_invalid') {
       await notisBonus('ogiltig frånvaro', () => notisOgiltigFranvaro(markerad))
     }
     return markerad

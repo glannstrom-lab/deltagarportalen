@@ -1,0 +1,117 @@
+Du är nu på AI-policy
+J
+Jobin
+Tillbaka till startsidan
+AI-transparens
+
+Hur vi använder artificiell intelligens i Jobin
+
+Vårt åtagande
+
+Vi tror på transparens kring hur AI används. Denna sida förklarar vilka AI-modeller vi använder, vilken data som behandlas och hur du behåller kontrollen.
+
+AI-modeller vi använder
+
+Jobin använder följande AI-tjänster:
+
+OpenRouter (modell: gpt-oss-120b)
+
+Används för att generera CV-texter, personliga brev och ge skrivförslag. Vi anlitar OpenRouter, som i sin tur kör språkmodellen gpt-oss-120b. Behandlingen sker i USA.
+
+Leverantör:
+
+OpenRouter Inc.
+
+Användningsområde:
+
+CV & Cover Letter
+
+Databehandling:
+
+USA — överföringsgrunden är ännu inte fastställd (inte EU-US Data Privacy Framework)
+
+Perplexity (via OpenRouter, modell: sonar)
+
+Används av karriärassistenten, pendlingsplaneraren, företagssökningen, företagsanalysen och branschradarn. Perplexity gör en websökning på det du skriver in — pendlingsplaneraren skickar din hemadress som en del av den sökningen.
+
+Leverantör:
+
+Perplexity AI, Inc. (via OpenRouter)
+
+Användningsområde:
+
+Karriärassistent, pendlingsplanerare, företagssök/-analys, branschradar
+
+Databehandling:
+
+USA — samma olösta överföringsgrund som ovan
+
+Vilken data skickas till AI?
+
+När du använder AI-funktioner skickar vi följande information:
+
+CV-assistenten:
+
+Din jobbhistorik, utbildning och kompetenser som du valt att inkludera
+
+Personligt brev-generatorn:
+
+Jobbannonsen, delar av ditt CV och dina instruktioner
+
+Följande skickas ALDRIG till AI:
+
+Personnummer, lösenord, bankuppgifter eller andra känsliga uppgifter
+
+Din kontroll
+
+Du har full kontroll över AI-behandlingen:
+
+Samtycke krävs: AI-funktioner aktiveras endast om du ger uttryckligt samtycke
+Granskning: All AI-genererad text visas för dig innan den sparas - du redigerar och godkänner
+Återkalla: Du kan när som helst återkalla samtycket under Inställningar > Integritet
+Radering: AI-genererat innehåll raderas när du raderar ditt konto
+AI fattar inga beslut
+
+Viktigt att förstå: AI används endast som ett verktyg för att ge förslag. AI fattar aldrig beslut åt dig. Du bestämmer alltid vad som ska stå i ditt CV eller personliga brev. AI-genererat innehåll påverkar inte dina möjligheter - det är bara ett hjälpmedel.
+
+Säkerhet och dataskydd
+
+Vi tar säkerheten på allvar:
+
+All kommunikation med AI-leverantörer sker över krypterade anslutningar (TLS)
+Vi skickar endast nödvändig information - aldrig mer än vad som behövs
+Vi begär att dina uppgifter inte används för att träna AI-modeller
+AI-förfrågningar loggas inte med personidentifierbar information
+Regelefterlevnad
+EU AI Act:
+
+Våra AI-funktioner klassificeras som begränsad risk enligt EU:s AI-förordning. Vi följer transparenskraven i Art. 52.
+
+GDPR:
+
+AI-behandling sker baserat på ditt samtycke enligt Art. 6.1.a. Du kan återkalla samtycket när som helst.
+
+Data Act:
+
+Du kan exportera all din data, inklusive AI-genererat innehåll, i maskinläsbart format.
+
+Vanliga frågor
+Måste jag använda AI?
+
+Nej, alla AI-funktioner är helt valfria. Du kan bygga CV och skriva personliga brev helt utan AI.
+
+Sparas mina AI-förfrågningar?
+
+Nej, vi sparar inte förfrågningarna. Det AI-genererade innehållet sparas endast om du väljer att behålla det.
+
+Kan AI se mitt personnummer?
+
+Nej, känslig information som personnummer skickas aldrig till AI-tjänster.
+
+Frågor om AI?
+
+Har du frågor om hur vi använder AI? Kontakta oss på privacy@jobin.se
+
+Senast uppdaterad: 31 augusti 2026
+
+© 2026 Jobin. Alla rättigheter förbehållna.

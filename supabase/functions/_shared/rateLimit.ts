@@ -28,6 +28,9 @@ const ENDPOINT_LIMITS: Record<string, { limit: number; windowMs: number }> = {
   'cv-analysis': { limit: 5, windowMs: 60 * 1000 },
   'ai-assistant': { limit: 20, windowMs: 60 * 1000 },
   'send-invite-email': { limit: 10, windowMs: 60 * 1000 },
+  // PUB-1 (2026-09-28): återställning av lösenord — per IP och per adress, en timme.
+  'losenord-aterstall-ip': { limit: 10, windowMs: 60 * 60 * 1000 },
+  'losenord-aterstall-epost': { limit: 3, windowMs: 60 * 60 * 1000 },
   'learning-recommend': { limit: 30, windowMs: 60 * 1000 },
   'learning-progress': { limit: 50, windowMs: 60 * 1000 },
   'learning-analyze-gap': { limit: 5, windowMs: 60 * 1000 },

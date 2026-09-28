@@ -423,7 +423,8 @@ export function PlatserTab() {
                 onUppfoljning={() => setUppfoljningFor(p)}
                 onDelete={() => handleDelete(p)}
                 onBjudIn={() => setBjudInFor(p)}
-                onForesla={() => setForeslaFor(p)}
+                // SL1 (skarpt test 2026-09-28): ett väntande förslag finns redan — visa det (nedan), inte en knapp för ett till.
+                onForesla={(forslagPerPlats.get(p.id) ?? []).some((f) => f.status === 'pending') ? undefined : () => setForeslaFor(p)}
               />
               <ForetagsdelForPlats
                 placering={p}

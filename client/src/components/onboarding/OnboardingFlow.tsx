@@ -116,13 +116,42 @@ const STEPS: Step[] = [
   },
 ]
 
+const TUR_NYCKEL = 'jobin_tur_avfardad_'
+
+/** SV1: har den här användaren redan avfärdat välkomstturen i den här webbläsaren? */
+function turAvfardad(userId: string | undefined): boolean {
+  if (!userId) return false
+  try {
+    return localStorage.getItem(TUR_NYCKEL + userId) === '1'
+  } catch {
+    return false // blockerad lagring — databasens flagga får avgöra
+  }
+}
+
+function minnsTurAvfardad(userId: string | undefined): void {
+  if (!userId) return
+  try {
+    localStorage.setItem(TUR_NYCKEL + userId, '1')
+  } catch {
+    // Går inte att spara lokalt — databasens flagga (markCompleted) bär valet.
+  }
+}
+
 export function OnboardingFlow() {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const { profile, user, updateProfile } = useAuthStore()
 
   // Lokal state för att kunna stänga snabbt — DB-uppdateringen sker async
-  const [dismissed, setDismissed] = useState(false)
+  // SV1 (skarpt test 2026-09-29): "avfärdad" levde bara i komponentens state. Monterades
+  // modalen om (efter samtyckessteget, eller vid omladdning innan profilen hunnit sparas)
+  // kom turen tillbaka och lade sig över andra formulär. Avfärdandet sparas nu per
+  // användare i webbläsaren direkt, före nätverksanropet.
+  const [dismissed, setDismissedState] = useState<boolean>(() => turAvfardad(user?.id))
+  const setDismissed = (v: boolean) => {
+    if (v) minnsTurAvfardad(user?.id)
+    setDismissedState(v)
+  }
   const [currentStep, setCurrentStep] = useState(0)
   const [saving, setSaving] = useState(false)
   const [hasSessionClaim, setHasSessionClaim] = useState(false)
@@ -143,6 +172,7 @@ export function OnboardingFlow() {
     arDeltagarroll &&
     profile.onboarding_completed === false &&
     !dismissed &&
+    !turAvfardad(user?.id) &&
     hasSessionClaim
 
   // Frequency-cap — denna globala flow ska visas FÖRST (har prioritet över
@@ -164,7 +194,8 @@ export function OnboardingFlow() {
   // Focus-trap medan modalen är öppen (WCAG 2.4.3 / 2.1.2). Escape avskedar
   // — samma effekt som "Hoppa över" så användaren inte kan fastna.
   const focusTrapRef = useFocusTrap<HTMLDivElement>(shouldShow, {
-    onEscape: () => setDismissed(true),
+    // Escape = "Hoppa över", även i databasen — tidigare stängdes turen bara för stunden.
+    onEscape: () => { void markCompleted() },
     restoreFocus: true,
     autoFocus: true,
   })

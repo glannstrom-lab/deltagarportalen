@@ -22,6 +22,7 @@ import { foretagApi, fulltNamn } from '@/services/foretagApi'
 import { foretagsTradApi } from '@/services/delningsforslagApi'
 import { FelRuta, FelText, Laddar } from '@/components/foretag/Tillstand'
 import { ETIKETT_KLASS, FALT_KLASS, foretagNycklar } from '@/components/foretag/foretagEtiketter'
+import { NOTIFICATIONS_KEY } from '@/hooks/useNotifications'
 
 interface Props {
   org: Organization
@@ -75,6 +76,14 @@ export function MeddelandenFlik({ org }: Props) {
     queryFn: () => foretagsTradApi.lista(vald!.proposalId),
     enabled: vald !== null,
   })
+
+  // SL3 (2026-09-28): tråden är öppnad — meddelandenotiserna för förslaget är lästa.
+  useEffect(() => {
+    if (!vald) return
+    foretagApi.lasNotiser(vald.proposalId, 'foretag_meddelande')
+      .then(() => queryClient.invalidateQueries({ queryKey: NOTIFICATIONS_KEY }))
+      .catch(() => {})
+  }, [vald, queryClient])
 
   useEffect(() => {
     if (!vald || !tradQ.data || markerade.current.has(vald.proposalId)) return

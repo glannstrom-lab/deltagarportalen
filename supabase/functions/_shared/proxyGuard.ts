@@ -67,7 +67,7 @@ export function buildProxyCorsHeaders(origin: string | null): Record<string, str
  * Ändra INTE tillbaka till `.split(',')[0]` — det var precis den bugg som
  * gjorde grinden verkningslös.
  */
-function getTrustedClientIp(req: Request): string {
+export function getTrustedClientIp(req: Request): string {
   const cfIp = req.headers.get('cf-connecting-ip')
   if (cfIp) return cfIp.trim()
 

@@ -550,7 +550,10 @@ export function ParticipantDetailPage() {
     const requestedId = participantId
     if (!requestedId) return
     try {
-      const { data: { user } } = await supabase.auth.getUser()
+      // SKK1 (skarpt test 2026-09-28): getUser() är ett nätverksanrop mot auth-servern. När det
+      // föll (CORS-fel i prod) returnerade funktionen tyst och det nya målet syntes inte förrän
+      // fliken öppnades igen. Den inloggade användaren finns redan i authStore.
+      const user = useAuthStore.getState().user
       if (!user || activeParticipantIdRef.current !== requestedId) return
 
       const { data: goalsData, error: goalsError } = await supabase

@@ -29,7 +29,7 @@ export interface InterestGuideHistoryEntry {
   answers: Record<string, number>
   riasec_profile: Record<string, number>
   bigfive_profile: Record<string, number>
-  icf_profile: Record<string, number>
+  icf_profile: Record<string, number> | null
   strong_interest: Record<string, number>
   top_occupations: Array<{ name: string; matchPercentage: number }>
   completed_at: string

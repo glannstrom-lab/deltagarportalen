@@ -1,0 +1,155 @@
+Du är nu på Konsultportal
+Hoppa till huvudinnehåll
+Hoppa till navigation
+jobin.se
+Översikt
+Deltagare
+Platser
+Rapporter
+Kommunikation
+Sök …
+Ctrl K
+4
+H
+
+Visa som: du ser Jobin som hanna.handlaggare.demo@example.com
+
+Avsluta och logga ut
+
+Demo — påhittade personer — Det här är en demo med påhittade personer. Allt du ändrar återställs varje natt. Ingen AI och inga mejl går ut härifrån.
+
+Konsultportal
+
+Hantera och följ upp dina deltagare
+
+Översikt
+Deltagare
+Platser
+Rapporter
+Kommunikation
+Resurser
+Inställningar
+Underlag till dig
+
+1 underlag väntar på att du kvitterar dem. Beslutet dokumenterar du i kommunens verksamhetssystem.
+
+Anna Exempel
+28 september 2026 – 28 september 2026
+
+Lämnat 28 september 2026 av Demo Konsulent (demo@jobin.se) · Arbetslös
+
+Ångrat av konsulenten: SKK-skarpt-test: dubblett skapad av testet, ångras avsiktligt.. Använd inte det här underlaget.
+
+Anna Exempel
+28 september 2026 – 28 september 2026
+
+Lämnat 28 september 2026 av Demo Konsulent (demo@jobin.se) · Arbetslös
+
+Pass
+1
+Närvarande
+0
+Ogiltig frånvaro
+0
+Sjuk utan intyg
+0
+
+Konsulentens anteckning: SKK-skarpt-test: underlag för vecka 40, lämnat via ny handläggarlista.
+
+Kvittera mottaget
+Sara Påhitt
+14 september 2026 – 27 september 2026
+
+Lämnat 28 september 2026 av Kim Kollega (kim.kollega.demo@example.com) · Arbetslös
+
+Pass
+8
+Närvarande
+5
+Ogiltig frånvaro
+3
+Sjuk utan intyg
+0
+
+Deltagaren har förklarat 1 av 3 tillfällen med ogiltig frånvaro i portalen. Fråga konsulenten om deltagaren fått möjlighet att förklara resten.
+
+Konsulentens anteckning: Tre ogiltiga frånvaron. Sara har förklarat en av dem i portalen; de andra två har vi inte pratat om än.
+
+Du kvitterade 28 september 2026.
+Anna Exempel
+21 september 2026 – 27 september 2026
+
+Lämnat 24 september 2026 av Demo Konsulent (demo@jobin.se) · Arbetslös
+
+Pass
+4
+Närvarande
+2
+Ogiltig frånvaro
+1
+Sjuk utan intyg
+0
+
+Deltagaren har förklarat 0 av 1 tillfällen med ogiltig frånvaro i portalen. Fråga konsulenten om deltagaren fått möjlighet att förklara resten.
+
+Du kvitterade 25 september 2026.
+Min dag
+— Måndag 28 september
+Dagens pass
+(0)
+Närvaro per pass
+
+Inga pass i dag. Planerna finns under varje deltagares Aktivitet.
+
+Inga möten, deadlines eller kontakter att ta i dag
+
+Bra läge att jobba proaktivt med dina deltagare.
+
+Totalt deltagare
+
+0
+
+0 aktiva
+
+Kräver uppmärksamhet
+
+0
+
+Inga deltagare kräver omedelbar uppmärksamhet.
+
+Snitt ATS-poäng
+
+—
+
+Ingen ATS-poäng ännu
+
+Möten denna vecka
+
+0
+
+Schemalagda
+
+Kräver uppmärksamhet
+Visa alla
+
+Alla deltagare följs upp!
+
+Inga deltagare kräver omedelbar uppmärksamhet.
+
+Snabbåtgärder
+Bjud in deltagare
+Skicka gruppmeddelande
+Schemalägg möte
+Exportera rapport
+Skapa mål för deltagare
+Senaste aktivitet
+Ingen aktivitet ännu
+Målöversikt
+Se detaljer
+
+Inga mål satta än. Mål som du och deltagarna sätter visas här.
+
+Sätt ett mål
+Vanligaste målkategorierna
+
+Inga mål registrerade än — skapa det första från en deltagares sida.

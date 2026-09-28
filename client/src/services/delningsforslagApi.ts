@@ -101,6 +101,8 @@ export const delningsforslagApi = {
       .insert({ ...input, consultant_id: consultantId })
       .select('*')
       .single()
+    // SL1: unikt index — ett väntande förslag per placering.
+    if (error?.code === '23505') throw new Error('Ett förslag för den här placeringen väntar redan på svar.')
     if (error) throw error
     return data as Delningsforslag
   },

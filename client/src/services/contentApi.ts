@@ -170,6 +170,7 @@ function dbArticleToEnhanced(article: ArticleFromDB): EnhancedArticle {
     summary: pa(sprak, article.summary_en, article.summary),
     // Listvyerna hämtar inte brödtexten (se LISTKOLUMNER).
     content: pa(sprak, article.content_en, article.content ?? ''),
+    contentSprak: sprak !== 'sv' && (article.content_en ?? '').trim() ? 'en' : 'sv',
     category: article.category_key || '',
     subcategory: article.subcategory || undefined,
     tags: article.tags || [],

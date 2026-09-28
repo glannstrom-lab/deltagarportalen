@@ -1,0 +1,195 @@
+Hoppa till huvudinnehåll
+Hoppa till navigation
+jobin.se
+Översikt
+Deltagare
+Platser
+Rapporter
+Kommunikation
+Sök …
+Ctrl K
+3
+D
+
+Demo — påhittade personer — Det här är en demo med påhittade personer. Allt du ändrar återställs varje natt. Ingen AI och inga mejl går ut härifrån.
+
+Konsultportal
+
+Hantera och följ upp dina deltagare
+
+Översikt
+Deltagare
+Platser
+Rapporter
+Kommunikation
+Resurser
+Inställningar
+Tillbaka till deltagare
+AE
+Anna Exempel
+anna.exempel@example.com
+Aktiv
+Boka möte
+Registrera placering
+
+72%
+
+CV-poäng
+
+3
+
+Sparade jobb
+
+1
+
+Aktiva mål
+
+3 dagar sedan
+
+Senaste kontakt
+
+loggad kontakt
+
+Översikt
+Aktivitet
+Mål
+Journal
+Tidslinje
+Demomall: jobbsökning + motivationAktiv
+Period
+21 september 2026
+Veckomål
+11 h
+Eget jobbsökande
+3 h/vecka i planen
+Beslutad
+21 september 2026
+Ärendenummer i verksamhetssystemet
+— inte angivet
+Ange
+
+Står på plan-PDF:en, närvarointyget och underlagspaketet. Inte personnummer.
+
+Försörjningshinder
+Inte angivet
+Arbetslös
+Sjukskriven med läkarintyg
+Sjuk- eller aktivitetsersättning
+Arbetshinder, sociala skäl
+Föräldraledig
+Arbetar deltid
+Språkhinder
+Utan försörjningshinder
+Annat
+Underlag till handläggaren
+Lämnat 28 september 2026 till Hanna Handläggare · av dig · Period 28 sep – 28 sep · inte kvitterat änÅngra
+Lämnat 24 september 2026 till Hanna Handläggare · av dig · Period 21 sep – 27 sep · kvitterat 25 sep
+Lämna underlag
+
+Motivering till veckomålet: Heltidsaktivitet enligt aktivitetskravet.
+
+Plan som PDF
+Lägg till pass
+Avsluta plan
+
+Jobbsökarverkstad och motivationsgrupp, praktikbesök torsdagar.
+
+Praktik och arbetsträning
+Öppna Platser
+Nordfrakt Logistik (demo) · Arbetsträning · Pågående · från 15 september 2026 · 20 h/vecka
+Nordfrakt Logistik (demo) finns under Platser men har inga arbetsplatspass i planen — timmarna där räknas inte förrän passen ligger i planen.
+Lägg in i planen
+— Nordfrakt Logistik (demo)
+
+Planen har arbetsplatspass på ”Fiktiva Logistik AB”, men platsen finns inte under Platser. Registrera den där för kontaktuppgifter, handledning och uppföljning.
+
+Avstämningen jämför namnet på platsen med passens platsfält, och känner igen pass som lagts in härifrån.
+
+Vecka 40 · 28 sep – 4 okt
+Idag
+Närvaron inte markerad än
+Planerat anvisat
+8 h / 8 h
+Närvaro
+0 h
+Eget jobbsökande, kvitterat
+0 h
+Ogiltig frånvaro
+Ingen
+
+Veckomålet 11 h = 8 h anvisad aktivitet + 3 h eget jobbsökande. Ampeln jämför bekräftad närvaro i anvisade pass med den anvisade delen; eget jobbsökande är deltagarens egen redovisning och räknas inte in i ampeln. Eget jobbsökande räknas som utfört först när du kvitterat det.
+
+Beslut om nedsättning fattas av socialnämnden, inte här. Ogiltig frånvaro är underlag till handläggaren. 3 pass i veckan är inte markerade än.
+
+Eget jobbsökande
+(deltagarens egen redovisning)
+
+3 h/vecka avsatt i planen.
+
+Inget sparat jobb och ingen ansökan registrerad den här veckan.
+
+CV uppdaterat 28 sep. Personligt brev och intervjuträning ser bara deltagaren själv.
+
+Måndag 28 sep · idag
+09:00–12:00
+
+Jobbsökarverkstad
+
+Jobbsökande
+3 h
+Arbetsmarknadsenheten
+Verksamheten · fysiskt (härlett)
+
+Inte markerad
+Närvaro
+Ändra
+Tisdag 29 sep
+09:00–11:00
+
+Motivationsgrupp
+
+Motivation och förmåga
+2 h
+Rum 3
+Verksamheten · fysiskt (härlett)
+
+Inte markerad
+Närvaro
+Ändra
+Onsdag 30 sep
+09:00–12:00
+
+Eget jobbsökande
+
+Eget jobbsökande
+3 h
+Hemma/bibliotek
+Egen aktivitet · fysiskt (härlett)
+
+Egen redovisning
+Närvaro
+Ändra
+Torsdag 1 okt
+13:00–16:00
+
+Praktikbesök
+
+Arbetsplatsförlagd
+3 h
+Fiktiva Logistik AB
+Verksamheten · fysiskt (härlett)
+
+Inte markerad
+Närvaro
+Ändra
+
+Underlaget är markerat som lämnat.
+
+Underlaget är lämnat
+
+Markeringen är sparad: 2026-09-28 till 2026-09-28, till Hanna Handläggare. Ladda ner underlaget som PDF och skicka det till handläggaren på det sätt ni brukar — Jobin skickar det inte själv.
+
+PDF:en visar varje pass dag för dag, frånvaro med anteckning, om sjukintyg kommit in, och vem som markerade och när.
+
+Klar
+Ladda ner underlaget (PDF)

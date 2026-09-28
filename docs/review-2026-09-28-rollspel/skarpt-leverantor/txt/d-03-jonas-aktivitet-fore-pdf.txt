@@ -1,0 +1,168 @@
+Du är nu på Konsultportal
+Hoppa till huvudinnehåll
+Hoppa till navigation
+jobin.se
+Översikt
+Deltagare
+Platser
+Rapporter
+Kommunikation
+Sök …
+Ctrl K
+8
+D
+
+Demo — påhittade personer — Det här är en demo med påhittade personer. Allt du ändrar återställs varje natt. Ingen AI och inga mejl går ut härifrån.
+
+Konsultportal
+
+Hantera och följ upp dina deltagare
+
+Översikt
+Deltagare
+Platser
+Rapporter
+Kommunikation
+Resurser
+Inställningar
+Tillbaka till deltagare
+JD
+Jonas Demo
+jonas.demo@example.com
+Aktiv
+Boka möte
+Registrera placering
+
+44%
+
+CV-poäng
+
+1
+
+Sparade jobb
+
+1
+
+Aktiva mål
+
+4 dagar sedan
+
+Senaste kontakt
+
+loggad kontakt
+
+Översikt
+Aktivitet
+Mål
+Journal
+Tidslinje
+AktivitetsplanAktiv
+Period
+17 augusti 2026
+Veckomål
+2 h
+Eget jobbsökande
+1 h/vecka i planen
+Beslutad
+17 augusti 2026
+Ärende-id hos Arbetsförmedlingen
+— inte angivet
+Ange
+
+Står på plan-PDF:en, närvarointyget och underlagspaketet. Inte personnummer.
+
+Plan som PDF
+Lägg till pass
+Avsluta plan
+
+Eget jobbsökande hemifrån och gruppträff på kontoret varannan vecka.
+
+Praktik och arbetsträning
+Öppna Platser
+Nordfrakt Logistik (demo) · Praktik · Planerad
+Nordfrakt Logistik (demo) finns under Platser men har inga arbetsplatspass i planen — timmarna där räknas inte förrän passen ligger i planen.
+Lägg in i planen
+— Nordfrakt Logistik (demo)
+
+Avstämningen jämför namnet på platsen med passens platsfält, och känner igen pass som lagts in härifrån.
+
+Avvikelser till Arbetsförmedlingen
+
+FFU §4.4: datum, typ, orsak och om handläggaren på Arbetsförmedlingen underrättats.
+
+Månad
+september 2026
+augusti 2026
+
+4 sep · Ogiltig frånvaro
+
+Gruppträff: jobbsökning
+
+Orsak: ingen antecknad — skriv den i passets anteckning
+
+AF inte underrättad
+Markera som underrättad
+
+18 sep · Ogiltig frånvaro
+
+Gruppträff: jobbsökning
+
+Orsak: ingen antecknad — skriv den i passets anteckning
+
+AF inte underrättad
+Markera som underrättad
+
+Kopiera avvikelserna
+
+Portalen skickar ingenting till Arbetsförmedlingen. Avvikelserna rapporterar du själv i Arbetsförmedlingens system; markera här när det är gjort. Bara pass som verksamheten håller i och som du markerat räknas.
+
+Vecka 40 · 28 sep – 4 okt
+Idag
+Närvaron inte markerad än
+Planerat anvisat
+1 h / 1 h
+Närvaro
+0 h
+Eget jobbsökande, kvitterat
+0 h
+Ogiltig frånvaro
+Ingen
+
+Veckomålet 2 h = 1 h anvisad aktivitet + 1 h eget jobbsökande. Ampeln jämför bekräftad närvaro i anvisade pass med den anvisade delen; eget jobbsökande är deltagarens egen redovisning och räknas inte in i ampeln. Eget jobbsökande räknas som utfört först när du kvitterat det.
+
+Ogiltig frånvaro är underlag för avvikelserapporteringen till Arbetsförmedlingen enligt avtalet. 1 pass i veckan är inte markerat än.
+
+Eget jobbsökande
+(deltagarens egen redovisning)
+
+1 h/vecka avsatt i planen.
+
+Inget sparat jobb och ingen ansökan registrerad den här veckan.
+
+CV uppdaterat 28 sep. Personligt brev och intervjuträning ser bara deltagaren själv.
+
+Onsdag 30 sep
+10:00–11:00
+
+Eget jobbsökande
+
+Eget jobbsökande
+1 h
+Egen aktivitet · digitalt (härlett)
+
+Egen redovisning
+Närvaro
+Ändra
+Fredag 2 okt
+13:00–14:00
+
+Gruppträff: jobbsökning
+
+Jobbsökande
+1 h
+Leverantörens kontor
+Verksamheten · fysiskt (härlett)
+
+Inte markerad
+Närvaro
+Ändra

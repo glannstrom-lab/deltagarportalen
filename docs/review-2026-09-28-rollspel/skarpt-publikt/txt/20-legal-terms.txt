@@ -1,0 +1,73 @@
+Du är nu på Användarvillkor
+J
+Jobin
+Tillbaka till startsidan
+Användarvillkor
+
+Regler och riktlinjer för att använda Jobin
+
+Acceptans av villkor
+
+Genom att skapa ett konto och använda Jobin godkänner du dessa användarvillkor. Om du inte accepterar villkoren, vänligen använd inte våra tjänster. Vi förbehåller oss rätten att uppdatera dessa villkor, och fortsatt användning efter ändringar innebär att du accepterar de nya villkoren.
+
+Användarkonto
+
+För att använda Jobin behöver du skapa ett konto. Du ansvarar för att:
+
+Informationen du anger är sann, korrekt och aktuell
+Du skyddar ditt lösenord och inte delar det med andra
+Du omedelbart meddelar oss om obehörig åtkomst till ditt konto
+Du endast skapar ett konto per person
+Acceptabel användning
+
+När du använder Jobin förbinder du dig att inte:
+
+Använda plattformen för olagliga ändamål
+Publicera falsk eller vilseledande information
+Trakassera, hota eller diskriminera andra användare
+Försöka kringgå säkerhetsåtgärder eller hacka systemet
+Använda automatiserade system (botar) utan tillstånd
+Innehåll och upphovsrätt
+
+När du laddar upp innehåll till Jobin (t.ex. CV, personligt brev):
+
+Du behåller äganderätten till ditt innehåll
+Du ger oss rätt att lagra och visa innehållet för att tillhandahålla tjänsten
+Du får endast ladda upp innehåll som du har rätt att använda
+AI-funktioner — vägledning, inte beslut
+
+AI-funktionerna i portalen (CV-byggare, personligt brev, intervjusimulator, kompetensanalys, AI-coach med flera) är hjälpverktyg. De ger förslag, inte beslut. Du fattar alltid själv besluten om jobb, utbildning, ansökningar och karriär. AI-rekommendationer är inte professionell karriärrådgivning, juridisk rådgivning eller en arbetsmarknadspolitisk anvisning. Vi tar inget ansvar för följderna av att du följer eller inte följer ett AI-genererat förslag. Läs alltid igenom AI-genererat innehåll innan du skickar det vidare.
+
+Vad portalen inte får användas till
+
+Portalen är byggd för att du som arbetssökande ska kunna driva din egen jobbsökning, och för de konsulenter som stöttar dig. Det följande gäller alla användare — även ett företag som får ett konto.
+
+Arbetsgivare och rekryterare får inte söka, filtrera, rangordna eller jämföra personer i portalen. Det finns ingen kandidatdatabas och ingen sökfunktion mot deltagare. Det är ett medvetet val, inte en funktion som råkar saknas.
+Om portalen ger ett företag ett konto kan företaget bara ta emot ett förslag om en namngiven person, från en konsulent, och först efter att personen själv sagt ja till just den delningen. Företaget ser då bara de uppgifter personen godkänt — ingenting annat.
+Ingen AI rangordnar, poängsätter eller väljer ut personer åt en arbetsgivare. Det är alltid en människa, konsulenten, som avgör vem som föreslås. AI får hjälpa till att formulera text — aldrig att välja person.
+AI-resultat om en person lämnas aldrig ut till en arbetsgivare. Det gäller matchningspoäng, kompetensanalys, intresseprofil och omdömen om ett CV, och det gäller oavsett vilka samtycken som finns.
+Automatiserad inhämtning av data — skrapning, massanrop mot API:er — är inte tillåten.
+AI-utdata får inte föras vidare till någon annan för att fatta ett arbetsrelaterat beslut om en tredje person.
+Portalen får inte användas för diskriminerande ändamål (jämför diskrimineringslagen 2008:567).
+
+Ett konto som bryter mot det här stängs av. Reglerna finns för att portalen ska kunna vara ett verktyg för den som söker jobb, och inte bli ett urvalsinstrument som används om henne.
+
+Wellness-funktionerna är inte vård
+
+Portalens wellness- och hälsofunktioner — måendeloggning, energispårning, dagbok, andningsövningar, krisstöd — är verktyg för reflektion och självhjälp. De är inte hälso- och sjukvård, terapi, psykologisk behandling eller medicinsk rådgivning. Om du mår psykiskt dåligt, har tankar på att ta ditt liv eller behöver vård: kontakta 1177, en psykiatrisk akutmottagning, eller ring 112. Mind Självmordslinjen: 90101. Jourhavande medmänniska: 08-702 16 80.
+
+Ansvarsbegränsning
+
+Jobin tillhandahålls "i befintligt skick" utan garantier. Vi strävar efter att hålla tjänsten tillgänglig och säker, men kan inte garantera oavbruten drift. Vi ansvarar inte för eventuella förluster som uppstår vid användning av plattformen. Rekommendationer och råd som ges genom plattformen är vägledande och ska inte ses som professionell rådgivning.
+
+Avslut av konto
+
+Du kan när som helst välja att avsluta ditt konto. Vid avslut raderas dina personuppgifter enligt vår integritetspolicy. Vi förbehåller oss rätten att stänga av konton som bryter mot dessa villkor.
+
+Kontakt
+
+Har du frågor om våra användarvillkor? Kontakta oss på support@jobin.se
+
+Senast uppdaterad: 2026-09-01
+
+© 2026 Jobin. Alla rättigheter förbehållna.

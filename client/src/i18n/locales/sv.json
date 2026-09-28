@@ -530,7 +530,7 @@
       "subtitle": "Vi fyller i fälten åt dig — PDF eller Word (.docx)",
       "dropHere": "Dra hit ditt CV, eller välj det från datorn.",
       "privacyDescriptions": "Dina egna beskrivningar av tjänsterna följer inte med — dem skriver du in själv, så att de blir precis som du vill ha dem.",
-      "privacyContact": "E-post och telefonnummer stryks innan texten skickas, så de fylls inte i automatiskt. Det är din integritet det handlar om — skriv in dem själv i byggaren.",
+      "privacyContact": "E-post och telefonnummer stryks innan texten skickas till AI:n. Vi hämtar dem ur filen här i din webbläsare i stället, så de skickas aldrig iväg. Kontrollera att de stämmer innan du sparar.",
       "orKeepFile": "Vill du hellre spara filen som den är, utan att göra om den till fält?",
       "orKeepFileLink": "Ladda upp den under Dina sparade CV",
       "wait": "Det tar ungefär en halv minut. Stäng inte fönstret.",
@@ -1515,7 +1515,8 @@
       "copy": "Kopiera texten",
       "downloadAsPdf": "Ladda ner som PDF",
       "restoreDraft": "Gå tillbaka till utkastet",
-      "copiedAria": "Brevet är kopierat."
+      "copiedAria": "Brevet är kopierat.",
+      "draftUtanText": "Jobbet är ifyllt, men brevet är inte skrivet än."
     },
     "templates": {
       "selectAria": "Välj brevmall",
@@ -5290,10 +5291,6 @@
       "changePassword": "Ändra lösenord",
       "currentPassword": "Nuvarande lösenord",
       "currentPasswordPlaceholder": "Ange ditt nuvarande lösenord",
-      "newPassword": "Nytt lösenord",
-      "newPasswordPlaceholder": "Ange nytt lösenord (minst 8 tecken)",
-      "confirmPassword": "Bekräfta nytt lösenord",
-      "confirmPasswordPlaceholder": "Upprepa det nya lösenordet",
       "updatePassword": "Uppdatera lösenord"
     },
     "programSelector": {
@@ -7035,7 +7032,8 @@
     "downloadArticle": "Ladda ner",
     "downloadPreparing": "Förbereder nedladdning…",
     "downloadReady": "Artikeln är nedladdad som PDF.",
-    "downloadFailed": "Kunde inte skapa PDF:en — försök igen om en stund."
+    "downloadFailed": "Kunde inte skapa PDF:en — försök igen om en stund.",
+    "baraSvenska": "Den här artikeln finns bara på svenska än. Välj ”Översätt sidan” i språkmenyn för att läsa den på ditt språk."
   },
   "linkedInOptimizer": {
     "title": "Din LinkedIn-profil",
@@ -9961,5 +9959,42 @@
     "myndighetsnamn": "Namn på myndigheter, till exempel Arbetsförmedlingen och Försäkringskassan, ska stå kvar på svenska. Använd det svenska namnet när du söker på nätet eller ringer.",
     "listEtikett": "Välj språk för översättningen",
     "original": "Svenska (utan översättning)"
+  },
+  "aterstall": {
+    "glomtLank": "Glömt lösenordet?",
+    "glomtRubrik": "Glömt lösenordet?",
+    "glomtIngress": "Skriv den e-postadress du loggar in med. Vi skickar en länk där du väljer ett nytt lösenord.",
+    "skickaLank": "Skicka länk",
+    "skickat": "Om det finns ett konto för {{epost}} har vi skickat en länk dit nu.",
+    "skickatTips": "Titta i skräpposten om mejlet inte kommer inom några minuter. Länken fungerar en gång och bara en kort tid.",
+    "ogiltigEpost": "Skriv en e-postadress, till exempel namn@exempel.se.",
+    "forManga": "För många försök. Vänta en stund och försök igen.",
+    "gickInte": "Det gick inte att skicka just nu. Försök igen om en stund, eller mejla support@jobin.se.",
+    "tillbakaTillLogin": "Tillbaka till inloggningen",
+    "nyttRubrik": "Välj ett nytt lösenord",
+    "kontrollerar": "Kontrollerar länken …",
+    "lankOgiltig": "Länken fungerar inte längre. Den kan ha använts redan eller vara för gammal.",
+    "nyLank": "Skicka en ny länk",
+    "nyttLosenord": "Nytt lösenord",
+    "bekrafta": "Skriv det nya lösenordet igen",
+    "reglerRubrik": "Lösenordet behöver",
+    "uppfyllt": "klart",
+    "ejUppfyllt": "inte klart än",
+    "olika": "Lösenorden är inte likadana.",
+    "uppfyllerInte": "Lösenordet uppfyller inte alla krav i listan.",
+    "sammaSomForut": "Välj ett annat lösenord än det du hade förut.",
+    "sparaFel": "Lösenordet kunde inte sparas. Försök igen.",
+    "sparaLosenord": "Spara lösenordet",
+    "klart": "Klart. Ditt nya lösenord är sparat och du är inloggad.",
+    "tillPortalen": "Gå till portalen",
+    "angeNuvarande": "Skriv ditt nuvarande lösenord.",
+    "nuvarandeFel": "Det nuvarande lösenordet stämmer inte.",
+    "bytt": "Lösenordet är bytt.",
+    "utanLosenord": "Du loggar in med Google och har inget lösenord hos oss. Vill du kunna logga in med e-post och lösenord skickar vi en länk där du väljer ett."
+  },
+  "uppläsning": {
+    "lyssna": "Lyssna",
+    "pausa": "Pausa",
+    "stoppa": "Sluta läsa upp"
   }
 }

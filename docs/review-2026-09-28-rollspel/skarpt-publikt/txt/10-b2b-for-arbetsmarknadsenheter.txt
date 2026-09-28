@@ -1,0 +1,145 @@
+Hoppa till innehållet
+Jobin
+Boka en visning
+Jobin
+En digital plattform för din arbetsmarknadsenhet
+
+Jobin är en portal för arbetssökande med en egen vy för dig som arbetar på en kommunal arbetsmarknadsenhet, i försörjningsstödet eller på en arbetsmarknadsförvaltning. Deltagarna får verktyg att söka jobb med, du får schemamallar, närvaro och en samlad bild av dem du handleder — och du kan se hela plattformen innan ni bestämmer er.
+
+Drift i EU
+WCAG 2.1 AA — vår ambition
+Boka en visning
+Vad deltagaren får
+
+Portalen är byggd för den som söker jobb, inte i första hand för administratören. Allt nedan är kostnadsfritt för deltagaren och kräver bara ett konto med e-post.
+
+CV-byggare med flera mallar och export till PDF
+Personligt brev anpassat efter en specifik annons
+Intervjuträning där man svarar med rösten och får skriftlig återkoppling
+Kompetensanalys mot ett konkret jobb eller yrke, kopplad till utbildningsvägar
+Jobbsökning mot Arbetsförmedlingens platsbank, med sparade sökningar
+Stöd för mående och energi vid sidan av sökandet, och en dagbok bara deltagaren själv ser
+
+Se alla verktyg deltagaren får
+
+Vad du som konsulent ser i /consultant
+
+Konsulentvyn är en enda samlad yta, inte flera system att hoppa mellan.
+
+En lista över dina deltagare, med en egen sida per person
+Schemamallar och en aktivitetskatalog för kommunens utbud: bygg en veckomall en gång och tillämpa den på en deltagare från ett startdatum, med lagens fyra aktivitetstyper och tid för eget jobbsökande
+Individuell plan per deltagare med veckomål i timmar och försörjningshinder, exporterbar som PDF till akten, och en veckovy där du markerar närvaro, giltig eller ogiltig frånvaro, sjukfrånvaro med läkarintyg och extern aktivitet
+Veckosaldo mot planen och deltagarens eget jobbsökande — beslut om nedsättning fattas av socialnämnden, aldrig av portalen
+Kvartalsunderlag till IVO per försörjningshinder, och en checklista för registrering i Arbetsförmedlingens Mina sidor för kommuner
+Organisation med kollegor och, för chefen, caseload per konsulent — bara tal, aldrig journal eller mående
+Mål och journalanteckningar kopplade till varje deltagare
+Meddelanden och bokade möten
+Praktikplatser, placeringar och en översiktlig analysvy
+Export av din egen data direkt under inställningar (GDPR-uttag)
+
+/consultant är portalens enda konsulentvy. Steg till arbete-spåret (STA) är en separat modul som för närvarande är avstängd, och har ingen egen konsulentyta i dagsläget.
+
+Personuppgifter och AI — så är läget
+
+Det här är statusen i skrivande stund, inte ett säljlöfte. Vi vill hellre säga för mycket här än för lite.
+
+Klart i dag
+Databas, inloggning och lagrade filer ligger hos Supabase i Irland (EU).
+Serverfunktionerna körs hos Vercel i Frankfurt (EU).
+AI-funktionerna kräver ett eget samtycke, funktion för funktion, innan något skickas — och går att stänga av helt.
+Använder en deltagare en AI-funktion behandlas den texten hos OpenRouter i USA.
+Pågår
+För organisationskonton (kommuner och leverantörer) är webbsökningen via Perplexity avstängd sedan 2026-09-12 — era deltagares frågor går bara till OpenRouters basmodell utan sökning. Fria konton kan fortfarande använda sökmodellen, vilket står i integritetspolicyn.
+Konsekvensbedömningen (DPIA) och AI Act-klassificeringen är interna utkast som ännu inte formellt godkänts av en personuppgiftsansvarig.
+Registret över personuppgiftsbehandling (Art. 30) finns och uppdateras löpande i takt med granskningar.
+Inloggning med kommunens Microsoft-konto (Entra ID) för konsulenter och chefer är beslutad och byggs härnäst; deltagare loggar in med e-post och lösenord. BankID erbjuds inte i dag.
+
+Läs hela integritetspolicyn
+
+Tillgänglighet
+
+WCAG 2.1 nivå AA är vårt uttalade mål, inte en uppnådd certifiering. Bedömningen hittills är en intern granskning — automatiserad testning kombinerad med manuell tangentbordstestning — inte en oberoende expertgranskning, och ingen test med riktig skärmläsare är ännu gjord.
+
+Läs hela tillgänglighetsredogörelsen
+
+Demokonton — påhittad kommun, återställs varje natt
+
+Logga in med uppgifterna nedan. Allt ni ändrar försvinner vid 01:00 varje natt, AI-funktionerna är avstängda och inga mejl kan skickas från demot.
+
+Hämta inloggningsuppgifterna
+
+Så kommer ni igång
+
+Fem steg från beslut till första planen. Tiderna är ungefärliga och bygger på pilotuppsättningen hösten 2026.
+
+Biträdesavtal 1–2 veckor, mest kommunens handläggning
+
+Vi skickar ett personuppgiftsbiträdesavtal med kommunen som ansvarig, i SKR:s struktur, med bilagor för behandling, underbiträden och åtgärder. Inga deltagare läggs in innan det är påskrivet.
+
+Organisation och chefskonto samma dag
+
+Vi lägger upp er organisation i Jobin och ett chefskonto till den som ska äga uppsättningen. Chefen ser sin organisation, sina konsulenter och deras deltagare under Inställningar.
+
+Kollegor 10 minuter
+
+Varje konsulent skapar ett konto på jobin.se. Chefen lägger sedan till dem på e-post under Inställningar → Din organisation, och kan när som helst ta bort någon eller lämna över deltagare mellan kollegor.
+
+Aktivitetskatalog och schemamall 30 minuter
+
+Under Resurser bygger ni kommunens utbud som en katalog (lagens fyra aktivitetstyper plus eget jobbsökande) och en veckomall som kan tillämpas på många deltagare.
+
+Första deltagaren och planen 10 minuter per deltagare
+
+Konsulenten bjuder in deltagaren via e-post, deltagaren skapar sitt konto och samtycker till kopplingen, och konsulenten lägger en individuell plan från mallen med veckomål i timmar och försörjningshinder. Närvaron markeras i veckovyn, planen exporteras som PDF till akten.
+
+Vanliga frågor
+Är det här en färdig upphandlad tjänst?
+
+Nej. Det finns inga referenskunder och ingen oberoende granskning att hänvisa till i dagsläget — se avsnittet om personuppgifter ovan för vad som faktiskt är klart. Priset står nedan.
+
+Vad kostar det?
+
+Organisationslicens 2 990 kr per månad plus 290 kr per aktiv konsulent, exklusive moms. Deltagaren betalar ingenting. Inför aktivitetskravet erbjuder vi kommuner en kostnadsfri pilot hösten 2026 — hör av dig så går vi igenom vad er verksamhet behöver. Beloppen ligger under gränsen för direktupphandling.
+
+Hur hjälper portalen oss med aktivitetskravet från oktober 2026?
+
+Konsulenten bygger schemamallar (eller hämtar ur kommunens aktivitetskatalog), tillämpar dem på deltagaren som en individuell plan med veckomål i timmar, markerar närvaro per pass med giltig eller ogiltig frånvaro, och får ut planen som PDF till akten och ett kvartalsunderlag per försörjningshinder till IVO-rapporten. Deltagaren ser sin vecka i mobilen, checkar in själv och ser sitt eget jobbsökande bredvid. Portalen fattar inga beslut om bistånd och innehåller ingen AI i kedjan schema, närvaro och underlag — det är socialnämndens beslut och kommunens verksamhetssystem som gäller. Det finns inget API mot IVO eller Arbetsförmedlingen; anvisningen registreras för hand i AF:s Mina sidor för kommuner och bockas av i portalen.
+
+Kan vi se plattformen innan vi bestämmer oss?
+
+Ja, direkt och utan att boka något. Inloggningsuppgifterna till demot ligger på jobin.se/demo/ — ett chefskonto i en påhittad kommun med fem fiktiva deltagare, en aktivitetsplan med närvaro, mål, journal och möten, plus ett deltagarkonto som alltid har ett pass i dag och i morgon. Allt ni ändrar återställs varje natt, AI-funktionerna är avstängda i demot och inga mejl kan skickas därifrån. Vill ni hellre ha en visning med oss så bokar ni den nedan.
+
+Behöver deltagaren installera något?
+
+Nej, portalen körs i webbläsaren. Den fungerar på mobil, surfplatta och dator.
+
+Kan vi stänga av AI-funktionerna för våra deltagare?
+
+Varje AI-funktion kräver ett eget samtycke innan den används, och portalens grundfunktioner (CV, jobbsökning, dagbok) fungerar utan AI. Se avsnittet om personuppgifter ovan för vilken leverantör som behandlar vad.
+
+Vem är personuppgiftsansvarig när en kommun använder portalen?
+
+Kommunen. Jobin är personuppgiftsbiträde enligt ett biträdesavtal som tecknas innan första deltagaren läggs in, med underbiträdena listade (Supabase i Irland, Vercel i Frankfurt, OpenRouter i USA för AI-funktionerna, Sentry, Resend). AI-funktionerna kan stängas av för hela organisationen.
+
+Vem driver Jobin?
+
+Glänne & Söner, en enskild firma i Sverige. Innehavare är arbetskonsulenten Mikael Glännström, och det finns inget större bolag bakom. Därför är frågan om vad som händer med er data rimlig att ställa. Ni ska inte behöva oss för att få ut den. Redan i dag kan varje konsulent under Inställningar ladda ner sina mål, journalanteckningar, möten, meddelanden och placeringar för sina aktiva deltagare som en fil. Deltagarlistan går att ta ut som CSV, aktivitetsplanen som PDF per deltagare och kvartalsunderlaget till IVO som en fil. Deltagaren kan själv ladda ner sina egna uppgifter. Någon samlad export av hela organisationen med en knapp finns inte i dag. I det biträdesavtal vi föreslår står att vi, när avtalet upphör av vilket skäl det än är, raderar kommunens personuppgifter eller lämnar tillbaka dem i ett maskinläsbart format och sedan raderar dem, efter kommunens val. Mer om vem vi är står på jobin.se/om-oss/.
+
+Hur fungerar drift och support?
+
+Det finns inget formellt SLA i dag, alltså ingen avtalad tillgänglighet och ingen garanterad svarstid, och vi skriver inte in någon här. Support sker via mejl till support@jobin.se och besvaras av samma person som bygger portalen. Driften ligger hos Supabase i Irland och Vercel i Frankfurt. Behöver er upphandling en avtalad svarstid eller tillgänglighetsnivå, säg det före piloten, så svarar vi ärligt på om vi kan åta oss den.
+
+Läs mer
+Aktivitetskravet för försörjningsstöd – vad gäller för dig
+Vad aktivitetskravet innebär, vem som är undantagen, vad som räknas som aktivitet, vad som händer om du… · 5 min
+Vill ni se det här på riktigt?
+
+Prova demokontot själv — som konsulent (demo@jobin.se) eller som deltagare (anna.exempel@example.com); uppgifterna står i rutan Demokonton ovan. En påhittad kommun med fem fiktiva deltagare, återställd varje natt. Eller boka en visning så går vi igenom det tillsammans.
+
+Prova demokontot Boka en visning
+
+Mår du dåligt? Du behöver inte vara i akut kris för att ringa, och du kan vara anonym. Självmordslinjen 901 01 svarar dygnet runt. Sjukvårdsrådgivningen når du på 1177. Är det fara för liv — ring 112.
+
+Jobin — stöd och verktyg för dig som söker jobb. Alla guider · Alla verktyg
+
+Integritet · Tillgänglighet · Om oss

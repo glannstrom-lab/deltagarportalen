@@ -261,6 +261,10 @@ export default function Login() {
                   {errors.password}
                 </p>
               )}
+              {/* PUB-1 (2026-09-28): det fanns ingen väg tillbaka för den som glömt lösenordet. */}
+              <p className="mt-1 text-right">
+                <Link to="/glomt-losenord" className="text-sm text-[var(--c-text)] underline underline-offset-2 inline-flex items-center min-h-[44px]">{t('aterstall.glomtLank')}</Link>
+              </p>
             </div>
 
             {/* Submit */}

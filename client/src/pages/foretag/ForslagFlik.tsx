@@ -18,6 +18,7 @@ import { foretagApi, formateraDatum, fulltNamn, type Forslag } from '@/services/
 import { FelRuta, Laddar } from '@/components/foretag/Tillstand'
 import { ForslagDetalj } from '@/components/foretag/ForslagDetalj'
 import { SvarDialog } from '@/components/foretag/SvarDialog'
+import { NOTIFICATIONS_KEY } from '@/hooks/useNotifications'
 import { CHIP_KLASS, PLACERING_TYP_LABEL, SVAR_KLASS, SVAR_LABEL, foretagNycklar } from '@/components/foretag/foretagEtiketter'
 
 interface Props {
@@ -41,7 +42,11 @@ export function ForslagFlik({ org }: Props) {
     foretagApi.markeraOppnad(valt.id).catch((e: unknown) => {
       setOppnadFel((prev) => ({ ...prev, [valt.id]: e }))
     })
-  }, [valt])
+    // SL3: förslaget är sett — dess notis är läst. Ett fel här är bara klockan.
+    foretagApi.lasNotiser(valt.id, 'foretag_forslag')
+      .then(() => queryClient.invalidateQueries({ queryKey: NOTIFICATIONS_KEY }))
+      .catch(() => {})
+  }, [valt, queryClient])
 
   const svara = useMutation({
     mutationFn: ({ id, svar, meddelande }: { id: string; svar: 'interested' | 'declined'; meddelande: string }) =>

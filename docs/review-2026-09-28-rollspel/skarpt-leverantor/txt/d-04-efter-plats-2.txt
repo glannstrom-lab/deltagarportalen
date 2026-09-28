@@ -1,0 +1,93 @@
+Du är nu på Jobin — verktyg och stöd för dig som söker jobb
+Hoppa till huvudinnehåll
+Hoppa till navigation
+jobin.se
+Nordfrakt Logistik (demo)
+4
+A
+
+Visa som: du ser Jobin som foretag.demo@example.com
+
+Avsluta och logga ut
+
+Demo — påhittade personer — Det här är en demo med påhittade personer. Allt du ändrar återställs varje natt. Ingen AI och inga mejl går ut härifrån.
+
+Översikt
+Våra platser
+Förslag
+Pågående
+Meddelanden
+Stöd och regler
+Om företaget
+Nordfrakt Logistik (demo)
+
+Företagskonto
+
+Översikt
+Våra platser
+Förslag
+Pågående
+Meddelanden
+Stöd och regler
+Om företaget
+Våra platser
+
+Det ni kan erbjuda — vad platsen kräver och vad ni kan ge. Konsulenterna matchar mot det; ni ser aldrig en lista över personer.
+
+Lägg till en plats
+SL-skarpt Kontor 2026-09-28
+
+Arbetsträning
+
+Öppen
+
+Enklare kontorsuppgifter, registrering. Skarpt funktionstest.
+
+Ändra
+Ta bort
+SL-skarpt Lager 2026-09-28
+
+Praktik
+
+Öppen
+
+Lagerarbete, plockning och packning. Skarpt funktionstest av leverantörsflödet.
+
+Ändra
+Ta bort
+Lagermedarbetare, dagtid
+
+Praktik
+
+Öppen
+
+Plock, pack och inleverans. Vi börjar med enkla plockrundor och bygger på.
+
+Krav
+30 h/vecka, lyft, stående, handledning: hög, Svenska i tal för säkerhetsinstruktioner
+Handledning
+Hög — Handledaren Ali finns på plats hela dagen första två veckorna, sedan vid behov.
+Tider
+Måndag–fredag 07:00–13:00
+Kontakt
+Ali Demo · 070-000 00 00 · foretag.demo@example.com
+Ändra
+Ta bort
+Kontorsassistent, deltid
+
+Arbetsträning
+
+Tillsatt
+
+Orderregistrering, kundmejl och enklare fakturering i vårt affärssystem.
+
+Krav
+20 h/vecka, handledning: mellan
+Handledning
+Mellan — Handledning en timme om dagen, resten självständigt arbete med checklista.
+Tider
+Tisdag–torsdag 09:00–15:30
+Kontakt
+Ali Demo · foretag.demo@example.com
+Ändra
+Ta bort

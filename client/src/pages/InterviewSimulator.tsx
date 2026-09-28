@@ -466,6 +466,8 @@ function InterviewSimulatorInner() {
   // Skriv utkastet vid varje ändring som är värd att rädda.
   useEffect(() => {
     if (!harStartat) return
+    // SK1 (skarpt test 2026-09-28): ett avslutat pass är sparat som session — inget utkast.
+    if (visarSammanfattning) return
     if (historik.length === 0 && !anvandarSvar.trim()) return
     sparaSimulatorUtkast({
       roll,
@@ -476,7 +478,7 @@ function InterviewSimulatorInner() {
       anvandarSvar,
       antalFragor,
     })
-  }, [harStartat, roll, foretag, selectedCategory, historik, nuvarandeFraga, anvandarSvar, antalFragor])
+  }, [harStartat, visarSammanfattning, roll, foretag, selectedCategory, historik, nuvarandeFraga, anvandarSvar, antalFragor])
 
   // Check for speech recognition support
   useEffect(() => {
@@ -887,6 +889,8 @@ function InterviewSimulatorInner() {
         avgRating: snitt !== null ? Number(snitt) : 0,
       })
       setTidigareOvningar(getSimulatorSessions())
+      // SK1: passet är sparat — utkastet ska inte erbjudas som "inte klart" nästa gång.
+      rensaSimulatorUtkast()
       setVisarSammanfattning(true)
       void hamtaAiSammanfattning(historik)
     } else {

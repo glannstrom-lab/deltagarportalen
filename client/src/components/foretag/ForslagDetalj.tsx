@@ -157,8 +157,10 @@ export function ForslagDetalj({ forslag: f, oppnadFel, onSvara }: Props) {
               <p className="whitespace-pre-line text-sm text-stone-800 dark:text-stone-100">{f.participant_summary}</p>
             </Avsnitt>
           )}
-          {f.participant_skills && (
-            <Avsnitt rubrik="Kompetenser"><Kompetenser lista={f.participant_skills} /></Avsnitt>
+          {/* SL2 (skarpt test 2026-09-28): vyn ger NULL när deltagaren delar kompetenser men har
+              inga (jsonb_agg över noll rader) — då försvann rubriken. Delningen styr, inte värdet. */}
+          {(f.show_skills || f.participant_skills) && (
+            <Avsnitt rubrik="Kompetenser"><Kompetenser lista={f.participant_skills ?? []} /></Avsnitt>
           )}
           {f.participant_experience != null && (
             <Avsnitt rubrik="Erfarenhet"><CvLista varde={f.participant_experience} /></Avsnitt>

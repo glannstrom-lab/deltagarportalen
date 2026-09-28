@@ -58,6 +58,9 @@ const Foretag = lazy(() => import('./pages/foretag/Foretag'))
 const VisaSom = lazy(() => import('./pages/VisaSom'))
 const SuperAdminPanel = lazy(() => import('./components/admin/SuperAdminPanel'))
 const InviteHandler = lazy(() => import('./components/auth/InviteHandler'))
+// PUB-1 (skarpt test 2026-09-28): glömt lösenord — fanns inte alls.
+const GlomtLosenord = lazy(() => import('./pages/GlomtLosenord'))
+const NyttLosenord = lazy(() => import('./pages/NyttLosenord'))
 // New feature pages
 const Salary = lazy(() => import('./pages/Salary'))
 const International = lazy(() => import('./pages/International'))
@@ -366,6 +369,13 @@ function App() {
             <LazyRoute><Register /></LazyRoute>
           </PublicRoute>
         } />
+        <Route path="/glomt-losenord" element={
+          <PublicRoute redirectTo="/">
+            <LazyRoute><GlomtLosenord /></LazyRoute>
+          </PublicRoute>
+        } />
+        {/* Inte PublicRoute: länken loggar in (verifyOtp) och sidan ska stå kvar tills lösenordet är valt. */}
+        <Route path="/nytt-losenord" element={<LazyRoute><NyttLosenord /></LazyRoute>} />
         <Route path="/invite/:code" element={
           <LazyRoute>
             <InviteHandler />

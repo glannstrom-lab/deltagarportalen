@@ -1,0 +1,20 @@
+[
+  {
+    "url": "https://www.jobin.se/",
+    "namn": "start",
+    "domLoadTid": 2972,
+    "lcp": 3944
+  },
+  {
+    "url": "https://www.jobin.se/guider/a-kassa-sa-fungerar-det/",
+    "namn": "guide",
+    "domLoadTid": 541,
+    "lcp": 396
+  },
+  {
+    "url": "https://www.jobin.se/#/login",
+    "namn": "login",
+    "domLoadTid": 2810,
+    "lcp": 3620
+  }
+]

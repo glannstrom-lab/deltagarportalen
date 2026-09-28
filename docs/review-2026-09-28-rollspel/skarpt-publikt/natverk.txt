@@ -1,0 +1,2 @@
+2026-09-28T21:18:27.818Z [login] POST 400 https://odcvrdkvzyrbdzvdrhkz.supabase.co/auth/v1/token?grant_type=password
+KONSOLFEL [login]: Failed to load resource: the server responded with a status of 400 ()

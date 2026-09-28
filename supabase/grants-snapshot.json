@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-28T19:42:39.651Z",
+  "generatedAt": "2026-09-28T22:19:00.460Z",
   "functions": [
     {
       "name": "accept_consultant_request",
@@ -557,6 +557,13 @@
     {
       "name": "mina_mottagna_underlag",
       "signature": "mina_mottagna_underlag()",
+      "definer": true,
+      "anon": false,
+      "authenticated": true
+    },
+    {
+      "name": "mottaget_underlag_paket",
+      "signature": "mottaget_underlag_paket(uuid)",
       "definer": true,
       "anon": false,
       "authenticated": true

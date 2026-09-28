@@ -77,8 +77,11 @@ const RLS_UNDANTAG = {}
  *            2026-09-28, KH1–KH4). Ingen tar ett användar-id; båda filtrerar på
  *            `recipient_user_id = auth.uid()`. Definer i stället för nya RLS-policyer på
  *            profiles/activity_sessions, så handläggaren inte får läsrätt på deltagarens konto.
+ *   24 → 25  2026-09-29, SKK5: `mottaget_underlag_paket(id)` — handläggaren laddar ner
+ *            underlagspaketets PDF i efterhand. Tar ett underlags-id, inget användar-id, och
+ *            kräver `recipient_user_id = auth.uid()` (annars 42501).
  */
-const AUTH_TAK = 24
+const AUTH_TAK = 25
 
 const snapshot = JSON.parse(fs.readFileSync(SNAPSHOT, 'utf8'))
 const definerFunktioner = snapshot.functions.filter((f) => f.definer)

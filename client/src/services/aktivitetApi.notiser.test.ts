@@ -11,11 +11,13 @@ const rad = {
   created_at: '', updated_at: '',
 }
 let svar: { data: unknown; error: unknown } = { data: rad, error: null }
+// SKK2: markAttendance läser passets utfall FÖRE uppdateringen (maybeSingle).
+let fore: { data: unknown; error: unknown } = { data: { ...rad, attendance: null }, error: null }
 function kedja(): Record<string, unknown> {
   const k: Record<string, unknown> = {}
   for (const m of ['update', 'insert', 'delete', 'select', 'eq', 'gte', 'lte', 'order']) k[m] = vi.fn(() => k)
   k.single = vi.fn(async () => svar)
-  k.maybeSingle = vi.fn(async () => svar)
+  k.maybeSingle = vi.fn(async () => fore)
   return k
 }
 const from = vi.fn((_tabell: string) => kedja())
@@ -31,9 +33,16 @@ vi.mock('./aktivitetNotiser', () => ({
 import { aktivitetsplanApi } from './aktivitetApi'
 import { notisOgiltigFranvaro, notisPassAndrat } from './aktivitetNotiser'
 
-beforeEach(() => { vi.clearAllMocks(); svar = { data: rad, error: null } })
+beforeEach(() => { vi.clearAllMocks(); svar = { data: rad, error: null }; fore = { data: { ...rad, attendance: null }, error: null } })
 
 describe('aktivitetApi × notiser', () => {
+  it('SKK2: samma ogiltiga frånvaro en gång till ger ingen ny notis', async () => {
+    fore = { data: { ...rad, attendance: 'absent_invalid' }, error: null }
+    svar = { data: { ...rad, attendance: 'absent_invalid' }, error: null }
+    await aktivitetsplanApi.markAttendance('s1', { attendance: 'absent_invalid', note: 'ny anteckning' })
+    expect(notisOgiltigFranvaro).not.toHaveBeenCalled()
+  })
+
   it('ogiltig frånvaro ger en frånvaronotis till deltagaren', async () => {
     svar = { data: { ...rad, attendance: 'absent_invalid' }, error: null }
     const s = await aktivitetsplanApi.markAttendance('s1', { attendance: 'absent_invalid' })

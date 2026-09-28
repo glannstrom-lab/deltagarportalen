@@ -1,0 +1,1 @@
+2026-09-28T21:55:23.232Z POST 403 https://odcvrdkvzyrbdzvdrhkz.supabase.co/auth/v1/logout?scope=global

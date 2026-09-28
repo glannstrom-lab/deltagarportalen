@@ -1,0 +1,251 @@
+Du är nu på Konsultportal
+Hoppa till huvudinnehåll
+Hoppa till navigation
+jobin.se
+Översikt
+Deltagare
+Platser
+Rapporter
+Kommunikation
+Sök …
+Ctrl K
+5
+D
+
+Demo — påhittade personer — Det här är en demo med påhittade personer. Allt du ändrar återställs varje natt. Ingen AI och inga mejl går ut härifrån.
+
+Konsultportal
+
+Hantera och följ upp dina deltagare
+
+Översikt
+Deltagare
+Platser
+Rapporter
+Kommunikation
+Resurser
+Inställningar
+
+Nyckeltalen, målen, placeringarna och konsultrapporten gäller dina egna deltagare. IVO-underlaget, nämndrapporten, månadsunderlagen och aktivitetsloggen räknar hela Demokommun (påhittade personer). Varje konsulents antal deltagare finns under Inställningar → Din organisation.
+
+Senaste veckan
+Senaste månaden
+Senaste kvartalet
+Senaste året
+CSV
+PDF-rapport
+
+Totalt deltagare
+
+5
+
+5 aktiva
+
+CV-komplettering
+
+60%
+
+Har komplett CV
+
+Genomsnittlig placeringstid
+
+—
+
+Inga placeringar i perioden.
+
+Placeringar
+
+—
+
+Inga placeringar än
+
+Insikter
+
+Fasta regler på deltagardata — ingen AI
+
+Insikter (0)
+Nyckeltal
+Risker (2)
+
+Inga insikter just nu
+
+Reglerna tittar på dagar sedan profilen ändrades, CV-poäng, sparade jobb och mål med deadline. Inget av det sticker ut — det säger inte att alla deltagare mår bra.
+
+Se 2 deltagare med riskfaktorer
+Framsteg över tid
+
+Genomsnittlig CV-poäng per månad
+
+Jobbsök aktivitet
+Sep
+0
+Nyckeltal
+
+Översikt av viktiga mätvärden
+
+60%
+
+Andel med CV
+
+0%
+
+Måluppfyllelse
+
+100%
+
+Engagemang
+
+Statusfördelning
+
+Fördelning av deltagare per status
+
+Aktiva
+5 (100%)
+Inaktiva
+0 (0%)
+Avslutade
+0 (0%)
+Vanligaste målkategorierna
+
+Mest frekventa måltyper bland deltagare
+
+1
+CV-förbättring
+1 mål
+2
+Jobbansökningar
+1 mål
+3
+Kompetensutveckling
+1 mål
+4
+Övrigt
+1 mål
+Riskerar att fastna
+
+Deltagare med minst två varningssignaler
+
+Inga deltagare visar flera varningssignaler just nu.
+
+Insatseffekt
+
+Aktivitet hos deltagare med respektive utan möte senaste 30 dagarna
+
+För litet underlag för en meningsfull jämförelse — det behövs minst 3 aktiva deltagare i varje grupp (med och utan möte senaste 30 dagarna).
+
+Kohortanalys
+
+Jämförelse mellan deltagargrupper baserat på startdatum
+
+KOHORT	DELTAGARE	CV-KOMPLETT	PLACERADE	SNITT TID (DAGAR)
+Q3 2026	5	60%	0%	-
+Placeringar
+
+Registrerade placeringar och deras uppföljning (3/6 månader)
+
+Inga placeringar registrerade än. En placering registreras från deltagarens sida: öppna deltagaren under Deltagare och välj "Registrera placering" bredvid "Boka möte".
+
+Praktik och arbetsträning räknas inte som placeringar här; de finns under Platser.
+
+Aktivitetskravet — kvartalsunderlag till IVO
+
+Anvisade planer, ogiltig frånvaro och lämnat underlag, per försörjningshinder.
+
+Omfattar hela Demokommun (påhittade personer) — alla planer, även kollegornas deltagare.
+
+År
+2025
+2026
+2027
+Kvartal
+Q1
+Q2
+Q3
+Q4
+
+1 juli 2026 – 30 september 2026
+
+FÖRSÖRJNINGSHINDER	ANVISADE	MED OGILTIG FRÅNVARO	UNDERLAG LÄMNAT
+Arbetslös	3	2	2
+Sjukskriven med läkarintyg	1	0	0
+Språkhinder	1	0	0
+Ej angivet	1	1	0
+Summa	6	3	2
+
+Underlaget är en räkning ur portalen. Beslut om nekande/nedsättning registreras i kommunens verksamhetssystem och rapporteras till IVO via deras e-tjänst (öppnar januari 2027). Det finns inget API mot IVO eller Arbetsförmedlingen.
+
+Ladda ner som TSV
+Månadsunderlag per stödmånad
+
+Stödet prövas per kalendermånad. Underlaget visar den valda månaden för en deltagare: vecka för vecka med veckonummer, och varje pass med utfall, intyg, anteckning och deltagarens förklaring. En PDF att lämna till handläggaren — inget skickas härifrån.
+
+Stödmånad
+september 2026
+augusti 2026
+juli 2026
+juni 2026
+maj 2026
+april 2026
+mars 2026
+februari 2026
+januari 2026
+december 2025
+november 2025
+oktober 2025
+september 2025
+Deltagare
+Välj deltagare
+Anna Exempel · plan från 21 september 2026
+Deltagare hos Kim Kollega (5555) · plan från 14 september 2026
+Erik Testsson · plan från 21 september 2026
+Fatima Exempel · plan från 14 september 2026
+Lisa Fiktiv · plan från 21 september 2026
+Omar Demo · plan från 28 september 2026
+Ladda ner månadsunderlag (PDF)
+AF-checklista: anvisning registrerad i Mina sidor för kommuner
+
+Kommunen ska registrera varje anvisning hos Arbetsförmedlingen. Bocken sparas på planen med dagens datum — inget API finns, registreringen görs för hand.
+
+Omar Demo · plan från 28 september 2026
+Lisa Fiktiv · plan från 21 september 2026
+Anna Exempel · plan från 21 september 2026
+Erik Testsson · plan från 21 september 2026
+Deltagare hos Kim Kollega (5555) · plan från 14 september 2026
+Fatima Exempel · plan från 14 september 2026
+Generera PDF-rapport
+
+Anpassa rapportinnehåll
+
+Rapporttyp
+Konsultrapport
+Nämndrapport (kvartal)
+
+Omfattar dina egna deltagare.
+
+Rapporttitel(valfritt)
+Tidsperiod
+Senaste månad
+
+Perioden är den som redan är vald i vyn du öppnade rapporten från.
+
+Rapportspråk
+Svenska
+English
+Inkludera sektioner
+
+Översikt & Nyckeltal
+
+Obligatorisk
+
+Sammanfattning, statusfördelning och framsteg
+
+Kohortanalys
+
+Jämförelse mellan deltagargrupper
+
+Deltagardetaljer
+
+Individuell information för varje deltagare
+
+Avbryt
+Förhandsgranska

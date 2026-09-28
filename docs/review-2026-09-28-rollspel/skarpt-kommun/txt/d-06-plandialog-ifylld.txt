@@ -1,0 +1,113 @@
+Hoppa till huvudinnehåll
+Hoppa till navigation
+jobin.se
+Översikt
+Deltagare
+Platser
+Rapporter
+Kommunikation
+Sök …
+Ctrl K
+3
+D
+
+Demo — påhittade personer — Det här är en demo med påhittade personer. Allt du ändrar återställs varje natt. Ingen AI och inga mejl går ut härifrån.
+
+Konsultportal
+
+Hantera och följ upp dina deltagare
+
+Översikt
+Deltagare
+Platser
+Rapporter
+Kommunikation
+Resurser
+Inställningar
+Tillbaka till deltagare
+OD
+Omar Demo
+omar.demo@example.com
+Aktiv
+Boka möte
+Registrera placering
+
+58%
+
+CV-poäng
+
+1
+
+Sparade jobb
+
+1
+
+Aktiva mål
+
+3 dagar sedan
+
+Senaste kontakt
+
+loggad kontakt
+
+Översikt
+Aktivitet
+Mål
+Journal
+Tidslinje
+Ingen aktivitetsplan än
+
+Tillämpa en schemamall så får Omar Demo ett veckoschema och du kan följa närvaron.
+
+Tillämpa schemamall
+Tillämpa schemamall
+
+Individuell plan för Omar Demo
+
+Schemamall
+Demomall: jobbsökning + motivation · 11 h/vecka
+Praktik + jobbsökarträff · 5 h/vecka
+Startdatum
+Slutdatum
+
+Förslag: 12 veckor
+
+Veckomål
+
+Lagen: högst 40 timmar per vecka, 10 timmar mindre vid barn under 8 år, proportionellt lägre vid deltidsarbete.
+
+Barn under 8 år i hushållet
+Deltidsarbete, timmar per vecka
+Veckomål, timmar
+
+Förslag enligt lagen: 40 h
+
+Motivering till avvikelsen
+
+Krävs när målet avviker från förslaget. Står med i planen.
+
+Tid för eget jobbsökande, h/vecka
+
+Ska framgå av planen. Räknas inte som anvisad aktivitet.
+
+Beslutsdatum
+Försörjningshinder (för IVO-underlaget)
+Inte angivet
+Arbetslös
+Sjukskriven med läkarintyg
+Sjuk- eller aktivitetsersättning
+Arbetshinder, sociala skäl
+Föräldraledig
+Arbetar deltid
+Språkhinder
+Utan försörjningshinder
+Annat
+
+Kategori enligt Socialstyrelsens register. Valfritt, går att ändra på planen efteråt.
+
+Plan i text
+
+48 pass genereras ur "Demomall: jobbsökning + motivation" mellan 2026-09-28 och 2026-12-20. Passen går att ändra ett och ett efteråt.
+
+Avbryt
+Skapa plan

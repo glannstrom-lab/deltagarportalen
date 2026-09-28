@@ -64,6 +64,8 @@ export interface EnhancedArticle {
   title: string
   summary: string
   content: string
+  /** Språket brödtexten FAKTISKT har: 'en' bara när en engelsk översättning finns och visas (SK3/NY4). */
+  contentSprak?: 'sv' | 'en'
   category: string
   subcategory?: string
   tags: string[]

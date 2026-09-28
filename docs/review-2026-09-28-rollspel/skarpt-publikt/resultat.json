@@ -1,0 +1,99 @@
+{
+  "cookieBannerSynlig": true,
+  "cookieLocalStorage": {
+    "consent": null,
+    "prefs": null
+  },
+  "cookieBannerEfterReload": true,
+  "h1_for-rusta-och-matcha": "Jobin för dig som är leverantör inom Rusta och matcha",
+  "h1_for-arbetsmarknadsenheter": "En digital plattform för din arbetsmarknadsenhet",
+  "h1_for-arbetsgivare": "Ni ser personen först när hen själv sagt ja",
+  "h1_for-dig-som": "För dig som",
+  "h1_om-oss": "Om Jobin",
+  "prisSektionSynlig": true,
+  "legal_privacy_langd": 7581,
+  "legal_terms_langd": 4738,
+  "legal_tillganglighet_langd": 6978,
+  "legal_ai-policy_langd": 3491,
+  "fyrahundrafyra_slutlig_url": "https://www.jobin.se/#/",
+  "antalGuideLankarPaIndex": 293,
+  "guide_1": {
+    "vag": "/guider/bostadsbidrag-och-boendekostnad/",
+    "h1": "Bostadsbidrag och boendekostnad – så funkar det",
+    "interna": 6,
+    "ctaHref": "https://www.jobin.se/#/job-search"
+  },
+  "guide_2": {
+    "vag": "/guider/latt-svenska-soka-jobb/",
+    "h1": "Hur söker man jobb?",
+    "interna": 5,
+    "ctaHref": "https://www.jobin.se/#/job-search"
+  },
+  "guide_3": {
+    "vag": "/guider/kompetensportfolj/",
+    "h1": "Bygg en kompetensportfölj som imponerar",
+    "interna": 5,
+    "ctaHref": "https://www.jobin.se/#/job-search"
+  },
+  "guide_4": {
+    "vag": "/guider/lattlast/",
+    "h1": "Söka jobb — på lätt svenska",
+    "interna": 51,
+    "ctaHref": null
+  },
+  "guide_5": {
+    "vag": "/guider/andra-intervjun/",
+    "h1": "Andra intervjun – vad som är annorlunda den här gången",
+    "interna": 11,
+    "ctaHref": "https://www.jobin.se/#/interview-simulator"
+  },
+  "guide_6": {
+    "vag": "/guider/work-life-balance-guide/",
+    "h1": "Skapa balans mellan arbete och privatliv",
+    "interna": 5,
+    "ctaHref": "https://www.jobin.se/#/wellness"
+  },
+  "guide_7": {
+    "vag": "/guider/fylla-i-en-digital-ansokan/",
+    "h1": "Fylla i en digital jobbansökan – steg för steg",
+    "interna": 8,
+    "ctaHref": "https://www.jobin.se/#/cv"
+  },
+  "guide_8": {
+    "vag": "/guider/validering-av-yrkeskunskaper/",
+    "h1": "Validering av yrkeskunskaper – få det du kan bedömt",
+    "interna": 7,
+    "ctaHref": "https://www.jobin.se/#/skills-gap-analysis"
+  },
+  "guide_9": {
+    "vag": "/guider/motivation-jobbsokning/",
+    "h1": "Behåll motivationen under en lång jobbsökning",
+    "interna": 5,
+    "ctaHref": "https://www.jobin.se/#/wellness"
+  },
+  "guide_10": {
+    "vag": "/guider/aktivitetsrapport-guide/",
+    "h1": "Aktivitetsrapport till Arbetsförmedlingen – så gör du",
+    "interna": 5,
+    "ctaHref": "https://www.jobin.se/#/job-search"
+  },
+  "ctaHrefPaGuide": "https://www.jobin.se/#/job-search",
+  "ctaSlutligUrl": "https://www.jobin.se/#/register?returnTo=%2Fjob-search",
+  "harGlomtLosenordLank": false,
+  "googleKnappFinns": true,
+  "felLosenordMeddelande": "Fel e-post eller lösenord",
+  "fokusEfterFel": {
+    "tag": "BODY",
+    "id": "",
+    "role": null
+  },
+  "landmarks": {
+    "skipLink": 0,
+    "main": 0,
+    "nav": 0
+  },
+  "registerValideringsfel": [
+    "Ogiltig e-postadress",
+    "Lösenordet måste vara minst 12 tecken"
+  ]
+}

@@ -1,0 +1,195 @@
+Hoppa till huvudinnehåll
+Hoppa till navigation
+jobin.se
+Översikt
+Deltagare
+Platser
+Rapporter
+Kommunikation
+Sök …
+Ctrl K
+8
+D
+
+Demo — påhittade personer — Det här är en demo med påhittade personer. Allt du ändrar återställs varje natt. Ingen AI och inga mejl går ut härifrån.
+
+Konsultportal
+
+Hantera och följ upp dina deltagare
+
+Översikt
+Deltagare
+Platser
+Rapporter
+Kommunikation
+Resurser
+Inställningar
+
+Nyckeltalen, målen, placeringarna och konsultrapporten gäller dina egna deltagare. IVO-underlaget, nämndrapporten, månadsunderlagen och aktivitetsloggen räknar hela Demoleverantör (påhittade personer). Varje konsulents antal deltagare finns under Inställningar → Din organisation.
+
+Senaste veckan
+Senaste månaden
+Senaste kvartalet
+Senaste året
+CSV
+PDF-rapport
+
+Totalt deltagare
+
+4
+
+4 aktiva
+
+CV-komplettering
+
+100%
+
+Har komplett CV
+
+Genomsnittlig placeringstid
+
+70 dagar
+
+Från start till jobb (från kopplingen till jobbets startdatum). Räknat på 1 placering; 1 placering saknar kopplingsdatum eller startdatum, eller startade före kopplingen.
+
+Placeringar
+
+2
+
+50% placeringsgrad
+
+Insikter
+
+Fasta regler på deltagardata — ingen AI
+
+Insikter (1)
+Nyckeltal
+Risker (2)
+Medel
+44%
+Jonas Demo har ett CV som behöver förbättras
+
+CV-poäng är 44%. Hjälp till med att förbättra nyckelområden.
+
+Se CV-analys
+Framsteg över tid
+
+Genomsnittlig CV-poäng per månad
+
+Jobbsök aktivitet
+Sep
+0
+Nyckeltal
+
+Översikt av viktiga mätvärden
+
+100%
+
+Andel med CV
+
+0%
+
+Måluppfyllelse
+
+100%
+
+Engagemang
+
+Statusfördelning
+
+Fördelning av deltagare per status
+
+Aktiva
+4 (100%)
+Inaktiva
+0 (0%)
+Avslutade
+0 (0%)
+Vanligaste målkategorierna
+
+Mest frekventa måltyper bland deltagare
+
+1
+Övrigt
+2 mål
+Riskerar att fastna
+
+Deltagare med minst två varningssignaler
+
+Inga deltagare visar flera varningssignaler just nu.
+
+Insatseffekt
+
+Aktivitet hos deltagare med respektive utan möte senaste 30 dagarna
+
+För litet underlag för en meningsfull jämförelse — det behövs minst 3 aktiva deltagare i varje grupp (med och utan möte senaste 30 dagarna).
+
+Kohortanalys
+
+Jämförelse mellan deltagargrupper baserat på startdatum
+
+KOHORT	DELTAGARE	CV-KOMPLETT	PLACERADE	SNITT TID (DAGAR)
+Q3 2026	3	100%	33%	1
+Q2 2026	1	100%	100%	69
+Placeringar
+
+Registrerade placeringar och deras uppföljning (3/6 månader)
+
+Amina Fiktiv · Exempel Städ AB
+
+Lokalvårdare · 2026-07-10
+
+3-månadersuppföljning om 12 dagar
+3 mån: inte gjord
+6 mån: inte gjord
+Registrera uppföljning på deltagarsidan
+
+Sara Exempel · SL-skarpt Kontor AB
+
+Kontorsassistent · 2026-06-20
+
+6-månadersuppföljning om 83 dagar
+3 mån: gjord
+6 mån: inte gjord
+Registrera uppföljning på deltagarsidan
+Aktivitetsloggen mot avtalskravet
+
+Rusta och matcha, FFU §4.1.1: timkravet per vecka och andelen fysiska aktiviteter, per deltagare.
+
+Omfattar hela Demoleverantör (påhittade personer) — alla planer, även kollegornas deltagare.
+
+Månad
+september 2026
+augusti 2026
+juli 2026
+juni 2026
+maj 2026
+april 2026
+mars 2026
+februari 2026
+januari 2026
+december 2025
+november 2025
+oktober 2025
+september 2025
+
+Avslutade veckor 1 september 2026 – 27 september 2026
+
+DELTAGARE	VECKOR MED UPPFYLLT TIMKRAV	ANDEL FYSISKA	KRAV JUST NU	
+RAPPORTUNDERLAG
+
+Jonas Demo	0 av 4
+— timkravet är inte uppfyllt alla veckor
+	—
+inget närvaropass i perioden
+	1 h/vecka (månad 2)	Underlag för rapporten
+— Jonas Demo
+
+Sara Exempel	4 av 4	100 % (8 av 8 pass)
+varav 8 härledda
+	1 h/vecka (månad 2)	Underlag för rapporten
+— Sara Exempel
+
+Närvarotid är pass markerade närvarande eller extern aktivitet. Eget jobbsökande räknas inte — varken mot timkravet eller i andelen fysiska — eftersom avtalet räknar aktiviteter som leverantören håller i. En vecka bedöms först när den är slut (efter söndagen). Fysiskt och leverantörsledd = passets märkning. Pass utan märkning (lagda före märkningen fanns) räknas på härledningen — arbetsplats eller ifyllt platsfält är fysiskt — och antalet står som "härledda" på raden. Kravet gäller Rusta och matcha-avtalet; kommunens aktivitetskrav mäts mot planens veckomål.
+
+Detta är ett underlag, inte den periodiska rapporten. Grundersättningen betalas enligt FFU §5.1.1 inte ut utan godkänd periodisk rapport i avtalets format, registrerad i Mina sidor för fristående aktörer. Det finns inget öppet leverantörs-API mot Arbetsförmedlingen, så portalen kan varken skapa eller skicka den rapporten — siffrorna här för du över för hand.

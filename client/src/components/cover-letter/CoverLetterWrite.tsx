@@ -366,6 +366,10 @@ export function CoverLetterWrite() {
     currentStep,
     genererarSedan,
     sparatBrevId,
+    // SJ1 (skarpt test 2026-09-28): flaggan måste överleva en ANDRA omladdning. genererarSedan
+    // nollas i generateLetters finally och skrevs då tillbaka som null — nästa omladdning
+    // visade ett tomt brev som "Vi tog fram det åt dig" med alla tre steg klara.
+    avbrutenGenerering,
   }
 
   const { clearSavedData } = useAutoSave({
@@ -375,10 +379,12 @@ export function CoverLetterWrite() {
       if (saved.formData) setFormData(saved.formData)
       if (saved.editedLetter) setEditedLetter(saved.editedLetter)
       if (saved.generatedLetter) setGeneratedLetter(saved.generatedLetter)
-      if (saved.currentStep) setCurrentStep(saved.currentStep)
+      const harText = Boolean(saved.editedLetter?.trim())
+      // SJ1: utan text finns inget att läsa igenom — steg 3 är inte "klart".
+      if (saved.currentStep) setCurrentStep(harText ? saved.currentStep : Math.min(saved.currentStep, 2))
       if (saved.sparatBrevId) setSparatBrevId(saved.sparatBrevId)
       // Genereringen pågick när sidan lämnades, och inget brev hann komma.
-      if (saved.genererarSedan && !saved.editedLetter?.trim()) setAvbrutenGenerering(true)
+      if ((saved.genererarSedan || saved.avbrutenGenerering) && !harText) setAvbrutenGenerering(true)
       if (saved.editedLetter || saved.formData?.company || saved.formData?.jobTitle) {
         setAterstalltUtkast({
           company: saved.formData?.company || '',
@@ -950,7 +956,9 @@ export function CoverLetterWrite() {
                 {'. '}
                 {avbrutenGenerering
                   ? t('coverLetter.write.draftAvbrutet', 'Utkastet hann inte bli klart innan sidan laddades om. Det du fyllt i finns kvar.')
-                  : t('coverLetter.write.draftRestoredBody', 'Vi tog fram det åt dig. Gäller det ett annat jobb kan du börja om.')}
+                  : editedLetter.trim()
+                    ? t('coverLetter.write.draftRestoredBody', 'Vi tog fram det åt dig. Gäller det ett annat jobb kan du börja om.')
+                    : t('coverLetter.write.draftUtanText', 'Jobbet är ifyllt, men brevet är inte skrivet än.')}
               </p>
               <div className="flex flex-wrap gap-2 mt-3">
                 {avbrutenGenerering ? (

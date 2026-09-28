@@ -25,6 +25,7 @@ import { EmptyState } from '@/components/ui/EmptyState'
 import { Dialog } from '@/components/ui/Dialog'
 import { useConfirmDialog } from '@/components/ui/ConfirmDialog'
 import { notifications } from '@/lib/toast'
+import { laddaNerUnderlagspaket } from '@/services/underlagspaketPdf'
 import { cn } from '@/lib/utils'
 import {
   aktivitetsplanApi,
@@ -161,6 +162,20 @@ export function AktivitetsplanSektion({ participantId, participantName }: Aktivi
 
   // F10: nytt eller ångrat underlag in i listan, och planens synkade datum
   // (triggern i databasen) speglas lokalt så PDF:en visar samma sak.
+  // SKK5 (skarpt test 2026-09-28): paketet (PDF) gick bara att ladda ner i samma stund som
+  // underlaget lämnades. Nu från historiken, när som helst.
+  const [paketLaddar, setPaketLaddar] = useState<string | null>(null)
+  const laddaNerPaket = async (plan: ActivityPlan, h: PlanHandover) => {
+    setPaketLaddar(h.id)
+    try {
+      await laddaNerUnderlagspaket({ plan, underlag: h, participantName })
+    } catch (err) {
+      notifications.error(err instanceof Error ? `PDF:en kunde inte skapas: ${err.message}` : 'PDF:en kunde inte skapas')
+    } finally {
+      setPaketLaddar(null)
+    }
+  }
+
   const taEmotUnderlag = (h: PlanHandover) => {
     setUnderlagDialog(null)
     setLage((prev) => {
@@ -349,6 +364,16 @@ export function AktivitetsplanSektion({ participantId, participantName }: Aktivi
                             )}
                             {h.withdrawn_at && (
                               <span className="block text-xs no-underline">{t('consultant.underlag.angrat', { datum: kortDatum(h.withdrawn_at.slice(0, 10)), skal: h.withdrawn_reason ?? '' })}</span>
+                            )}
+                            {lage.plan && (
+                              <button
+                                type="button"
+                                className="ml-2 text-xs underline text-stone-600 dark:text-stone-300"
+                                disabled={paketLaddar === h.id}
+                                onClick={() => lage.plan && void laddaNerPaket(lage.plan, h)}
+                              >
+                                {paketLaddar === h.id ? 'Skapar PDF…' : 'Ladda ner PDF'}
+                              </button>
                             )}
                             {kanAngraUnderlag(h) && (
                               <button type="button" className="ml-2 text-xs underline text-stone-500" onClick={() => setUnderlagDialog({ lage: 'angra', underlag: h })}>

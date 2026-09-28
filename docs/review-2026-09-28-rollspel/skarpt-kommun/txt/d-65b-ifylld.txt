@@ -1,0 +1,215 @@
+Hoppa till huvudinnehåll
+Hoppa till navigation
+jobin.se
+Översikt
+Deltagare
+Platser
+Rapporter
+Kommunikation
+Sök …
+Ctrl K
+4
+D
+
+Demo — påhittade personer — Det här är en demo med påhittade personer. Allt du ändrar återställs varje natt. Ingen AI och inga mejl går ut härifrån.
+
+Konsultportal
+
+Hantera och följ upp dina deltagare
+
+Översikt
+Deltagare
+Platser
+Rapporter
+Kommunikation
+Resurser
+Inställningar
+Tillbaka till deltagare
+OD
+Omar Demo
+omar.demo@example.com
+Aktiv
+Boka möte
+Registrera placering
+
+58%
+
+CV-poäng
+
+1
+
+Sparade jobb
+
+1
+
+Aktiva mål
+
+i dag
+
+Senaste kontakt
+
+meddelande
+
+Översikt
+Aktivitet
+Mål
+Journal
+Tidslinje
+Demomall: jobbsökning + motivationAktiv
+Period
+28 september 2026 – 20 december 2026
+Veckomål
+11 h
+Eget jobbsökande
+3 h/vecka i planen
+Beslutad
+28 september 2026
+Ärendenummer i verksamhetssystemet
+— inte angivet
+Ange
+
+Står på plan-PDF:en, närvarointyget och underlagspaketet. Inte personnummer.
+
+Försörjningshinder
+Inte angivet
+Arbetslös
+Sjukskriven med läkarintyg
+Sjuk- eller aktivitetsersättning
+Arbetshinder, sociala skäl
+Föräldraledig
+Arbetar deltid
+Språkhinder
+Utan försörjningshinder
+Annat
+Underlag till handläggaren
+Lämnat 28 september 2026 till Hanna Handläggare · av dig · Period 28 sep – 28 sep
+Ångrat 28 sep: SKK-skarpt-test: PDF-provet är klart, städas bort.
+Lämna underlag
+
+Motivering till veckomålet: SKK-skarpt-test: mallens 11 h/vecka är avsiktligt lägre än lagens 40 h under uppstartsfasen.
+
+Plan som PDF
+Lägg till pass
+Avsluta plan
+Praktik och arbetsträning
+Öppna Platser
+Nordfrakt Logistik (demo) · Praktik · Planerad · från 8 oktober 2026 · 30 h/vecka
+Nordfrakt Logistik (demo) finns under Platser men har inga arbetsplatspass i planen — timmarna där räknas inte förrän passen ligger i planen.
+Lägg in i planen
+— Nordfrakt Logistik (demo)
+
+Planen har arbetsplatspass på ”Fiktiva Logistik AB”, men platsen finns inte under Platser. Registrera den där för kontaktuppgifter, handledning och uppföljning.
+
+Avstämningen jämför namnet på platsen med passens platsfält, och känner igen pass som lagts in härifrån.
+
+Vecka 40 · 28 sep – 4 okt
+Idag
+Under veckomålet
+Planerat anvisat
+8 h / 8 h
+Närvaro
+3 h
+Eget jobbsökande, kvitterat
+0 h
+Ogiltig frånvaro
+Ingen
+
+Veckomålet 11 h = 8 h anvisad aktivitet + 3 h eget jobbsökande. Ampeln jämför bekräftad närvaro i anvisade pass med den anvisade delen; eget jobbsökande är deltagarens egen redovisning och räknas inte in i ampeln. Eget jobbsökande räknas som utfört först när du kvitterat det.
+
+Beslut om nedsättning fattas av socialnämnden, inte här. Ogiltig frånvaro är underlag till handläggaren.
+
+Eget jobbsökande
+(deltagarens egen redovisning)
+
+3 h/vecka avsatt i planen.
+
+Inget sparat jobb och ingen ansökan registrerad den här veckan.
+
+CV uppdaterat 28 sep. Personligt brev och intervjuträning ser bara deltagaren själv.
+
+Måndag 28 sep · idag
+09:00–12:00
+
+Jobbsökarverkstad
+
+Jobbsökande
+3 h
+SKK-testlokal (ändrad)
+Verksamheten · fysiskt (härlett)
+
+Närvarande
+Närvaro
+Ändra
+Tisdag 29 sep
+09:00–11:00
+
+Motivationsgrupp
+
+Motivation och förmåga
+2 h
+Grupprum 2 (serie ändrad)
+Verksamheten · fysiskt (härlett)
+
+Giltig frånvaro
+Närvaro
+Ändra
+Onsdag 30 sep
+09:00–12:00
+
+Eget jobbsökande
+
+Eget jobbsökande
+3 h
+Hemma/bibliotek
+Egen aktivitet · fysiskt (härlett)
+
+Ogiltig frånvaro
+Närvaro
+Ändra
+Torsdag 1 okt
+13:00–16:00
+
+Praktikbesök
+
+Arbetsplatsförlagd
+3 h
+Fiktiva Logistik AB
+Verksamheten · fysiskt (härlett)
+
+Sjuk · intyg
+Närvaro
+Ändra
+Lägg till pass
+Datum
+Start
+Slut
+Rubrik
+Aktivitetstyp
+Jobbsökande
+Motivation och förmåga
+Språk
+Arbetsplatsförlagd
+Eget jobbsökande
+SFI
+Studier
+Studie- och yrkesvägledning
+Hälsa
+Plats
+Vem håller i passet
+Verksamheten (leverantörsledd)
+Deltagarens egen aktivitet
+
+Avtalsloggen räknar bara pass som verksamheten håller i.
+
+Form
+Fysiskt
+Digitalt
+
+Andelen fysiska aktiviteter räknas på det här.
+
+Upprepa varje vecka till planens slut
+
+Samma veckodag och tid till och med 20 dec.
+
+Avbryt
+Lägg till

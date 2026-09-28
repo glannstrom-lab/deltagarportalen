@@ -23,6 +23,53 @@
 
 ---
 
+## Skarpt funktionstest 2026-09-28/29 — sex områden, varje skrivning mot databasen
+
+Översikt: <https://claude.ai/artifact/RUXWYRooZ9dWzzo6wRvgYB> (överst) · rapporter i `docs/review-2026-09-28-skarpt/`
+(`jobbsok.md` SJ, `karriar.md` SK, `vardag.md` SV, `kommun.md` SKK, `leverantor.md` SL, `publikt.md` PUB).
+Sex agenter prövade ~190 funktioner hela vägen (skapa → ladda om → ändra → exportera → når andra parten → databasen);
+~160 fungerade. Tre egna testkonton skapades via admin-API och raderades via portalens egen väg (kaskaden verifierad).
+
+### Rättat samma natt
+- [x] **PUB-1** 🔴 **Glömt lösenord fanns inte alls** — ingen länk, sida eller anrop. Byggt: edge `losenord-aterstall`
+  (generateLink recovery → Resend-mejl med `/#/nytt-losenord?th=`; fungerar på annan enhet än den som begärde, till
+  skillnad från PKCE-länken; samma svar oavsett om adressen finns; 10/h per IP, 3/h per adress), sidorna
+  `GlomtLosenord.tsx`/`NyttLosenord.tsx`, länk på /login. Prov `test/losenord-aterstall.test.ts`.
+- [x] **SV2 = BP6** "Byt lösenord" i Inställningar gjorde ingenting — `components/settings/BytLosenord.tsx` (nuvarande
+  lösenord prövas först; Google-konton får en länk för att välja ett).
+- [x] **SK2** 🔴 Intresseguidens historik har **inte sparats sedan 10 juni**: koden skickar `icf_profile = null` utan
+  hälsosamtycke, kolumnen var NOT NULL, felet sväljdes. `20260928d_sk2_icf_valfri.sql`.
+- [x] **SJ1** AI-brevets "avbrutet"-flagga överlevde inte en andra omladdning → tomt brev visades som klart med alla
+  steg gröna. Flaggan sparas nu i autosaven; utan text blir steg 3 aldrig klart.
+- [x] **SJ2** CV-import: "2019–2024" hamnade i startdatum; e-post/telefon kom aldrig med (servern stryker dem före AI).
+  `components/cv/importNormalisering.ts` delar intervall, normaliserar till YYYY-MM (hittar aldrig på en månad), och
+  hämtar e-post/telefon ur texten **i webbläsaren**. Texten i importen rättad.
+- [x] **SK1** avslutat intervjupass visades som "inte klart". **SK3** uppläsningen var hårdkodad svenska och läste
+  alltid med svensk röst — nu följer rösten textens faktiska språk (`contentSprak`). **NY4** oöversatt artikel i
+  engelskt läge säger det.
+- [x] **SV1** välkomstturen kom tillbaka och lade sig över samtyckesknappen — avfärdandet sparas per användare direkt,
+  och Escape sparar (förut bara för stunden).
+- [x] **SKK1** nytt mål syntes inte förrän fliken öppnades igen (getUser-anropet föll). **SKK2** samma ogiltiga frånvaro
+  igen skickade en ny notis varje gång. **SKK5** underlagspaketets PDF bara i lämnande-ögonblicket → nu från
+  konsulentens historik och från handläggarens "Underlag till dig" (rpc `mottaget_underlag_paket`,
+  `20260929_skk5_mottaget_underlag_paket.sql`; grants-tak 24 → 25 med skäl).
+- [x] **SL1** två väntande förslag för samma placering — unikt index + knappen döljs. **SL2** tomma delade kompetenser
+  försvann. **SL3** företagets notiser blev aldrig lästa (nu när förslaget/tråden öppnas). **SL4/SL5** kundtypens
+  begrepp i caseload och omfångsraden.
+- **Inte fel:** SV3 (kalendern) — återskapat i prod, fungerar på dator och mobil; agentens skript klickade dagcellen,
+  vars namn innehåller händelsens titel. UT3 (AI-panelen när AI är av) gick inte att återskapa — spärras i båda ytorna.
+
+### Förbättra / utveckla (från testet)
+- [ ] **ST1** 283 anrop till `supabase.auth.getUser()` i klienten — varje är en rundresa till auth-servern, och den
+  gav CORS-fel två gånger i passet (SJ3, SKK1). Byt mot `getSession()`/authStore där bara id:t behövs · ~1 dag
+- [ ] **ST2** Mejl för handläggarens underlag och för företagets nya förslag (AT4 + FT-F1) — notis i klockan räcker inte
+  för den som sällan loggar in · beslut om `vercel.json`-cron
+- [ ] **ST3** Dagboken saknar redigering (SV4); energifliken är död kod (SV5); notisreglagen saknar `role="switch"` (SV6)
+- [ ] **ST4** FT1:s återöppning går inte att nå i UI — företaget kan inte ändra ett givet ja. Beslut: ska det gå?
+- [ ] **ST5** /login: skiplänk, landmärken, fokus på felet (SV3/SV4 från rollspelet) och LCP ~3,6 s på 3G (PUB-3)
+- [ ] **ST6** `upload-image.js` saknas i CORS-grinden (PUB-2)
+- [ ] **ST7** Flytta en serie/ett pass till annan dag (finns inte; kvar sedan RK37)
+
 ## Rollspel 2026-09-28 — sju nya roller i prod
 
 Översikt: <https://claude.ai/artifact/RUXWYRooZ9dWzzo6wRvgYB> · rapporter med skärmdump per fynd i `docs/review-2026-09-28-rollspel/`

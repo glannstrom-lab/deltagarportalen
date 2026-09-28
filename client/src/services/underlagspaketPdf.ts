@@ -29,6 +29,7 @@ import type { jsPDF } from 'jspdf'
 import { supabase } from '@/lib/supabase'
 import {
   aktivitetsplanApi,
+  mapSession,
   sammanfattaNarvaro,
   type ActivityPlan,
   type ActivitySession,
@@ -37,8 +38,8 @@ import {
 } from './aktivitetApi'
 import type { ActivityType, Attendance } from './aktivitetSchema'
 import { franvaroAv, type FranvaroOrsak } from './franvaroApi'
-import { orgApi } from './orgApi'
-import { regelverkForPlan } from '@/components/consultant/orgTypVisning'
+import { orgApi, type OrgKind } from './orgApi'
+import { regelverk, regelverkForPlan } from '@/components/consultant/orgTypVisning'
 import { ARENDE_ETIKETT, PLAN_PASS_KOLUMNER_FINNS } from './planMarkning'
 
 let jsPDFModule: typeof import('jspdf') | null = null
@@ -420,4 +421,36 @@ export async function laddaNerUnderlagspaket(args: {
     caseReference: plan.case_reference ?? null,
   })
   doc.save(underlagspaketFilnamn(participantName, underlag.period_from, underlag.period_to))
+}
+
+/**
+ * SKK5 (skarpt test 2026-09-28): handläggaren laddar ner paketet i efterhand. Hon har ingen
+ * läsrätt på planen eller passen — rpc `mottaget_underlag_paket` lämnar ut exakt det paketet
+ * bygger på, och bara för ett underlag som lämnats till henne.
+ */
+export async function laddaNerMottagetUnderlag(underlagId: string): Promise<void> {
+  const { data, error } = await supabase.rpc('mottaget_underlag_paket', { p_id: underlagId })
+  if (error) throw error
+  const d = data as {
+    underlag: UnderlagspaketInput['underlag'] & { handed_over_by: string | null; participant_id: string }
+    plan: { id: string; participant_id: string; org_id: string | null; case_reference?: string | null } | null
+    pass: Record<string, unknown>[]
+    namn: Record<string, string>
+    org: { name: string; kind: OrgKind } | null
+  }
+  const sessions = d.pass.map((r) => mapSession(r) as PaketPass)
+  const participantId = d.plan?.participant_id ?? d.underlag.participant_id
+  const participantName = d.namn[participantId] ?? ''
+  const doc = await generateUnderlagspaketPDF({
+    underlag: d.underlag,
+    participantId,
+    participantName,
+    lamnatAv: (d.underlag.handed_over_by && d.namn[d.underlag.handed_over_by]) || STRECK,
+    organizationName: d.org?.name ?? null,
+    sessions,
+    namn: d.namn,
+    regelverk: d.org ? regelverk([d.org.kind]) : null,
+    caseReference: d.plan?.case_reference ?? null,
+  })
+  doc.save(underlagspaketFilnamn(participantName, d.underlag.period_from, d.underlag.period_to))
 }

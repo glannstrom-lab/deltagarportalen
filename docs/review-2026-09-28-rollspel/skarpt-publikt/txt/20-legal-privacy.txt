@@ -1,0 +1,181 @@
+J
+Jobin
+Tillbaka till startsidan
+Integritetspolicy
+
+Fullständig information om hur vi behandlar dina personuppgifter enligt GDPR Art. 13-14
+
+Version 2.0
+
+Personuppgiftsansvarig
+
+Ansvarig för behandlingen av dina personuppgifter är:
+
+Glänne & Söner (enskild firma), som driver Jobin
+
+Om oss
+
+Enskild firma: organisationsnumret är innehavarens personnummer och lämnas på begäran — kontakta privacy@jobin.se
+
+Adress: uppgift lämnas på begäran — kontakta privacy@jobin.se
+
+E-post: privacy@jobin.se
+
+Dataskyddsombud
+
+För frågor om dataskydd, kontakta vårt dataskyddsombud på dpo@jobin.se
+
+Vilken information samlar vi in?
+
+För att kunna erbjuda dig en personlig och effektiv jobbsökarupplevelse samlar vi in följande kategorier av personuppgifter:
+
+Kontaktuppgifter: Namn, e-postadress och telefonnummer
+Profilinformation: CV, personligt brev, kompetenser, erfarenheter och utbildning
+Aktivitetsdata: Sparade jobb, ansökningar, dagboksanteckningar och övningsresultat
+Användningsdata: Hur du använder plattformen, inklusive inloggningar och sidvisningar
+Teknisk data: IP-adress, webbläsartyp och enhetsinformation för felsökning
+Rättslig grund för behandling
+
+Vi behandlar dina personuppgifter baserat på följande rättsliga grunder enligt GDPR Art. 6:
+
+Avtal (Art. 6.1.b): Behandling som är nödvändig för att tillhandahålla tjänsten enligt våra användarvillkor.
+Samtycke (Art. 6.1.a): AI-behandling, marknadsföring och valfria funktioner kräver ditt uttryckliga samtycke.
+Berättigat intresse (Art. 6.1.f): Förbättring av tjänsten, säkerhet och bedrägeribekämpning.
+Rättslig förpliktelse (Art. 6.1.c): Bokföring och andra lagstadgade krav.
+Ändamål med behandlingen
+
+Vi behandlar dina uppgifter för följande specifika ändamål:
+
+Kontohantering - skapa och administrera ditt användarkonto
+CV-byggare - lagra och visa ditt CV och personliga brev
+Jobbsökning - visa relevanta jobbannonser och spara dina favoriter
+AI-funktioner - generera CV-texter och personliga brev (kräver samtycke)
+Tjänsteförbättring - analysera användningsmönster för att förbättra tjänsten
+Kundsupport - besvara dina frågor och ge hjälp
+Säkerhet - skydda mot obehörig åtkomst och missbruk
+Lagringsperioder
+
+Vi sparar dina uppgifter endast så länge det är nödvändigt:
+
+Aktivt konto: Så länge ditt konto är aktivt plus 30 dagar efter radering
+Raderat konto: Profildata raderas omedelbart, anonymiserad statistik kan behållas
+Säkerhetsloggar: 90 dagar för felsökning och säkerhet
+Juridiska krav: Vissa uppgifter kan behållas längre enligt lag (t.ex. bokföring i 7 år)
+Delning med tredje part
+
+Vi delar dina uppgifter med följande kategorier av mottagare:
+
+Molntjänster: Supabase (databas och autentisering) - data lagras inom EU/EES
+AI-leverantörer: OpenRouter (endast om du samtyckt till AI-behandling) - dina texter behandlas i USA. Fyra funktioner – karriärassistenten, företagssökningen, företagsanalysen och pendlingsplaneraren – skickar din fråga vidare till Perplexity (USA), som gör en webbsökning på det du skrivit in; pendlingsplaneraren skickar då den adress du angett
+Felspårning: Sentry (endast om du accepterat cookies) - för att identifiera och åtgärda tekniska problem
+
+Personuppgiftsbiträdesavtal (Art 28 GDPR)
+
+Vi har skriftliga avtal med alla biträden som följer GDPR Art 28. Här kan du läsa deras avtal:
+
+Supabase DPA
+ — DB, Auth, lagring (Irland)
+Vercel DPA
+ — hosting, serverless functions (Frankfurt)
+OpenRouter Terms
+ — AI-leverantör (USA, SCC + TIA)
+Sentry DPA
+ — felövervakning (efter consent)
+LinkedIn
+ — opt-in OAuth
+Google
+ — opt-in Calendar-integration
+
+Google Översätt — du slår på det själv
+
+Globikonen högst upp översätter sidan till ett av tretton språk. Slår du på den skickas sidans text till Google — även det du själv har skrivit, till exempel ett dagboksinlägg du har öppet. Det sker bara när du valt ett språk, och du stänger av det genom att välja Svenska igen.
+
+Vi har inget personuppgiftsbiträdesavtal med Google för den här funktionen, till skillnad från biträdena ovan. Därför står den här och inte i listan. Portalen fungerar fullt ut på svenska och engelska utan att du slår på den.
+
+Vi säljer aldrig dina personuppgifter till tredje part.
+
+Överföring till tredjeland
+
+Om du använder AI-funktioner kan dina uppgifter överföras till USA:
+
+Skyddsåtgärder: Överföringar sker enligt EU-US Data Privacy Framework och/eller standardavtalsklausuler (SCC)
+Dataminimering: Vi skickar endast den information som är nödvändig för AI-behandlingen
+Hur skyddar vi din information?
+
+Vi tar säkerheten på största allvar och använder flera lager av skydd:
+
+All data överförs via krypterad SSL/TLS-anslutning
+Lösenord lagras krypterat med moderna hashningsalgoritmer (bcrypt)
+Row Level Security (RLS) säkerställer att du endast ser din egen data
+Regelbundna säkerhetsgranskningar och uppdateringar
+Begränsad åtkomst till personuppgifter inom organisationen
+Dina rättigheter enligt GDPR
+
+Du har följande rättigheter gällande dina personuppgifter:
+
+Rätt till tillgång (Art. 15): Begära en kopia av alla personuppgifter vi har om dig
+Rätt till rättelse (Art. 16): Uppdatera eller korrigera felaktig information
+Rätt till radering (Art. 17): Begära att vi tar bort alla dina uppgifter
+Rätt till begränsning (Art. 18): Begränsa hur vi behandlar dina uppgifter
+Rätt till dataportabilitet (Art. 20): Få ut din data i maskinläsbart format (JSON)
+Rätt att invända (Art. 21): Invända mot behandling baserad på berättigat intresse
+Rätt att återkalla samtycke: Återkalla samtycke när som helst under Inställningar > Integritet
+
+Hur utövar du dina rättigheter?
+
+Du kan utöva de flesta rättigheter direkt i appen under Inställningar. För tillgång och portabilitet, använd "Exportera data"-funktionen. För radering, använd "Radera konto".
+
+Profilering och AI-rekommendationer
+
+Vi använder AI för att ge dig vägledning, men:
+
+Inga AI-beslut är bindande — du fattar alltid själv beslutet om jobb, utbildning och karriär.
+AI rekommenderar yrken, kompetenser och jobb baserat på din profil. Detta är profilering enligt GDPR Art 4(4) — du har rätt att invända (Art 21) eller stänga av AI-funktioner i Inställningar utan att radera kontot.
+AI-funktioner kräver ditt uttryckliga samtycke och du kan använda kärnportalen utan dem.
+AI-genererat innehåll märks tydligt i appen. Du kan alltid se när AI har varit inblandad.
+Läs mer om hur vi använder AI
+Cookies och spårning
+
+Vi använder följande typer av cookies:
+
+Nödvändiga cookies: Autentisering och session - krävs för att tjänsten ska fungera
+Funktionella cookies: Sparar dina inställningar som språk och tema
+Analys-cookies: Sentry för felspårning - endast med ditt samtycke
+
+Du kan hantera cookies under Inställningar > Integritet
+
+Klagomål till tillsynsmyndighet
+
+Om du anser att vi behandlar dina personuppgifter felaktigt har du rätt att lämna klagomål till:
+
+Integritetsskyddsmyndigheten (IMY)
+
+www.imy.se
+
+imy@imy.se
+
+Obligatoriska uppgifter
+
+Följande uppgifter krävs för att använda tjänsten:
+
+E-postadress och lösenord - för att skapa konto
+Alla andra uppgifter är frivilliga och förbättrar din upplevelse
+Ändringar i policyn
+
+Vi kan uppdatera denna policy vid behov. Vid väsentliga ändringar meddelar vi dig via e-post eller i appen. Fortsatt användning efter ändringar innebär att du accepterar den uppdaterade policyn.
+
+Kontakta oss
+
+Har du frågor om vår integritetspolicy eller hur vi hanterar dina uppgifter? Kontakta oss på privacy@jobin.se
+
+För dataskyddsfrågor, kontakta dataskyddsombudet på dpo@jobin.se
+
+Tillgänglighetsredogörelse
+·
+AI-policy
+·
+Användarvillkor
+
+Senast uppdaterad: 12 september 2026
+
+© 2026 Jobin. Alla rättigheter förbehållna.

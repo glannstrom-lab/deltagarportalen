@@ -421,7 +421,7 @@ function ArticleInner() {
             {/* Ren text. Tidigare skickades rå markdown, så uppläsningen
                 läste tabellpipes, asterisker och hela URL:er — till just den
                 användare som valt att lyssna för att hon inte orkar läsa. */}
-            <TextToSpeech text={textUrMarkdown(article.content)} />
+            <TextToSpeech text={textUrMarkdown(article.content)} sprak={article.contentSprak} />
 
             {/*
               Skriv ut och Ladda ner, per artikel.
@@ -521,6 +521,12 @@ function ArticleInner() {
           {nedladdningsLage === 'fel' && t('article.downloadFailed', 'Kunde inte skapa PDF:en — försök igen om en stund.')}
         </p>
 
+        {/* NY4 (skarpt test 2026-09-28): i engelskt läge visades svensk brödtext utan förklaring. */}
+        {article.contentSprak === 'sv' && !(i18n.language ?? 'sv').startsWith('sv') && (
+          <p className="mb-4 rounded-lg bg-stone-100 dark:bg-stone-800 px-4 py-3 text-sm text-stone-700 dark:text-stone-200" lang="en">
+            {t('article.baraSvenska', 'This article is only in Swedish so far. Choose "Translate the page" in the language menu to read it in your language.')}
+          </p>
+        )}
         {/* Artikelns innehåll — markdown renderas som React-element */}
         <ArticleContent
           content={article.content}

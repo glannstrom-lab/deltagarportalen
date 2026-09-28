@@ -1,0 +1,114 @@
+Du är nu på Konsultportal
+Hoppa till huvudinnehåll
+Hoppa till navigation
+jobin.se
+Översikt
+Deltagare
+Platser
+Rapporter
+Kommunikation
+Sök …
+Ctrl K
+8
+D
+
+Demo — påhittade personer — Det här är en demo med påhittade personer. Allt du ändrar återställs varje natt. Ingen AI och inga mejl går ut härifrån.
+
+Konsultportal
+
+Hantera och följ upp dina deltagare
+
+Översikt
+Deltagare
+Platser
+Rapporter
+Kommunikation
+Resurser
+Inställningar
+Inställningar
+
+Anpassa din konsultvy
+
+Standardvy för deltagare
+
+Välj hur deltagarlistan visas som standard
+
+Rutnät
+Lista
+
+Tidszon
+
+Används för mötesbokning och påminnelser
+
+Stockholm (CET)
+
+Veckan börjar
+
+Påverkar kalendervisning
+
+Måndag
+Söndag
+
+Inaktivitetsvarning
+
+Dagar innan en deltagare markeras som inaktiv
+
+5 dagar
+7 dagar
+14 dagar
+Din organisation
+
+Kollegor och, om du är chef, caseload per konsulent.
+
+Demoleverantör (påhittade personer)
+
+Leverantör · org.nr 559999-9999
+Din roll: Chef
+
+AI-funktioner för era deltagare
+
+Av — deltagare kopplade till era konsulenter nekas alla AI-funktioner och ser att organisationen stängt av dem.
+
+Slå på AI
+
+Demo Coach (du)
+
+demo-leverantor@jobin.se
+Chef
+Lägg till kollega
+E-post
+Roll
+Arbetskonsulent
+Chef
+Lägg till
+
+Har personen redan ett konto på jobin.se läggs hen till direkt. Annars kan du skicka en inbjudan via mejl.
+
+Caseload
+KONSULENT	DELTAGARE	AKTIVA PLANER	OGILTIG FRÅNVARO 30 D	MOT TAKET	
+ÅTGÄRD
+
+Demo Coach
+Chef
+	4	2	3	
+4 av 50 (heltid)
+	
+Överlämna deltagare…
+
+Bara tal. Namn på deltagare, journal och mående syns inte här.
+
+Taket i Rusta och matcha (FFU §4.5.2) är 50 deltagare per handledare på heltid och sänks i proportion vid deltid — för en handledare på 50 % är det 25. Jobin vet inte tjänstgöringsgraden, så mätaren visar taket för heltid.
+
+Data & Integritet
+
+Hantera data och GDPR-relaterade inställningar
+
+Exportera all data
+
+Exporten omfattar deltagare du har en aktiv relation till. Avslutade relationer tas inte med.
+
+Ta med orosanteckningar
+
+Anteckningar i kategorin Oro utelämnas som standard.
+
+Integritetspolicy

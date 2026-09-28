@@ -1,11 +1,18 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Play, Pause, Volume2, VolumeX } from '@/components/ui/icons'
 
 interface TextToSpeechProps {
   text: string
+  /** Textens språk — inte gränssnittets. En oöversatt artikel i engelskt läge är svensk. */
+  sprak?: 'sv' | 'en'
 }
 
-export default function TextToSpeech({ text }: TextToSpeechProps) {
+export default function TextToSpeech({ text, sprak }: TextToSpeechProps) {
+  // SK3 (skarpt test 2026-09-28): knapparna var hårdkodad svenska, och rösten läste alltid
+  // sv-SE — även en engelsk artikel för en engelsk läsare.
+  const { t, i18n } = useTranslation()
+  const rostSprak = (sprak ?? (i18n.language?.startsWith('en') ? 'en' : 'sv')) === 'en' ? 'en-GB' : 'sv-SE'
   const [isPlaying, setIsPlaying] = useState(false)
   const [isPaused, setIsPaused] = useState(false)
   // Ett handtag till en extern webbläsar-API-instans — påverkar aldrig vad
@@ -18,7 +25,7 @@ export default function TextToSpeech({ text }: TextToSpeechProps) {
     if (!isSupported) return
 
     const u = new SpeechSynthesisUtterance(text)
-    u.lang = 'sv-SE'
+    u.lang = rostSprak
     u.rate = 0.9
     u.pitch = 1
 
@@ -35,7 +42,7 @@ export default function TextToSpeech({ text }: TextToSpeechProps) {
     return () => {
       window.speechSynthesis.cancel()
     }
-  }, [text, isSupported])
+  }, [text, isSupported, rostSprak])
 
   const togglePlay = useCallback(() => {
     const utterance = utteranceRef.current
@@ -65,21 +72,20 @@ export default function TextToSpeech({ text }: TextToSpeechProps) {
   if (!isSupported) return null
 
   return (
-    <div className="inline-flex items-center gap-2 bg-stone-100 rounded-lg p-1.5">
+    <div className="inline-flex items-center gap-2 bg-stone-100 dark:bg-stone-800 rounded-lg p-1.5">
       <button
         onClick={togglePlay}
-        className="flex items-center gap-2 px-3 py-1.5 bg-white rounded-md text-sm font-medium text-stone-700 hover:bg-stone-50 transition-colors"
-        title={isPlaying && !isPaused ? 'Pausa' : 'Lyssna'}
+        className="flex items-center gap-2 px-3 py-1.5 bg-white dark:bg-stone-900 rounded-md text-sm font-medium text-stone-700 dark:text-stone-200 hover:bg-stone-50 dark:hover:bg-stone-700 transition-colors"
       >
         {isPlaying && !isPaused ? (
           <>
-            <Pause size={16} className="text-[var(--c-text)]" />
-            <span>Pausa</span>
+            <Pause size={16} className="text-[var(--c-text)]" aria-hidden="true" />
+            <span>{t('uppläsning.pausa')}</span>
           </>
         ) : (
           <>
-            <Play size={16} className="text-[var(--c-text)]" />
-            <span>Lyssna</span>
+            <Play size={16} className="text-[var(--c-text)]" aria-hidden="true" />
+            <span>{t('uppläsning.lyssna')}</span>
           </>
         )}
       </button>
@@ -87,14 +93,15 @@ export default function TextToSpeech({ text }: TextToSpeechProps) {
       {isPlaying && (
         <button
           onClick={stop}
-          className="p-1.5 text-stone-700 hover:text-stone-700"
-          title="Stoppa"
+          className="p-1.5 text-stone-700 dark:text-stone-200"
+          aria-label={t('uppläsning.stoppa')}
+          title={t('uppläsning.stoppa')}
         >
-          <VolumeX size={16} />
+          <VolumeX size={16} aria-hidden="true" />
         </button>
       )}
       
-      <Volume2 size={16} className="text-stone-600 ml-1" />
+      <Volume2 size={16} className="text-stone-600 dark:text-stone-300 ml-1" aria-hidden="true" />
     </div>
   )
 }

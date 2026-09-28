@@ -1,0 +1,131 @@
+Hoppa till huvudinnehåll
+Hoppa till navigation
+jobin.se
+Översikt
+Deltagare
+Platser
+Rapporter
+Kommunikation
+Sök …
+Ctrl K
+8
+D
+
+Demo — påhittade personer — Det här är en demo med påhittade personer. Allt du ändrar återställs varje natt. Ingen AI och inga mejl går ut härifrån.
+
+Konsultportal
+
+Hantera och följ upp dina deltagare
+
+Översikt
+Deltagare
+Platser
+Rapporter
+Kommunikation
+Resurser
+Inställningar
+Alla statusar
+Aktiva
+Inaktiva
+Pausade
+Avslutade
+Kräver uppmärksamhet
+Prioritet
+Namn
+CV-poäng
+Senast kontakt
+Status
+Bjud in
+
+Visar 4 av 4 deltagare
+
+Markera alla
+JD
+Jonas Demo
+
+jonas.demo@example.com
+
+Aktiv
+Hög
+
+44%
+
+CV
+
+1
+
+Jobb
+
+1
+
+Anteckningar
+
+4 dagar sedan
+Senaste möte 33 dagar sedan · inget fysiskt än
+— Individuellt möte minst var 14:e dag och fysiskt möte minst var 28:e dag (RM3). Bara genomförda möten räknas.
+SE
+Sara Exempel
+
+sara.exempel@example.com
+
+Aktiv
+
+69%
+
+CV
+
+1
+
+Jobb
+
+1
+
+Anteckningar
+
+4 dagar sedan
+Senaste möte 12 dagar sedan · fysiskt 1 v sedan · fysiskt möte bokat 12/10
+— Individuellt möte minst var 14:e dag och fysiskt möte minst var 28:e dag (RM3). Bara genomförda möten räknas.
+AF
+Amina Fiktiv
+
+amina.fiktiv@example.com
+
+Aktiv
+
+Ja
+
+CV
+
+0
+
+Jobb
+
+1
+
+Anteckningar
+
+4 dagar sedan
+Inget möte än
+— Individuellt möte minst var 14:e dag och fysiskt möte minst var 28:e dag (RM3). Bara genomförda möten räknas.
+PT
+Peter Testsson
+
+peter.testsson@example.com
+
+Aktiv
+
+Ja
+
+CV
+
+1
+
+Jobb
+
+1
+
+Anteckningar
+
+4 dagar sedan
+Inget möte än · fysiskt möte bokat 30/9
+— Individuellt möte minst var 14:e dag och fysiskt möte minst var 28:e dag (RM3). Bara genomförda möten räknas.

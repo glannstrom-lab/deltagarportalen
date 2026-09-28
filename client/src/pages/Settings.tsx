@@ -1,4 +1,5 @@
 import { useState, useEffect, useEffectEvent } from 'react'
+import { BytLosenord } from '@/components/settings/BytLosenord'
 import { useTranslation } from 'react-i18next'
 import { Link, useSearchParams } from 'react-router-dom'
 import { useSettingsStore } from '../stores/settingsStore'
@@ -892,26 +893,8 @@ function SettingsInner() {
             <div className="space-y-4">
               <Card variant="flat">
                 <h3 className="font-medium text-stone-900 dark:text-stone-100 mb-4">{t('settings.security.changePassword')}</h3>
-                <div className="space-y-4">
-                  <Input
-                    label={t('settings.security.currentPassword')}
-                    type="password"
-                    placeholder={t('settings.security.currentPasswordPlaceholder')}
-                  />
-                  <Input
-                    label={t('settings.security.newPassword')}
-                    type="password"
-                    placeholder={t('settings.security.newPasswordPlaceholder')}
-                  />
-                  <Input
-                    label={t('settings.security.confirmPassword')}
-                    type="password"
-                    placeholder={t('settings.security.confirmPasswordPlaceholder')}
-                  />
-                  <Button variant="primary" touchOptimized fullWidth>
-                    {t('settings.security.updatePassword')}
-                  </Button>
-                </div>
+                {/* BP6: formuläret gjorde ingenting (knapp utan onClick) — se BytLosenord.tsx. */}
+                <BytLosenord />
               </Card>
 
               {/* RD18: "Tvåfaktorsautentisering" med en "Aktivera"-knapp utan onClick

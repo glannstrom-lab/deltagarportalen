@@ -33,6 +33,7 @@ import {
 import { cn } from '@/lib/utils'
 import { useFocusTrap } from '@/hooks/useFocusTrap'
 import { callAI, AiConsentRequiredError } from '@/services/aiApi'
+import { hittaKontakt, tolkaImportPeriod } from './importNormalisering'
 import {
   lasTextUrCvFil, CvImportError, ACCEPTERADE_FILTYPER,
   type ImportFel
@@ -168,9 +169,8 @@ function tillCvFalt(rubrik: ImporteradRubrik | null, erfarenhet: ImporteradErfar
       title: w.title || '',
       company: w.company || '',
       location: w.location || '',
-      startDate: w.startDate || '',
-      endDate: w.endDate || '',
-      current: w.current === true,
+      // SJ2: "2019–2024" i startfältet delas upp, "mars 2019" blir 2019-03 (importNormalisering.ts).
+      ...tolkaImportPeriod(w.startDate, w.endDate, w.current === true),
       // Beskrivningen följer med flit inte med — se prompten i ai.js.
       description: '',
     }))
@@ -181,8 +181,8 @@ function tillCvFalt(rubrik: ImporteradRubrik | null, erfarenhet: ImporteradErfar
       school: e.school || '',
       degree: e.degree || '',
       field: e.field || '',
-      startDate: e.startDate || '',
-      endDate: e.endDate || '',
+      startDate: tolkaImportPeriod(e.startDate, e.endDate, false).startDate,
+      endDate: tolkaImportPeriod(e.startDate, e.endDate, false).endDate,
     }))
   }
 
@@ -257,7 +257,13 @@ export function CVImportModal({ isOpen, onClose, onImported }: CVImportModalProp
       setErfarenhetSaknas(true)
     }
 
-    setResultat(tillCvFalt(rubrik, erfarenhet))
+    // SJ2: e-post och telefon stryks av servern innan texten når modellen (PII-skyddet),
+    // så de hämtas här ur den lokalt utlästa texten — de lämnar aldrig webbläsaren.
+    const falt = tillCvFalt(rubrik, erfarenhet)
+    const kontakt = hittaKontakt(text)
+    if (!falt.email && kontakt.email) falt.email = kontakt.email
+    if (!falt.phone && kontakt.phone) falt.phone = kontakt.phone
+    setResultat(falt)
     setSteg('granska')
   }
 
@@ -379,7 +385,7 @@ export function CVImportModal({ isOpen, onClose, onImported }: CVImportModalProp
                   <li>{t('cv.upload.privacy2', 'Texten skickas till AI:n som sorterar den i rätt fält. Personnummer tas bort automatiskt först.')}</li>
                   <li>{t('cv.upload.privacy3', 'AI:n får inte skriva om eller lägga till något — bara flytta det som står i filen.')}</li>
                   <li>{t('cv.import.privacyDescriptions', 'Dina egna beskrivningar av tjänsterna följer inte med — dem skriver du in själv, så att de blir precis som du vill ha dem.')}</li>
-                  <li>{t('cv.import.privacyContact', 'E-post och telefonnummer stryks innan texten skickas, så de fylls inte i automatiskt. Det är din integritet det handlar om — skriv in dem själv i byggaren.')}</li>
+                  <li>{t('cv.import.privacyContact')}</li>
                   <li>{t('cv.upload.privacy4', 'Du ser resultatet och godkänner det innan något sparas.')}</li>
                 </ul>
               </div>

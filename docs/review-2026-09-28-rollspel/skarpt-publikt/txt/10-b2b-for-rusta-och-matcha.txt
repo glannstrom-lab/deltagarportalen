@@ -1,0 +1,110 @@
+Hoppa till innehållet
+Jobin
+Boka en visning
+Jobin
+Jobin för dig som är leverantör inom Rusta och matcha
+
+Jobin är inte själva avtalet med Arbetsförmedlingen — det är verktyget era handledare och deltagare kan använda under tiden insatsen pågår. En portal för deltagaren, en konsulentvy för er.
+
+Drift i EU
+WCAG 2.1 AA — vår ambition
+Boka en visning
+Vad deltagaren får
+
+Allt nedan är kostnadsfritt för deltagaren och kräver bara ett konto med e-post — oavsett vilken leverantör som handleder dem.
+
+CV-byggare med flera mallar och export till PDF
+Personligt brev anpassat efter en specifik annons
+Intervjuträning där man svarar med rösten och får skriftlig återkoppling
+Kompetensanalys mot ett konkret jobb eller yrke
+Jobbsökning mot Arbetsförmedlingens platsbank, med sparade sökningar
+Stöd för mående och energi vid sidan av sökandet
+
+Se alla verktyg deltagaren får
+
+Vad er handledare ser i /consultant
+
+Konsulentvyn är en enda samlad yta, inte flera system att hoppa mellan.
+
+En lista över era deltagare, med en egen sida per person
+Mål och journalanteckningar kopplade till varje deltagare
+Meddelanden och bokade möten
+Placeringar och en översiktlig analysvy
+Export av er egen data direkt under inställningar (GDPR-uttag)
+
+/consultant är portalens enda konsulentvy — samma yta oavsett vilken insats deltagaren är inskriven i.
+
+Er vardag som leverantör
+
+Rusta och matcha innebär löpande dokumentation av varje deltagares aktiviteter, regelbunden avstämning och rapportering vidare. Jobin samlar den vardagen på ett ställe i stället för i separata dokument: journalanteckningar, mål och möten ligger på deltagarens egen sida i /consultant, och deltagarens egna verktyg (CV, jobbsökning, intervjuträning) kan minska en del av handledarens skrivarbete. De exakta kraven och tidsgränserna i Rusta och matcha sätts av Arbetsförmedlingen — dem beskriver vi inte i siffror här, utan hänvisar till era egna avtalsvillkor.
+
+En sida per deltagare med mål, journal och tidslinje
+Bokade möten och meddelanden samlade på ett ställe
+Placeringar och en översikt över hela er caseload
+Deltagarens egna sökverktyg minskar en del av handledarens manuella arbete
+
+Läs vår guide om Rusta och matcha, skriven ur deltagarens perspektiv
+
+Personuppgifter och AI — så är läget
+
+Det här är statusen i skrivande stund, inte ett säljlöfte. Vi vill hellre säga för mycket här än för lite.
+
+Klart i dag
+Databas, inloggning och lagrade filer ligger hos Supabase i Irland (EU).
+Serverfunktionerna körs hos Vercel i Frankfurt (EU).
+AI-funktionerna kräver ett eget samtycke, funktion för funktion, innan något skickas — och går att stänga av helt.
+Använder en deltagare en AI-funktion behandlas den texten hos OpenRouter i USA.
+Pågår
+För organisationskonton (kommuner och leverantörer) är webbsökningen via Perplexity avstängd sedan 2026-09-12 — era deltagares frågor går bara till OpenRouters basmodell utan sökning. Fria konton kan fortfarande använda sökmodellen, vilket står i integritetspolicyn.
+Konsekvensbedömningen (DPIA) och AI Act-klassificeringen är interna utkast som ännu inte formellt godkänts av en personuppgiftsansvarig.
+Registret över personuppgiftsbehandling (Art. 30) finns och uppdateras löpande i takt med granskningar.
+
+Läs hela integritetspolicyn
+
+Tillgänglighet
+
+WCAG 2.1 nivå AA är vårt uttalade mål, inte en uppnådd certifiering. Bedömningen hittills är en intern granskning — automatiserad testning kombinerad med manuell tangentbordstestning — inte en oberoende expertgranskning, och ingen test med riktig skärmläsare är ännu gjord.
+
+Läs hela tillgänglighetsredogörelsen
+
+Demokonton — påhittad kommun, återställs varje natt
+
+Logga in med uppgifterna nedan. Allt ni ändrar försvinner vid 01:00 varje natt, AI-funktionerna är avstängda och inga mejl kan skickas från demot.
+
+Hämta inloggningsuppgifterna
+
+Vanliga frågor
+Är Jobin en Arbetsförmedlingen-godkänd Rusta och matcha-leverantör?
+
+Nej. Jobin är mjukvaran — plattformen som en leverantör kan använda i sitt arbete. Avtalet med Arbetsförmedlingen, och ansvaret för insatsen, är ert.
+
+Vad kostar det?
+
+Vi har ingen offentlig prislista. Hör av dig så går vi igenom vad er verksamhet behöver och vad det skulle kosta.
+
+Kan vi se plattformen innan vi bestämmer oss?
+
+Ja, direkt och utan att boka något. Inloggningsuppgifterna till demot ligger på jobin.se/demo/. Demot är uppsatt som en kommun, inte som en leverantör, men konsulentvyn är samma yta för er: ett chefskonto med fem fiktiva deltagare, med mål, journal och möten, plus ett deltagarkonto där ni ser portalen som deltagaren gör. Aktivitetsplanen med närvaro som också finns där hör till kommunernas aktivitetskrav och är inget ni behöver använda. Allt ni ändrar återställs varje natt, AI-funktionerna är avstängda i demot och inga mejl kan skickas därifrån. Vill ni hellre ha en visning med oss så bokar ni den nedan.
+
+Fungerar det för flera handledare samtidigt?
+
+Konsulentvyn är byggd för att en handledare följer sina egna deltagare. Hör av dig om ni vill diskutera hur det passar er organisation.
+
+Kan vi stänga av AI-funktionerna för våra deltagare?
+
+Varje AI-funktion kräver ett eget samtycke innan den används, och portalens grundfunktioner (CV, jobbsökning, dagbok) fungerar utan AI. Se avsnittet om personuppgifter ovan för vilken leverantör som behandlar vad.
+
+Läs mer
+Rusta och matcha – så väljer du leverantör, och så byter du
+Vad Rusta och matcha är, att du väljer leverantör själv, vilka frågor du bör ställa och vad du gör när… · 4 min
+Vill ni se det här på riktigt?
+
+Ett samtal räcker för att visa vad som finns i dag och svara på det vi inte hunnit skriva här.
+
+Boka en visning
+
+Mår du dåligt? Du behöver inte vara i akut kris för att ringa, och du kan vara anonym. Självmordslinjen 901 01 svarar dygnet runt. Sjukvårdsrådgivningen når du på 1177. Är det fara för liv — ring 112.
+
+Jobin — stöd och verktyg för dig som söker jobb. Alla guider · Alla verktyg
+
+Integritet · Tillgänglighet · Om oss

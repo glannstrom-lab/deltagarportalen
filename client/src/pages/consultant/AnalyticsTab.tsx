@@ -216,6 +216,9 @@ function ProgressRing({
   )
 }
 
+/** Första bokstaven stor — omfångsraden (CH1/SL5) börjar med den del kundtypen har. */
+const forstaStor = (s: string) => s.charAt(0).toUpperCase() + s.slice(1)
+
 export function AnalyticsTab() {
   const { t } = useTranslation()
   const queryClient = useQueryClient()
@@ -647,7 +650,12 @@ export function AnalyticsTab() {
         {rapportOmfang.omfang === 'enheten' ? (
           <>
             Nyckeltalen, målen, placeringarna och konsultrapporten gäller <strong>dina egna deltagare</strong>.
-            IVO-underlaget, nämndrapporten, månadsunderlagen och aktivitetsloggen räknar <strong>hela {rapportOmfang.orgNamn ?? 'enheten'}</strong>.
+            {/* SL5: nämn bara de delar kundtypen har — en leverantör har ingen nämnd och inget IVO-underlag. */}
+            {forstaStor([
+              kundtypsVisning?.visaIvoUnderlag && 'IVO-underlaget, nämndrapporten och månadsunderlagen',
+              kundtypsVisning?.visaAvtalskrav && 'aktivitetsloggen mot avtalskravet',
+            ].filter(Boolean).join(' och ') || 'planerna')}{' '}
+            räknar <strong>hela {rapportOmfang.orgNamn ?? 'enheten'}</strong>.
             {' '}Varje konsulents antal deltagare finns under{' '}
             <Link to="/consultant/settings" className="underline underline-offset-2">Inställningar → Din organisation</Link>.
           </>

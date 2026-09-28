@@ -171,7 +171,11 @@ export function OrganisationSektion() {
                         <th className="py-2 pr-3 font-medium">Konsulent</th>
                         <th className="py-2 pr-3 font-medium">Deltagare</th>
                         <th className="py-2 pr-3 font-medium">Aktiva planer</th>
-                        <th className="py-2 pr-3 font-medium">Ogiltig frånvaro 30 d</th>
+                        {/* SL4 (skarpt test 2026-09-28): "ogiltig frånvaro" är kommunens begrepp. Hos en
+                            Rusta och matcha-leverantör är samma tal frånvaro utan giltigt skäl. */}
+                        <th className="py-2 pr-3 font-medium">
+                          {lage.caseload.every((r) => orgKind(r.org_id) === 'leverantor') ? 'Frånvaro utan giltigt skäl 30 d' : 'Ogiltig frånvaro 30 d'}
+                        </th>
                         {visaKapacitet && <th className="py-2 pr-3 font-medium">Mot taket</th>}
                         <th className="py-2 font-medium"><span className="sr-only">Åtgärd</span></th>
                       </tr>

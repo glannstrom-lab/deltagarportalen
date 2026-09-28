@@ -1,0 +1,44 @@
+[
+  {
+    "namn": "acceptera-alla",
+    "bannerForeSynlig": true,
+    "bannerBorta": true,
+    "state1": {
+      "consent": "true",
+      "prefs": "{\"necessary\":true,\"analytics\":true}"
+    },
+    "bannerEfterReload": false,
+    "state2": {
+      "consent": "true",
+      "prefs": "{\"necessary\":true,\"analytics\":true}"
+    }
+  },
+  {
+    "namn": "endast-nodvandiga",
+    "bannerForeSynlig": true,
+    "bannerBorta": true,
+    "state1": {
+      "consent": "true",
+      "prefs": "{\"necessary\":true,\"analytics\":false}"
+    },
+    "bannerEfterReload": false,
+    "state2": {
+      "consent": "true",
+      "prefs": "{\"necessary\":true,\"analytics\":false}"
+    }
+  },
+  {
+    "namn": "anpassa-och-spara",
+    "bannerForeSynlig": true,
+    "bannerBorta": true,
+    "state1": {
+      "consent": "true",
+      "prefs": "{\"necessary\":true,\"analytics\":false}"
+    },
+    "bannerEfterReload": false,
+    "state2": {
+      "consent": "true",
+      "prefs": "{\"necessary\":true,\"analytics\":false}"
+    }
+  }
+]

@@ -20,6 +20,8 @@ import { LoadingState, ErrorState } from '@/components/ui/LoadingState'
 import { FORSORJNINGSHINDER_ETIKETT, underlagApi, type MottagetUnderlag } from '@/services/aktivitetApi'
 import { langtDatum } from './aktivitetEtiketter'
 import { notifications } from '@/lib/toast'
+import { laddaNerMottagetUnderlag } from '@/services/underlagspaketPdf'
+import { useState } from 'react'
 
 export const MOTTAGNA_UNDERLAG_KEY = ['mottagna-underlag'] as const
 
@@ -28,6 +30,18 @@ function namn(f: string | null, e: string | null): string {
 }
 
 function Rad({ u, onKvittera, kvitterar }: { u: MottagetUnderlag; onKvittera: () => void; kvitterar: boolean }) {
+  // SKK5: paketet (PDF) till akten, när som helst — inte bara i konsulentens ögonblick.
+  const [laddar, setLaddar] = useState(false)
+  const laddaNer = async () => {
+    setLaddar(true)
+    try {
+      await laddaNerMottagetUnderlag(u.id)
+    } catch (err) {
+      notifications.error(err instanceof Error ? `PDF:en kunde inte skapas: ${err.message}` : 'PDF:en kunde inte skapas')
+    } finally {
+      setLaddar(false)
+    }
+  }
   const s = u.summary ?? {}
   const hinder = u.forsorjningshinder
     ? (FORSORJNINGSHINDER_ETIKETT as Record<string, string>)[u.forsorjningshinder] ?? u.forsorjningshinder
@@ -67,6 +81,9 @@ function Rad({ u, onKvittera, kvitterar }: { u: MottagetUnderlag; onKvittera: ()
           )}
           {u.note && <p className="text-sm text-stone-700 dark:text-stone-200">Konsulentens anteckning: {u.note}</p>}
           <div className="flex flex-wrap items-center gap-3">
+            <Button size="sm" variant="outline" onClick={laddaNer} disabled={laddar}>
+              {laddar ? 'Skapar PDF…' : 'Ladda ner underlaget (PDF)'}
+            </Button>
             {u.received_at ? (
               <span className="text-sm text-stone-600 dark:text-stone-300" role="status">
                 Du kvitterade {langtDatum(u.received_at.slice(0, 10))}.

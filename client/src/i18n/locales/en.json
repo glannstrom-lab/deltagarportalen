@@ -530,7 +530,7 @@
       "subtitle": "We fill in the fields for you — PDF or Word (.docx)",
       "dropHere": "Drag your CV here, or choose it from your computer.",
       "privacyDescriptions": "Your own descriptions of each role don't come along — you write those yourself, so they turn out exactly as you want them.",
-      "privacyContact": "Email and phone number are stripped before the text is sent, so they are not filled in automatically. That is about your privacy — enter them yourself in the builder.",
+      "privacyContact": "Email and phone number are removed before the text is sent to the AI. We take them from the file here in your browser instead, so they are never sent anywhere. Check that they are correct before you save.",
       "orKeepFile": "Would you rather keep the file as it is, without turning it into fields?",
       "orKeepFileLink": "Upload it under Your saved CVs",
       "wait": "It takes about half a minute. Don't close the window.",
@@ -1515,7 +1515,8 @@
       "copy": "Copy the text",
       "downloadAsPdf": "Download as PDF",
       "restoreDraft": "Go back to the draft",
-      "copiedAria": "The letter has been copied."
+      "copiedAria": "The letter has been copied.",
+      "draftUtanText": "The job is filled in, but the letter is not written yet."
     },
     "templates": {
       "selectAria": "Choose letter template",
@@ -5290,10 +5291,6 @@
       "changePassword": "Change password",
       "currentPassword": "Current password",
       "currentPasswordPlaceholder": "Enter your current password",
-      "newPassword": "New password",
-      "newPasswordPlaceholder": "Enter new password (at least 8 characters)",
-      "confirmPassword": "Confirm new password",
-      "confirmPasswordPlaceholder": "Repeat the new password",
       "updatePassword": "Update password"
     },
     "programSelector": {
@@ -7035,7 +7032,8 @@
     "downloadArticle": "Download",
     "downloadPreparing": "Preparing download…",
     "downloadReady": "The article has been downloaded as a PDF.",
-    "downloadFailed": "Could not create the PDF — please try again in a moment."
+    "downloadFailed": "Could not create the PDF — please try again in a moment.",
+    "baraSvenska": "This article is only in Swedish so far. Choose \"Translate the page\" in the language menu to read it in your language."
   },
   "linkedInOptimizer": {
     "title": "Your LinkedIn profile",
@@ -9961,5 +9959,42 @@
     "myndighetsnamn": "Names of authorities, for example Arbetsförmedlingen (the Swedish Public Employment Service) and Försäkringskassan (the Swedish Social Insurance Agency), should stay in Swedish. Use the Swedish name when you search online or call.",
     "listEtikett": "Choose a language for the translation",
     "original": "Swedish (no translation)"
+  },
+  "aterstall": {
+    "glomtLank": "Forgot your password?",
+    "glomtRubrik": "Forgot your password?",
+    "glomtIngress": "Write the email address you log in with. We will send a link where you choose a new password.",
+    "skickaLank": "Send link",
+    "skickat": "If there is an account for {{epost}}, we have sent a link there now.",
+    "skickatTips": "Check your spam folder if the email does not arrive within a few minutes. The link works once and only for a short time.",
+    "ogiltigEpost": "Write an email address, for example name@example.com.",
+    "forManga": "Too many tries. Wait a while and try again.",
+    "gickInte": "We could not send it right now. Try again later, or email support@jobin.se.",
+    "tillbakaTillLogin": "Back to log in",
+    "nyttRubrik": "Choose a new password",
+    "kontrollerar": "Checking the link …",
+    "lankOgiltig": "The link does not work any more. It may already be used or too old.",
+    "nyLank": "Send a new link",
+    "nyttLosenord": "New password",
+    "bekrafta": "Write the new password again",
+    "reglerRubrik": "The password needs",
+    "uppfyllt": "done",
+    "ejUppfyllt": "not done yet",
+    "olika": "The passwords are not the same.",
+    "uppfyllerInte": "The password does not meet all the rules in the list.",
+    "sammaSomForut": "Choose a different password than the one you had before.",
+    "sparaFel": "The password could not be saved. Try again.",
+    "sparaLosenord": "Save the password",
+    "klart": "Done. Your new password is saved and you are logged in.",
+    "tillPortalen": "Go to the portal",
+    "angeNuvarande": "Write your current password.",
+    "nuvarandeFel": "The current password is not correct.",
+    "bytt": "The password is changed.",
+    "utanLosenord": "You log in with Google and have no password with us. If you want to log in with email and password, we will send a link where you choose one."
+  },
+  "uppläsning": {
+    "lyssna": "Listen",
+    "pausa": "Pause",
+    "stoppa": "Stop reading aloud"
   }
 }
