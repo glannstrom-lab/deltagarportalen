@@ -1,5 +1,7 @@
 # Roadmap — Jobin (Deltagarportalen)
 
+> **Senast 2026-09-29/30:** tre roadmap-pass — se "Äldre kvar-listor genomgångna 2026-09-29", "Skarpt funktionstest" och "Rollspel 2026-09-28" nedan (✅-märkta med vad som verifierats). Öppna beslut: GA1-hemligheterna, CVK1, SFT2, SFT4, CH4.
+>
 > **Detta är projektets enda gällande plan.** Version **2026-09-22 kväll** (buggpasset: nio agenter med nya linser — UTC-datum, tysta fel, DB-lagret i prod; BP1–BP9 kräver Mikael, BP1 är en säkerhetslucka) ovanpå **2026-09-22** (städpasset: nio agenter, dödkod/buggar/skuld; ST1–ST4 kräver Mikael), byggd på version **2026-09-13** (tredje helhetsgenomgången —
 > sex roterade linser eftersom 560 filer ändrats sedan 7 september: KM-spårets domänlogik,
 > AG-spårets RLS/isolering, drift/observability för nya cronjobb, GDPR för företagsdatan,
