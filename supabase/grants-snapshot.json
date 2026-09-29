@@ -1,13 +1,6 @@
 {
-  "generatedAt": "2026-09-29T19:21:20.155Z",
+  "generatedAt": "2026-09-29T20:56:07.249Z",
   "functions": [
-    {
-      "name": "accept_consultant_request",
-      "signature": "accept_consultant_request(uuid)",
-      "definer": true,
-      "anon": false,
-      "authenticated": false
-    },
     {
       "name": "activity_plan_handovers_guard",
       "signature": "activity_plan_handovers_guard()",
@@ -186,13 +179,6 @@
     {
       "name": "create_learning_path_from_gap",
       "signature": "create_learning_path_from_gap(uuid,text,text,integer)",
-      "definer": true,
-      "anon": false,
-      "authenticated": false
-    },
-    {
-      "name": "decline_consultant_request",
-      "signature": "decline_consultant_request(uuid)",
       "definer": true,
       "anon": false,
       "authenticated": false
@@ -1426,6 +1412,10 @@
     },
     {
       "name": "sta_workplaces",
+      "rls": true
+    },
+    {
+      "name": "storage_gallring_ko",
       "rls": true
     },
     {

@@ -4305,11 +4305,6 @@
       "logIn": "Logga in",
       "tail": "för att spara permanent i molnet."
     },
-    "forYouToday": "För dig idag",
-    "shownOf": "{{shown}} av {{total}} övningar",
-    "exploreByCategory": "Utforska efter kategori",
-    "moreExercises": "(+{{count}} övningar)",
-    "pickCategoryHint": "Välj en kategori ovan för att se alla övningar inom det området.",
     "backToExercises": "Tillbaka till övningar",
     "wellDone": "Bra jobbat!",
     "completedExercise": "Du har genomfört övningen \"{{title}}\"",

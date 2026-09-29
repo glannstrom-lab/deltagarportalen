@@ -321,7 +321,16 @@ Deno.serve(medFelrapport('bolagsverket', async (req) => {
 
   // Distribuerad rate-limit (samma RPC som Vercel-vägen)
   try {
-    const { data: rlData, error: rlErr } = await supabase.rpc('check_rate_limit', {
+    // RL1: rate-limit-RPC:n går med service-nyckeln (bara för RPC:n); `supabase`
+    // (anon) används enbart för auth.getUser ovan.
+    const serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
+    if (!serviceKey) {
+      console.error('[RateLimit] SUPABASE_SERVICE_ROLE_KEY saknas — bolagsverket använder anon-klienten för check_rate_limit');
+    }
+    const rlClient = serviceKey
+      ? createClient(supabaseUrl, serviceKey, { auth: { persistSession: false, autoRefreshToken: false } })
+      : supabase;
+    const { data: rlData, error: rlErr } = await rlClient.rpc('check_rate_limit', {
       p_identifier: user.id,
       p_endpoint: 'bolagsverket',
       p_max_requests: RATE_LIMIT_PER_USER_PER_WINDOW,

@@ -83,3 +83,9 @@ vector_port = 54329
 # kontroll — se supabase/functions/health/index.ts.
 [functions.health]
 verify_jwt = false
+
+# GA1 (2026-09-29): anropas av GitHub Actions (.github/workflows/gallring-sopare.yml),
+# som saknar användar-JWT. Skyddet är i stället CRON_SECRET via _shared/cronAuth.ts,
+# fail closed (503 utan hemlighet, 401 vid fel). Ändra inte utan att läsa index.ts.
+[functions.gallring-sopare]
+verify_jwt = false

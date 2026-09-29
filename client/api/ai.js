@@ -1,4 +1,5 @@
 const { createClient } = require('@supabase/supabase-js');
+const { getRateLimitClient } = require('./_utils/rate-limit-client.js');
 const { logAiUsage } = require('./_utils/ai-usage-log');
 // BL6 (2026-09-12): felrapport till Sentry, sanerad — se _utils/sentry.js
 const { medFelrapport } = require('./_utils/sentry.js');
@@ -995,7 +996,8 @@ const hanterare = async (req, res) => {
     const data = sanitizeAll(body.data || body);
 
     // Check rate limit before processing
-    const rateLimit = await checkRateLimit(supabase, user.id, fn);
+    // RL1: rate-limit-RPC:n går med service-nyckeln, aldrig med anon-klienten.
+    const rateLimit = await checkRateLimit(getRateLimitClient() || supabase, user.id, fn);
     if (!rateLimit.allowed) {
       const retryAfter = Math.ceil(rateLimit.resetIn / 1000);
       res.setHeader('Retry-After', String(retryAfter));

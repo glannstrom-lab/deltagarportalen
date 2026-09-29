@@ -4305,11 +4305,6 @@
       "logIn": "Log in",
       "tail": "to save them in the cloud for good."
     },
-    "forYouToday": "For you today",
-    "shownOf": "{{shown}} of {{total}} exercises",
-    "exploreByCategory": "Explore by category",
-    "moreExercises": "(+{{count}} exercises)",
-    "pickCategoryHint": "Choose a category above to see all exercises in that area.",
     "backToExercises": "Back to exercises",
     "wellDone": "Well done!",
     "completedExercise": "You have finished the exercise \"{{title}}\"",

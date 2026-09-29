@@ -1,4 +1,4 @@
--- PENDING 2026-09-29 — gallringen städar inte filer: köa uid:n så en sopare kan
+-- Körd i prod 2026-09-29 (Mikaels ja) — 2026-09-29 — gallringen städar inte filer: köa uid:n så en sopare kan
 --
 -- PREMISSEN HÅLLER (prod 2026-09-29):
 --  * execute_inactive_account_retention() och execute_scheduled_account_deletions()
@@ -40,6 +40,8 @@
 --       Alt B: låt sopan vara manuell tills volymen motiverar mer — 1 cron-radering
 --              hittills. Kön gör att ingenting glöms, även om sopan kommer senare.
 --     Rekommendation: A med GitHub Actions (mönster finns i den nattliga backup.yml).
+--     BESLUT 2026-09-29 (Mikael): A. Byggt som supabase/functions/gallring-sopare +
+--     .github/workflows/gallring-sopare.yml (04:55 UTC, efter retention-jobben).
 --
 -- PRÖVA (rollback): kör filen inom begin; ... rollback;
 --   select to_regclass('public.storage_gallring_ko');   -> storage_gallring_ko
@@ -53,9 +55,7 @@
 -- Efter körning: cd client && npm run schema:refresh && npm run grants:refresh
 -- och committa snapshotarna (ny tabell + RLS utan policy).
 --
--- Bakåtfyllnad: det redan raderade cron-kontot (admin_audit_log: ACCOUNT_DELETION med
--- old_value->>deleted_by = retention_cron, target_id = uid) saknar köpost. Kör soparen
--- en gång manuellt mot det id:t. De 8 user_request-raderna städades av delete-account.
+-- Bakåtfyllnad: se INSERT sist i filen. De 8 user_request-raderna städades av delete-account.
 
 begin;
 
@@ -63,8 +63,11 @@ create table if not exists public.storage_gallring_ko (
   user_id    uuid primary key,          -- ingen FK: kontot är redan borta
   reason     text not null,
   queued_at  timestamptz not null default now(),
-  done_at    timestamptz,
-  resultat   text
+  -- GA1: soparen tar bort raden när båda lagren är städade. Misslyckas något
+  -- står raden kvar med räknat försök och senaste felet.
+  forsok         int not null default 0,
+  senaste_forsok timestamptz,
+  senaste_fel    text
 );
 
 alter table public.storage_gallring_ko enable row level security;
@@ -72,7 +75,7 @@ alter table public.storage_gallring_ko enable row level security;
 revoke all on public.storage_gallring_ko from public, anon, authenticated;
 
 comment on table public.storage_gallring_ko is
-  'uid:n vars konton raderats av gallringscron. Soparen raderar Storage <uid>/ och Vercel Blob user-<uid>/ och sätter done_at. Inga personuppgifter utöver uid.';
+  'uid:n vars konton raderats av gallringscron. Soparen (edge-funktionen gallring-sopare) raderar Storage <uid>/ och Vercel Blob user-<uid>/ och tar sedan bort raden; vid fel räknas forsok upp. Inga personuppgifter utöver uid.';
 
 CREATE OR REPLACE FUNCTION public.execute_inactive_account_retention()
  RETURNS TABLE(user_id uuid, utfall text)
@@ -183,5 +186,22 @@ BEGIN
   RETURN;
 END;
 $function$;
+
+-- Engångsköande av kontot som cron raderade INNAN kön fanns (admin_audit_log:
+-- ACCOUNT_DELETION, old_value->>'deleted_by' = 'retention_cron', 2026-09-12 14:10 UTC).
+-- Det har ingen köpost, så dess Storage-/Blob-filer skulle aldrig städas. Blob-prefixet
+-- user-<uid>/ är kvar publikt om användaren hade en profilbild. Soparen tar den här
+-- raden första natten efter deploy; är inget kvar att radera blir det "no blobs found"
+-- och raden försvinner. Idempotent (ON CONFLICT) och tar bara audit-poster som saknar
+-- kö-rad, så att en omkörning av filen inte köar redan städade konton på nytt —
+-- OBS: efter första sopan är raden borta, så kör INTE den här filen igen efteråt.
+insert into public.storage_gallring_ko (user_id, reason, queued_at)
+select a.target_id, 'backfill_retention_cron_before_queue', now()
+from public.admin_audit_log a
+where a.action = 'ACCOUNT_DELETION'
+  and a.old_value->>'deleted_by' = 'retention_cron'
+  and a.target_id is not null
+  and a.created_at < '2026-09-29'  -- bara tiden före kön; senare raderingar köas av funktionerna själva
+on conflict do nothing;
 
 commit;

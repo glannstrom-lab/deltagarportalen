@@ -1,4 +1,4 @@
--- PENDING 2026-09-29 — consultant_requests: avskriv den obesvarbara vägen
+-- Körd i prod 2026-09-29 (Mikaels ja) — consultant_requests: avskriv den obesvarbara vägen
 --
 -- PREMISSEN (mätt i prod 2026-09-29):
 --  * Policyn "Participants can respond to requests" är en UPDATE-policy med bara

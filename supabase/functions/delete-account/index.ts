@@ -11,7 +11,7 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.38.4'
 import { handleCorsPreflightOrNull, createCorsResponse, createErrorResponse, validateOriginOrReject } from '../_shared/cors.ts'
 import { cleanupUserStorage, describeCleanup } from './storageCleanup.ts'
 import { medFelrapport } from '../_shared/sentry.ts'
-import { fetchMedTimeout, TIDSGRANS_TJANST_MS } from '../_shared/fetchMedTimeout.ts'
+import { cleanupUserBlobs } from '../_shared/blobCleanup.ts'
 
 serve(medFelrapport('delete-account', async (req) => {
   // Handle CORS preflight
@@ -92,42 +92,9 @@ serve(medFelrapport('delete-account', async (req) => {
 
     // GDPR Art 17 — cascade radering till Vercel Blob för uppladdade filer.
     // Filer som hör till användaren är prefixade med `user-${userId}/`.
-    let blobCleanupStatus = 'skipped'
-    const blobToken = Deno.env.get('BLOB_READ_WRITE_TOKEN')
-    if (blobToken) {
-      try {
-        // Lista alla blobs med användarens prefix
-        const listResponse = await fetchMedTimeout(
-          `https://blob.vercel-storage.com?prefix=user-${userId}/`,
-          { headers: { 'Authorization': `Bearer ${blobToken}` } },
-          TIDSGRANS_TJANST_MS,
-        )
-        if (listResponse.ok) {
-          const { blobs } = await listResponse.json()
-          if (Array.isArray(blobs) && blobs.length > 0) {
-            // Radera varje blob
-            const urls = blobs.map((b: { url: string }) => b.url)
-            const deleteResponse = await fetchMedTimeout('https://blob.vercel-storage.com/delete', {
-              method: 'POST',
-              headers: {
-                'Authorization': `Bearer ${blobToken}`,
-                'Content-Type': 'application/json'
-              },
-              body: JSON.stringify({ urls })
-            }, TIDSGRANS_TJANST_MS)
-            blobCleanupStatus = deleteResponse.ok ? `deleted ${urls.length}` : `failed (${deleteResponse.status})`
-          } else {
-            blobCleanupStatus = 'no blobs found'
-          }
-        } else {
-          blobCleanupStatus = `list failed (${listResponse.status})`
-        }
-      } catch (err) {
-        console.error(`[delete-account] Blob cleanup error:`, err)
-        blobCleanupStatus = 'error'
-        // Fortsätt ändå — auth-radering är viktigare för GDPR-compliance
-      }
-    }
+    // Logiken bor sedan GA1 i _shared/blobCleanup.ts (delas med gallring-sopare).
+    // Ett fel här stoppar inte auth-raderingen — auth-radering är viktigare för GDPR.
+    const blobCleanupStatus = (await cleanupUserBlobs(Deno.env.get('BLOB_READ_WRITE_TOKEN'), userId)).status
     console.log(`[delete-account] Vercel Blob cleanup: ${blobCleanupStatus}`)
 
     // SD3 (2026-09-08): Supabase Storage — CV-filer och intyg i bucketen

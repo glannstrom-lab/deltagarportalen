@@ -1,0 +1,63 @@
+name: Gallring - städa filer
+
+# Gallringscronen (pg_cron, 03:00-05:10 UTC) raderar konton i databasen men kan inte
+# röra filerna: Supabase Storage nås bara via API, Vercel Blob bara med token, och
+# pg_net är inte installerat. Cronen köar därför uid:t i public.storage_gallring_ko
+# (migration PENDING_20260929_gallring_storage_ko.sql) och den här workflowen
+# anropar edge-funktionen gallring-sopare som städar och kvitterar.
+#
+# Körs 04:55 UTC, efter retention-inactive-accounts (03:00) och process-deletion-
+# requests (02:00). Kan köras manuellt (workflow_dispatch). Fel skrivs som ::error::
+# så att de går att läsa publikt via check-runs-API:t.
+
+on:
+  schedule:
+    - cron: '55 4 * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: gallring-sopare
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  sopa:
+    name: Städa köade konton
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Anropa gallring-sopare
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+          PROJECT_REF: ${{ secrets.SUPABASE_PROJECT_REF }}
+        run: |
+          set -u
+          if [ -z "$PROJECT_REF" ]; then echo "::error::Hemligheten SUPABASE_PROJECT_REF saknas."; exit 1; fi
+          if [ -z "$CRON_SECRET" ]; then echo "::error::Hemligheten CRON_SECRET saknas i GitHub."; exit 1; fi
+
+          body=$(mktemp)
+          code=$(curl -sS -o "$body" -w "%{http_code}" -X POST \
+            -H "x-cron-secret: $CRON_SECRET" \
+            -H "Content-Type: application/json" \
+            --max-time 120 \
+            "https://$PROJECT_REF.supabase.co/functions/v1/gallring-sopare") || {
+              echo "::error::gallring-sopare: anropet misslyckades (nät/timeout)."; exit 1; }
+
+          case "$code" in
+            200) ;;
+            401) echo "::error::gallring-sopare: 401 - CRON_SECRET i GitHub matchar inte den i Supabase."; exit 1 ;;
+            404) echo "::error::gallring-sopare: 404 - funktionen är inte deployad."; exit 1 ;;
+            503) echo "::error::gallring-sopare: 503 - CRON_SECRET eller BLOB_READ_WRITE_TOKEN saknas i Supabase: $(head -c 300 "$body")"; exit 1 ;;
+            *)   echo "::error::gallring-sopare: status $code: $(head -c 300 "$body")"; exit 1 ;;
+          esac
+
+          echo "Svar: $(head -c 1000 "$body")"
+          # Kroppen innehåller bara antal och uid, inga personuppgifter.
+          misslyckade=$(grep -o '"misslyckade":[0-9]*' "$body" | grep -o '[0-9]*$' || echo "")
+          if [ -z "$misslyckade" ]; then echo "::error::Kunde inte läsa svaret: $(head -c 300 "$body")"; exit 1; fi
+          if [ "$misslyckade" -gt 0 ]; then
+            echo "::error::$misslyckade köade konton kunde inte städas helt (de står kvar i kön): $(head -c 600 "$body")"
+            exit 1
+          fi

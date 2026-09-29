@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-29T19:21:13.618Z",
+  "generatedAt": "2026-09-29T20:56:00.585Z",
   "note": "Genererad av client/scripts/refresh-schema-snapshot.cjs. Kör om efter varje migration och committa i samma commit. Läses av check-schema-drift.cjs.",
   "tables": {
     "account_deletion_requests": [
@@ -1943,6 +1943,14 @@
       "updated_at",
       "weeks_planned"
     ],
+    "storage_gallring_ko": [
+      "forsok",
+      "queued_at",
+      "reason",
+      "senaste_fel",
+      "senaste_forsok",
+      "user_id"
+    ],
     "unified_profiles": [
       "career_goals",
       "created_at",
@@ -2258,7 +2266,6 @@
     ]
   },
   "routines": [
-    "accept_consultant_request",
     "activity_plan_handovers_guard",
     "activity_plan_handovers_no_delete",
     "activity_plan_handovers_sync_plan",
@@ -2285,7 +2292,6 @@
     "consultant_messages_notify",
     "create_daily_quests",
     "create_learning_path_from_gap",
-    "decline_consultant_request",
     "employer_checkins_notify",
     "employer_invitation_membership",
     "employer_invitations_insert",

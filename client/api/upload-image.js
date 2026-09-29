@@ -25,6 +25,7 @@
 const { put } = require('@vercel/blob');
 const { medFelrapport } = require('./_utils/sentry.js');
 const { createClient } = require('@supabase/supabase-js');
+const { getRateLimitClient } = require('./_utils/rate-limit-client.js');
 const { rateLimitFallback } = require('./_utils/rate-limit-fallback');
 
 const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
@@ -160,7 +161,8 @@ const hanterare = async function handler(req, res) {
   }
 
   // ---------- RATE LIMIT ----------
-  const rl = await checkRateLimit(supabase, user.id);
+  // RL1: rate-limit-RPC:n går med service-nyckeln; supabase (anon) bara för auth.
+  const rl = await checkRateLimit(getRateLimitClient() || supabase, user.id);
   if (!rl.allowed) {
     const retryAfter = Math.ceil(rl.resetIn / 1000);
     res.setHeader('Retry-After', String(retryAfter));

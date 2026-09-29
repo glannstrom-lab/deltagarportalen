@@ -26,6 +26,7 @@ const fs = require('fs');
 const os = require('os');
 const path = require('path');
 const { createClient } = require('@supabase/supabase-js');
+const { getRateLimitClient } = require('./_utils/rate-limit-client.js');
 const { medFelrapport } = require('./_utils/sentry.js');
 const { rateLimitFallback } = require('./_utils/rate-limit-fallback');
 // DYNAMISK import, inte `require`. RÖR INTE.
@@ -397,7 +398,8 @@ const hanterare = async (req, res) => {
   if (rlAuthErr || !rlUser) {
     return res.status(401).json({ error: 'Invalid token' });
   }
-  const rl = await checkRateLimit(rlSupabase, rlUser.id);
+  // RL1: rate-limit-RPC:n går med service-nyckeln; rlSupabase (anon) bara för auth.
+  const rl = await checkRateLimit(getRateLimitClient() || rlSupabase, rlUser.id);
   if (!rl.allowed) {
     const retryAfter = Math.ceil(rl.resetIn / 1000);
     res.setHeader('Retry-After', String(retryAfter));

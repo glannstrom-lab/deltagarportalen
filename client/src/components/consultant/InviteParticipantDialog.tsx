@@ -17,7 +17,7 @@ interface InviteParticipantDialogProps {
 
 // 'invite-utan-mejl': inbjudan sparad men send-invite-email gick inte igenom.
 // Kvittot får då inte säga att deltagaren fått ett mejl (städpasset 2026-09-22).
-type SuccessType = 'invite' | 'invite-utan-mejl' | 'request';
+type SuccessType = 'invite' | 'invite-utan-mejl';
 
 export const InviteParticipantDialog: React.FC<InviteParticipantDialogProps> = ({
   isOpen,
@@ -74,47 +74,14 @@ export const InviteParticipantDialog: React.FC<InviteParticipantDialogProps> = (
           throw new Error('Denna deltagare är redan kopplad till dig');
         }
 
-        // Kolla om det redan finns en pending förfrågan. maybeSingle(): 0
-        // rader är det vanliga (ingen tidigare förfrågan) — ett äkta läsfel
-        // ska inte tolkas som "ingen förfrågan finns" och glida vidare.
-        const { data: existingRequest, error: existingRequestError } = await supabase
-          .from('consultant_requests')
-          .select('id, status')
-          .eq('consultant_id', user.id)
-          .eq('participant_id', existingUser.id)
-          .maybeSingle();
-
-        if (existingRequestError) throw existingRequestError;
-
-        if (existingRequest) {
-          if (existingRequest.status === 'PENDING') {
-            throw new Error('Du har redan skickat en förfrågan till denna deltagare');
-          } else if (existingRequest.status === 'DECLINED') {
-            // Ta bort den nekade förfrågan och skapa en ny
-            await supabase
-              .from('consultant_requests')
-              .delete()
-              .eq('id', existingRequest.id);
-          }
-        }
-
-        // Skapa kopplingsförfrågan
-        const { error: requestError } = await supabase
-          .from('consultant_requests')
-          .insert({
-            consultant_id: user.id,
-            participant_id: existingUser.id,
-            message: formData.message || null,
-          });
-
-        if (requestError) throw requestError;
-
-        setSuccess('request');
-        setTimeout(() => {
-          onSuccess();
-          onClose();
-        }, 2000);
-        return;
+        // CR1 (2026-09-29, Mikaels beslut): kopplingsförfrågan är avskriven. Den gick
+        // till consultant_requests, som ingen deltagarvy läste och som aldrig kunde
+        // besvaras (UPDATE-policyn saknade WITH CHECK) — och dialogen lovade ändå att
+        // deltagaren "kommer att se din förfrågan". Säg i stället som det är.
+        throw new Error(
+          'Den här e-postadressen har redan ett konto hos Jobin. Ett befintligt konto kan inte kopplas till dig härifrån. ' +
+            'Be din chef lämna över deltagaren om hen har en annan konsulent, eller kontakta support@jobin.se.'
+        );
       }
 
       // Användaren finns inte - skapa inbjudan
@@ -211,22 +178,13 @@ export const InviteParticipantDialog: React.FC<InviteParticipantDialogProps> = (
                 Stäng
               </button>
             </>
-          ) : success === 'invite' ? (
+          ) : (
             <>
               <h2 id="invite-success-title" className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-2">
                 Inbjudan skickad!
               </h2>
               <p className="text-gray-600 dark:text-gray-400">
                 {formData.firstName || formData.email} har fått en inbjudan via email.
-              </p>
-            </>
-          ) : (
-            <>
-              <h2 id="invite-success-title" className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-2">
-                Kopplingsförfrågan skickad!
-              </h2>
-              <p className="text-gray-600 dark:text-gray-400">
-                Användaren finns redan och kommer att se din förfrågan nästa gång de loggar in.
               </p>
             </>
           )}
@@ -246,7 +204,7 @@ export const InviteParticipantDialog: React.FC<InviteParticipantDialogProps> = (
           <div>
             <h2 id="invite-dialog-title" className="text-xl font-bold text-gray-900 dark:text-gray-100">Bjud in deltagare</h2>
             <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-              Skicka inbjudan eller kopplingsförfrågan
+              Skicka en inbjudan via e-post
             </p>
           </div>
           <button
@@ -268,7 +226,7 @@ export const InviteParticipantDialog: React.FC<InviteParticipantDialogProps> = (
               <p className="font-medium mb-1">Så fungerar det:</p>
               <ul className="list-disc list-inside space-y-1 text-blue-700 dark:text-blue-400">
                 <li><strong>Ny användare:</strong> Får en inbjudan via email</li>
-                <li><strong>Befintlig användare:</strong> Får en kopplingsförfrågan att acceptera</li>
+                <li><strong>Har redan ett konto:</strong> Kan inte kopplas härifrån — be din chef lämna över deltagaren</li>
               </ul>
             </div>
           </div>

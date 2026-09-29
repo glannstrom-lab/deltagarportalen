@@ -451,15 +451,10 @@ function ExercisesInner() {
     const filtered = getFilteredExercises()
     const categories = getUniqueCategories()
 
-    // DESIGN.md §8 — max 5-7 saker synliga utan val.
-    // När filter='all' (ingen specifik kategori) visa bara 6 övningar med
-    // "Visa alla"-knapp. När en specifik kategori är vald, visa alla i den.
-    const isAllFilter = filter === 'all'
-    const VISIBLE_CAP = 6
-    const displayedExercises = isAllFilter && filtered.length > VISIBLE_CAP
-      ? filtered.slice(0, VISIBLE_CAP)
-      : filtered
-    const hiddenCount = filtered.length - displayedExercises.length
+    // EX1 (2026-09-29, Mikaels beslut): taket på 6 (DESIGN.md §8) jämförde mot
+    // 'all' medan filtret heter 'alla' och tändes därför aldrig. Chippet heter
+    // "Alla" och ska visa alla — taket och dess "För dig idag"-rubrik är borttagna.
+    const displayedExercises = filtered
 
     return (
       <PageLayout
@@ -581,18 +576,6 @@ function ExercisesInner() {
           ))}
         </div>
 
-        {/* Sektionsrubrik — visar att det finns en kuraterad bild ovan */}
-        {isAllFilter && filtered.length > VISIBLE_CAP && (
-          <div className="flex items-baseline justify-between gap-3">
-            <h2 className="text-base font-semibold text-stone-900 dark:text-stone-100">
-              {t('exercises.forYouToday', 'För dig idag')}
-            </h2>
-            <p className="text-sm text-stone-500 dark:text-stone-400">
-              {t('exercises.shownOf', '{{shown}} av {{total}} övningar', { shown: VISIBLE_CAP, total: filtered.length })}
-            </p>
-          </div>
-        )}
-
         {/* Exercise Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {displayedExercises.map((exercise) => {
@@ -667,25 +650,6 @@ function ExercisesInner() {
           </div>
         )}
 
-        {/* "Visa alla"-knapp när vi har dolt övningar (DESIGN.md §8) */}
-        {hiddenCount > 0 && (
-          <div className="text-center pt-2">
-            <button
-              onClick={() => {
-                if (categories.length > 0) setFilter(categories[0])
-              }}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-[var(--c-text)] font-medium hover:bg-[var(--c-bg)] hover:border-[var(--c-accent)] transition-colors"
-            >
-              {t('exercises.exploreByCategory', 'Utforska efter kategori')}
-              <span className="text-stone-500 font-normal">
-                {t('exercises.moreExercises', '(+{{count}} övningar)', { count: hiddenCount })}
-              </span>
-            </button>
-            <p className="text-xs text-stone-500 dark:text-stone-400 mt-3 max-w-md mx-auto">
-              {t('exercises.pickCategoryHint', 'Välj en kategori ovan för att se alla övningar inom det området.')}
-            </p>
-          </div>
-        )}
       </div>
       </PageLayout>
     )

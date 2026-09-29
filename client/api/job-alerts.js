@@ -8,6 +8,7 @@
  */
 
 const { createClient } = require('@supabase/supabase-js');
+const { getRateLimitClient } = require('./_utils/rate-limit-client.js');
 const { medFelrapport } = require('./_utils/sentry.js');
 const { arReserveradAdress } = require('./_utils/mejlutfall.js');
 
@@ -190,7 +191,9 @@ async function checkRateLimit(identifier, action) {
   const config = JOB_ALERT_RATE_LIMITS[action] || JOB_ALERT_RATE_LIMITS.default;
 
   try {
-    const { data, error } = await supabase.rpc('check_rate_limit', {
+    // RL1: egen rate-limit-klient (service-nyckel, bara för RPC:n). Faller på den
+    // allmänna klienten om URL saknas helt.
+    const { data, error } = await (getRateLimitClient() || supabase).rpc('check_rate_limit', {
       p_identifier: identifier,
       p_endpoint: `job-alerts-${action}`,
       p_max_requests: config.limit,

@@ -1,4 +1,4 @@
--- PENDING 2026-09-29 — ta bort STA-grenarna ur handle_first_signin och
+-- Körd i prod 2026-09-29 (Mikaels ja) — ta bort STA-grenarna ur handle_first_signin och
 -- handle_invitation_acceptance (STA arkiverad 2026-09-12)
 --
 -- PREMISSEN HÅLLER (prod 2026-09-29): båda funktionerna rör fortfarande sta_enrollments.

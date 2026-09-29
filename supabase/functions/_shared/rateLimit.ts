@@ -54,9 +54,21 @@ let supabaseClient: SupabaseClient | null = null
 function getSupabase(): SupabaseClient | null {
   if (supabaseClient) return supabaseClient
   const url = Deno.env.get('SUPABASE_URL')
-  const key = Deno.env.get('SUPABASE_ANON_KEY')
+  // RL1 (2026-09-29): check_rate_limit är bara körbar för service_role.
+  // Klienten används ENBART för den RPC:n — aldrig för annat.
+  const serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
+  const anonKey = Deno.env.get('SUPABASE_ANON_KEY')
+  if (!serviceKey) {
+    console.error(
+      '[RateLimit] SUPABASE_SERVICE_ROLE_KEY saknas — rate-limit-klienten bygger på anon-nyckeln; ' +
+        'efter REVOKE faller räknaren på in-memory fallback'
+    )
+  }
+  const key = serviceKey || anonKey
   if (!url || !key) return null
-  supabaseClient = createClient(url, key)
+  supabaseClient = createClient(url, key, {
+    auth: { persistSession: false, autoRefreshToken: false },
+  })
   return supabaseClient
 }
 
