@@ -29,12 +29,12 @@ afterAll(() => {
   rmSync(katalog, { recursive: true, force: true })
 })
 
-function korMed(andra: (snap: { functions: Array<{ name: string; anon: boolean }> }) => void) {
+function korMed(andra: (snap: { functions: Array<{ name: string; anon: boolean }> }) => void, extraEnv: Record<string, string> = {}) {
   const snap = JSON.parse(readFileSync(SNAPSHOT, 'utf8'))
   andra(snap)
   const fil = join(katalog, `snap-${Math.random().toString(36).slice(2)}.json`)
   writeFileSync(fil, JSON.stringify(snap))
-  return spawnSync(process.execPath, [SKRIPT], { encoding: 'utf8', env: { ...process.env, GRANTS_SNAPSHOT: fil } })
+  return spawnSync(process.execPath, [SKRIPT], { encoding: 'utf8', env: { ...process.env, GRANTS_SNAPSHOT: fil, ...extraEnv } })
 }
 
 describe('lint:grants regel 5 — client/api anropar med anon-nyckeln', () => {
@@ -44,10 +44,12 @@ describe('lint:grants regel 5 — client/api anropar med anon-nyckeln', () => {
     expect(r.stdout).toMatch(/\d+ i client\/api nåbara för anon/)
   })
 
-  it('fäller när anon tappar EXECUTE på check_rate_limit', () => {
+  // RL1 2026-09-29: check_rate_limit anropas nu med service-nyckeln och anon är revokerad —
+  // den står i SERVICE_ANROPADE. Utan undantaget ska regel 5 fortfarande fälla.
+  it('fäller när anon saknar EXECUTE och anropet inte är undantaget som service-anrop', () => {
     const r = korMed((snap) => {
       for (const f of snap.functions) if (f.name === 'check_rate_limit') f.anon = false
-    })
+    }, { LINT_GRANTS_UTAN_SERVICEUNDANTAG: '1' })
     expect(r.status).toBe(1)
     expect(r.stderr).toContain("anropar .rpc('check_rate_limit') med anon-nyckeln")
     expect(r.stderr).toMatch(/client[\\/]api[\\/]ai\.js/)

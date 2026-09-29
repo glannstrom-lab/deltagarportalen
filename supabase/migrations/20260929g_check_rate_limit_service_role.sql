@@ -1,4 +1,4 @@
--- PENDING 2026-09-29 — check_rate_limit: bara service_role
+-- Körd i prod 2026-09-29 (Mikaels ja, efter deploy afb02318) — check_rate_limit: bara service_role
 --
 -- PREMISSEN HÅLLER (bevisad i prod 2026-09-29, transaktion som avbröts):
 --   som anon: 30 anrop check_rate_limit('<offrets uid>','ai-personligt-brev',1000000,15)

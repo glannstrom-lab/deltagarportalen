@@ -32,13 +32,10 @@ const SNAPSHOT = process.env.GRANTS_SNAPSHOT || path.join(REPO_ROOT, 'supabase',
  * — står det inget skäl här hör funktionen inte hemma i listan.
  */
 const ANON_TILLATNA = {
-  // (Skälet pekade till 2026-09-22 på `api/_utils/rate-limiter.js:19`, en fil som
-  // inte finns. De verkliga anroparna står nedan, och regel 5 håller dem i synk.)
-  check_rate_limit:
-    'client/api/ai.js, cv-pdf.js och upload-image.js samt ' +
-    'supabase/functions/_shared/rateLimit.ts bygger sin klient med ANON-nyckeln, och alla ' +
-    'faller tillbaka på en in-memory-limiter vid fel utan att larma. Utan anon degraderas ' +
-    'rate-limiten tyst till per-instans-minne.',
+  // check_rate_limit stod här till 2026-09-29 (RL1): anon kunde bränna någons kvot.
+  // Alla anropare bygger nu rate-limit-klienten med service-nyckeln
+  // (api/_utils/rate-limit-client.js, _shared/rateLimit.ts) och anon är revokerad
+  // (20260929g). Vaktas av src/test/rate-limit-service-role.test.ts.
   get_invitation_by_token:
     'Inbjudningslänken öppnas innan kontot finns (A10). Tokenmatchad, returnerar bara ' +
     'id/email/role/metadata.',
@@ -84,8 +81,10 @@ const RLS_UNDANTAG = {}
  *            `overlamna_deltagare(org, deltagare, från, till)` — chefen lämnar över EN deltagare.
  *            Båda kräver att auth.uid() är chef/admin i organisationen (annars 42501, prövat
  *            som konsulent i prod); användar-id:na i argumenten avgör bara VAD, aldrig VEM.
+ *   27 → 26  2026-09-29, RL1: check_rate_limit revokerad från anon OCH authenticated —
+ *            bara service_role når den; alla anropare använder service-nyckeln.
  */
-const AUTH_TAK = 27
+const AUTH_TAK = 26
 
 const snapshot = JSON.parse(fs.readFileSync(SNAPSHOT, 'utf8'))
 const definerFunktioner = snapshot.functions.filter((f) => f.definer)
@@ -168,8 +167,21 @@ for (const [namn, fil] of rpcAnrop) {
  * mycket); ingenting såg det här hållet, och ANON_TILLATNA-skälet pekade dessutom på
  * en fil som inte fanns.
  */
+/**
+ * RPC:er som client/api anropar med SERVICE-nyckeln, inte anon — undantas från regel 5.
+ * Varje rad ska ha en grind som bevisar att klienten verkligen är service-klienten.
+ */
+const SERVICE_ANROPADE = {
+  check_rate_limit:
+    'RL1 2026-09-29: rate-limit-klienten byggs med service-nyckeln (api/_utils/rate-limit-client.js); ' +
+    'vaktas av src/test/rate-limit-service-role.test.ts. Anon revokerad (20260929g) — prövat i prod: ' +
+    'rate_limits fick rader efter revoke från både /api/cv-pdf och edge-funktionen losenord-aterstall.',
+}
+
 const apiRpcAnrop = samlaRpcAnrop(path.join(REPO_ROOT, 'client', 'api'), new Map(), /\.[cm]?js$/)
 for (const [namn, fil] of apiRpcAnrop) {
+  // Brytaren används bara av testet som bevisar att regel 5 fortfarande fäller.
+  if (SERVICE_ANROPADE[namn] && !process.env.LINT_GRANTS_UTAN_SERVICEUNDANTAG) continue
   const traffar = snapshot.functions.filter((f) => f.name === namn)
   if (traffar.length === 0) {
     fel.push(
