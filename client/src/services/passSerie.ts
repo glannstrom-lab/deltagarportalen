@@ -47,6 +47,21 @@ export function kommandeISerien<T extends SeriePass>(pass: T, alla: readonly T[]
   return [pass, ...senare.sort((a, b) => a.date.localeCompare(b.date))]
 }
 
+/**
+ * SFT7: samma vecka, annan veckodag. Ett pass på torsdag flyttat till onsdag
+ * hamnar dagen före, inte veckan efter — serien behåller sina veckor.
+ */
+export function flyttaTillVeckodag(datum: string, veckodag: number): string {
+  return addDays(datum, veckodag - isoWeekday(datum))
+}
+
+export interface PassFlytt { id: string; date: string }
+
+/** Varje pass i serien flyttat till `veckodag` (1–7) i sin egen vecka. */
+export function serieFlytt(serie: readonly SeriePass[], veckodag: number): PassFlytt[] {
+  return serie.map((s) => ({ id: s.id, date: flyttaTillVeckodag(s.date, veckodag) }))
+}
+
 // ---------------------------------------------------------------------------
 // Plats → pass
 // ---------------------------------------------------------------------------

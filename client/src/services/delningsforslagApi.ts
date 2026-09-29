@@ -23,6 +23,7 @@
 
 import { supabase } from '@/lib/supabase'
 
+import { anvandareFranSession } from '@/lib/anvandareFranSession'
 export type DelningsforslagStatus = 'pending' | 'accepted' | 'declined' | 'withdrawn' | 'expired'
 export type ForetagsSvar = 'pending' | 'interested' | 'declined'
 
@@ -85,7 +86,7 @@ export type NyttDelningsforslag = Partial<DelningsFalt> & {
 const PLATS_EMBED = 'consultant_work_placements(company_name, occupation, placement_type, start_date, end_date, hours_per_week, schedule_days)'
 
 async function requireUserId(): Promise<string> {
-  const { data, error } = await supabase.auth.getUser()
+  const { data, error } = await anvandareFranSession()
   if (error || !data.user) throw new Error('Inte inloggad')
   return data.user.id
 }

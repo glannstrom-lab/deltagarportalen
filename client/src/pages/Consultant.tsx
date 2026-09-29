@@ -4,10 +4,11 @@
  */
 
 import { lazy, Suspense } from 'react'
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, Navigate, useLocation, useSearchParams } from 'react-router-dom'
 import { PageLayout } from '@/components/layout/PageLayout'
 import { LoadingState } from '@/components/ui/LoadingState'
 import { consultantTabs } from '@/data/consultantTabs'
+import { flikSokvag, MOBIL_FLIKRAD_DOLJ_BOTTENNAV } from './consultantFlikar'
 import { useTranslation } from 'react-i18next'
 
 // E8 (2026-05-15): Lazy-loada tabbar så bara aktiv tab dras in.
@@ -26,6 +27,10 @@ const GruppnarvaroPage = lazy(() => import('./consultant/GruppnarvaroPage').then
 
 export default function Consultant() {
   const { t } = useTranslation()
+  const location = useLocation()
+  const [sok] = useSearchParams()
+  const dit = location.pathname.replace(/\/+$/, '') === '/consultant' ? flikSokvag(sok.get('tab')) : null
+  if (dit) return <Navigate to={dit} replace />
 
   return (
     <div className="bg-stone-50 dark:bg-stone-950">
@@ -35,6 +40,7 @@ export default function Consultant() {
         tabs={consultantTabs}
         tabVariant="glass"
         domain="info"
+        className={MOBIL_FLIKRAD_DOLJ_BOTTENNAV}
       >
         <Suspense fallback={<LoadingState />}>
           <Routes>

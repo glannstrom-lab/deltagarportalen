@@ -25,6 +25,7 @@ import { supabase } from '@/lib/supabase'
 import type { ForetagsSvar } from '@/services/delningsforslagApi'
 import type { Niva, PlaceringStatus, PlaceringTyp, Temperaturkrav } from '@/services/placeringarApi'
 
+import { anvandareFranSession } from '@/lib/anvandareFranSession'
 export type { ForetagsSvar }
 
 export type PlatsStatus = 'oppen' | 'pausad' | 'tillsatt' | 'stangd'
@@ -215,7 +216,7 @@ export interface ForetagsInbjudan {
 }
 
 async function requireUserId(): Promise<string> {
-  const { data, error } = await supabase.auth.getUser()
+  const { data, error } = await anvandareFranSession()
   if (error || !data.user) throw new Error('Inte inloggad')
   return data.user.id
 }

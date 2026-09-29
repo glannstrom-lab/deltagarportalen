@@ -40,6 +40,7 @@ import {
   type PaketPass,
 } from './underlagspaketPdf'
 
+import { anvandareFranSession } from '@/lib/anvandareFranSession'
 const STRECK = '-'
 const MANAD_NAMN = ['', 'januari', 'februari', 'mars', 'april', 'maj', 'juni', 'juli', 'augusti', 'september', 'oktober', 'november', 'december']
 const MANAD_KORT = ['', 'jan', 'feb', 'mar', 'apr', 'maj', 'jun', 'jul', 'aug', 'sep', 'okt', 'nov', 'dec']
@@ -343,7 +344,7 @@ export async function laddaNerManadsunderlag(args: {
   const { from, to } = manadGranser(ym)
   const sessions = (await aktivitetsplanApi.listSessions(plan.id, from, to)) as ManadsPass[]
 
-  const { data: { user } } = await supabase.auth.getUser()
+  const { data: { user } } = await anvandareFranSession()
   const ids = new Set<string>([plan.participant_id])
   if (user) ids.add(user.id)
   for (const s of sessions) if (s.marked_by) ids.add(s.marked_by)

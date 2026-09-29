@@ -19,6 +19,8 @@
  */
 
 import { useState, useEffect } from 'react'
+import { FelSammanfattning } from './FelSammanfattning'
+import type { FormularFel } from './gaTillFalt'
 import {
   X,
   Search,
@@ -48,6 +50,7 @@ import {
 } from '@/services/placeringUtfall'
 import type { Placement } from '@/services/consultantService'
 
+import { anvandareFranSession } from '@/lib/anvandareFranSession'
 interface Participant {
   participant_id: string
   first_name: string
@@ -80,6 +83,7 @@ export function PlacementDialog({
   const [step, setStep] = useState<'participant' | 'form'>('participant')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [felSignal, setFelSignal] = useState(0)
   const [searchQuery, setSearchQuery] = useState('')
   const [participants, setParticipants] = useState<Participant[]>([])
   /** Deltagarlistan kunde inte hämtas — skiljs från "inga deltagare". */
@@ -117,7 +121,7 @@ export function PlacementDialog({
   const fetchParticipants = async () => {
     setHamtFel(false)
     try {
-      const { data: { user } } = await supabase.auth.getUser()
+      const { data: { user } } = await anvandareFranSession()
       if (!user) return
 
       const { data, error } = await supabase
@@ -136,6 +140,7 @@ export function PlacementDialog({
   const resetForm = () => {
     setStep(preselectedParticipant ? 'form' : 'participant')
     setSelectedParticipant(preselectedParticipant || null)
+    setFelSignal(0)
     setEmployerName('')
     setJobTitle('')
     setStartDate(today())
@@ -155,21 +160,24 @@ export function PlacementDialog({
     resetForm()
   }
 
+  const omfTal = omfattning.trim() ? Number(omfattning.replace(',', '.')) : null
+  // KH5: felen som en lista utanför scrollytan — ett dött klick på "Spara"
+  // när fältet som saknas ligger utom synhåll är det som rollspelet hittade.
+  const felLista: FormularFel[] = [
+    !employerName.trim()
+      ? { faltId: 'placement-employer', text: placementType === 'studies' ? 'Skola eller utbildningsanordnare: ange namn' : 'Arbetsgivare: ange namn' }
+      : null,
+    omfTal !== null && (!Number.isFinite(omfTal) || omfTal <= 0 || (omfattningEnhet === 'h' ? omfTal > 60 : omfTal > 100))
+      ? { faltId: 'placement-omfattning', text: omfattningEnhet === 'h' ? 'Omfattning: mellan 1 och 60 timmar per vecka' : 'Omfattning: mellan 1 och 100 %' }
+      : null,
+    endDate && startDate && endDate < startDate
+      ? { faltId: 'placement-end', text: 'Slutdatum kan inte vara före startdatum' }
+      : null,
+  ].filter((f): f is FormularFel => !!f)
+
   const handleSubmit = async () => {
     if (!selectedParticipant) return
-    if (!employerName.trim()) {
-      setError(placementType === 'studies' ? 'Ange skola eller utbildningsanordnare.' : 'Ange arbetsgivarens namn.')
-      return
-    }
-    const omfTal = omfattning.trim() ? Number(omfattning.replace(',', '.')) : null
-    if (omfTal !== null && (!Number.isFinite(omfTal) || omfTal <= 0 || (omfattningEnhet === 'h' ? omfTal > 60 : omfTal > 100))) {
-      setError(omfattningEnhet === 'h' ? 'Omfattningen ska vara mellan 1 och 60 timmar per vecka.' : 'Omfattningen ska vara mellan 1 och 100 %.')
-      return
-    }
-    if (endDate && startDate && endDate < startDate) {
-      setError('Slutdatum kan inte vara före startdatum.')
-      return
-    }
+    if (felLista.length > 0) { setFelSignal((n) => n + 1); return }
     const extra: PlaceringExtra = {
       end_date: endDate || null,
       hours_per_week: omfattningEnhet === 'h' ? omfTal : null,
@@ -537,11 +545,13 @@ export function PlacementDialog({
           )}
         </div>
 
+        <FelSammanfattning signal={felSignal} fel={felLista} />
+
         {/* Footer */}
         {step === 'form' && selectedParticipant && (
           <div className="flex items-center justify-end gap-3 p-5 border-t border-stone-200 dark:border-stone-700">
             <Button variant="outline" onClick={handleClose}>Avbryt</Button>
-            <Button onClick={handleSubmit} disabled={loading || !employerName.trim()}>
+            <Button onClick={handleSubmit} disabled={loading}>
               {loading
                 ? <Loader2 className="w-4 h-4 mr-2 animate-spin" aria-hidden="true" />
                 : <Check className="w-4 h-4 mr-2" aria-hidden="true" />}

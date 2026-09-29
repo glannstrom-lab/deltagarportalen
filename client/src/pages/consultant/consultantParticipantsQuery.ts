@@ -27,6 +27,7 @@
 import { useQuery, useQueryClient, type QueryClient } from '@tanstack/react-query'
 import { supabase } from '@/lib/supabase'
 
+import { anvandareFranSession } from '@/lib/anvandareFranSession'
 // Vyn returnerar alla kolumner i supabase/schema-snapshot.json för
 // consultant_dashboard_participants. Konsumenterna har egna, snävare
 // interface (samma fält, ibland en delmängd) — den här typen är medvetet
@@ -38,7 +39,7 @@ export type ConsultantDashboardParticipantRow = Record<string, unknown> & {
 export const CONSULTANT_PARTICIPANTS_QUERY_KEY = ['consultant-dashboard-participants'] as const
 
 async function fetchConsultantParticipants(): Promise<ConsultantDashboardParticipantRow[]> {
-  const { data: { user } } = await supabase.auth.getUser()
+  const { data: { user } } = await anvandareFranSession()
   if (!user) throw new Error('Not authenticated')
 
   const { data, error } = await supabase

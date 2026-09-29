@@ -11,6 +11,7 @@ import { useState, useEffect, useRef } from 'react'
 import { z } from 'zod'
 import { supabase } from '@/lib/supabase'
 
+import { anvandareFranSession } from '@/lib/anvandareFranSession'
 /** Strukturerat yrkesfilter — AF concept_id + label för visning */
 export const occupationFilterSchema = z.object({
   conceptId: z.string().min(1),
@@ -67,7 +68,7 @@ export function useJobSearchFilters(defaultFilters: JobSearchFilters) {
     let cancelled = false
 
     ;(async () => {
-      const { data: { user } } = await supabase.auth.getUser()
+      const { data: { user } } = await anvandareFranSession()
       if (!user) {
         if (!cancelled) setIsLoaded(true)
         return
@@ -109,7 +110,7 @@ export function useJobSearchFilters(defaultFilters: JobSearchFilters) {
     if (saveTimerRef.current) clearTimeout(saveTimerRef.current)
 
     saveTimerRef.current = setTimeout(async () => {
-      const { data: { user } } = await supabase.auth.getUser()
+      const { data: { user } } = await anvandareFranSession()
       if (!user) return
 
       const payload = isDefaultFilters(filters) ? {} : filters

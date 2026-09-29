@@ -12,8 +12,33 @@ import {
 } from '@/components/ui/icons'
 import { claimOnboardingSession, releaseOnboardingSession } from '@/lib/onboardingCoordinator'
 import { useFocusTrap } from '@/hooks/useFocusTrap'
+import { useAuthStore } from '@/stores/authStore'
 
 const ONBOARDING_OWNER_ID = 'cv-builder' as const
+
+/** Gamla, GLOBALA nyckeln (före SV8/EG4). Läses fortfarande som "redan avfärdad". */
+const GAMMAL_NYCKEL = 'cv-onboarding-completed'
+/** SV8/EG4: avfärdandet bor per användare, samma mönster som OnboardingFlow (`jobin_tur_avfardad_`). */
+const TUR_NYCKEL = 'jobin_tur_avfardad_cv_'
+
+/** Har den här användaren redan avfärdat CV-turen i den här webbläsaren? */
+export function cvTurAvfardad(userId?: string | null): boolean {
+  try {
+    if (localStorage.getItem(GAMMAL_NYCKEL)) return true
+    return !!userId && localStorage.getItem(TUR_NYCKEL + userId) === '1'
+  } catch {
+    return false
+  }
+}
+
+/** Minns att turen är avfärdad. Utan användar-id (ej inloggad) faller den tillbaka på den gamla nyckeln. */
+export function minnsCvTurAvfardad(userId?: string | null): void {
+  try {
+    localStorage.setItem(userId ? TUR_NYCKEL + userId : GAMMAL_NYCKEL, userId ? '1' : 'true')
+  } catch {
+    // blockerad lagring — turen får komma tillbaka nästa gång
+  }
+}
 
 /** Har användaren svarat på cookiebannern? Nyckeln ägs av CookieConsent. */
 function hasAnsweredCookieBanner(): boolean {
@@ -81,9 +106,11 @@ export function CVOnboarding({ onComplete, onSkip }: CVOnboardingProps) {
   const { t } = useTranslation()
   const [currentStep, setCurrentStep] = useState(0)
   const [isVisible, setIsVisible] = useState(false) // start dold, claim:a session först
+  const { user } = useAuthStore()
+  const userId = user?.id
 
   const handleSkip = () => {
-    localStorage.setItem('cv-onboarding-completed', 'true')
+    minnsCvTurAvfardad(userId)
     setIsVisible(false)
     onSkip()
   }
@@ -100,8 +127,7 @@ export function CVOnboarding({ onComplete, onSkip }: CVOnboardingProps) {
 
   // Check if user has seen onboarding before + claim session (DESIGN.md §12)
   useEffect(() => {
-    const hasSeenOnboarding = localStorage.getItem('cv-onboarding-completed')
-    if (hasSeenOnboarding) return
+    if (cvTurAvfardad(userId)) return
 
     /**
      * UX16-bonus (2026-08-04): vid förstagångsbesök låg cookiekortet (z-50,
@@ -122,9 +148,9 @@ export function CVOnboarding({ onComplete, onSkip }: CVOnboardingProps) {
 
     // Frequency-cap: släpp endast EN onboarding per session
     if (!claimOnboardingSession(ONBOARDING_OWNER_ID)) return
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- äkta engångsprenumeration: claimOnboardingSession() muterar ett globalt sessionslås och får bara anropas en gång vid montering (StrictMode skulle claima/släppa fel antal gånger om det flyttades till render)
     setIsVisible(true)
     return () => releaseOnboardingSession(ONBOARDING_OWNER_ID)
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- engångsprenumeration vid montering, se ovan
   }, [])
 
   if (!isVisible) return null
@@ -147,7 +173,7 @@ export function CVOnboarding({ onComplete, onSkip }: CVOnboardingProps) {
   }
 
   const completeOnboarding = () => {
-    localStorage.setItem('cv-onboarding-completed', 'true')
+    minnsCvTurAvfardad(userId)
     setIsVisible(false)
     onComplete()
   }
@@ -281,11 +307,12 @@ export function CVOnboarding({ onComplete, onSkip }: CVOnboardingProps) {
 }
 
 // Reset onboarding (for testing or if user wants to see it again)
-export function resetOnboarding() {
-  localStorage.removeItem('cv-onboarding-completed')
+export function resetOnboarding(userId?: string | null) {
+  localStorage.removeItem(GAMMAL_NYCKEL)
+  if (userId) localStorage.removeItem(TUR_NYCKEL + userId)
 }
 
 // Check if onboarding should be shown
-export function shouldShowOnboarding(): boolean {
-  return !localStorage.getItem('cv-onboarding-completed')
+export function shouldShowOnboarding(userId?: string | null): boolean {
+  return !cvTurAvfardad(userId)
 }

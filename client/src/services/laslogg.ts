@@ -17,6 +17,7 @@
 
 import { supabase } from '@/lib/supabase'
 
+import { anvandareFranSession } from '@/lib/anvandareFranSession'
 export const VIEWED_ACTION = 'VIEWED_PARTICIPANT_DATA'
 
 /**
@@ -47,7 +48,7 @@ export interface AiPolicyRad {
 }
 
 async function requireUser() {
-  const { data: { user }, error } = await supabase.auth.getUser()
+  const { data: { user }, error } = await anvandareFranSession()
   if (error) throw error
   if (!user) throw new Error('Inte inloggad')
   return user

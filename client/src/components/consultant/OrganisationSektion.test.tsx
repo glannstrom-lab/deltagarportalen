@@ -29,6 +29,8 @@ vi.mock('@/services/orgApi', async () => {
       setColleagueRole: vi.fn(),
       removeColleague: vi.fn(),
       handover: vi.fn(),
+      overlamningsdeltagare: vi.fn(),
+      handoverParticipant: vi.fn(),
       setOrgAiEnabled: vi.fn(),
     },
   }
@@ -334,6 +336,47 @@ describe('OrganisationSektion', () => {
     expect(await screen.findByRole('status')).toHaveTextContent('12 deltagare överlämnade till Nour Nilsson.')
     // caseload laddas om tyst
     expect(orgApi.caseload).toHaveBeenCalledTimes(2)
+  })
+
+  it('CH5: förklarar varför handläggare inte finns bland mottagarna', async () => {
+    await somChefMedCaseload()
+    render(<OrganisationSektion />)
+    const tabell = await screen.findByRole('table')
+    fireEvent.click(within(tabell).getByRole('button', { name: /Överlämna deltagare/ }))
+    expect(within(tabell).getByText(/Handläggare finns inte i listan/)).toBeInTheDocument()
+  })
+
+  it('CH6/CH13: "En deltagare" hämtar namnen och flyttar bara den utpekade', async () => {
+    const orgApi = await somChefMedCaseload()
+    vi.mocked(orgApi.overlamningsdeltagare).mockResolvedValue([
+      { participant_id: 'p1', namn: 'Amina A' },
+      { participant_id: 'p2', namn: 'Erik E' },
+    ])
+    vi.mocked(orgApi.handoverParticipant).mockResolvedValue(undefined)
+    render(<OrganisationSektion />)
+    const tabell = await screen.findByRole('table')
+    fireEvent.click(within(tabell).getByRole('button', { name: /Överlämna deltagare/ }))
+    fireEvent.click(within(tabell).getByRole('button', { name: 'En deltagare' }))
+    const val = await within(tabell).findByLabelText('Deltagare')
+    expect(orgApi.overlamningsdeltagare).toHaveBeenCalledWith('o1', 'u2')
+    fireEvent.change(val, { target: { value: 'p2' } })
+    fireEvent.change(within(tabell).getByLabelText('Lämna över till'), { target: { value: 'u3' } })
+    fireEvent.click(within(tabell).getByRole('button', { name: 'Överlämna deltagaren' }))
+    await waitFor(() => expect(orgApi.handoverParticipant).toHaveBeenCalledWith('o1', 'p2', 'u2', 'u3'))
+    expect(orgApi.handover).not.toHaveBeenCalled()
+    expect(await screen.findByRole('status')).toHaveTextContent('Erik E överlämnad till Nour Nilsson.')
+  })
+
+  it('CH6/CH13: saknas RPC:n visas ett ärligt fel och "Alla deltagare" fungerar som förut', async () => {
+    const orgApi = await somChefMedCaseload()
+    vi.mocked(orgApi.overlamningsdeltagare).mockRejectedValue(new Error('Att lämna över en enskild deltagare är inte påslaget än.'))
+    render(<OrganisationSektion />)
+    const tabell = await screen.findByRole('table')
+    fireEvent.click(within(tabell).getByRole('button', { name: /Överlämna deltagare/ }))
+    fireEvent.click(within(tabell).getByRole('button', { name: 'En deltagare' }))
+    expect(await within(tabell).findByRole('alert')).toHaveTextContent('inte påslaget än')
+    fireEvent.click(within(tabell).getByRole('button', { name: 'Alla deltagare' }))
+    expect(within(tabell).getByRole('button', { name: 'Överlämna 12 deltagare' })).toBeInTheDocument()
   })
 
   it('visar databasens felmeddelande vid överlämning', async () => {

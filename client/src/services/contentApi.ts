@@ -157,6 +157,22 @@ function pa(sprak: string, en: string | null | undefined, sv: string): string {
   return t ? t : sv
 }
 
+/**
+ * Vilket språk brödtexten visas på. Listvyerna hämtar inte brödtexten (LISTKOLUMNER),
+ * så där avgör title_en: i prod har de 164 artiklar som har title_en också content_en,
+ * och de 130 utan har ingetdera (mätt 2026-09-29). Utan den här reserven blev
+ * listans svar alltid 'sv' och korten kunde inte säga "bara på svenska" (NY4).
+ */
+export function innehallSprak(
+  sprak: string,
+  article: { content?: string | null; content_en?: string | null; title_en?: string | null },
+): 'sv' | 'en' {
+  if (sprak === 'sv') return 'sv'
+  if ((article.content_en ?? '').trim()) return 'en'
+  const listrad = article.content === undefined && article.content_en === undefined
+  return listrad && (article.title_en ?? '').trim() ? 'en' : 'sv'
+}
+
 function dbArticleToEnhanced(article: ArticleFromDB): EnhancedArticle {
   let sprak = 'sv'
   try {
@@ -170,7 +186,7 @@ function dbArticleToEnhanced(article: ArticleFromDB): EnhancedArticle {
     summary: pa(sprak, article.summary_en, article.summary),
     // Listvyerna hämtar inte brödtexten (se LISTKOLUMNER).
     content: pa(sprak, article.content_en, article.content ?? ''),
-    contentSprak: sprak !== 'sv' && (article.content_en ?? '').trim() ? 'en' : 'sv',
+    contentSprak: innehallSprak(sprak, article),
     category: article.category_key || '',
     subcategory: article.subcategory || undefined,
     tags: article.tags || [],

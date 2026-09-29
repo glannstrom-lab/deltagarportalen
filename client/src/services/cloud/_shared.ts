@@ -7,9 +7,9 @@
  * localStorage; handleStorageError loggar tyst och kastar aldrig.
  */
 
-import { supabase } from '@/lib/supabase'
 import { storageLogger } from '@/lib/logger'
 
+import { anvandareFranSession } from '@/lib/anvandareFranSession'
 export interface SupabaseError {
   code?: string
   status?: number
@@ -18,7 +18,7 @@ export interface SupabaseError {
 
 // Hjälpfunktion för att hämta aktuell användare
 export async function getCurrentUser() {
-  const { data: { user } } = await supabase.auth.getUser()
+  const { data: { user } } = await anvandareFranSession()
   return user
 }
 

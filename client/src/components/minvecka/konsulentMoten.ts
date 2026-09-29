@@ -16,6 +16,7 @@
 import { supabase } from '@/lib/supabase'
 import { formatLocalDate } from '@/services/aktivitetSchema'
 
+import { anvandareFranSession } from '@/lib/anvandareFranSession'
 export interface KonsulentMote {
   id: string
   scheduled_at: string
@@ -51,7 +52,7 @@ export function motenPaDag(moten: readonly KonsulentMote[], datum: string): Kons
 
 /** Veckans bokade möten, måndag–söndag i lokal tid. Kastar vid läsfel — ett fel är inte "inga möten". */
 export async function hamtaMoten(fran: string, till: string): Promise<KonsulentMote[]> {
-  const { data: auth, error: authFel } = await supabase.auth.getUser()
+  const { data: auth, error: authFel } = await anvandareFranSession()
   if (authFel || !auth.user) throw new Error('Inte inloggad')
   const start = new Date(`${fran}T00:00:00`).toISOString()
   const slut = new Date(`${till}T23:59:59`).toISOString()

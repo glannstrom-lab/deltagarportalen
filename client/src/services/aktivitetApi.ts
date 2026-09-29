@@ -28,6 +28,7 @@ import {
 import { notisOgiltigFranvaro, notisPassAndrat, notisPlanSkapad } from './aktivitetNotiser'
 import { arendeKolumn, passKolumner, underrattadKolumner, type PassExtra } from './planMarkning'
 
+import { anvandareFranSession } from '@/lib/anvandareFranSession'
 // ============================================================================
 // TYPER
 // ============================================================================
@@ -190,7 +191,7 @@ export interface PassAndring {
 // ============================================================================
 
 async function requireUser() {
-  const { data: { user }, error } = await supabase.auth.getUser()
+  const { data: { user }, error } = await anvandareFranSession()
   if (error) throw error
   if (!user) throw new Error('Inte inloggad')
   return user
@@ -700,6 +701,35 @@ export const aktivitetsplanApi = {
     }
     if (andrade[0]) await notisBonus('pass ändrat', () => notisPassAndrat(andrade[0], { typ: 'andrat' }))
     return andrade
+  },
+
+  /**
+   * SFT7: flytta pass till andra datum — ett pass, eller en serie där varje
+   * pass får sitt eget nya datum. Passen som redan är markerade rörs aldrig
+   * (villkoret ligger i frågan, inte bara i gränssnittet), och det kastas om
+   * något pass inte gick att flytta så ingen halv serie lämnas i tystnad.
+   * Konsulenten är planens ägare, så triggern (participant_guard) släpper igenom.
+   */
+  async flyttaSessions(flytt: ReadonlyArray<{ id: string; date: string }>, opts: { tystNotis?: boolean } = {}): Promise<ActivitySession[]> {
+    await requireUser()
+    if (flytt.length === 0) return []
+    const flyttade: ActivitySession[] = []
+    for (const f of flytt) {
+      const { data, error } = await supabase
+        .from('activity_sessions')
+        .update({ date: f.date })
+        .eq('id', f.id)
+        .is('attendance', null)
+        .select('*')
+      if (error) throw error
+      if (!data || data.length === 0) {
+        throw new Error(`Bara ${flyttade.length} av ${flytt.length} pass kunde flyttas — ett är redan markerat eller borttaget. Ladda om planen och försök igen.`)
+      }
+      flyttade.push(mapSession(data[0] as Record<string, unknown>))
+    }
+    flyttade.sort((a, b) => a.date.localeCompare(b.date))
+    if (flyttade[0] && !opts.tystNotis) await notisBonus('pass flyttat', () => notisPassAndrat(flyttade[0], { typ: 'andrat' }))
+    return flyttade
   },
 
   /**

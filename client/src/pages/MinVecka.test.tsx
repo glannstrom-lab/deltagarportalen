@@ -11,6 +11,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { render, screen, cleanup, waitFor, userEvent } from '@/test/utils'
 import MinVecka from './MinVecka'
+import { konsulentMeddelandeApi } from '@/services/konsulentMeddelandeApi'
 import { formatLocalDate, veckansMandag, addDays } from '@/services/aktivitetSchema'
 
 vi.mock('@/components/layout/PageLayout', () => ({
@@ -138,6 +139,36 @@ describe('Min vecka', () => {
     expect(await screen.findByText('Ingen vecka planerad än')).toBeInTheDocument()
     expect(screen.queryByText(/timmar den här veckan/)).not.toBeInTheDocument()
     expect(listMySessions).not.toHaveBeenCalled()
+  })
+
+  it('NY6-rest: utan kopplad konsulent står det inte att "din konsulent" lägger upp veckan', async () => {
+    // Mutation: ta bort utanKonsulent-grenen i MinVecka → faller.
+    getMyPlan.mockResolvedValue(null)
+    vi.mocked(konsulentMeddelandeApi.minKonsulent).mockResolvedValueOnce(null)
+    render(<MinVecka />)
+    expect(await screen.findByText('Din vecka visas här när du har en konsulent')).toBeInTheDocument()
+    expect(screen.getByText(/Du har ingen konsulent kopplad ännu/)).toBeInTheDocument()
+    expect(screen.queryByText(/Din konsulent lägger upp veckan/)).not.toBeInTheDocument()
+  })
+
+  it('NY6-rest: med konsulent men utan plan är texten den gamla, och vi väntar in svaret först', async () => {
+    getMyPlan.mockResolvedValue(null)
+    let klar: (v: { id: string; namn: string }) => void = () => {}
+    vi.mocked(konsulentMeddelandeApi.minKonsulent).mockReturnValueOnce(new Promise((r) => { klar = r }))
+    render(<MinVecka />)
+    await waitFor(() => expect(konsulentMeddelandeApi.minKonsulent).toHaveBeenCalled())
+    // Laddar: varken den ena eller andra texten får påstås ännu.
+    expect(screen.queryByText(/konsulent/i)).not.toBeInTheDocument()
+    klar({ id: 'k1', namn: 'Kim' })
+    expect(await screen.findByText('Ingen vecka planerad än')).toBeInTheDocument()
+  })
+
+  it('NY6-rest: fel vid hämtning av konsulenten ger den neutrala texten', async () => {
+    getMyPlan.mockResolvedValue(null)
+    vi.mocked(konsulentMeddelandeApi.minKonsulent).mockRejectedValueOnce(new Error('nät'))
+    render(<MinVecka />)
+    expect(await screen.findByText('Ingen vecka planerad än')).toBeInTheDocument()
+    expect(screen.queryByText(/ingen konsulent kopplad/)).not.toBeInTheDocument()
   })
 
   it('NY6: tomtillståndet säger vad man kan göra medan man väntar och länkar aktivitetskravsguiden', async () => {

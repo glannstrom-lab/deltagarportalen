@@ -6,6 +6,7 @@
 import { supabase } from '../lib/supabase'
 import { generateProfileSummary } from './aiApi'
 
+import { anvandareFranSession } from '@/lib/anvandareFranSession'
 // ============================================
 // TYPES
 // ============================================
@@ -125,7 +126,7 @@ export const profileImageApi = {
   },
 
   async delete(): Promise<void> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new Error('Not authenticated')
 
     // Note: Vercel Blob files are not deleted here (they auto-expire or can be cleaned up separately)
@@ -144,7 +145,7 @@ export const profileImageApi = {
 
 export const profileDocumentsApi = {
   async getAll(): Promise<ProfileDocument[]> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new Error('Not authenticated')
 
     // Läsfel KASTAS (2026-09-24). `if (error) throw error` låg tidigare
@@ -169,7 +170,7 @@ export const profileDocumentsApi = {
     issue_date?: string
     expiry_date?: string
   }): Promise<ProfileDocument> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new Error('Not authenticated')
 
     if (file.size > 10 * 1024 * 1024) {
@@ -222,7 +223,7 @@ export const profileDocumentsApi = {
   },
 
   async delete(id: string): Promise<void> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new Error('Not authenticated')
 
     const { error } = await supabase
@@ -241,7 +242,7 @@ export const profileDocumentsApi = {
 
 export const profileSkillsApi = {
   async getAll(): Promise<ProfileSkill[]> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new Error('Not authenticated')
 
     // Läsfel KASTAS (2026-09-24). `if (error) throw error` låg tidigare
@@ -264,7 +265,7 @@ export const profileSkillsApi = {
     level: number
     years_experience?: number
   }): Promise<ProfileSkill> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new Error('Not authenticated')
 
     const { data, error } = await supabase
@@ -281,7 +282,7 @@ export const profileSkillsApi = {
   },
 
   async update(id: string, updates: Partial<ProfileSkill>): Promise<ProfileSkill> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new Error('Not authenticated')
 
     const { data, error } = await supabase
@@ -297,7 +298,7 @@ export const profileSkillsApi = {
   },
 
   async delete(id: string): Promise<void> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new Error('Not authenticated')
 
     const { error } = await supabase
@@ -310,7 +311,7 @@ export const profileSkillsApi = {
   },
 
   async importFromCV(): Promise<ProfileSkill[]> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new Error('Not authenticated')
 
     // Get CV skills
@@ -361,7 +362,7 @@ export const profileSkillsApi = {
 
 export const profileShareApi = {
   async getAll(): Promise<ProfileShare[]> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new Error('Not authenticated')
 
     // Läsfel KASTAS (2026-09-24). `if (error) throw error` låg tidigare
@@ -389,7 +390,7 @@ export const profileShareApi = {
     expires_in_days?: number
     max_views?: number
   } = {}): Promise<ProfileShare> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new Error('Not authenticated')
 
     const shareCode = Math.random().toString(36).substring(2, 15) +
@@ -422,7 +423,7 @@ export const profileShareApi = {
   },
 
   async delete(id: string): Promise<void> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new Error('Not authenticated')
 
     const { error } = await supabase
@@ -464,7 +465,7 @@ export const profileShareApi = {
 
 export const profileHistoryApi = {
   async getAll(limit = 50): Promise<ProfileHistoryEntry[]> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new Error('Not authenticated')
 
     // Läsfel KASTAS (2026-09-24). `if (error) throw error` låg tidigare
@@ -490,7 +491,7 @@ export const profileHistoryApi = {
 
 export const aiSummaryApi = {
   async generate(): Promise<string> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new Error('Not authenticated')
 
     // Get profile data
@@ -564,7 +565,7 @@ export const aiSummaryApi = {
   },
 
   async get(): Promise<string | null> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) return null
 
     const { data } = await supabase
@@ -577,7 +578,7 @@ export const aiSummaryApi = {
   },
 
   async save(summary: string): Promise<void> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new Error('Not authenticated')
 
     const { error } = await supabase
@@ -601,7 +602,7 @@ export const cvIntegrationApi = {
     imported: string[]
     skipped: string[]
   }> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new Error('Not authenticated')
 
     const imported: string[] = []
@@ -683,7 +684,7 @@ export const cvIntegrationApi = {
 
 export const profileExportApi = {
   async toJSON(): Promise<Record<string, unknown>> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new Error('Not authenticated')
 
     // cvs: maybeSingle() — en export ska kunna slutföras för en användare
@@ -712,7 +713,7 @@ export const profileExportApi = {
   async toPDF(): Promise<Blob> {
     // Use existing pdfExportService for CV
     const { generateCVPDF } = await import('./pdfExportService')
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new Error('Not authenticated')
 
     // Get CV data

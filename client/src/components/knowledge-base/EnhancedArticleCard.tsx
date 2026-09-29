@@ -32,6 +32,8 @@ interface EnhancedArticleCardProps {
     difficulty?: 'easy-swedish' | 'easy' | 'medium' | 'detailed'
     author?: string
     relatedExercises?: string[]
+    /** NY4: 'sv' när brödtexten bara finns på svenska (sätts av contentApi). */
+    contentSprak?: 'sv' | 'en'
   }
   variant?: 'default' | 'compact'
   /** Rubriknivå. Listläget ligger under en `h2`, gridläget likaså — men
@@ -44,7 +46,9 @@ export default function EnhancedArticleCard({
   variant = 'default',
   headingLevel = 'h3',
 }: EnhancedArticleCardProps) {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
+  const baraSvenska =
+    article.contentSprak === 'sv' && !(i18n.language ?? 'sv').startsWith('sv')
   const Rubrik = headingLevel
   const tags = (article.tags ?? []).slice(0, 3)
   const articleUrl = `/knowledge-base/article/${article.id}`
@@ -78,6 +82,11 @@ export default function EnhancedArticleCard({
             <span className="inline-block px-2 py-1 text-xs font-medium rounded-full bg-[var(--c-bg)] text-[var(--c-text)] border border-[var(--c-accent)]">
               {kategoriNamn(t, article.category)}
             </span>
+            {baraSvenska && (
+              <span className="inline-block px-2 py-1 text-xs font-medium rounded-full bg-stone-100 text-stone-700 dark:bg-stone-800 dark:text-stone-200">
+                {t('knowledgeBase.baraSvenskaKort', 'Bara på svenska')}
+              </span>
+            )}
           </div>
 
           <Rubrik className="font-semibold text-stone-900 dark:text-stone-100 group-hover:text-[var(--c-text)] transition-colors mb-2">

@@ -52,6 +52,7 @@ import { formatLocalDate } from '@/services/aktivitetSchema'
 import { csvTabell } from '@/components/consultant/deltagarExport'
 import { useRapportOmfang } from '@/components/consultant/useRapportOmfang'
 
+import { anvandareFranSession } from '@/lib/anvandareFranSession'
 interface PlacementRow {
   id: string
   participantId: string
@@ -288,7 +289,7 @@ export function AnalyticsTab() {
     try {
       setLoading(true)
       setError(null)
-      const { data: { user } } = await supabase.auth.getUser()
+      const { data: { user } } = await anvandareFranSession()
       if (!user) return
 
       // Calculate date range

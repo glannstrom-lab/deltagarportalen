@@ -10,6 +10,7 @@ import { supabase } from '@/lib/supabase'
 import { showToast } from '@/components/Toast'
 import type { Skill } from './supabaseApi'
 
+import { anvandareFranSession } from '@/lib/anvandareFranSession'
 // ============================================
 // TYPES
 // ============================================
@@ -115,7 +116,7 @@ export const unifiedProfileApi = {
    * Aggreggerar data från flera källor (profile, cv, interest_result, etc.)
    */
   async getProfile(): Promise<Partial<UnifiedProfileData>> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new Error('Inte inloggad')
 
     // Parallella hämtningar för bättre prestanda
@@ -241,7 +242,7 @@ export const unifiedProfileApi = {
    */
   async updateCore(data: Partial<CoreProfile>): Promise<void> {
     try {
-      const { data: { user } } = await supabase.auth.getUser()
+      const { data: { user } } = await anvandareFranSession()
       if (!user) throw new Error('Inte inloggad')
 
       // Uppdatera unified_profiles
@@ -296,7 +297,7 @@ export const unifiedProfileApi = {
    */
   async updateCareer(data: Partial<CareerProfile>): Promise<void> {
     try {
-      const { data: { user } } = await supabase.auth.getUser()
+      const { data: { user } } = await anvandareFranSession()
       if (!user) throw new Error('Inte inloggad')
 
       // Valid employment status values
@@ -388,7 +389,7 @@ export const unifiedProfileApi = {
     // (inkl. "inte inloggad" och riktiga skriv-/läsfel) tyst utan att kasta
     // vidare. "Inget CV finns än" är ett legitimt no-op-läge (maybeSingle
     // ger null utan error) — men äkta fel ska synas hos anroparen.
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new Error('Inte inloggad')
 
     // Hämta CV-data
@@ -430,7 +431,7 @@ export const unifiedProfileApi = {
     // D11 (2026-07-23): samma mönster som syncFromCV — "ingen unified profile
     // än" (PGRST116 från .single()) är ett legitimt no-op, men äkta fel ska
     // kastas vidare i stället för att sväljas tyst.
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new Error('Inte inloggad')
 
     // Hämta unified profile
@@ -474,7 +475,7 @@ export const unifiedProfileApi = {
    */
   async uploadProfileImage(file: File): Promise<string> {
     try {
-      const { data: { user } } = await supabase.auth.getUser()
+      const { data: { user } } = await anvandareFranSession()
       if (!user) throw new Error('Inte inloggad')
 
       const fileExt = file.name.split('.').pop()

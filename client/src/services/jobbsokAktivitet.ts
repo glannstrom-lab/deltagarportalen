@@ -24,6 +24,7 @@
 import { supabase } from '@/lib/supabase'
 import { addDays, formatLocalDate, veckansMandag } from './aktivitetSchema'
 
+import { anvandareFranSession } from '@/lib/anvandareFranSession'
 export interface SavedJobRad {
   created_at: string
   application_date: string | null
@@ -93,7 +94,7 @@ export function harNagot(v: Veckojobbsok): boolean {
 }
 
 async function requireUser() {
-  const { data: { user }, error } = await supabase.auth.getUser()
+  const { data: { user }, error } = await anvandareFranSession()
   if (error) throw error
   if (!user) throw new Error('Inte inloggad')
   return user

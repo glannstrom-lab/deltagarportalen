@@ -32,6 +32,7 @@ import { Button } from '@/components/ui/Button'
 import { Dialog } from '@/components/ui/Dialog'
 import { cn } from '@/lib/utils'
 
+import { anvandareFranSession } from '@/lib/anvandareFranSession'
 interface ReportDraftDialogProps {
   isOpen: boolean
   onClose: () => void
@@ -150,7 +151,7 @@ export function ReportDraftDialog({ isOpen, onClose, participantId }: ReportDraf
     let cancelled = false
     void (async () => {
       if (!consultantIdRef.current) {
-        const { data: { user } } = await supabase.auth.getUser()
+        const { data: { user } } = await anvandareFranSession()
         if (cancelled) return
         consultantIdRef.current = user?.id ?? null
       }
@@ -225,7 +226,7 @@ export function ReportDraftDialog({ isOpen, onClose, participantId }: ReportDraf
     // det fel var konsulentens handredigerade text borta, och debouncen skrev
     // tomheten till sessionStorage.
     try {
-      const { data: { user } } = await supabase.auth.getUser()
+      const { data: { user } } = await anvandareFranSession()
       if (!user) return
 
       // Hämta journalanteckningar för perioden

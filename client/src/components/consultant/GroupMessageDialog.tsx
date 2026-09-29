@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/Button'
 import { Dialog } from '@/components/ui/Dialog'
 import { cn } from '@/lib/utils'
 
+import { anvandareFranSession } from '@/lib/anvandareFranSession'
 interface Participant {
   participant_id: string
   first_name: string
@@ -59,7 +60,7 @@ export function GroupMessageDialog({
     setLoading(true)
     setHamtFel(false)
     try {
-      const { data: { user } } = await supabase.auth.getUser()
+      const { data: { user } } = await anvandareFranSession()
       if (!user) return
 
       const { data, error } = await supabase
@@ -109,7 +110,7 @@ export function GroupMessageDialog({
     if (selectedIds.size === 0 || !message.trim()) return
     setSending(true)
     try {
-      const { data: { user } } = await supabase.auth.getUser()
+      const { data: { user } } = await anvandareFranSession()
       if (!user) throw new Error('Not authenticated')
 
       const recipientIds = Array.from(selectedIds)

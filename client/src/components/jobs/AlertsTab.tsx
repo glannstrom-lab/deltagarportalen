@@ -438,13 +438,18 @@ function AlertCard({
         <div className="flex items-center gap-2">
           <button
             onClick={() => onToggle(alert.id, !alert.is_active)}
+            // SFT3: en switch, inte en ikonknapp — läget läses upp (aria-checked) och
+            // namnet är stabilt. Titeln som växlade mellan Pausa/Slå på blir kvar som tooltip.
+            role="switch"
+            aria-checked={alert.is_active}
+            aria-label={t('jobSearch.alertsTab.switchLabel', { defaultValue: 'Bevakning: {{namn}}', namn: alert.name })}
             className="p-2 hover:bg-stone-100 dark:bg-stone-800 rounded-lg transition-colors"
             title={alert.is_active ? t('jobSearch.alertsTab.pauseAlert') : t('jobSearch.alertsTab.activateAlert')}
           >
             {alert.is_active ? (
-              <ToggleRight className="w-6 h-6 text-green-600" />
+              <ToggleRight className="w-6 h-6 text-green-600" aria-hidden="true" />
             ) : (
-              <ToggleLeft className="w-6 h-6 text-stone-600 dark:text-stone-400" />
+              <ToggleLeft className="w-6 h-6 text-stone-600 dark:text-stone-400" aria-hidden="true" />
             )}
           </button>
 

@@ -27,6 +27,7 @@ import { aktivitetsplanApi } from '@/services/aktivitetApi'
 import { formatLocalDate } from '@/services/aktivitetSchema'
 import { motesVarningar, type PassTid } from '@/services/moteskadens'
 
+import { anvandareFranSession } from '@/lib/anvandareFranSession'
 interface Participant {
   participant_id: string
   first_name: string
@@ -140,7 +141,7 @@ export function MeetingSchedulerDialog({
   const fetchParticipants = async () => {
     setHamtFel(false)
     try {
-      const { data: { user } } = await supabase.auth.getUser()
+      const { data: { user } } = await anvandareFranSession()
       if (!user) return
 
       const { data, error } = await supabase
@@ -162,7 +163,7 @@ export function MeetingSchedulerDialog({
     setFel(null)
     try {
       setLoading(true)
-      const { data: { user } } = await supabase.auth.getUser()
+      const { data: { user } } = await anvandareFranSession()
       if (!user) throw new Error('Not authenticated')
 
       // Combine date and time

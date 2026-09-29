@@ -7,6 +7,7 @@
 import { supabase } from '../lib/supabase'
 import { APIError, handleError } from './apiError'
 
+import { anvandareFranSession } from '@/lib/anvandareFranSession'
 export const interestApi = {
 
   /**
@@ -30,7 +31,7 @@ export const interestApi = {
    * (Granskning 2026-08-21.)
    */
   async getResult() {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
 
     const { data, error } = await supabase

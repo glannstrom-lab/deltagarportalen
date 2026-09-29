@@ -8,6 +8,7 @@ import { Share2, Send, X, CheckCircle, User } from '@/components/ui/icons';
 import { shareJobWithConsultant } from '@/services/jobSharingService';
 import type { ShareJobRequest } from '@/services/jobSharingService';
 import { getProfile } from '@/lib/supabase';
+import { anvandareFranSession } from '@/lib/anvandareFranSession';
 import { LoadingState, ErrorState } from '@/components/ui/LoadingState';
 
 interface ShareJobDialogProps {
@@ -44,7 +45,7 @@ export const ShareJobDialog: React.FC<ShareJobDialogProps> = ({
     setError(null);
 
     try {
-      const { data: { user } } = await supabase.auth.getUser();
+      const { data: { user } } = await anvandareFranSession();
       if (!user) {
         setError('Du måste vara inloggad');
         return;
@@ -220,8 +221,5 @@ export const ShareJobDialog: React.FC<ShareJobDialogProps> = ({
     </div>
   );
 };
-
-// Import supabase
-import { supabase } from '@/lib/supabase';
 
 export default ShareJobDialog;

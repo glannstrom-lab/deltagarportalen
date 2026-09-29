@@ -1700,7 +1700,8 @@
       "delete": "Delete",
       "searching": "Searching...",
       "searchNow": "Search now",
-      "loadFailed": "We could not get your email settings right now. We do not show them until we know what you chose, so nothing changes by mistake."
+      "loadFailed": "We could not get your email settings right now. We do not show them until we know what you chose, so nothing changes by mistake.",
+      "switchLabel": "Job alert: {{namn}}"
     },
     "dailyTab": {
       "loading": "Finding your job of the day...",
@@ -1769,7 +1770,12 @@
       "applied_other": "applied",
       "interviews_one": "interview",
       "interviews_other": "interviews"
-    }
+    },
+    "statusSaved": "Job saved: {{title}}",
+    "statusRemoved": "Job removed from saved jobs: {{title}}",
+    "statusSaveFailed": "We could not save the job. Please try again.",
+    "statusRemoveFailed": "We could not remove the job. Please try again.",
+    "resultsHeading": "Search results"
   },
   "jobs": {
     "card": {
@@ -4356,21 +4362,23 @@
       },
       "quotes": {
         "quote1": {
-          "text": "Every step forward is a step closer to your goal",
-          "author": "Unknown"
+          "text": "Every step forward is a step closer to your goal"
         },
         "quote2": {
-          "text": "You are more than your job",
-          "author": "Unknown"
+          "text": "You are more than your job"
         },
         "quote3": {
-          "text": "Take it at your own pace",
-          "author": "Unknown"
+          "text": "Take it at your own pace"
         }
       },
       "moodSaveFailed": "Your mood could not be saved right now. Please try again in a little while.",
       "noteSaveFailed": "Your note could not be saved right now. The text is still here. Please try again in a little while.",
-      "loadFailed": "We could not get your activities and reflections right now. This does not mean they are gone. Nothing is saved until we have them."
+      "loadFailed": "We could not get your activities and reflections right now. This does not mean they are gone. Nothing is saved until we have them.",
+      "laddarMaende": "Getting your mood log ...",
+      "laddarAktiviteter": "Getting your activities and notes ...",
+      "lugnDag": "Today it is enough that you said how you feel. The ideas for the day are still here when you want them.",
+      "visaIdeerAnda": "Show the ideas anyway",
+      "ideerInvit": "A few small ideas for the day. Take what you like."
     },
     "energy": {
       "howIsYourEnergy": "How is your energy today?",
@@ -4841,7 +4849,8 @@
     },
     "readingProgress": {
       "ariaLabel": "How far you have read in the article"
-    }
+    },
+    "baraSvenskaKort": "In Swedish only"
   },
   "resources": {
     "title": "Your saved resources",
@@ -7475,14 +7484,14 @@
       "previous": "Previous",
       "next": "Next",
       "saving": "Saving...",
-      "exampleData": "Example data",
       "saveCv": "Save CV",
       "preview": "Preview",
       "restore": "Restore",
       "cancel": "Cancel",
       "clearDemoData": "Remove example data",
       "fill": "Fill in",
-      "remove": "Remove"
+      "remove": "Remove",
+      "fillExampleData": "Fill in with example data"
     },
     "versions": {
       "beforeImport": "Backup before import",
@@ -7520,7 +7529,8 @@
       "demoDataBannerTitle": "Example data added",
       "demoDataBannerBody": "This is still example text, not your own details: {{fields}}. Replace it before you save or send your CV.",
       "demoDataTitle": "Fill in example data",
-      "draftRestored": "We found changes that had not been saved yet and put them back."
+      "draftRestored": "We found changes that had not been saved yet and put them back.",
+      "snabbmallGranska": "Read this through before you export: your profile text or your skills come from the Quick CV template. You did not write them. Change them so they are true for you."
     },
     "contentOverview": "Contents of your CV",
     "loading": "Loading...",
@@ -9346,7 +9356,10 @@
       "cta": "Go to your consultant",
       "medanTitel": "While you wait",
       "medanText": "You can read about the activity requirement (aktivitetskravet): what applies, and what you can do if you cannot come to a session. You can also fill in your CV or look at jobs.",
-      "guideLank": "Read about the activity requirement (in Swedish)"
+      "guideLank": "Read about the activity requirement (in Swedish)",
+      "utanKonsulentTitel": "Your week will show here when you have a consultant",
+      "utanKonsulentText": "You do not have a consultant yet. When you get one, you plan the week together. Until then, there is nothing you need to do here.",
+      "utanKonsulentCta": "Go to My consultant"
     },
     "saldo": {
       "ingaPass": "Nothing planned this week.",

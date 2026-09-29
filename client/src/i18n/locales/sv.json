@@ -1700,7 +1700,8 @@
       "delete": "Ta bort",
       "searching": "Söker...",
       "searchNow": "Sök nu",
-      "loadFailed": "Vi kunde inte hämta dina e-postinställningar just nu. Vi visar dem inte förrän vi vet vad du har valt, så att inget ändras av misstag."
+      "loadFailed": "Vi kunde inte hämta dina e-postinställningar just nu. Vi visar dem inte förrän vi vet vad du har valt, så att inget ändras av misstag.",
+      "switchLabel": "Bevakning: {{namn}}"
     },
     "dailyTab": {
       "loading": "Hittar dagens jobb åt dig...",
@@ -1769,7 +1770,12 @@
       "applied_other": "ansökta",
       "interviews_one": "intervju",
       "interviews_other": "intervjuer"
-    }
+    },
+    "statusSaved": "Jobbet är sparat: {{title}}",
+    "statusRemoved": "Jobbet är borttaget från sparade jobb: {{title}}",
+    "statusSaveFailed": "Det gick inte att spara jobbet. Försök igen.",
+    "statusRemoveFailed": "Det gick inte att ta bort jobbet. Försök igen.",
+    "resultsHeading": "Sökresultat"
   },
   "jobs": {
     "card": {
@@ -4356,21 +4362,23 @@
       },
       "quotes": {
         "quote1": {
-          "text": "Varje steg framåt är ett steg närmare ditt mål",
-          "author": "Okänd"
+          "text": "Varje steg framåt är ett steg närmare ditt mål"
         },
         "quote2": {
-          "text": "Du är mer än ditt jobb",
-          "author": "Okänd"
+          "text": "Du är mer än ditt jobb"
         },
         "quote3": {
-          "text": "Ta det i din egen takt",
-          "author": "Okänd"
+          "text": "Ta det i din egen takt"
         }
       },
       "moodSaveFailed": "Ditt humör kunde inte sparas just nu. Prova igen om en liten stund.",
       "noteSaveFailed": "Anteckningen kunde inte sparas just nu. Texten finns kvar. Prova igen om en liten stund.",
-      "loadFailed": "Vi kunde inte hämta dina aktiviteter och reflektioner just nu. Det betyder inte att de är borta. Inget sparas förrän vi har hämtat dem."
+      "loadFailed": "Vi kunde inte hämta dina aktiviteter och reflektioner just nu. Det betyder inte att de är borta. Inget sparas förrän vi har hämtat dem.",
+      "laddarMaende": "Hämtar ditt mående …",
+      "laddarAktiviteter": "Hämtar dina aktiviteter och reflektioner …",
+      "lugnDag": "Idag räcker det att du har sagt hur du mår. Idéerna för dagen finns kvar när du vill ha dem.",
+      "visaIdeerAnda": "Visa idéerna ändå",
+      "ideerInvit": "Några små idéer för dagen. Ta det du vill."
     },
     "energy": {
       "howIsYourEnergy": "Hur är din energi idag?",
@@ -4841,7 +4849,8 @@
     },
     "readingProgress": {
       "ariaLabel": "Hur långt du läst i artikeln"
-    }
+    },
+    "baraSvenskaKort": "Bara på svenska"
   },
   "resources": {
     "title": "Dina sparade resurser",
@@ -7475,14 +7484,14 @@
       "previous": "Föregående",
       "next": "Nästa",
       "saving": "Sparar...",
-      "exampleData": "Exempeldata",
       "saveCv": "Spara CV",
       "preview": "Förhandsvisning",
       "restore": "Återställ",
       "cancel": "Avbryt",
       "clearDemoData": "Ta bort exempeldata",
       "fill": "Fyll i",
-      "remove": "Ta bort"
+      "remove": "Ta bort",
+      "fillExampleData": "Fyll i med exempeldata"
     },
     "versions": {
       "beforeImport": "Säkerhetskopia innan import",
@@ -7520,7 +7529,8 @@
       "demoDataBannerTitle": "Exempeldata ifylld",
       "demoDataBannerBody": "Det här är fortfarande exempeltext, inte dina egna uppgifter: {{fields}}. Ersätt det innan du sparar eller skickar CV:t vidare.",
       "demoDataTitle": "Fyll i exempeldata",
-      "draftRestored": "Vi hittade ändringar som inte hann sparas och lade tillbaka dem."
+      "draftRestored": "Vi hittade ändringar som inte hann sparas och lade tillbaka dem.",
+      "snabbmallGranska": "Läs igenom innan du exporterar: din profiltext eller dina kompetenser kommer från Snabb-CV-mallen och är inte skrivna av dig. Ändra dem så att de stämmer med dig."
     },
     "contentOverview": "Innehåll i ditt CV",
     "loading": "Laddar...",
@@ -9346,7 +9356,10 @@
       "cta": "Gå till din konsulent",
       "medanTitel": "Medan du väntar",
       "medanText": "Du kan läsa om aktivitetskravet, till exempel vad som gäller och vad du kan göra om du inte kan komma till ett pass. Du kan också fylla i ditt CV eller titta på jobb.",
-      "guideLank": "Läs om aktivitetskravet"
+      "guideLank": "Läs om aktivitetskravet",
+      "utanKonsulentTitel": "Din vecka visas här när du har en konsulent",
+      "utanKonsulentText": "Du har ingen konsulent kopplad ännu. När du får en lägger ni upp veckan tillsammans. Tills dess finns det inget du behöver göra här.",
+      "utanKonsulentCta": "Se Min konsulent"
     },
     "saldo": {
       "ingaPass": "Inget inplanerat den här veckan.",

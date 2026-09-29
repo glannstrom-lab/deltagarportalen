@@ -2,6 +2,7 @@ import { supabase } from '@/lib/supabase';
 import { careerOfflineCache, offlineStorage } from './offlineStorage';
 import { formatLocalDate } from './aktivitetSchema';
 
+import { anvandareFranSession } from '@/lib/anvandareFranSession'
 // ===== API Error Class =====
 
 export class APIError extends Error {
@@ -155,7 +156,7 @@ function handleError(error: unknown, context: string): never {
 
 export const careerPathApi = {
   async getAll(): Promise<SavedCareerPath[]> {
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user } } = await anvandareFranSession();
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401);
 
     // E11 (2026-07-23): explicit kolumnlista — matchar exakt SavedCareerPath-interfacet.
@@ -170,7 +171,7 @@ export const careerPathApi = {
   },
 
   async save(path: Omit<SavedCareerPath, 'id' | 'user_id' | 'created_at'>): Promise<SavedCareerPath> {
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user } } = await anvandareFranSession();
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401);
 
     const { data, error } = await supabase
@@ -184,7 +185,7 @@ export const careerPathApi = {
   },
 
   async delete(id: string): Promise<void> {
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user } } = await anvandareFranSession();
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401);
 
     const { error } = await supabase
@@ -201,7 +202,7 @@ export const careerPathApi = {
 
 export const salaryApi = {
   async getAll(): Promise<SavedSalarySearch[]> {
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user } } = await anvandareFranSession();
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401);
 
     // E11 (2026-07-23): explicit kolumnlista — matchar exakt SavedSalarySearch-interfacet.
@@ -216,7 +217,7 @@ export const salaryApi = {
   },
 
   async save(search: Omit<SavedSalarySearch, 'id' | 'user_id' | 'created_at'>): Promise<SavedSalarySearch> {
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user } } = await anvandareFranSession();
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401);
 
     const { data, error } = await supabase
@@ -230,7 +231,7 @@ export const salaryApi = {
   },
 
   async delete(id: string): Promise<void> {
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user } } = await anvandareFranSession();
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401);
 
     const { error } = await supabase
@@ -247,7 +248,7 @@ export const salaryApi = {
 
 export const skillsApi = {
   async getAll(): Promise<UserSkill[]> {
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user } } = await anvandareFranSession();
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401);
 
     // E11 (2026-07-23): explicit kolumnlista — matchar exakt UserSkill-interfacet.
@@ -262,7 +263,7 @@ export const skillsApi = {
   },
 
   async save(skill: Omit<UserSkill, 'id' | 'user_id' | 'created_at' | 'updated_at'>): Promise<UserSkill> {
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user } } = await anvandareFranSession();
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401);
 
     const { data, error } = await supabase
@@ -276,7 +277,7 @@ export const skillsApi = {
   },
 
   async update(id: string, updates: Partial<UserSkill>): Promise<UserSkill> {
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user } } = await anvandareFranSession();
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401);
 
     const { data, error } = await supabase
@@ -292,7 +293,7 @@ export const skillsApi = {
   },
 
   async delete(id: string): Promise<void> {
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user } } = await anvandareFranSession();
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401);
 
     const { error } = await supabase
@@ -309,7 +310,7 @@ export const skillsApi = {
 
 export const educationApi = {
   async getAll(): Promise<SavedEducation[]> {
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user } } = await anvandareFranSession();
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401);
 
     // E11 (2026-07-23): explicit kolumnlista — matchar exakt SavedEducation-interfacet.
@@ -324,7 +325,7 @@ export const educationApi = {
   },
 
   async getByStatus(status: SavedEducation['status']): Promise<SavedEducation[]> {
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user } } = await anvandareFranSession();
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401);
 
     // E11 (2026-07-23): explicit kolumnlista — se getAll ovan.
@@ -340,7 +341,7 @@ export const educationApi = {
   },
 
   async save(education: Omit<SavedEducation, 'id' | 'user_id' | 'created_at' | 'updated_at'>): Promise<SavedEducation> {
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user } } = await anvandareFranSession();
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401);
 
     const { data, error } = await supabase
@@ -354,7 +355,7 @@ export const educationApi = {
   },
 
   async update(id: string, updates: Partial<SavedEducation>): Promise<SavedEducation> {
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user } } = await anvandareFranSession();
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401);
 
     const { data, error } = await supabase
@@ -370,7 +371,7 @@ export const educationApi = {
   },
 
   async delete(id: string): Promise<void> {
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user } } = await anvandareFranSession();
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401);
 
     const { error } = await supabase
@@ -387,7 +388,7 @@ export const educationApi = {
 
 export const networkApi = {
   async getAll(): Promise<NetworkContact[]> {
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user } } = await anvandareFranSession();
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401);
 
     // Check if offline
@@ -421,7 +422,7 @@ export const networkApi = {
   },
 
   async getByStatus(status: NetworkContact['status']): Promise<NetworkContact[]> {
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user } } = await anvandareFranSession();
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401);
 
     // E11 (2026-07-23): explicit kolumnlista — se getAll ovan.
@@ -437,7 +438,7 @@ export const networkApi = {
   },
 
   async save(contact: Omit<NetworkContact, 'id' | 'user_id' | 'created_at' | 'updated_at'>): Promise<NetworkContact> {
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user } } = await anvandareFranSession();
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401);
 
     const { data, error } = await supabase
@@ -451,7 +452,7 @@ export const networkApi = {
   },
 
   async update(id: string, updates: Partial<NetworkContact>): Promise<NetworkContact> {
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user } } = await anvandareFranSession();
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401);
 
     const { data, error } = await supabase
@@ -467,7 +468,7 @@ export const networkApi = {
   },
 
   async delete(id: string): Promise<void> {
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user } } = await anvandareFranSession();
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401);
 
     const { error } = await supabase
@@ -528,7 +529,7 @@ export interface CareerMilestone {
 
 export const careerPlanApi = {
   async getActive(): Promise<CareerPlan | null> {
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user } } = await anvandareFranSession();
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401);
 
     // Check if offline
@@ -568,7 +569,7 @@ export const careerPlanApi = {
   },
 
   async getAll(): Promise<CareerPlan[]> {
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user } } = await anvandareFranSession();
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401);
 
     const { data, error } = await supabase
@@ -585,7 +586,7 @@ export const careerPlanApi = {
   },
 
   async create(plan: { current_situation: string; goal: string; timeframe?: string }): Promise<CareerPlan> {
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user } } = await anvandareFranSession();
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401);
 
     // Deactivate any existing active plan
@@ -614,7 +615,7 @@ export const careerPlanApi = {
   },
 
   async update(id: string, updates: Partial<CareerPlan>): Promise<CareerPlan> {
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user } } = await anvandareFranSession();
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401);
 
     const { data, error } = await supabase
@@ -630,7 +631,7 @@ export const careerPlanApi = {
   },
 
   async delete(id: string): Promise<void> {
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user } } = await anvandareFranSession();
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401);
 
     const { error } = await supabase
@@ -647,7 +648,7 @@ export const careerPlanApi = {
 
 export const milestonesApi = {
   async getByPlanId(planId: string): Promise<CareerMilestone[]> {
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user } } = await anvandareFranSession();
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401);
 
     // E11 (2026-07-23): explicit kolumnlista — matchar exakt CareerMilestone-interfacet.
@@ -671,7 +672,7 @@ export const milestonesApi = {
     steps?: string[];
     sort_order?: number;
   }): Promise<CareerMilestone> {
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user } } = await anvandareFranSession();
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401);
 
     const { data, error } = await supabase
@@ -691,7 +692,7 @@ export const milestonesApi = {
   },
 
   async update(id: string, updates: Partial<CareerMilestone>): Promise<CareerMilestone> {
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user } } = await anvandareFranSession();
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401);
 
     const { data, error } = await supabase
@@ -707,7 +708,7 @@ export const milestonesApi = {
   },
 
   async toggleComplete(id: string): Promise<CareerMilestone> {
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user } } = await anvandareFranSession();
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401);
 
     // Get current state
@@ -744,7 +745,7 @@ export const milestonesApi = {
   },
 
   async updateProgress(id: string, progress: number): Promise<CareerMilestone> {
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user } } = await anvandareFranSession();
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401);
 
     const clampedProgress = Math.min(100, Math.max(0, progress));
@@ -766,7 +767,7 @@ export const milestonesApi = {
   },
 
   async delete(id: string): Promise<void> {
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user } } = await anvandareFranSession();
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401);
 
     const { error } = await supabase
@@ -799,7 +800,7 @@ export interface NetworkingEvent {
 
 export const networkingEventsApi = {
   async getAll(): Promise<NetworkingEvent[]> {
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user } } = await anvandareFranSession();
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401);
 
     // E11 (2026-07-23): explicit kolumnlista — matchar exakt NetworkingEvent-interfacet.
@@ -814,7 +815,7 @@ export const networkingEventsApi = {
   },
 
   async getUpcoming(): Promise<NetworkingEvent[]> {
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user } } = await anvandareFranSession();
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401);
 
     const today = formatLocalDate(new Date());
@@ -832,7 +833,7 @@ export const networkingEventsApi = {
   },
 
   async create(event: Omit<NetworkingEvent, 'id' | 'user_id' | 'created_at' | 'updated_at'>): Promise<NetworkingEvent> {
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user } } = await anvandareFranSession();
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401);
 
     const { data, error } = await supabase
@@ -850,7 +851,7 @@ export const networkingEventsApi = {
   },
 
   async update(id: string, updates: Partial<NetworkingEvent>): Promise<NetworkingEvent> {
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user } } = await anvandareFranSession();
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401);
 
     const { data, error } = await supabase
@@ -866,7 +867,7 @@ export const networkingEventsApi = {
   },
 
   async delete(id: string): Promise<void> {
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user } } = await anvandareFranSession();
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401);
 
     const { error } = await supabase
@@ -879,7 +880,7 @@ export const networkingEventsApi = {
   },
 
   async toggleAttending(id: string): Promise<NetworkingEvent> {
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user } } = await anvandareFranSession();
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401);
 
     // Get current state
@@ -952,7 +953,7 @@ export interface SkillsAnalysis {
 
 export const skillsAnalysisApi = {
   async getAll(): Promise<SkillsAnalysis[]> {
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user } } = await anvandareFranSession();
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401);
 
     // E11 (2026-07-23): explicit kolumnlista — matchar exakt SkillsAnalysis-interfacet.
@@ -967,7 +968,7 @@ export const skillsAnalysisApi = {
   },
 
   async getLatest(): Promise<SkillsAnalysis | null> {
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user } } = await anvandareFranSession();
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401);
 
     // Check if offline
@@ -1003,7 +1004,7 @@ export const skillsAnalysisApi = {
   },
 
   async create(analysis: Omit<SkillsAnalysis, 'id' | 'user_id' | 'created_at' | 'updated_at'>): Promise<SkillsAnalysis> {
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user } } = await anvandareFranSession();
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401);
 
     const { data, error } = await supabase
@@ -1024,7 +1025,7 @@ export const skillsAnalysisApi = {
   },
 
   async update(id: string, updates: Partial<SkillsAnalysis>): Promise<SkillsAnalysis> {
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user } } = await anvandareFranSession();
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401);
 
     const { data, error } = await supabase
@@ -1040,7 +1041,7 @@ export const skillsAnalysisApi = {
   },
 
   async delete(id: string): Promise<void> {
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user } } = await anvandareFranSession();
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401);
 
     const { error } = await supabase
@@ -1071,7 +1072,7 @@ export interface FavoriteOccupation {
 
 export const favoriteOccupationsApi = {
   async getAll(): Promise<FavoriteOccupation[]> {
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user } } = await anvandareFranSession();
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401);
 
     // E11 (2026-07-23): explicit kolumnlista — matchar exakt FavoriteOccupation-interfacet.
@@ -1086,7 +1087,7 @@ export const favoriteOccupationsApi = {
   },
 
   async add(occupation: Omit<FavoriteOccupation, 'id' | 'user_id' | 'created_at'>): Promise<FavoriteOccupation> {
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user } } = await anvandareFranSession();
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401);
 
     const { data, error } = await supabase
@@ -1103,7 +1104,7 @@ export const favoriteOccupationsApi = {
   },
 
   async remove(occupationId: string): Promise<void> {
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user } } = await anvandareFranSession();
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401);
 
     const { error } = await supabase
@@ -1116,7 +1117,7 @@ export const favoriteOccupationsApi = {
   },
 
   async isFavorite(occupationId: string): Promise<boolean> {
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user } } = await anvandareFranSession();
     if (!user) return false;
 
     const { data, error } = await supabase
@@ -1192,7 +1193,7 @@ export interface UserAdaptations {
 
 export const adaptationsApi = {
   async get(): Promise<UserAdaptations | null> {
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user } } = await anvandareFranSession();
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401);
 
     // E11 (2026-07-23): explicit kolumnlista — matchar exakt UserAdaptations-interfacet.
@@ -1218,7 +1219,7 @@ export const adaptationsApi = {
     notes?: string;
     summary?: string;
   }): Promise<UserAdaptations> {
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user } } = await anvandareFranSession();
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401);
 
     const { data, error } = await supabase
@@ -1238,7 +1239,7 @@ export const adaptationsApi = {
   },
 
   async delete(): Promise<void> {
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user } } = await anvandareFranSession();
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401);
 
     const { error } = await supabase
@@ -1252,7 +1253,7 @@ export const adaptationsApi = {
 
 export const credentialsApi = {
   async getAll(): Promise<UserCredential[]> {
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user } } = await anvandareFranSession();
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401);
 
     // E11 (2026-07-23): explicit kolumnlista — matchar exakt UserCredential-interfacet.
@@ -1267,7 +1268,7 @@ export const credentialsApi = {
   },
 
   async save(credential: Omit<UserCredential, 'id' | 'user_id' | 'created_at' | 'updated_at'>): Promise<UserCredential> {
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user } } = await anvandareFranSession();
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401);
 
     const { data, error } = await supabase
@@ -1281,7 +1282,7 @@ export const credentialsApi = {
   },
 
   async update(id: string, updates: Partial<UserCredential>): Promise<UserCredential> {
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user } } = await anvandareFranSession();
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401);
 
     const { data, error } = await supabase
@@ -1297,7 +1298,7 @@ export const credentialsApi = {
   },
 
   async delete(id: string): Promise<void> {
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user } } = await anvandareFranSession();
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401);
 
     const { error } = await supabase
@@ -1338,7 +1339,7 @@ export interface RelocationPreferences {
 
 export const relocationApi = {
   async get(): Promise<RelocationPreferences | null> {
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user } } = await anvandareFranSession();
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401);
 
     // E11 (2026-07-23): explicit kolumnlista — matchar exakt RelocationPreferences-interfacet.
@@ -1367,7 +1368,7 @@ export const relocationApi = {
     checklist_completed?: string[];
     notes?: string | null;
   }): Promise<RelocationPreferences> {
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user } } = await anvandareFranSession();
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401);
 
     const { data, error } = await supabase
@@ -1387,7 +1388,7 @@ export const relocationApi = {
   },
 
   async delete(): Promise<void> {
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user } } = await anvandareFranSession();
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401);
 
     const { error } = await supabase

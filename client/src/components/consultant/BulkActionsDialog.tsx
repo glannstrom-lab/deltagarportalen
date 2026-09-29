@@ -30,6 +30,7 @@ import { AVAILABLE_TAGS, TAG_COLOR_CLASSES } from './participantTags'
 import { formatLocalDate } from '@/services/aktivitetSchema'
 import { exportRader, csvText, EXPORT_RUBRIKER, STATUS_ETIKETT } from './deltagarExport'
 
+import { anvandareFranSession } from '@/lib/anvandareFranSession'
 interface Participant {
   participant_id: string
   first_name: string
@@ -155,7 +156,7 @@ export function BulkActionsDialog({
     setError(null)
 
     try {
-      const { data: { user } } = await supabase.auth.getUser()
+      const { data: { user } } = await anvandareFranSession()
       if (!user) throw new Error('Not authenticated')
 
       // Send message to each participant

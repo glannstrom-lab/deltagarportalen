@@ -149,24 +149,13 @@ export function EducationEditor({ education, onChange }: EducationEditorProps) {
                     ${draggedId === ed.id ? 'opacity-50' : ''}
                   `}
                 >
-                  {/* Header */}
-                  <div
-                    onClick={() => setExpandedId(isExpanded ? null : ed.id)}
-                    className="flex items-center gap-3 p-4 cursor-pointer hover:bg-stone-50 transition-colors"
-                    role="button"
-                    aria-label={[ed.degree || t('cv.educationEditor.newEducation', 'Ny utbildning'), ed.school].filter(Boolean).join(', ')}
-                    aria-expanded={isExpanded}
-                    tabIndex={0}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault()
-                        setExpandedId(isExpanded ? null : ed.id)
-                      }
-                    }}
-                  >
+                  {/* Header. Flytta-knapparna är syskon till radknappen, inte barn:
+                      interaktiva element får inte nästlas (WCAG 4.1.2). */}
+                  <div className="flex items-center gap-3 p-4 hover:bg-stone-50 transition-colors">
                     {/* Tangentbordsknappar för att flytta */}
-                    <div className="flex flex-col gap-0.5" onClick={(e) => e.stopPropagation()}>
+                    <div className="flex flex-col gap-0.5">
                       <button
+                        type="button"
                         onClick={() => moveEducationUp(ed.id)}
                         disabled={index === 0}
                         className="p-0.5 text-stone-300 hover:text-stone-600 disabled:opacity-30 disabled:cursor-not-allowed"
@@ -175,6 +164,7 @@ export function EducationEditor({ education, onChange }: EducationEditorProps) {
                         <ArrowUp className="w-3 h-3" />
                       </button>
                       <button
+                        type="button"
                         onClick={() => moveEducationDown(ed.id)}
                         disabled={index === education.length - 1}
                         className="p-0.5 text-stone-300 hover:text-stone-600 disabled:opacity-30 disabled:cursor-not-allowed"
@@ -187,43 +177,44 @@ export function EducationEditor({ education, onChange }: EducationEditorProps) {
                     <div className="text-stone-300 hover:text-stone-700 cursor-grab active:cursor-grabbing" aria-hidden="true">
                       <GripVertical className="w-5 h-5" />
                     </div>
-                    
-                    <div className={`
-                      w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0
-                      ${status.complete ? 'bg-green-100 text-green-600' : 'bg-amber-100 text-amber-600'}
-                    `}>
-                      {status.complete ? (
-                        <CheckCircle className="w-5 h-5" />
-                      ) : (
-                        <Award className="w-4 h-4" />
-                      )}
-                    </div>
-                    
-                    <div className="flex-1 min-w-0">
-                      <h4 className="font-medium text-stone-800 truncate">
-                        {ed.degree || 'Ny utbildning'}
-                      </h4>
-                      <p className="text-sm text-stone-700 truncate">
-                        {ed.school || 'Skola/Universitet'}
-                        {ed.field && <span className="text-stone-600"> · {ed.field}</span>}
-                      </p>
-                    </div>
-                    
-                    {/*
-                      Chevronen är en indikator, inte en kontroll.
-                      Den låg tidigare som <button> utan onClick INUTI raden,
-                      som redan är role="button" med onClick och onKeyDown.
-                      Det gav nästlad interaktivitet och en extra tabbstopp som
-                      inte gjorde något på egen hand — raden ovanför äger både
-                      klicket och aria-expanded.
-                    */}
-                    <span className="p-1 rounded" aria-hidden="true">
-                      {isExpanded ? (
-                        <ChevronUp className="w-5 h-5 text-stone-600" />
-                      ) : (
-                        <ChevronDown className="w-5 h-5 text-stone-600" />
-                      )}
-                    </span>
+
+                    <button
+                      type="button"
+                      onClick={() => setExpandedId(isExpanded ? null : ed.id)}
+                      className="flex flex-1 min-w-0 items-center gap-3 text-left cursor-pointer"
+                      aria-label={[ed.degree || t('cv.educationEditor.newEducation', 'Ny utbildning'), ed.school].filter(Boolean).join(', ')}
+                      aria-expanded={isExpanded}
+                    >
+                      <span className={`
+                        w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0
+                        ${status.complete ? 'bg-green-100 text-green-600' : 'bg-amber-100 text-amber-600'}
+                      `}>
+                        {status.complete ? (
+                          <CheckCircle className="w-5 h-5" />
+                        ) : (
+                          <Award className="w-4 h-4" />
+                        )}
+                      </span>
+
+                      <span className="flex-1 min-w-0 block">
+                        <span className="block font-medium text-stone-800 truncate">
+                          {ed.degree || 'Ny utbildning'}
+                        </span>
+                        <span className="block text-sm text-stone-700 truncate">
+                          {ed.school || 'Skola/Universitet'}
+                          {ed.field && <span className="text-stone-600"> · {ed.field}</span>}
+                        </span>
+                      </span>
+
+                      {/* Chevronen är en indikator, inte en egen kontroll. */}
+                      <span className="p-1 rounded" aria-hidden="true">
+                        {isExpanded ? (
+                          <ChevronUp className="w-5 h-5 text-stone-600" />
+                        ) : (
+                          <ChevronDown className="w-5 h-5 text-stone-600" />
+                        )}
+                      </span>
+                    </button>
                   </div>
 
                   {/* Expanded content */}

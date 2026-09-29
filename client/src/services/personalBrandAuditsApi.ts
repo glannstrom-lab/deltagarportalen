@@ -11,6 +11,7 @@
 
 import { supabase } from '@/lib/supabase'
 
+import { anvandareFranSession } from '@/lib/anvandareFranSession'
 export interface PersonalBrandAuditInsert {
   score: number
   dimensions: Record<string, number>
@@ -19,7 +20,7 @@ export interface PersonalBrandAuditInsert {
 
 export const personalBrandAuditsApi = {
   async create(input: PersonalBrandAuditInsert): Promise<void> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new Error('Användaren måste vara inloggad för att spara audit-historik')
 
     const { error } = await supabase
@@ -35,7 +36,7 @@ export const personalBrandAuditsApi = {
   },
 
   async getLatest(): Promise<{ score: number; dimensions: Record<string, number>; summary: string | null; created_at: string } | null> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) return null
 
     const { data, error } = await supabase

@@ -54,6 +54,7 @@ import {
   type OrgMembership,
   type OrgRole,
   type OrgKind,
+  type OverlamningsDeltagare,
 } from '@/services/orgApi'
 // RR9 (rollspelet 2026-09-27): "Handläggare (ekonomiskt bistånd)" och
 // `@kommun.se` erbjöds en Rusta och matcha-leverantör.
@@ -196,6 +197,7 @@ export function OrganisationSektion() {
                         <CaseloadRad
                           key={`${r.org_id}-${r.consultant_id}`}
                           rad={r}
+                          harHandlaggare={lage.kollegor.some((k) => k.org_id === r.org_id && k.role === 'handlaggare')}
                           mottagare={lage.kollegor.filter((k) => k.org_id === r.org_id && k.user_id !== r.consultant_id && arMottagarroll(k.role))}
                           visaOrg={lage.medlemskap.length > 1}
                           orgKind={orgKind(r.org_id)}
@@ -319,6 +321,7 @@ function AiBrytare({ organisation, onAndrad }: { organisation: Organization; onA
 function CaseloadRad({
   rad: r,
   mottagare,
+  harHandlaggare,
   visaOrg,
   orgKind,
   visaKapacitet,
@@ -327,6 +330,7 @@ function CaseloadRad({
 }: {
   rad: CaseloadRow
   mottagare: Colleague[]
+  harHandlaggare: boolean
   visaOrg: boolean
   orgKind: OrgKind | null
   visaKapacitet: boolean
@@ -337,8 +341,52 @@ function CaseloadRad({
   const [oppen, setOppen] = useState(false)
   const [tillId, setTillId] = useState('')
   const [sparar, setSparar] = useState(false)
+  // CH6/CH13: 'alla' = hela caseloaden (som förut), 'en' = en utpekad deltagare.
+  const [lage, setLage] = useState<'alla' | 'en'>('alla')
+  const [deltagare, setDeltagare] = useState<OverlamningsDeltagare[] | null>(null)
+  const [deltagarFel, setDeltagarFel] = useState<string | null>(null)
+  const [deltagarId, setDeltagarId] = useState('')
   const panelId = `overlamning-${r.org_id}-${r.consultant_id}`
   const vald = mottagare.find((k) => k.user_id === tillId) ?? null
+
+  const valjLage = async (nytt: 'alla' | 'en') => {
+    setLage(nytt)
+    setDeltagarId('')
+    if (nytt === 'en' && deltagare === null && !deltagarFel) {
+      try {
+        setDeltagare(await orgApi.overlamningsdeltagare(r.org_id, r.consultant_id))
+      } catch (e) {
+        setDeltagarFel(felText(e))
+      }
+    }
+  }
+  const valdDeltagare = deltagare?.find((d) => d.participant_id === deltagarId) ?? null
+
+  const overlamnaEn = async () => {
+    if (!vald || !valdDeltagare) return
+    const ok = await confirm({
+      title: `Överlämna ${valdDeltagare.namn} till ${namn(vald)}?`,
+      message: `${valdDeltagare.namn} flyttas från ${namn(r)} till ${namn(vald)}. Deltagaren får en notis och en ny samtyckesfråga. Journal, mål och möten stannar hos den tidigare konsulenten tills ett beslut om arkivering finns.`,
+      confirmText: 'Överlämna deltagaren',
+      cancelText: 'Avbryt',
+      variant: 'warning',
+    })
+    if (!ok) return
+    setSparar(true)
+    try {
+      await orgApi.handoverParticipant(r.org_id, valdDeltagare.participant_id, r.consultant_id, vald.user_id)
+      setOppen(false)
+      setTillId('')
+      setDeltagarId('')
+      setDeltagare(null)
+      setLage('alla')
+      onKlar(`${valdDeltagare.namn} överlämnad till ${namn(vald)}.`)
+    } catch (e) {
+      onFel(felText(e))
+    } finally {
+      setSparar(false)
+    }
+  }
 
   const overlamna = async () => {
     if (!vald) return
@@ -412,6 +460,28 @@ function CaseloadRad({
                 </p>
               ) : (
                 <>
+                  <div role="group" aria-label="Vem ska lämnas över" className="flex flex-wrap gap-2">
+                    <Button size="sm" variant={lage === 'alla' ? 'primary' : 'ghost'} aria-pressed={lage === 'alla'} onClick={() => void valjLage('alla')} disabled={sparar}>
+                      Alla deltagare
+                    </Button>
+                    <Button size="sm" variant={lage === 'en' ? 'primary' : 'ghost'} aria-pressed={lage === 'en'} onClick={() => void valjLage('en')} disabled={sparar}>
+                      En deltagare
+                    </Button>
+                  </div>
+                  {lage === 'en' && deltagarFel && (
+                    <p role="alert" className="text-sm text-red-700 dark:text-red-300">{deltagarFel}</p>
+                  )}
+                  {lage === 'en' && !deltagarFel && deltagare !== null && (
+                    <Select
+                      id={`${panelId}-deltagare`}
+                      label="Deltagare"
+                      value={deltagarId}
+                      onChange={(e) => setDeltagarId(e.target.value)}
+                      disabled={sparar}
+                      fullWidth={false}
+                      options={[{ value: '', label: 'Välj deltagare' }, ...deltagare.map((d) => ({ value: d.participant_id, label: d.namn }))]}
+                    />
+                  )}
                   <div className="flex flex-wrap items-end gap-2">
                     <Select
                       id={`${panelId}-till`}
@@ -422,19 +492,32 @@ function CaseloadRad({
                       fullWidth={false}
                       options={[{ value: '', label: 'Välj kollega' }, ...mottagare.map((k) => ({ value: k.user_id, label: `${namn(k)} · ${ORG_ROLL_ETIKETT[k.role]}` }))]}
                     />
-                    <Button size="sm" onClick={() => void overlamna()} disabled={!vald || sparar}>
-                      {sparar ? 'Överlämnar…' : `Överlämna ${r.antal_deltagare} deltagare`}
-                    </Button>
+                    {lage === 'alla' ? (
+                      <Button size="sm" onClick={() => void overlamna()} disabled={!vald || sparar}>
+                        {sparar ? 'Överlämnar…' : `Överlämna ${r.antal_deltagare} deltagare`}
+                      </Button>
+                    ) : (
+                      <Button size="sm" onClick={() => void overlamnaEn()} disabled={!vald || !valdDeltagare || sparar}>
+                        {sparar ? 'Överlämnar…' : 'Överlämna deltagaren'}
+                      </Button>
+                    )}
                     <Button size="sm" variant="ghost" onClick={() => setOppen(false)} disabled={sparar}>
                       Avbryt
                     </Button>
                   </div>
                   <p className="text-xs text-stone-600 dark:text-stone-400">
-                    {vald
-                      ? `Alla ${r.antal_deltagare} deltagare flyttas till ${namn(vald)}. `
-                      : `Alla ${r.antal_deltagare} deltagare flyttas till den du väljer. `}
+                    {lage === 'en'
+                      ? `${valdDeltagare?.namn ?? 'Deltagaren du väljer'} flyttas till ${vald ? namn(vald) : 'den du väljer'}. `
+                      : vald
+                        ? `Alla ${r.antal_deltagare} deltagare flyttas till ${namn(vald)}. `
+                        : `Alla ${r.antal_deltagare} deltagare flyttas till den du väljer. `}
                     Deltagarna får en notis och en ny samtyckesfråga. Journal, mål och möten stannar hos den tidigare konsulenten tills ett beslut om arkivering finns.
                   </p>
+                  {harHandlaggare && (
+                    <p className="text-xs text-stone-600 dark:text-stone-400">
+                      Handläggare finns inte i listan: de tar inte över ett ärende, bara arbetskonsulent, chef och administratör.
+                    </p>
+                  )}
                 </>
               )}
             </div>

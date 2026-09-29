@@ -200,24 +200,13 @@ export function ExperienceEditor({ experiences, onChange }: ExperienceEditorProp
                     ${draggedId === exp.id ? 'opacity-50' : ''}
                   `}
                 >
-                  {/* Header - Always visible */}
-                  <div
-                    onClick={() => setExpandedId(isExpanded ? null : exp.id)}
-                    className="flex items-center gap-3 p-4 cursor-pointer hover:bg-stone-50 transition-colors"
-                    role="button"
-                    aria-label={[exp.title || t('cv.experienceEditor.newPosition', 'Ny position'), exp.company].filter(Boolean).join(', ')}
-                    aria-expanded={isExpanded}
-                    tabIndex={0}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault()
-                        setExpandedId(isExpanded ? null : exp.id)
-                      }
-                    }}
-                  >
+                  {/* Header - Always visible. Flytta-knapparna är syskon till radknappen,
+                      inte barn: interaktiva element får inte nästlas (WCAG 4.1.2). */}
+                  <div className="flex items-center gap-3 p-4 hover:bg-stone-50 transition-colors">
                     {/* Move buttons (keyboard accessible) */}
-                    <div className="flex flex-col gap-0.5" onClick={(e) => e.stopPropagation()}>
+                    <div className="flex flex-col gap-0.5">
                       <button
+                        type="button"
                         onClick={() => moveExperienceUp(exp.id)}
                         disabled={index === 0}
                         className="p-0.5 text-stone-300 hover:text-stone-600 disabled:opacity-30 disabled:cursor-not-allowed"
@@ -226,6 +215,7 @@ export function ExperienceEditor({ experiences, onChange }: ExperienceEditorProp
                         <ArrowUp className="w-3 h-3" />
                       </button>
                       <button
+                        type="button"
                         onClick={() => moveExperienceDown(exp.id)}
                         disabled={index === experiences.length - 1}
                         className="p-0.5 text-stone-300 hover:text-stone-600 disabled:opacity-30 disabled:cursor-not-allowed"
@@ -234,44 +224,46 @@ export function ExperienceEditor({ experiences, onChange }: ExperienceEditorProp
                         <ArrowDown className="w-3 h-3" />
                       </button>
                     </div>
-                    
-                    {/* Status indicator */}
-                    <div className={`
-                      w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0
-                      ${status.complete ? 'bg-green-100 text-green-600' : 'bg-amber-100 text-amber-600'}
-                    `}>
-                      {status.complete ? (
-                        <CheckCircle className="w-5 h-5" />
-                      ) : (
-                        <span className="text-xs font-bold">{status.count}/{status.total}</span>
-                      )}
-                    </div>
-                    
-                    {/* Title and company */}
-                    <div className="flex-1 min-w-0">
-                      <h4 className="font-medium text-stone-800 truncate">
-                        {exp.title || 'Ny position'}
-                      </h4>
-                      <p className="text-sm text-stone-700 truncate">
-                        {exp.company || 'Företagsnamn'} 
-                        {duration && <span className="text-stone-600"> · {duration}</span>}
-                      </p>
-                    </div>
-                    
-                    {/*
-                      Expand/collapse — indikator, inte kontroll. Låg tidigare
-                      som <button> utan onClick inuti raden, som redan är
-                      role="button" (rad 206) med onClick och aria-expanded.
-                      Nästlad interaktivitet och en tabbstopp utan verkan.
-                      Samma fel fanns i EducationEditor.
-                    */}
-                    <span className="p-1 rounded" aria-hidden="true">
-                      {isExpanded ? (
-                        <ChevronUp className="w-5 h-5 text-stone-600" />
-                      ) : (
-                        <ChevronDown className="w-5 h-5 text-stone-600" />
-                      )}
-                    </span>
+
+                    <button
+                      type="button"
+                      onClick={() => setExpandedId(isExpanded ? null : exp.id)}
+                      className="flex flex-1 min-w-0 items-center gap-3 text-left cursor-pointer"
+                      aria-label={[exp.title || t('cv.experienceEditor.newPosition', 'Ny position'), exp.company].filter(Boolean).join(', ')}
+                      aria-expanded={isExpanded}
+                    >
+                      {/* Status indicator */}
+                      <span className={`
+                        w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0
+                        ${status.complete ? 'bg-green-100 text-green-600' : 'bg-amber-100 text-amber-600'}
+                      `}>
+                        {status.complete ? (
+                          <CheckCircle className="w-5 h-5" />
+                        ) : (
+                          <span className="text-xs font-bold">{status.count}/{status.total}</span>
+                        )}
+                      </span>
+
+                      {/* Title and company */}
+                      <span className="flex-1 min-w-0 block">
+                        <span className="block font-medium text-stone-800 truncate">
+                          {exp.title || 'Ny position'}
+                        </span>
+                        <span className="block text-sm text-stone-700 truncate">
+                          {exp.company || 'Företagsnamn'}
+                          {duration && <span className="text-stone-600"> · {duration}</span>}
+                        </span>
+                      </span>
+
+                      {/* Expand/collapse — indikator, inte egen kontroll. */}
+                      <span className="p-1 rounded" aria-hidden="true">
+                        {isExpanded ? (
+                          <ChevronUp className="w-5 h-5 text-stone-600" />
+                        ) : (
+                          <ChevronDown className="w-5 h-5 text-stone-600" />
+                        )}
+                      </span>
+                    </button>
                   </div>
 
                   {/* Expanded content */}

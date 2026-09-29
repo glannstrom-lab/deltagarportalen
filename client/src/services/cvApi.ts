@@ -15,9 +15,10 @@ import { supabase } from '../lib/supabase'
 import { APIError, handleError } from './apiError'
 import type { CVData } from './supabaseApi'
 
+import { anvandareFranSession } from '@/lib/anvandareFranSession'
 export const cvApi = {
   async getCV(): Promise<CVData | null> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
 
     const { data, error } = await supabase
@@ -43,7 +44,7 @@ export const cvApi = {
   },
 
   async updateCV(cvData: Partial<CVData>) {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
 
     // Transform camelCase to snake_case - prioritera camelCase (UI-fält) över snake_case (DB-fält)
@@ -123,7 +124,7 @@ export const cvApi = {
   },
 
   async getVersions() {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
 
     const { data, error } = await supabase
@@ -137,7 +138,7 @@ export const cvApi = {
   },
 
   async saveVersion(name: string, cvData: CVData) {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
 
     const { data, error } = await supabase
@@ -155,7 +156,7 @@ export const cvApi = {
   },
 
   async restoreVersion(versionId: string) {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
 
     const { data, error } = await supabase
@@ -170,7 +171,7 @@ export const cvApi = {
   },
 
   async deleteVersion(versionId: string) {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
 
     const { error } = await supabase
@@ -184,7 +185,7 @@ export const cvApi = {
   },
 
   async shareCV() {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
 
     // Generate unique share code
@@ -266,7 +267,7 @@ export interface UppladdatCv {
 
 export const cvFilerApi = {
   async getAll(): Promise<UppladdatCv[]> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
 
     const { data, error } = await supabase
@@ -283,7 +284,7 @@ export const cvFilerApi = {
   },
 
   async upload(file: File, namn: string): Promise<UppladdatCv> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
 
     // Bucketens eget tak är 10 MB; kontrollen här ger ett begripligt fel i
@@ -345,7 +346,7 @@ export const cvFilerApi = {
   },
 
   async delete(id: string, sokvag?: string | null): Promise<void> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
 
     const { error } = await supabase

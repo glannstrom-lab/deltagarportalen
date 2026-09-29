@@ -33,6 +33,7 @@ import { ovningsLage } from '@/lib/ovningsLage'
 import { FocusExercisesWizard } from '@/components/focus/pages/FocusExercisesWizard'
 import { FokusVaxel } from '@/components/focus/shell/FokusVaxel'
 
+import { anvandareFranSession } from '@/lib/anvandareFranSession'
 // Extended category colors for all 38 categories
 const categoryColors: { [key: string]: string } = {
   // Original categories
@@ -125,7 +126,7 @@ function ExercisesInner() {
   useEffect(() => {
     const init = async () => {
       // Get user
-      const { data: { user } } = await supabase.auth.getUser()
+      const { data: { user } } = await anvandareFranSession()
       setUser(user)
 
       // Load exercises from database (with mock fallback)

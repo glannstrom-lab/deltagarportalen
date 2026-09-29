@@ -24,6 +24,7 @@ import type { PlatsbankenJob } from '@/services/arbetsformedlingenApi'
 import { handleError } from './apiError'
 import { formatLocalDate } from './aktivitetSchema'
 
+import { anvandareFranSession } from '@/lib/anvandareFranSession'
 /**
  * Dagens datum som `YYYY-MM-DD` i användarens tidszon.
  *
@@ -131,7 +132,7 @@ export const applicationsApi = {
     filters?: ApplicationFilters,
     sort?: ApplicationSort
   ): Promise<Application[]> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new Error('Not authenticated')
 
     let query = supabase
@@ -181,7 +182,7 @@ export const applicationsApi = {
    * Get a single application by ID
    */
   async getById(id: string): Promise<Application | null> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new Error('Not authenticated')
 
     const { data, error } = await supabase
@@ -202,7 +203,7 @@ export const applicationsApi = {
    * Get application by job ID
    */
   async getByJobId(jobId: string): Promise<Application | null> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new Error('Not authenticated')
 
     const { data, error } = await supabase
@@ -220,7 +221,7 @@ export const applicationsApi = {
    * Create a new application
    */
   async create(input: CreateApplicationInput): Promise<Application> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new Error('Not authenticated')
 
     const jobData = input.jobData as PlatsbankenJob
@@ -256,7 +257,7 @@ export const applicationsApi = {
    * Update an application
    */
   async update(id: string, input: UpdateApplicationInput): Promise<Application> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new Error('Not authenticated')
 
     const updates: Record<string, unknown> = {
@@ -313,7 +314,7 @@ export const applicationsApi = {
       APPLICATION_STATUS_CONFIG[status].order >= APPLICATION_STATUS_CONFIG.applied.order
 
     if (raknasSomSokt) {
-      const { data: { user } } = await supabase.auth.getUser()
+      const { data: { user } } = await anvandareFranSession()
       if (user) {
         const { data: befintlig } = await supabase
           .from('saved_jobs')
@@ -335,7 +336,7 @@ export const applicationsApi = {
    * Archive an application
    */
   async archive(id: string): Promise<Application> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new Error('Not authenticated')
 
     const { data, error } = await supabase
@@ -354,7 +355,7 @@ export const applicationsApi = {
    * Unarchive an application
    */
   async unarchive(id: string): Promise<Application> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new Error('Not authenticated')
 
     const { data, error } = await supabase
@@ -373,7 +374,7 @@ export const applicationsApi = {
    * Delete an application
    */
   async delete(id: string): Promise<void> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new Error('Not authenticated')
 
     const { error } = await supabase
@@ -389,7 +390,7 @@ export const applicationsApi = {
    * Get application statistics
    */
   async getStats(): Promise<ApplicationStats> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new Error('Not authenticated')
 
     const { data, error } = await supabase
@@ -444,7 +445,7 @@ export const applicationsApi = {
    * Get stale applications (no update in X days)
    */
   async getStale(days: number = 7): Promise<Application[]> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new Error('Not authenticated')
 
     const cutoffDate = new Date(Date.now() - days * 24 * 60 * 60 * 1000).toISOString()
@@ -479,7 +480,7 @@ export const applicationsApi = {
    * annons inte kan sparas två gånger — samma beteende som jobsApi.saveJob hade.
    */
   async saveJob(jobId: string, jobData: Record<string, unknown>, status: ApplicationStatus = 'saved'): Promise<Application> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new Error('Not authenticated')
 
     // jobData kommer som en lös post från jobbsökningen — läs de härledda
@@ -508,7 +509,7 @@ export const applicationsApi = {
 
   /** Är annonsen redan sparad? */
   async isSaved(jobId: string): Promise<boolean> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new Error('Not authenticated')
 
     const { data, error } = await supabase
@@ -527,7 +528,7 @@ export const applicationsApi = {
    * ingen anropare behöver känna till lagringsformatet.
    */
   async getByStatus(statuses: ApplicationStatus[]): Promise<Application[]> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new Error('Not authenticated')
 
     const { data, error } = await supabase
@@ -563,7 +564,7 @@ export const applicationsApi = {
   async getStatusRows(): Promise<
     Array<{ status: ApplicationStatus; archivedAt: string | null; applicationDate: string | null }>
   > {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new Error('Not authenticated')
 
     // `application_date`, inte `applied_at`: det senare skrivs aldrig
@@ -585,7 +586,7 @@ export const applicationsApi = {
 
   /** Antal icke-arkiverade ansökningar. Ersätter fyra spridda count-frågor. */
   async getActiveCount(): Promise<number> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new Error('Not authenticated')
 
     const { count, error } = await supabase
@@ -608,7 +609,7 @@ export const applicationContactsApi = {
    * Get all contacts for an application
    */
   async getByApplication(applicationId: string): Promise<ApplicationContact[]> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new Error('Not authenticated')
 
     const { data, error } = await supabase
@@ -627,7 +628,7 @@ export const applicationContactsApi = {
    * Get all contacts for the user
    */
   async getAll(): Promise<ApplicationContact[]> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new Error('Not authenticated')
 
     const { data, error } = await supabase
@@ -644,7 +645,7 @@ export const applicationContactsApi = {
    * Create a contact
    */
   async create(input: CreateContactInput): Promise<ApplicationContact> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new Error('Not authenticated')
 
     const { data, error } = await supabase
@@ -677,7 +678,7 @@ export const applicationContactsApi = {
    * Update a contact
    */
   async update(id: string, updates: Partial<CreateContactInput>): Promise<ApplicationContact> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new Error('Not authenticated')
 
     const { data, error } = await supabase
@@ -704,7 +705,7 @@ export const applicationContactsApi = {
    * Delete a contact
    */
   async delete(id: string): Promise<void> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new Error('Not authenticated')
 
     const { error } = await supabase
@@ -720,7 +721,7 @@ export const applicationContactsApi = {
    * Mark contact as contacted
    */
   async markContacted(id: string): Promise<ApplicationContact> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new Error('Not authenticated')
 
     const { data, error } = await supabase
@@ -745,7 +746,7 @@ export const applicationRemindersApi = {
    * Get reminders for an application
    */
   async getByApplication(applicationId: string): Promise<ApplicationReminder[]> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new Error('Not authenticated')
 
     const { data, error } = await supabase
@@ -763,7 +764,7 @@ export const applicationRemindersApi = {
    * Get all upcoming reminders
    */
   async getUpcoming(days: number = 7): Promise<ApplicationReminder[]> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new Error('Not authenticated')
 
     // Lokalt datum — `reminder_date` är en date-kolumn och "idag" är
@@ -789,7 +790,7 @@ export const applicationRemindersApi = {
    * Get today's reminders
    */
   async getToday(): Promise<ApplicationReminder[]> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new Error('Not authenticated')
 
     const today = idagLokalt()
@@ -810,7 +811,7 @@ export const applicationRemindersApi = {
    * Create a reminder
    */
   async create(input: CreateReminderInput): Promise<ApplicationReminder> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new Error('Not authenticated')
 
     const { data, error } = await supabase
@@ -841,7 +842,7 @@ export const applicationRemindersApi = {
    * Mark reminder as completed
    */
   async complete(id: string): Promise<ApplicationReminder> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new Error('Not authenticated')
 
     const { data, error } = await supabase
@@ -869,7 +870,7 @@ export const applicationRemindersApi = {
    * Delete a reminder
    */
   async delete(id: string): Promise<void> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new Error('Not authenticated')
 
     const { error } = await supabase
@@ -891,7 +892,7 @@ export const applicationHistoryApi = {
    * Get history for an application
    */
   async getByApplication(applicationId: string, limit: number = 50): Promise<ApplicationHistoryEntry[]> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new Error('Not authenticated')
 
     const { data, error } = await supabase
@@ -910,7 +911,7 @@ export const applicationHistoryApi = {
    * Get recent history across all applications
    */
   async getRecent(limit: number = 20): Promise<ApplicationHistoryEntry[]> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new Error('Not authenticated')
 
     const { data, error } = await supabase
@@ -932,7 +933,7 @@ export const applicationHistoryApi = {
     eventType: ApplicationHistoryEntry['eventType'],
     data?: { oldValue?: string; newValue?: string; note?: string; metadata?: Record<string, unknown> }
   ): Promise<void> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) return // Silently fail if not authenticated
 
     // `.catch()` fanns här fram till 2026-08-19 och gjorde tvärtemot vad den

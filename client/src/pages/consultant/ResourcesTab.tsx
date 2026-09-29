@@ -43,6 +43,7 @@ import { AktivitetskatalogSektion } from '@/components/consultant/Aktivitetskata
 import { INBYGGDA_MALMALLAR } from '@/components/consultant/inbyggdaMalmallar'
 import { CalendarDays, Library } from '@/components/ui/icons'
 
+import { anvandareFranSession } from '@/lib/anvandareFranSession'
 interface GoalTemplate {
   id: string
   title: string
@@ -699,7 +700,7 @@ export function ResourcesTab() {
     setLoading(true)
     setTemplatesError(null)
     try {
-      const { data: { user } } = await supabase.auth.getUser()
+      const { data: { user } } = await anvandareFranSession()
       if (!user) return
 
       const { data, error } = await supabase
@@ -740,7 +741,7 @@ export function ResourcesTab() {
   const handleSaveTemplate = async (data: Partial<GoalTemplate>) => {
     setSaving(true)
     try {
-      const { data: { user } } = await supabase.auth.getUser()
+      const { data: { user } } = await anvandareFranSession()
       if (!user) return
 
       const templateData = {
@@ -894,7 +895,7 @@ export function ResourcesTab() {
     setCollectionsLoading(true)
     setCollectionsError(null)
     try {
-      const { data: { user } } = await supabase.auth.getUser()
+      const { data: { user } } = await anvandareFranSession()
       if (!user) return
 
       const { data, error } = await supabase
@@ -927,7 +928,7 @@ export function ResourcesTab() {
   const handleSaveCollection = async (form: JobCollectionFormData) => {
     setSavingCollection(true)
     try {
-      const { data: { user } } = await supabase.auth.getUser()
+      const { data: { user } } = await anvandareFranSession()
       if (!user) return
 
       const row = {

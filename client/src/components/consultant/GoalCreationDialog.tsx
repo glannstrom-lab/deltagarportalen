@@ -27,9 +27,12 @@ import { supabase } from '@/lib/supabase'
 import { formatLocalDate } from '@/services/aktivitetSchema'
 import { Button } from '@/components/ui/Button'
 import { Dialog } from '@/components/ui/Dialog'
+import { FelSammanfattning } from './FelSammanfattning'
+import type { FormularFel } from './gaTillFalt'
 import { cn } from '@/lib/utils'
 import { INBYGGDA_MALMALLAR } from './inbyggdaMalmallar'
 
+import { anvandareFranSession } from '@/lib/anvandareFranSession'
 interface Participant {
   participant_id: string
   first_name: string
@@ -127,6 +130,12 @@ export function GoalCreationDialog({
     deadline: '',
   })
   const [forslag, setForslag] = useState<string[]>([])
+  /** KH5: ökas vid varje misslyckat försök att skapa målet. */
+  const [felSignal, setFelSignal] = useState(0)
+  const felLista: FormularFel[] = [
+    !customGoal.title.trim() ? { faltId: 'goal-title', text: 'Måltitel: skriv vad som ska uppnås' } : null,
+    !customGoal.deadline ? { faltId: 'goal-deadline', text: 'Deadline: välj ett datum' } : null,
+  ].filter((f): f is FormularFel => !!f)
 
   useEffect(() => {
     if (isOpen && !preselectedParticipant) {
@@ -173,7 +182,7 @@ export function GoalCreationDialog({
   const fetchParticipants = async () => {
     setHamtFel(false)
     try {
-      const { data: { user } } = await supabase.auth.getUser()
+      const { data: { user } } = await anvandareFranSession()
       if (!user) return
 
       const { data, error } = await supabase
@@ -212,12 +221,13 @@ export function GoalCreationDialog({
   }
 
   const handleSubmit = async () => {
-    if (!selectedParticipant || !customGoal.title || !customGoal.deadline) return
+    if (!selectedParticipant) return
+    if (felLista.length > 0) { setFelSignal((n) => n + 1); return }
 
     setFel(null)
     try {
       setLoading(true)
-      const { data: { user } } = await supabase.auth.getUser()
+      const { data: { user } } = await anvandareFranSession()
       if (!user) throw new Error('Not authenticated')
 
       const { error } = await supabase
@@ -255,6 +265,7 @@ export function GoalCreationDialog({
     setStep('participant')
     setSelectedParticipant(null)
     setSelectedTemplate(null)
+    setFelSignal(0)
     setCustomGoal({
       title: '',
       description: '',
@@ -449,14 +460,18 @@ export function GoalCreationDialog({
                   {goalTemplates.map(template => {
                     const Icon = template.icon
                     const category = categoryInfo[template.category]
+                    // KH9: kanten är neutral i vila och vid hover. Grön kant betyder "vald",
+                    // och inget mål är valt förrän konsulenten klickat.
                     return (
                       <button
                         key={template.id}
+                        type="button"
+                        data-mall={template.id}
                         onClick={() => {
                           setSelectedTemplate(template)
                           setStep('customize')
                         }}
-                        className="text-left p-4 rounded-xl border-2 border-stone-200 dark:border-stone-700 hover:border-[var(--c-solid)] transition-colors"
+                        className="text-left p-4 rounded-xl border-2 border-stone-200 dark:border-stone-700 hover:bg-stone-50 dark:hover:bg-stone-800 focus-visible:ring-2 focus-visible:ring-stone-500 transition-colors"
                       >
                         <div className="flex items-start gap-3">
                           <div className="p-2 bg-stone-100 dark:bg-stone-800 rounded-lg">
@@ -488,7 +503,7 @@ export function GoalCreationDialog({
                   setSelectedTemplate(null)
                   setStep('customize')
                 }}
-                className="w-full p-4 rounded-xl border-2 border-dashed border-stone-300 dark:border-stone-600 hover:border-[var(--c-solid)] transition-colors text-center"
+                className="w-full p-4 rounded-xl border-2 border-dashed border-stone-300 dark:border-stone-600 hover:bg-stone-50 dark:hover:bg-stone-800 focus-visible:ring-2 focus-visible:ring-stone-500 transition-colors text-center"
               >
                 <Target className="w-6 h-6 text-stone-600 mx-auto mb-2" />
                 <p className="font-medium text-stone-700 dark:text-stone-300">
@@ -506,11 +521,13 @@ export function GoalCreationDialog({
             <div className="space-y-5">
               {/* Goal Title */}
               <div>
-                <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-2">
+                <label htmlFor="goal-title" className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-2">
                   Måltitel *
                 </label>
                 <input
+                  id="goal-title"
                   type="text"
+                  aria-required="true"
                   value={customGoal.title}
                   onChange={e => setCustomGoal(prev => ({ ...prev, title: e.target.value }))}
                   placeholder="Vad ska uppnås?"
@@ -676,6 +693,8 @@ export function GoalCreationDialog({
           )}
         </div>
 
+        <FelSammanfattning signal={felSignal} fel={felLista} />
+
         {fel && (
           <p role="alert" className="mx-5 mt-2 p-3 rounded-lg text-sm bg-rose-50 text-rose-800 dark:bg-rose-900/30 dark:text-rose-200">
             {fel}
@@ -702,7 +721,7 @@ export function GoalCreationDialog({
               Avbryt
             </Button>
             {step === 'customize' && (
-              <Button onClick={handleSubmit} disabled={loading || !customGoal.title || !customGoal.deadline}>
+              <Button onClick={handleSubmit} disabled={loading}>
                 {loading ? (
                   <>
                     <Loader2 className="w-4 h-4 mr-2 animate-spin" />

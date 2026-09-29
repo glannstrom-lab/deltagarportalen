@@ -10,7 +10,10 @@
       "cta": "Gå till din konsulent",
       "medanTitel": "Medan du väntar",
       "medanText": "Du kan läsa om aktivitetskravet. Där står vad som gäller. Där står också vad du kan göra om du inte kan komma till ett pass. Du kan också jobba med ditt CV eller titta på jobb.",
-      "guideLank": "Läs om aktivitetskravet"
+      "guideLank": "Läs om aktivitetskravet",
+      "utanKonsulentTitel": "Din vecka visas här när du har en konsulent",
+      "utanKonsulentText": "Du har ingen konsulent ännu. När du får en konsulent planerar ni veckan tillsammans. Du behöver inte göra något här nu.",
+      "utanKonsulentCta": "Gå till Min konsulent"
     },
     "saldo": {
       "ingaPass": "Du har inget planerat den här veckan.",
@@ -477,14 +480,14 @@
       "previous": "Tillbaka",
       "next": "Nästa",
       "saving": "Sparar …",
-      "exampleData": "Visa ett exempel",
       "saveCv": "Spara CV",
       "preview": "Se hur det blir",
       "restore": "Ta tillbaka",
       "cancel": "Avbryt",
       "clearDemoData": "Ta bort exemplet",
       "fill": "Fyll i",
-      "remove": "Ta bort"
+      "remove": "Ta bort",
+      "fillExampleData": "Fyll i med ett exempel"
     },
     "versions": {
       "beforeImport": "Kopia innan du hämtade ett CV",
@@ -522,7 +525,8 @@
       "demoDataBannerTitle": "Här står ett exempel",
       "demoDataBannerBody": "Det här är bara ett exempel. Det är inte din egen text: {{fields}}. Byt det mot din egen text innan du sparar eller skickar CV:t.",
       "demoDataTitle": "Visa ett exempel",
-      "draftRestored": "Något hann inte sparas. Vi har lagt tillbaka det."
+      "draftRestored": "Något hann inte sparas. Vi har lagt tillbaka det.",
+      "snabbmallGranska": "Läs igenom innan du sparar som PDF. Din text om dig och dina kompetenser kommer från en färdig mall. Du har inte skrivit dem själv. Ändra dem så att de stämmer med dig."
     },
     "contentOverview": "Det här står i ditt CV",
     "loading": "Vänta lite …",

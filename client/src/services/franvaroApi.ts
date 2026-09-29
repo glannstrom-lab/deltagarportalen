@@ -15,6 +15,7 @@
 import { supabase } from '@/lib/supabase'
 import { mapSession, type ActivitySession } from './aktivitetApi'
 
+import { anvandareFranSession } from '@/lib/anvandareFranSession'
 export type FranvaroOrsak = 'sick' | 'child_care' | 'authority_meeting' | 'other'
 
 export const FRANVARO_ORSAKER: readonly FranvaroOrsak[] = ['sick', 'child_care', 'authority_meeting', 'other'] as const
@@ -124,7 +125,7 @@ export function passIPerioden(
 }
 
 async function requireUserId(): Promise<string> {
-  const { data, error } = await supabase.auth.getUser()
+  const { data, error } = await anvandareFranSession()
   if (error || !data.user) throw new Error('Inte inloggad')
   return data.user.id
 }

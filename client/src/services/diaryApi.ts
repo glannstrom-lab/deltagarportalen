@@ -5,6 +5,7 @@
 import { supabase } from '@/lib/supabase'
 import { formatLocalDate, veckansMandag } from './aktivitetSchema'
 
+import { anvandareFranSession } from '@/lib/anvandareFranSession'
 /**
  * Dagens datum och veckans måndag som `YYYY-MM-DD` i användarens tidszon.
  *
@@ -138,7 +139,7 @@ export interface WritingPrompt {
 
 export const diaryEntriesApi = {
   async getAll(limit = 50, offset = 0): Promise<DiaryEntry[]> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) return []
 
     const { data, error } = await supabase
@@ -153,7 +154,7 @@ export const diaryEntriesApi = {
   },
 
   async getByDateRange(startDate: string, endDate: string): Promise<DiaryEntry[]> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) return []
 
     const { data, error } = await supabase
@@ -169,7 +170,7 @@ export const diaryEntriesApi = {
   },
 
   async searchByTags(tags: string[]): Promise<DiaryEntry[]> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) return []
 
     const { data, error } = await supabase
@@ -189,7 +190,7 @@ export const diaryEntriesApi = {
    * behöver ja/nej (fokuslägets guider).
    */
   async skapa(entry: Omit<DiaryEntry, 'id' | 'user_id' | 'created_at' | 'updated_at'>): Promise<SparaInlaggUtfall> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) return { ok: false, orsak: 'utloggad' }
 
     const { data, error } = await supabase
@@ -228,7 +229,7 @@ export const diaryEntriesApi = {
    * hälsosamtycke i RLS (MV2) — 42501 ska nå användaren som ett besked, inte sväljas.
    */
   async uppdatera(id: string, updates: Partial<DiaryEntry>): Promise<SparaInlaggUtfall> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) return { ok: false, orsak: 'utloggad' }
 
     const skrivning = { ...updates }
@@ -252,7 +253,7 @@ export const diaryEntriesApi = {
   },
 
   async update(id: string, updates: Partial<DiaryEntry>): Promise<DiaryEntry | null> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) return null
 
     // Recalculate word count if content changed
@@ -276,7 +277,7 @@ export const diaryEntriesApi = {
   },
 
   async delete(id: string): Promise<boolean> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) return false
 
     const { error } = await supabase
@@ -293,7 +294,7 @@ export const diaryEntriesApi = {
   },
 
   async toggleFavorite(id: string): Promise<boolean> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) return false
 
     // Get current state
@@ -322,7 +323,7 @@ export const diaryEntriesApi = {
 
 export const moodLogsApi = {
   async getAll(limit = 30): Promise<MoodLog[]> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) return []
 
     const { data, error } = await supabase
@@ -337,7 +338,7 @@ export const moodLogsApi = {
   },
 
   async getByDateRange(startDate: string, endDate: string): Promise<MoodLog[]> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) return []
 
     const { data, error } = await supabase
@@ -353,7 +354,7 @@ export const moodLogsApi = {
   },
 
   async getToday(): Promise<MoodLog | null> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) return null
 
     const today = idag()
@@ -370,7 +371,7 @@ export const moodLogsApi = {
   },
 
   async upsert(log: Omit<MoodLog, 'id' | 'user_id' | 'created_at' | 'updated_at'>): Promise<MoodLog | null> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) return null
 
     const { data, error } = await supabase
@@ -392,7 +393,7 @@ export const moodLogsApi = {
   },
 
   async delete(id: string): Promise<boolean> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) return false
 
     const { error } = await supabase
@@ -411,7 +412,7 @@ export const moodLogsApi = {
 
 export const weeklyGoalsApi = {
   async getCurrentWeek(): Promise<WeeklyGoal[]> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) return []
 
     const weekStart = veckansStart()
@@ -428,7 +429,7 @@ export const weeklyGoalsApi = {
   },
 
   async create(goal: { goal_text: string; category?: string; priority?: number }): Promise<WeeklyGoal | null> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) return null
 
     const weekStart = veckansStart()
@@ -451,7 +452,7 @@ export const weeklyGoalsApi = {
   },
 
   async toggleComplete(id: string): Promise<boolean> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) return false
 
     // Get current state
@@ -477,7 +478,7 @@ export const weeklyGoalsApi = {
   },
 
   async addReflection(id: string, reflection: string): Promise<boolean> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) return false
 
     const { error } = await supabase
@@ -490,7 +491,7 @@ export const weeklyGoalsApi = {
   },
 
   async delete(id: string): Promise<boolean> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) return false
 
     const { error } = await supabase
@@ -509,7 +510,7 @@ export const weeklyGoalsApi = {
 
 export const gratitudeApi = {
   async getAll(limit = 30): Promise<GratitudeEntry[]> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) return []
 
     const { data, error } = await supabase
@@ -524,7 +525,7 @@ export const gratitudeApi = {
   },
 
   async getToday(): Promise<GratitudeEntry | null> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) return null
 
     const today = idag()
@@ -541,7 +542,7 @@ export const gratitudeApi = {
   },
 
   async create(entry: { item1: string; item2?: string; item3?: string; reflection?: string }): Promise<GratitudeEntry | null> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) return null
 
     const today = idag()
@@ -564,7 +565,7 @@ export const gratitudeApi = {
   },
 
   async update(id: string, updates: Partial<GratitudeEntry>): Promise<boolean> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) return false
 
     const { error } = await supabase
@@ -583,7 +584,7 @@ export const gratitudeApi = {
 
 export const diaryStreaksApi = {
   async get(): Promise<DiaryStreaks | null> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) return null
 
     const { data, error } = await supabase
@@ -597,7 +598,7 @@ export const diaryStreaksApi = {
   },
 
   async updateAfterEntry(wordCount: number): Promise<void> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) return
 
     const today = idag()

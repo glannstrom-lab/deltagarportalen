@@ -18,6 +18,7 @@ import { supabase } from '@/lib/supabase'
 import { useAnvandarnyckel } from '@/hooks/useAnvandarnyckel'
 import { formatLocalDate } from '@/services/aktivitetSchema'
 
+import { anvandareFranSession } from '@/lib/anvandareFranSession'
 // ============================================
 // INTERFACES (replacing all `any` types)
 // ============================================
@@ -158,7 +159,7 @@ export interface UseDashboardDataReturn {
 async function fetchDashboardData(): Promise<DashboardWidgetData> {
   try {
   // Hämta användare EN gång och återanvänd
-  const { data: { user } } = await supabase.auth.getUser()
+  const { data: { user } } = await anvandareFranSession()
 
   // ALLA anrop körs parallellt - ingen sekventiell väntan (LCP -500-1500ms)
   const [

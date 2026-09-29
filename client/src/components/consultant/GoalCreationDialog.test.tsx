@@ -66,12 +66,17 @@ describe('GoalCreationDialog — PG17 (2026-09-12): titel + datum räcker, SMART
     achievable: '', relevant: '', timeBound: '', category: 'other', priority: 'MEDIUM' as const,
   }
 
-  it('Skapa mål är avstängd utan deadline och slår på när ett datum fyllts i', async () => {
+  it('KH5: utan deadline ger Skapa mål en synlig felruta med länk till fältet, inte ett dött klick', async () => {
     renderDialog({ preselectedParticipant: deltagare[0] as never, initialGoal: initialGoal as never })
     const knapp = await screen.findByRole('button', { name: /skapa mål/i })
     const datum = screen.getByLabelText(/deadline/i) as HTMLInputElement
     fireEvent.change(datum, { target: { value: '' } })
-    expect(knapp).toBeDisabled()
+    expect(knapp).not.toBeDisabled()
+    fireEvent.click(knapp)
+    const ruta = await screen.findByRole('alert')
+    expect(ruta).toHaveTextContent('Deadline')
+    fireEvent.click(screen.getByRole('button', { name: /Deadline: välj ett datum/ }))
+    expect(document.activeElement).toBe(datum)
     fireEvent.change(datum, { target: { value: '2026-10-15' } })
     expect(knapp).not.toBeDisabled()
   })
@@ -82,5 +87,17 @@ describe('GoalCreationDialog — PG17 (2026-09-12): titel + datum räcker, SMART
     const utfallning = screen.getByText(/göra målet mer konkret/i).closest('details') as HTMLDetailsElement
     expect(utfallning).not.toBeNull()
     expect(utfallning.open).toBe(false)
+  })
+})
+
+describe('GoalCreationDialog — KH9: inget mål är förvalt', () => {
+  it('mallkorten har neutral kant — ingen grön kant som ser ut som ett val — och steget Anpassa målet nås först efter ett klick', async () => {
+    renderDialog({ preselectedParticipant: deltagare[0] as never })
+    const kort = await screen.findByRole('button', { name: /Skicka 10 ansökningar per vecka/ })
+    expect(kort.className).not.toMatch(/border-\[var\(--c-solid\)\]/)
+    expect(kort).not.toHaveAttribute('aria-pressed')
+    expect(screen.queryByLabelText(/Måltitel/)).toBeNull()
+    fireEvent.click(kort)
+    expect(await screen.findByLabelText(/Måltitel/)).toBeInTheDocument()
   })
 })

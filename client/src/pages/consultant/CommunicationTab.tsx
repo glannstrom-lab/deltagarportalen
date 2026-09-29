@@ -42,6 +42,7 @@ import { MeetingSchedulerDialog } from '@/components/consultant/MeetingScheduler
 import { useConfirmDialog } from '@/components/ui/ConfirmDialog'
 import { fetchCachedConsultantParticipants, useInvalidateConsultantParticipants } from './consultantParticipantsQuery'
 
+import { anvandareFranSession } from '@/lib/anvandareFranSession'
 interface Message {
   id: string
   participantId: string
@@ -621,7 +622,7 @@ export function CommunicationTab() {
     ;(async () => {
       const {
         data: { user },
-      } = await supabase.auth.getUser()
+      } = await anvandareFranSession()
       if (!user || !isMounted) return
 
       const channel = supabase
@@ -668,7 +669,7 @@ export function CommunicationTab() {
       setError(null)
       const {
         data: { user },
-      } = await supabase.auth.getUser()
+      } = await anvandareFranSession()
       if (!user) return
 
       // KS7: `error` saknades tidigare för alla tre frågorna här. Ett

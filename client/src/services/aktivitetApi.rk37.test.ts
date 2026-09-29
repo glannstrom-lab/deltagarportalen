@@ -14,7 +14,7 @@ let svar: { data: unknown; error: unknown } = { data: [], error: null }
 const anrop: Array<[string, unknown[]]> = []
 function kedja(): Record<string, unknown> {
   const k: Record<string, unknown> = {}
-  for (const m of ['update', 'insert', 'delete', 'select', 'eq', 'in', 'gte', 'lte', 'order']) {
+  for (const m of ['update', 'insert', 'delete', 'select', 'eq', 'in', 'gte', 'lte', 'order', 'is']) {
     k[m] = vi.fn((...a: unknown[]) => { anrop.push([m, a]); return k })
   }
   k.single = vi.fn(async () => svar)
@@ -83,5 +83,27 @@ describe('RK40/RR28 efter migrationen', () => {
     await aktivitetsplanApi.sattArendenummer('plan1', 'KS-1').catch(() => undefined)
     await aktivitetsplanApi.sattAfUnderrattad('s1', '2026-09-27T10:00:00Z').catch(() => undefined)
     expect(anrop.filter(([m]) => m === 'update').length).toBeGreaterThanOrEqual(2)
+  })
+})
+
+describe('SFT7: flytta pass', () => {
+  it('skriver bara datum, per pass, och bara på omarkerade pass', async () => {
+    svar = { data: [rad('a', '2026-10-07')], error: null }
+    const flyttade = await aktivitetsplanApi.flyttaSessions([{ id: 'a', date: '2026-10-07' }])
+    expect(anrop.find(([m]) => m === 'update')?.[1][0]).toEqual({ date: '2026-10-07' })
+    expect(anrop.find(([m]) => m === 'is')?.[1]).toEqual(['attendance', null])
+    expect(flyttade).toHaveLength(1)
+    expect(notisPassAndrat).toHaveBeenCalledTimes(1)
+  })
+
+  it('kastar när ett pass inte gick att flytta (redan markerat) — ingen tyst halv serie', async () => {
+    svar = { data: [], error: null }
+    await expect(aktivitetsplanApi.flyttaSessions([{ id: 'a', date: '2026-10-07' }])).rejects.toThrow(/Bara 0 av 1/)
+  })
+
+  it('tystNotis undertrycker notisen (ändras fält samtidigt kommer den därifrån)', async () => {
+    svar = { data: [rad('a', '2026-10-07')], error: null }
+    await aktivitetsplanApi.flyttaSessions([{ id: 'a', date: '2026-10-07' }], { tystNotis: true })
+    expect(notisPassAndrat).not.toHaveBeenCalled()
   })
 })

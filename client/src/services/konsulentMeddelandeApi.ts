@@ -16,6 +16,7 @@
 
 import { supabase } from '@/lib/supabase'
 
+import { anvandareFranSession } from '@/lib/anvandareFranSession'
 export interface MinKonsulent {
   id: string
   namn: string
@@ -29,7 +30,7 @@ export interface SkickatMeddelande {
 }
 
 async function requireUserId(): Promise<string> {
-  const { data, error } = await supabase.auth.getUser()
+  const { data, error } = await anvandareFranSession()
   if (error || !data.user) throw new Error('Inte inloggad')
   return data.user.id
 }

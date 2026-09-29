@@ -25,6 +25,7 @@ import { supabase } from '@/lib/supabase'
 import type { ActivitySession } from '@/services/aktivitetApi'
 import { lokaltDatum, type SavedJobRad } from '@/services/jobbsokAktivitet'
 
+import { anvandareFranSession } from '@/lib/anvandareFranSession'
 /** Sätt till true när narvaroIntygPdf.ts ritar `egenRedovisning`. */
 export const INTYG_HAR_EGEN_REDOVISNING = true
 
@@ -115,7 +116,7 @@ function manadensGranser(manad: string): { from: string; to: string } {
 
 /** Hämtar månadens jobbsökande (bara egna rader, RLS). Kastar vid fel. */
 export async function hamtaManadensJobbsok(manad: string): Promise<ManadensJobbsok> {
-  const { data: { user }, error: authFel } = await supabase.auth.getUser()
+  const { data: { user }, error: authFel } = await anvandareFranSession()
   if (authFel) throw authFel
   if (!user) throw new Error('Inte inloggad')
   const { from, to } = manadensGranser(manad)

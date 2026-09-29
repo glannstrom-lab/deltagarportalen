@@ -13,6 +13,7 @@ import { applicationsApi } from './applicationsApi'
 import type { Application, ApplicationStatus } from '@/types/application.types'
 import type { SavedJob } from './supabaseApi'
 
+import { anvandareFranSession } from '@/lib/anvandareFranSession'
 /**
  * Application (domänform, gemen status) -> SavedJob (rå radform, VERSAL status).
  *
@@ -217,7 +218,7 @@ export interface JobAlert {
 
 export const jobAlertsApi = {
   async getAll(): Promise<JobAlert[]> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
 
     const { data, error } = await supabase
@@ -231,7 +232,7 @@ export const jobAlertsApi = {
   },
 
   async create(alert: Partial<JobAlert>): Promise<JobAlert> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
 
     const { data, error } = await supabase
@@ -257,7 +258,7 @@ export const jobAlertsApi = {
   },
 
   async update(id: string, updates: Partial<JobAlert>): Promise<JobAlert> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
 
     const { data, error } = await supabase
@@ -274,7 +275,7 @@ export const jobAlertsApi = {
   },
 
   async delete(id: string): Promise<boolean> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
 
     const { error } = await supabase

@@ -7,6 +7,7 @@ import { persist, createJSONStorage, devtools } from 'zustand/middleware'
 import { supabase } from '@/lib/supabase'
 import { registreraRensning } from '@/lib/rensaVidUtloggning'
 
+import { anvandareFranSession } from '@/lib/anvandareFranSession'
 export type EnergyLevel = 'low' | 'medium' | 'high'
 
 interface EnergyState {
@@ -75,7 +76,7 @@ export const useEnergyStore = create<EnergyState>()(
 
         // Synka med server
         try {
-          const { data: { user } } = await supabase.auth.getUser()
+          const { data: { user } } = await anvandareFranSession()
           if (!user) return
 
           const { error } = await supabase
@@ -140,7 +141,7 @@ export const useEnergyStore = create<EnergyState>()(
         set({ isLoading: true, error: null })
         
         try {
-          const { data: { user } } = await supabase.auth.getUser()
+          const { data: { user } } = await anvandareFranSession()
           if (!user) {
             set({ isLoading: false })
             return

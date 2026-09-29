@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-28T22:19:00.460Z",
+  "generatedAt": "2026-09-29T19:21:20.155Z",
   "functions": [
     {
       "name": "accept_consultant_request",
@@ -595,6 +595,20 @@
       "definer": false,
       "anon": false,
       "authenticated": false
+    },
+    {
+      "name": "overlamna_deltagare",
+      "signature": "overlamna_deltagare(uuid,uuid,uuid,uuid)",
+      "definer": true,
+      "anon": false,
+      "authenticated": true
+    },
+    {
+      "name": "overlamningsdeltagare",
+      "signature": "overlamningsdeltagare(uuid,uuid)",
+      "definer": true,
+      "anon": false,
+      "authenticated": true
     },
     {
       "name": "post_to_community_feed",

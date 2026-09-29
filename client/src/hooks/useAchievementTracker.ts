@@ -37,6 +37,7 @@ import { useCallback } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { supabase } from '@/lib/supabase'
 
+import { anvandareFranSession } from '@/lib/anvandareFranSession'
 type ActivityType =
   | 'cv_updated'
   | 'cv_section_added'
@@ -73,7 +74,7 @@ export function useAchievementTracker() {
     options: TrackOptions
   ) => {
     try {
-      const { data: { user } } = await supabase.auth.getUser()
+      const { data: { user } } = await anvandareFranSession()
       if (!user) return
 
       // Log the activity

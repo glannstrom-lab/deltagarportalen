@@ -30,6 +30,7 @@ import { OrganisationSektion } from '@/components/consultant/OrganisationSektion
 import { cn } from '@/lib/utils'
 import { formatLocalDate } from '@/services/aktivitetSchema'
 
+import { anvandareFranSession } from '@/lib/anvandareFranSession'
 // Setting Row Component
 function SettingRow({
   icon: Icon,
@@ -99,7 +100,7 @@ export function SettingsTab() {
     try {
       setLoading(true)
       setLoadError(null)
-      const { data: { user } } = await supabase.auth.getUser()
+      const { data: { user } } = await anvandareFranSession()
       if (!user) return
 
       // Fetch settings from database
@@ -143,7 +144,7 @@ export function SettingsTab() {
   const handleSave = async () => {
     setSaving(true)
     try {
-      const { data: { user } } = await supabase.auth.getUser()
+      const { data: { user } } = await anvandareFranSession()
       if (!user) throw new Error('Not authenticated')
 
       // Upsert settings
@@ -194,7 +195,7 @@ export function SettingsTab() {
   const handleExportData = async () => {
     setExporting(true)
     try {
-      const { data: { user } } = await supabase.auth.getUser()
+      const { data: { user } } = await anvandareFranSession()
       if (!user) return
 
       const [activeParticipantIds, settings, goals, journal, meetings, messages, templates, collections, placements] = await Promise.all([

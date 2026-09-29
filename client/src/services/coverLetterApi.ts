@@ -8,9 +8,10 @@ import { supabase } from '../lib/supabase'
 import { APIError, handleError } from './apiError'
 import type { CoverLetter } from './supabaseApi'
 
+import { anvandareFranSession } from '@/lib/anvandareFranSession'
 export const coverLetterApi = {
   async getAll(): Promise<CoverLetter[]> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
 
     const { data, error } = await supabase
@@ -24,7 +25,7 @@ export const coverLetterApi = {
   },
 
   async getById(id: string): Promise<CoverLetter | null> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
 
     const { data, error } = await supabase
@@ -42,7 +43,7 @@ export const coverLetterApi = {
   },
 
   async create(letterData: Partial<CoverLetter>) {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
 
     const { data, error } = await supabase
@@ -59,7 +60,7 @@ export const coverLetterApi = {
   },
 
   async update(id: string, letterData: Partial<CoverLetter>) {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
 
     const { data, error } = await supabase
@@ -78,7 +79,7 @@ export const coverLetterApi = {
   },
 
   async delete(id: string) {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
 
     const { error } = await supabase

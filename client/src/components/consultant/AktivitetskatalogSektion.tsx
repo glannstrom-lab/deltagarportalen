@@ -9,7 +9,6 @@
 
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Library, Plus, Edit2, Trash2, MapPin, Clock, Users, X, Loader2 } from '@/components/ui/icons'
-import { supabase } from '@/lib/supabase'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Dialog } from '@/components/ui/Dialog'
@@ -32,6 +31,7 @@ import {
   VECKODAG_LANG,
 } from './aktivitetEtiketter'
 
+import { anvandareFranSession } from '@/lib/anvandareFranSession'
 type Medlemskap = { org: Organization; role: OrgRole }
 type Lage =
   | { status: 'laddar' }
@@ -52,7 +52,7 @@ export function AktivitetskatalogSektion() {
     ;(async () => {
       try {
         const [{ data: { user } }, poster, medlemskap] = await Promise.all([
-          supabase.auth.getUser(),
+          anvandareFranSession(),
           aktivitetskatalogApi.list(),
           orgApi.myMemberships(),
         ])

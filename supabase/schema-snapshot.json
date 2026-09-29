@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-28T22:18:53.321Z",
+  "generatedAt": "2026-09-29T19:21:13.618Z",
   "note": "Genererad av client/scripts/refresh-schema-snapshot.cjs. Kör om efter varje migration och committa i samma commit. Läses av check-schema-drift.cjs.",
   "tables": {
     "account_deletion_requests": [
@@ -2343,6 +2343,8 @@
     "organization_handover_insert",
     "organization_members_kind_guard",
     "organizations_chef_guard",
+    "overlamna_deltagare",
+    "overlamningsdeltagare",
     "post_to_community_feed",
     "prevent_last_superadmin_removal",
     "profiles_consultant_status_only_check",

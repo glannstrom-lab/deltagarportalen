@@ -21,6 +21,7 @@ import { EmptyState } from '@/components/ui/EmptyState'
 import { minVeckaApi, type ActivitySession } from '@/services/aktivitetApi'
 import { MIN_VECKA_PLAN_KEY, minVeckaSessionsKey } from '@/services/minVeckaKeys'
 import { jobbsokAktivitetApi, harNagot } from '@/services/jobbsokAktivitet'
+import { konsulentMeddelandeApi } from '@/services/konsulentMeddelandeApi'
 // F1 (2026-09-12): deltagaren anmäler frånvaro på kommande pass
 import { FranvaroAnmalan } from '@/components/minvecka/FranvaroAnmalan'
 import { FragaOmPasset } from '@/components/minvecka/FragaOmPasset'
@@ -130,6 +131,16 @@ export default function MinVecka() {
     enabled: !!planQuery.data,
   })
 
+  // NY6: utan plan skiljer vi på "ingen konsulent" och "konsulent men ingen plan".
+  // Bara läsning. Ett fel ger den neutrala texten, inte ett påstående åt något håll.
+  const saknarPlan = planQuery.isSuccess && !planQuery.data
+  const konsulentQuery = useQuery({
+    queryKey: ['min-vecka', 'min-konsulent'],
+    queryFn: () => konsulentMeddelandeApi.minKonsulent(),
+    enabled: saknarPlan,
+    staleTime: 60_000,
+  })
+
   const dagens = idag()
   const locale = i18n.language?.startsWith('en') ? 'en-GB' : 'sv-SE'
 
@@ -202,14 +213,28 @@ export default function MinVecka() {
     innehall = <LoadingState />
   } else if (planQuery.isError) {
     innehall = <ErrorState message={t('minVecka.kundeInteHamta', 'Din vecka kunde inte hämtas just nu.')} onRetry={() => planQuery.refetch()} />
+  } else if (!planQuery.data && konsulentQuery.isLoading) {
+    // Innan vi vet om det finns en konsulent påstår vi ingenting om en.
+    innehall = <LoadingState />
   } else if (!planQuery.data) {
+    // data === null = ingen konsulent kopplad. Fel → den neutrala texten.
+    const utanKonsulent = konsulentQuery.isSuccess && konsulentQuery.data === null
     innehall = (
       <div>
         <EmptyState
           icon={ClipboardCheck}
-          title={t('minVecka.ingenPlan.title', 'Ingen vecka planerad än')}
-          description={t('minVecka.ingenPlan.text', 'Din konsulent lägger upp veckan tillsammans med dig. Tills dess finns det inget du behöver göra här.')}
-          action={{ label: t('minVecka.ingenPlan.cta', 'Gå till din konsulent'), onClick: () => navigate('/my-consultant') }}
+          title={utanKonsulent
+            ? t('minVecka.ingenPlan.utanKonsulentTitel', 'Din vecka visas här när du har en konsulent')
+            : t('minVecka.ingenPlan.title', 'Ingen vecka planerad än')}
+          description={utanKonsulent
+            ? t('minVecka.ingenPlan.utanKonsulentText', 'Du har ingen konsulent kopplad ännu. När du får en lägger ni upp veckan tillsammans. Tills dess finns det inget du behöver göra här.')
+            : t('minVecka.ingenPlan.text', 'Din konsulent lägger upp veckan tillsammans med dig. Tills dess finns det inget du behöver göra här.')}
+          action={{
+            label: utanKonsulent
+              ? t('minVecka.ingenPlan.utanKonsulentCta', 'Se Min konsulent')
+              : t('minVecka.ingenPlan.cta', 'Gå till din konsulent'),
+            onClick: () => navigate('/my-consultant'),
+          }}
         />
         {/* NY6: medan du väntar — vad du kan göra själv. Vanlig <a>: /guider/ är prerenderad utanför HashRouter. */}
         <div className="mx-auto mt-4 max-w-md text-center text-sm text-stone-700 dark:text-stone-300" data-testid="ingenplan-medan-du-vantar">

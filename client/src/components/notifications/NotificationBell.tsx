@@ -37,6 +37,8 @@ interface NotificationBellProps {
 
 type CategoryFilter = 'all' | NotificationType
 
+export const NOTIS_INTERVALL_MS = 60_000
+
 // ============================================
 // ICON MAP
 // ============================================
@@ -256,7 +258,27 @@ export function NotificationBell({ className }: NotificationBellProps) {
     markAsRead,
     markAllAsRead,
     deleteNotification,
+    refresh,
   } = useNotifications()
+
+  // FT3: Realtime-kanalen i useNotifications levererar inget i drift —
+  // `notifications` ligger inte i publikationen supabase_realtime (mätt 2026-09-29,
+  // pg_publication_tables är tom), så klockan visste aldrig om en ny notis förrän
+  // sidan laddades om. Tills tabellen läggs i publikationen hämtar klockan själv:
+  // när fliken blir synlig/fokuserad igen, och var 60:e sekund medan den syns.
+  useEffect(() => {
+    const uppdatera = () => {
+      if (document.visibilityState === 'visible') void refresh()
+    }
+    const intervall = window.setInterval(uppdatera, NOTIS_INTERVALL_MS)
+    document.addEventListener('visibilitychange', uppdatera)
+    window.addEventListener('focus', uppdatera)
+    return () => {
+      window.clearInterval(intervall)
+      document.removeEventListener('visibilitychange', uppdatera)
+      window.removeEventListener('focus', uppdatera)
+    }
+  }, [refresh])
 
   // Filter notifications by category
   const filteredNotifications =

@@ -10,6 +10,7 @@
  */
 import { supabase } from '@/lib/supabase'
 
+import { anvandareFranSession } from '@/lib/anvandareFranSession'
 function handleError(error: { message: string; code?: string }): never {
   const err = new Error(error.message) as Error & { code?: string }
   err.code = error.code
@@ -57,7 +58,7 @@ export const konsulentKopplingApi = {
 export const consultantConsentsApi = {
   /** Aktivt samtycke (revoked_at IS NULL) för inloggad deltagare och given konsulent. */
   async getActive(consultantId: string): Promise<ConsultantConsent | null> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) return null
     const { data, error } = await supabase
       .from('consultant_consents')

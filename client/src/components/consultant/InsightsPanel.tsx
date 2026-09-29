@@ -38,8 +38,8 @@ import {
   type KeyMetric,
   type ParticipantRisk
 } from '@/services/consultantInsights'
-import { supabase } from '@/lib/supabase'
 
+import { anvandareFranSession } from '@/lib/anvandareFranSession'
 interface InsightsPanelProps {
   maxInsights?: number
   showTrends?: boolean
@@ -72,7 +72,7 @@ export function InsightsPanel({
     setLoadError(false)
     setGoalInsightsFailed(false)
     try {
-      const { data: { user } } = await supabase.auth.getUser()
+      const { data: { user } } = await anvandareFranSession()
       if (!user) return
 
       const [insightsResult, metricsData, risksData] = await Promise.all([

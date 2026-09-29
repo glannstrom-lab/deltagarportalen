@@ -5,6 +5,7 @@
 
 import { supabase } from '@/lib/supabase'
 
+import { anvandareFranSession } from '@/lib/anvandareFranSession'
 const API_URL = '/api/job-alerts'
 
 export interface JobNotification {
@@ -30,7 +31,7 @@ export interface CheckAlertsResult {
  * Check all user's alerts for new jobs and send notifications
  */
 export async function checkUserAlerts(): Promise<CheckAlertsResult> {
-  const { data: { user } } = await supabase.auth.getUser()
+  const { data: { user } } = await anvandareFranSession()
   if (!user) throw new Error('Not authenticated')
 
   const response = await fetch(API_URL, {
@@ -56,7 +57,7 @@ export async function checkUserAlerts(): Promise<CheckAlertsResult> {
  * Get unread job notifications for the current user
  */
 export async function getUnreadNotifications(): Promise<JobNotification[]> {
-  const { data: { user } } = await supabase.auth.getUser()
+  const { data: { user } } = await anvandareFranSession()
   if (!user) return []
 
   const { data, error } = await supabase
@@ -79,7 +80,7 @@ export async function getUnreadNotifications(): Promise<JobNotification[]> {
  * Get all job notifications for the current user
  */
 export async function getAllNotifications(limit: number = 100): Promise<JobNotification[]> {
-  const { data: { user } } = await supabase.auth.getUser()
+  const { data: { user } } = await anvandareFranSession()
   if (!user) return []
 
   const { data, error } = await supabase
@@ -118,7 +119,7 @@ export async function markNotificationRead(notificationId: string): Promise<bool
  * Mark all notifications as read
  */
 export async function markAllNotificationsRead(): Promise<boolean> {
-  const { data: { user } } = await supabase.auth.getUser()
+  const { data: { user } } = await anvandareFranSession()
   if (!user) return false
 
   const { error } = await supabase
@@ -143,7 +144,7 @@ export async function markAllNotificationsRead(): Promise<boolean> {
  * ska fånga och då visa ingen bricka, inte en påhittad nolla.
  */
 export async function getUnreadCount(): Promise<number> {
-  const { data: { user } } = await supabase.auth.getUser()
+  const { data: { user } } = await anvandareFranSession()
   if (!user) return 0
 
   const { count, error } = await supabase
@@ -164,7 +165,7 @@ export async function getUnreadCount(): Promise<number> {
  * Request daily digest email
  */
 export async function requestDailyDigest(): Promise<boolean> {
-  const { data: { user } } = await supabase.auth.getUser()
+  const { data: { user } } = await anvandareFranSession()
   if (!user) return false
 
   try {
@@ -194,7 +195,7 @@ export async function updateNotificationPreferences(preferences: {
   emailEnabled: boolean
   frequency: 'instant' | 'daily' | 'weekly' | 'none'
 }): Promise<boolean> {
-  const { data: { user } } = await supabase.auth.getUser()
+  const { data: { user } } = await anvandareFranSession()
   if (!user) return false
 
   const { error } = await supabase
@@ -221,7 +222,7 @@ export async function getNotificationPreferences(): Promise<{
   emailEnabled: boolean
   frequency: 'instant' | 'daily' | 'weekly' | 'none'
 }> {
-  const { data: { user } } = await supabase.auth.getUser()
+  const { data: { user } } = await anvandareFranSession()
   if (!user) return { emailEnabled: true, frequency: 'daily' }
 
   // maybeSingle(): user_preferences skapas lazy — 0 rader är det vanliga för

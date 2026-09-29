@@ -28,6 +28,7 @@
 import { supabase } from '@/lib/supabase'
 import { MILSTOLPE_VECKOR, PERIOD_RIKTVARDE } from '@/components/consultant/placeringLabels'
 
+import { anvandareFranSession } from '@/lib/anvandareFranSession'
 // ============================================================================
 // TYPER
 // ============================================================================
@@ -240,7 +241,7 @@ export interface ForetagsInbjudan {
 }
 
 async function kravInloggadAnvandare(): Promise<string> {
-  const { data: { user } } = await supabase.auth.getUser()
+  const { data: { user } } = await anvandareFranSession()
   if (!user) throw new Error('Not authenticated')
   return user.id
 }

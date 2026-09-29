@@ -27,6 +27,7 @@
 
 import { supabase } from '@/lib/supabase'
 
+import { anvandareFranSession } from '@/lib/anvandareFranSession'
 export type OrgKind = 'kommun' | 'leverantor' | 'annan' | 'arbetsgivare'
 export type OrgRole = 'handlaggare' | 'konsulent' | 'chef' | 'admin' | 'arbetsgivare'
 
@@ -126,7 +127,7 @@ export const ORG_KIND_ETIKETT: Record<OrgKind, string> = {
 }
 
 async function requireUser() {
-  const { data: { user }, error } = await supabase.auth.getUser()
+  const { data: { user }, error } = await anvandareFranSession()
   if (error) throw error
   if (!user) throw new Error('Inte inloggad')
   return user
@@ -350,6 +351,55 @@ export const orgApi = {
     if (error) throw new Error(felText(error))
     return (data as { antal_deltagare: number } | null)?.antal_deltagare ?? 0
   },
+
+  /**
+   * CH6/CH13: namn på en konsulents deltagare, så chefen kan peka ut EN att
+   * lämna över. Bygger på RPC:n overlamningsdeltagare (PENDING-migration
+   * 20260929). Finns den inte än ger anropet ett ärligt fel, inte en tom lista.
+   */
+  async overlamningsdeltagare(orgId: string, fromConsultantId: string): Promise<OverlamningsDeltagare[]> {
+    await requireUser()
+    const { data, error } = await supabase.rpc('overlamningsdeltagare', {
+      p_org_id: orgId,
+      p_from_consultant_id: fromConsultantId,
+    })
+    if (error) throw new Error(rpcFelText(error))
+    return ((data ?? []) as { participant_id: string; namn: string }[]).map((r) => ({
+      participant_id: r.participant_id,
+      namn: r.namn,
+    }))
+  },
+
+  /** CH6/CH13: flyttar EN deltagare (RPC overlamna_deltagare, samma regler som handover). */
+  async handoverParticipant(
+    orgId: string,
+    participantId: string,
+    fromConsultantId: string,
+    toConsultantId: string,
+  ): Promise<void> {
+    await requireUser()
+    const { error } = await supabase.rpc('overlamna_deltagare', {
+      p_org_id: orgId,
+      p_participant_id: participantId,
+      p_from_consultant_id: fromConsultantId,
+      p_to_consultant_id: toConsultantId,
+    })
+    if (error) throw new Error(rpcFelText(error))
+  },
+}
+
+export interface OverlamningsDeltagare {
+  participant_id: string
+  namn: string
+}
+
+/** Saknad RPC (42883 / PGRST202) är inget databasfel deltagaren ska tolka. */
+export function rpcFelText(e: unknown): string {
+  const kod = e && typeof e === 'object' && 'code' in e ? String((e as { code: unknown }).code) : ''
+  if (kod === '42883' || kod === 'PGRST202') {
+    return 'Att lämna över en enskild deltagare är inte påslaget än. Lämna över hela caseloaden, eller vänta på uppdateringen.'
+  }
+  return felText(e)
 }
 
 /**

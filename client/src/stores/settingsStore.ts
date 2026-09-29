@@ -9,6 +9,7 @@ import i18n from '@/i18n/config'
 import { storageLogger } from '@/lib/logger'
 import { registreraRensning } from '@/lib/rensaVidUtloggning'
 
+import { anvandareFranSession } from '@/lib/anvandareFranSession'
 export type EnergyLevel = 'low' | 'medium' | 'high'
 export type Language = 'sv' | 'en'
 /**
@@ -203,7 +204,7 @@ export const useSettingsStore = create<SettingsState>()(
       // Save to server (internal)
       _saveToServer: async (updates: Partial<ServerSettings>) => {
         try {
-          const { data: { user } } = await supabase.auth.getUser()
+          const { data: { user } } = await anvandareFranSession()
           if (!user) return false
 
           const { error } = await supabase
@@ -239,7 +240,7 @@ export const useSettingsStore = create<SettingsState>()(
         const sprakVidStart = get().language
 
         try {
-          const { data: { user } } = await supabase.auth.getUser()
+          const { data: { user } } = await anvandareFranSession()
           if (!user) {
             set({ isLoading: false })
             return

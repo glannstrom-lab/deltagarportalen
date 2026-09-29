@@ -53,12 +53,17 @@ const activityDefs: { id: string; titleKey: string; icon: React.ElementType }[] 
   { id: '4', titleKey: 'wellness.health.activities.contactFriend', icon: Coffee },
 ]
 
-// Quote definitions (will be translated in component)
-const quoteDefs = [
-  { textKey: 'wellness.health.quotes.quote1.text', authorKey: 'wellness.health.quotes.quote1.author' },
-  { textKey: 'wellness.health.quotes.quote2.text', authorKey: 'wellness.health.quotes.quote2.author' },
-  { textKey: 'wellness.health.quotes.quote3.text', authorKey: 'wellness.health.quotes.quote3.author' },
+// Tre egna, oattribuerade formuleringar. UT7: de stod förut som "— Okänd", vilket
+// ser ut som en källhänvisning som saknas. Ingen upphovsperson finns, så ingen
+// visas — hitta aldrig på ett namn.
+const quoteKeys = [
+  'wellness.health.quotes.quote1.text',
+  'wellness.health.quotes.quote2.text',
+  'wellness.health.quotes.quote3.text',
 ]
+
+// UT6: efter "Dåligt"/"Tufft" möter man inte en ikryssningsbar lista.
+const LUGNA_HUMOR: readonly MoodType[] = ['bad', 'terrible']
 
 export default function HealthTab() {
   const { t } = useTranslation()
@@ -90,17 +95,18 @@ export default function HealthTab() {
   })), [t])
 
   const quote = useMemo(() => {
-    const idx = Math.floor(Math.random() * quoteDefs.length)
-    return {
-      text: t(quoteDefs[idx].textKey),
-      author: t(quoteDefs[idx].authorKey)
-    }
+    const idx = Math.floor(Math.random() * quoteKeys.length)
+    return { text: t(quoteKeys[idx]) }
   }, [t])
 
   const [activities, setActivities] = useState<DailyActivity[]>(() => initialActivities)
   const [reflection, setReflection] = useState('')
   const [savedReflections, setSavedReflections] = useState<string[]>([])
+  // Humöret och välmåendedatan laddas var för sig: humöret är det första man
+  // kommer hit för och ska inte vänta på aktiviteter, reflektioner eller sviten (UT4).
   const [isLoading, setIsLoading] = useState(true)
+  const [valmaendeLaddar, setValmaendeLaddar] = useState(true)
+  const [visaAktiviteterAnda, setVisaAktiviteterAnda] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
   // Ett humör eller en anteckning som inte sparades syntes förut bara i
   // konsolen — och valet såg sparat ut. (2026-09-24)
@@ -113,6 +119,7 @@ export default function HealthTab() {
 
   const loadWellness = useCallback(async () => {
     setValmaendeLaddfel(false)
+    setValmaendeLaddar(true)
     try {
       const wellnessData = await wellnessDataApi.get()
       if (wellnessData) {
@@ -129,38 +136,35 @@ export default function HealthTab() {
     } catch (error) {
       console.error('Failed to load wellness data:', error)
       setValmaendeLaddfel(true)
+    } finally {
+      setValmaendeLaddar(false)
     }
   }, [])
 
   const loadMood = useCallback(async () => {
+    // Sviten startar direkt men väntas inte in: 365 rader ska inte hålla kvar
+    // humörvalet. getStreak kastar vid fel sedan 2026-09-22 — okänd svit visas inte.
+    const streakSvar = moodApi.getStreak().catch(() => null)
     try {
-      const [todaysMood, streak] = await Promise.all([
-        // Ett fel i dagens humör får inte fälla sviten. Okänt humör visar
-        // inviten att logga — den påstår inget om användaren.
-        moodApi.getTodaysMood().catch(() => null),
-        // getStreak kastar vid fel sedan 2026-09-22. Ett fel i sviten får inte
-        // fälla hela Promise.all — dagens humör ska ändå visas.
-        moodApi.getStreak().catch(() => null),
-      ])
-
+      // Ett fel i dagens humör får inte fälla sidan. Okänt humör visar
+      // inviten att logga — den påstår inget om användaren.
+      const todaysMood = await moodApi.getTodaysMood().catch(() => null)
       if (todaysMood) {
         setCurrentMood(todaysMood.mood)
         setMoodNote(todaysMood.note || '')
         setMoodSaved(true)
       }
-      setMoodStreak(streak)
     } catch (error) {
       console.error('Failed to load mood:', error)
+    } finally {
+      setIsLoading(false)
     }
+    setMoodStreak(await streakSvar)
   }, [])
 
   const loadData = useCallback(async () => {
     setIsLoading(true)
-    try {
-      await Promise.all([loadMood(), loadWellness()])
-    } finally {
-      setIsLoading(false)
-    }
+    await Promise.all([loadMood(), loadWellness()])
   }, [loadMood, loadWellness])
 
   useEffect(() => {
@@ -257,15 +261,18 @@ export default function HealthTab() {
   }
 
   if (isLoading) {
+    // UT4: en snurra utan ord ser ut som en sida som hängt sig.
     return (
-      <div className="flex items-center justify-center py-12">
-        <Loader2 className="w-8 h-8 animate-spin text-[var(--c-text)] dark:text-[var(--c-text)]" />
+      <div role="status" className="flex flex-col items-center justify-center gap-3 py-12 text-sm text-stone-700 dark:text-stone-300">
+        <Loader2 className="w-8 h-8 animate-spin text-[var(--c-text)] dark:text-[var(--c-text)]" aria-hidden="true" />
+        <span>{t('wellness.health.laddarMaende', 'Hämtar ditt mående …')}</span>
       </div>
     )
   }
 
   const completedCount = activities.filter(a => a.completed).length
   const selectedMoodOption = moodOptions.find(m => m.value === currentMood)
+  const lugnDag = currentMood !== null && LUGNA_HUMOR.includes(currentMood) && !visaAktiviteterAnda
 
   return (
     <div className="space-y-6">
@@ -388,7 +395,6 @@ export default function HealthTab() {
             <p className="text-base font-medium text-[var(--c-text)] dark:text-[var(--c-text)] italic">
               "{quote.text}"
             </p>
-            <p className="text-sm text-[var(--c-text)] dark:text-[var(--c-text)] mt-1">— {quote.author}</p>
           </div>
         </div>
       </Card>
@@ -408,12 +414,37 @@ export default function HealthTab() {
       )}
 
       {/* Daily Activities */}
+      {valmaendeLaddar ? (
+        <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
+          <p role="status" className="flex items-center gap-2 text-sm text-stone-700 dark:text-stone-300">
+            <Loader2 className="w-4 h-4 animate-spin" aria-hidden="true" />
+            {t('wellness.health.laddarAktiviteter', 'Hämtar dina aktiviteter och reflektioner …')}
+          </p>
+        </Card>
+      ) : lugnDag ? (
+        // UT6: efter ett tungt humör visas ingen lista att bocka av och ingen "0 av 4".
+        <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700" data-testid="lugn-dag">
+          <p className="text-sm text-gray-700 dark:text-gray-200">
+            {t('wellness.health.lugnDag', 'Idag räcker det att du har sagt hur du mår. Idéerna för dagen finns kvar när du vill ha dem.')}
+          </p>
+          <button
+            type="button"
+            onClick={() => setVisaAktiviteterAnda(true)}
+            className="mt-2 text-sm text-gray-600 dark:text-gray-300 underline hover:text-gray-800 dark:hover:text-gray-100"
+          >
+            {t('wellness.health.visaIdeerAnda', 'Visa idéerna ändå')}
+          </button>
+        </Card>
+      ) : (
       <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
         <div className="flex items-center justify-between mb-4">
           <div>
             <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">{t('wellness.health.dailyActivities')}</h3>
             <p className="text-sm text-gray-600 dark:text-gray-300">
-              {t('wellness.health.xOfYCompleted', { completed: completedCount, total: activities.length })}
+              {/* Ett tomt fält är inte en nolla: inget avklarat = en invit, inte "0 av 4". */}
+              {completedCount > 0
+                ? t('wellness.health.xOfYCompleted', { completed: completedCount, total: activities.length })
+                : t('wellness.health.ideerInvit', 'Några små idéer för dagen. Ta det du vill.')}
             </p>
           </div>
           <div className="w-10 h-10 rounded-full bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40 flex items-center justify-center">
@@ -457,6 +488,7 @@ export default function HealthTab() {
           })}
         </div>
       </Card>
+      )}
 
       {/* Wellness Tips */}
       <div className="grid gap-3 md:grid-cols-2">
@@ -479,6 +511,7 @@ export default function HealthTab() {
       </div>
 
       {/* Reflection */}
+      {!valmaendeLaddar && (
       <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
         <div className="flex items-center gap-3 mb-4">
           <PenLine className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-text)]" aria-hidden="true" />
@@ -517,6 +550,7 @@ export default function HealthTab() {
           </div>
         )}
       </Card>
+      )}
     </div>
   )
 }

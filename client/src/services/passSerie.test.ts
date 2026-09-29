@@ -66,3 +66,13 @@ describe('Plats → pass', () => {
     expect(med.fritextUtanPlats).toEqual([])
   })
 })
+
+describe('SFT7: flytta till annan veckodag', () => {
+  it('flyttar inom samma vecka, framåt och bakåt', async () => {
+    const { flyttaTillVeckodag, serieFlytt } = await import('./passSerie')
+    expect(flyttaTillVeckodag('2026-10-01', 3)).toBe('2026-09-30') // tor → ons
+    expect(flyttaTillVeckodag('2026-10-01', 5)).toBe('2026-10-02') // tor → fre
+    const p = (id: string, date: string) => ({ id, plan_id: 'x', date, start_time: '09:00', end_time: '11:00', title: 'T', activity_type: 'jobsearch', attendance: null })
+    expect(serieFlytt([p('a', '2026-10-01'), p('b', '2026-10-08')], 2)).toEqual([{ id: 'a', date: '2026-09-29' }, { id: 'b', date: '2026-10-06' }])
+  })
+})

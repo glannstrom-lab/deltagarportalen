@@ -88,11 +88,24 @@ describe('PlacementDialog — deltagarval', () => {
 })
 
 describe('PlacementDialog — spara placering', () => {
-  it('arbetsgivarnamn krävs: knappen är inaktiv och recordPlacement anropas inte utan det', async () => {
+  it('KH5: arbetsgivarnamn krävs — klicket ger en synlig felruta och recordPlacement anropas inte', async () => {
     renderDialog({ preselectedParticipant: deltagare[0] })
     const saveButton = await screen.findByRole('button', { name: /Spara placering/i })
-    expect(saveButton).toBeDisabled()
+    expect(saveButton).not.toBeDisabled()
     fireEvent.click(saveButton)
+    expect(consultantService.recordPlacement).not.toHaveBeenCalled()
+    expect(await screen.findByRole('alert')).toHaveTextContent('Arbetsgivare: ange namn')
+    fireEvent.click(screen.getByRole('button', { name: /Arbetsgivare: ange namn/ }))
+    expect(document.activeElement).toBe(document.getElementById('placement-employer'))
+  })
+
+  it('KH5: slutdatum före startdatum hamnar i samma sammanfattning', async () => {
+    renderDialog({ preselectedParticipant: deltagare[0] })
+    fireEvent.change(await screen.findByLabelText(/Arbetsgivare/), { target: { value: 'Nordfrakt' } })
+    fireEvent.change(document.getElementById('placement-start')!, { target: { value: '2026-10-10' } })
+    fireEvent.change(document.getElementById('placement-end')!, { target: { value: '2026-10-01' } })
+    fireEvent.click(screen.getByRole('button', { name: /Spara placering/i }))
+    expect(await screen.findByRole('alert')).toHaveTextContent('Slutdatum kan inte vara före startdatum')
     expect(consultantService.recordPlacement).not.toHaveBeenCalled()
   })
 

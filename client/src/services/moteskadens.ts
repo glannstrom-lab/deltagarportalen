@@ -14,6 +14,7 @@
 
 import { supabase } from '@/lib/supabase'
 
+import { anvandareFranSession } from '@/lib/anvandareFranSession'
 export const MOTE_GRANS_DAGAR = 14
 export const FYSISKT_GRANS_DAGAR = 28
 /** "Snart" = så här många dagar före gränsen börjar vi flagga. */
@@ -169,7 +170,7 @@ export function kadensText(k: Kadens | undefined): string {
  * hämtas för att slippa en andra fråga senare). Kastar vid fel.
  */
 export async function hamtaMotenForKonsulent(idag: Date = new Date()): Promise<MoteRad[]> {
-  const { data: { user }, error: authError } = await supabase.auth.getUser()
+  const { data: { user }, error: authError } = await anvandareFranSession()
   if (authError) throw authError
   if (!user) throw new Error('Inte inloggad')
   const fran = new Date(idag)
@@ -196,7 +197,7 @@ export interface DeltagarMote extends MoteRad {
  * och alla framåt. Kastar vid fel — anroparen visar felet, aldrig "inga möten".
  */
 export async function hamtaMotenForDeltagare(participantId: string, idag: Date = new Date()): Promise<DeltagarMote[]> {
-  const { data: { user }, error: authError } = await supabase.auth.getUser()
+  const { data: { user }, error: authError } = await anvandareFranSession()
   if (authError) throw authError
   if (!user) throw new Error('Inte inloggad')
   const fran = new Date(idag)
@@ -223,7 +224,7 @@ export function vantarPaBekraftelse(m: Pick<MoteRad, 'status' | 'scheduled_at'>,
 
 /** Markerar ett möte som hållet eller inte av. RLS begränsar till egna möten. */
 export async function bekraftaMote(meetingId: string, status: 'completed' | 'cancelled'): Promise<void> {
-  const { data: { user }, error: authError } = await supabase.auth.getUser()
+  const { data: { user }, error: authError } = await anvandareFranSession()
   if (authError) throw authError
   if (!user) throw new Error('Inte inloggad')
   const { data, error } = await supabase
@@ -242,7 +243,7 @@ export async function bekraftaMote(meetingId: string, status: 'completed' | 'can
  * Kastar vid fel.
  */
 export async function hamtaMotenIPeriod(from: string, to: string): Promise<MoteRad[]> {
-  const { data: { user }, error: authError } = await supabase.auth.getUser()
+  const { data: { user }, error: authError } = await anvandareFranSession()
   if (authError) throw authError
   if (!user) throw new Error('Inte inloggad')
   const [fa, fm, fd] = from.split('-').map(Number)

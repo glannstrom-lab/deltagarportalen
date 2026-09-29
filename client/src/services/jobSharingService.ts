@@ -5,6 +5,7 @@
 
 import { supabase } from '@/lib/supabase';
 
+import { anvandareFranSession } from '@/lib/anvandareFranSession'
 export interface SharedJob {
   id: string;
   jobId: string;
@@ -38,7 +39,7 @@ export async function shareJobWithConsultant(
   request: ShareJobRequest
 ): Promise<{ success: boolean; error?: string }> {
   try {
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user } } = await anvandareFranSession();
     
     if (!user) {
       return { success: false, error: 'Du måste vara inloggad för att dela jobb' };
@@ -72,7 +73,7 @@ export async function shareJobWithConsultant(
  */
 export async function getSharedJobs(): Promise<SharedJob[]> {
   try {
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user } } = await anvandareFranSession();
     
     if (!user) return [];
 

@@ -6,6 +6,7 @@
 import { supabase } from '@/lib/supabase'
 import { uppfoljningJournaltext, utfallKolumner, type UppfoljningInput } from './placeringUtfall'
 
+import { anvandareFranSession } from '@/lib/anvandareFranSession'
 // Types
 export interface Message {
   id: string
@@ -123,7 +124,7 @@ class ConsultantService {
    * Get all messages for the current consultant
    */
   async getMessages(): Promise<Message[]> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new Error('Not authenticated')
 
     const { data, error } = await supabase
@@ -140,7 +141,7 @@ class ConsultantService {
    * Get messages with a specific participant
    */
   async getMessagesWithParticipant(participantId: string): Promise<Message[]> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new Error('Not authenticated')
 
     const { data, error } = await supabase
@@ -157,7 +158,7 @@ class ConsultantService {
    * Send a message to a participant
    */
   async sendMessage(receiverId: string, content: string): Promise<Message> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new Error('Not authenticated')
 
     const { data, error } = await supabase
@@ -179,7 +180,7 @@ class ConsultantService {
    * Send a message to multiple participants (bulk)
    */
   async sendBulkMessage(receiverIds: string[], content: string): Promise<void> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new Error('Not authenticated')
 
     const messages = receiverIds.map(receiverId => ({
@@ -219,7 +220,7 @@ class ConsultantService {
    */
   async markMessagesAsRead(messageIds: string[]): Promise<void> {
     if (messageIds.length === 0) return
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new Error('Not authenticated')
 
     const { error } = await supabase
@@ -248,7 +249,7 @@ class ConsultantService {
    * Get all meetings for the current consultant
    */
   async getMeetings(): Promise<Meeting[]> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new Error('Not authenticated')
 
     const { data, error } = await supabase
@@ -265,7 +266,7 @@ class ConsultantService {
    * Get upcoming meetings
    */
   async getUpcomingMeetings(): Promise<Meeting[]> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new Error('Not authenticated')
 
     const { data, error } = await supabase
@@ -284,7 +285,7 @@ class ConsultantService {
    * Create a new meeting
    */
   async createMeeting(meeting: Omit<Meeting, 'id' | 'consultant_id' | 'created_at' | 'updated_at'>): Promise<Meeting> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new Error('Not authenticated')
 
     const { data, error } = await supabase
@@ -307,7 +308,7 @@ class ConsultantService {
     // D11 (2026-07-23): tidigare saknade denna metod auth-guard helt, till
     // skillnad från systermetoderna i filen — RLS var enda skyddet. Samma
     // mönster som övriga metoder tillagt för konsekvens + tydligare fel.
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new Error('Not authenticated')
 
     // maybeSingle(): UPDATE saknar ägarfilter (RLS är enda skyddet) — ett
@@ -330,7 +331,7 @@ class ConsultantService {
    */
   async cancelMeeting(meetingId: string): Promise<void> {
     // D11 (2026-07-23): auth-guard tillagd, se updateMeeting ovan.
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new Error('Not authenticated')
 
     const { error } = await supabase
@@ -347,7 +348,7 @@ class ConsultantService {
    * Get all goals for a participant
    */
   async getGoalsForParticipant(participantId: string): Promise<ConsultantGoal[]> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new Error('Not authenticated')
 
     // KS2 = b (2026-09-12): inget filter på consultant_id — RLS ger läsrätt via
@@ -366,7 +367,7 @@ class ConsultantService {
    * Create a new goal for a participant
    */
   async createGoal(goal: Omit<ConsultantGoal, 'id' | 'consultant_id' | 'created_at' | 'updated_at'>): Promise<ConsultantGoal> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new Error('Not authenticated')
 
     const { data, error } = await supabase
@@ -387,7 +388,7 @@ class ConsultantService {
    */
   async updateGoal(goalId: string, updates: Partial<ConsultantGoal>): Promise<ConsultantGoal> {
     // D11 (2026-07-23): auth-guard tillagd, se updateMeeting ovan.
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new Error('Not authenticated')
 
     // maybeSingle(): samma resonemang som updateMeeting ovan — inget
@@ -409,7 +410,7 @@ class ConsultantService {
    */
   async completeGoal(goalId: string): Promise<void> {
     // D11 (2026-07-23): auth-guard tillagd, se updateMeeting ovan.
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new Error('Not authenticated')
 
     const { error } = await supabase
@@ -429,7 +430,7 @@ class ConsultantService {
    */
   async deleteGoal(goalId: string): Promise<void> {
     // D11 (2026-07-23): auth-guard tillagd, se updateMeeting ovan.
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new Error('Not authenticated')
 
     const { error } = await supabase
@@ -446,7 +447,7 @@ class ConsultantService {
    * Get journal entries for a participant
    */
   async getJournalEntries(participantId: string): Promise<JournalEntry[]> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new Error('Not authenticated')
 
     // KS2 = b (2026-09-12): inget filter på consultant_id — se getGoalsForParticipant.
@@ -468,7 +469,7 @@ class ConsultantService {
     content: string,
     category: JournalEntry['category'] = 'GENERAL'
   ): Promise<JournalEntry> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new Error('Not authenticated')
 
     const { data, error } = await supabase
@@ -491,7 +492,7 @@ class ConsultantService {
    */
   async deleteJournalEntry(entryId: string): Promise<void> {
     // D11 (2026-07-23): auth-guard tillagd, se updateMeeting ovan.
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new Error('Not authenticated')
 
     const { error } = await supabase
@@ -508,7 +509,7 @@ class ConsultantService {
    * Record a placement
    */
   async recordPlacement(placement: Omit<Placement, 'id' | 'consultant_id' | 'created_at'>): Promise<Placement> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new Error('Not authenticated')
 
     const { data, error } = await supabase
@@ -530,7 +531,7 @@ class ConsultantService {
    * Min dag. Kastar vid fel: ett fel får inte se ut som "inga uppföljningar".
    */
   async getMinaPlaceringar(): Promise<Array<Pick<Placement, 'id' | 'participant_id' | 'employer_name' | 'start_date' | 'followup_3m' | 'followup_6m'>>> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new Error('Not authenticated')
 
     const { data, error } = await supabase
@@ -547,7 +548,7 @@ class ConsultantService {
    * och deltagaren, åt något håll. `null` = inga meddelanden. Kastar vid fel.
    */
   async getSenasteMeddelande(participantId: string): Promise<string | null> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new Error('Not authenticated')
 
     const { data, error } = await supabase
@@ -567,7 +568,7 @@ class ConsultantService {
    * lint:schema fäller dem innan snapshoten uppdaterats. Kastar vid fel.
    */
   async getPlacementsForParticipant(participantId: string): Promise<Placement[]> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new Error('Not authenticated')
 
     const { data, error } = await supabase
@@ -592,7 +593,7 @@ class ConsultantService {
     placering: Pick<Placement, 'id' | 'participant_id' | 'employer_name' | 'job_title' | 'start_date'>,
     input: UppfoljningInput,
   ): Promise<void> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new Error('Not authenticated')
 
     const { error: journalFel } = await supabase
@@ -628,7 +629,7 @@ class ConsultantService {
     value: boolean
   ): Promise<void> {
     // D11 (2026-07-23): auth-guard tillagd, se updateMeeting ovan.
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new Error('Not authenticated')
 
     const { error } = await supabase
@@ -645,7 +646,7 @@ class ConsultantService {
    * Get analytics data for the current consultant
    */
   async getAnalytics(): Promise<AnalyticsData> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new Error('Not authenticated')
 
     // Fetch participants
@@ -734,7 +735,7 @@ class ConsultantService {
    * Log contact with participant
    */
   async logContact(participantId: string): Promise<void> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new Error('Not authenticated')
 
     // Update last_contact_at in consultant_participants table
@@ -751,7 +752,7 @@ class ConsultantService {
    * Update participant priority
    */
   async updateParticipantPriority(participantId: string, priority: number): Promise<void> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new Error('Not authenticated')
 
     const { error } = await supabase
@@ -770,7 +771,7 @@ class ConsultantService {
     participantId: string,
     status: 'ACTIVE' | 'INACTIVE' | 'COMPLETED' | 'ON_HOLD'
   ): Promise<void> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new Error('Not authenticated')
 
     // KS10 (2026-08-31): skrev tidigare mot `consultant_participants.status`
@@ -841,7 +842,7 @@ class ConsultantService {
    * Add tags to a participant relation (merges with existing, no duplicates)
    */
   async addParticipantTags(participantId: string, newTags: string[]): Promise<void> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new Error('Not authenticated')
 
     // maybeSingle(): relationen kan ha återkallats (konsulentkoppling) eller
@@ -872,7 +873,7 @@ class ConsultantService {
    * Replace a participant relation's tags entirely
    */
   async setParticipantTags(participantId: string, tags: string[]): Promise<void> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new Error('Not authenticated')
 
     const { error } = await supabase

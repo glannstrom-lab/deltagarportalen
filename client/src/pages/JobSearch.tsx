@@ -144,6 +144,24 @@ function SearchTab() {
   // Saved jobs hook (savedJobs läses inte direkt — bara via isSaved/refresh)
   const { saveJob, removeJob, isSaved, refresh: refreshSavedJobs } = useSavedJobs()
 
+  // SV10: knappen byter bara eget namn. Ett skärmläsarmeddelande i en region som alltid
+  // finns i DOM:en bekräftar resultatet även om fokus hunnit flytta sig.
+  const [sparStatus, setSparStatus] = useState('')
+  const vaxlaSparat = useCallback(async (job: PlatsbankenJob) => {
+    const varSparat = isSaved(job.id)
+    const ok = varSparat ? await removeJob(job.id) : await saveJob(job)
+    const titel = job.headline
+    if (ok === false) {
+      setSparStatus(varSparat
+        ? t('jobSearch.statusRemoveFailed', 'Det gick inte att ta bort jobbet. Försök igen.')
+        : t('jobSearch.statusSaveFailed', 'Det gick inte att spara jobbet. Försök igen.'))
+    } else {
+      setSparStatus(varSparat
+        ? t('jobSearch.statusRemoved', 'Jobbet är borttaget från sparade jobb: {{title}}', { title: titel })
+        : t('jobSearch.statusSaved', 'Jobbet är sparat: {{title}}', { title: titel }))
+    }
+  }, [isSaved, removeJob, saveJob, t])
+
   // Create Application Modal state
   const [applicationModalJob, setApplicationModalJob] = useState<PlatsbankenJob | null>(null)
 
@@ -536,6 +554,7 @@ function SearchTab() {
 
   return (
     <div className="space-y-4">
+      <p className="sr-only" role="status" aria-live="polite" aria-atomic="true">{sparStatus}</p>
       {/* Collapsible Search & Filter Section */}
       <div className="bg-white dark:bg-stone-800 rounded-2xl border border-stone-200 dark:border-stone-700 overflow-hidden shadow-sm">
         {/* Header - Always visible, clickable to toggle */}
@@ -548,7 +567,7 @@ function SearchTab() {
               <Filter className="w-5 h-5 text-white" />
             </div>
             <div className="text-left">
-              <h3 className="font-semibold text-stone-900 dark:text-stone-100">{t('jobSearch.searchAndFilter')}</h3>
+              <h2 className="font-semibold text-stone-900 dark:text-stone-100">{t('jobSearch.searchAndFilter')}</h2>
               <p className="text-sm text-stone-700 dark:text-stone-400">
                 {filters.query || activeFilterCount > 0
                   ? `${filters.query ? `"${filters.query}"` : ''} ${activeFilterCount > 0 ? `• ${t('jobSearch.filtersActive', { count: activeFilterCount })}` : ''}`
@@ -853,6 +872,8 @@ function SearchTab() {
 
       {/* Results */}
       <div>
+        {/* SV11: en h2 skiljer resultaten från filtersektionen; annonserna under är h3. */}
+        <h2 className="sr-only">{t('jobSearch.resultsHeading', 'Sökresultat')}</h2>
         {loading ? (
           <Card className="p-8 sm:p-12">
             <LoadingState title={t('jobSearch.searchingJobs')} message={t('jobSearch.fetchingFromAF')} />
@@ -939,11 +960,7 @@ function SearchTab() {
                       <button
                         onClick={(e) => {
                           e.stopPropagation()
-                          if (isSaved(job.id)) {
-                            removeJob(job.id)
-                          } else {
-                            saveJob(job)
-                          }
+                          void vaxlaSparat(job)
                         }}
                         className={cn(
                           "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors",
@@ -1195,13 +1212,7 @@ function SearchTab() {
                 <div className="space-y-2 sm:space-y-3 pt-4 border-t border-stone-100 dark:border-stone-700">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
                     <button
-                      onClick={() => {
-                        if (isSaved(selectedJob.id)) {
-                          removeJob(selectedJob.id)
-                        } else {
-                          saveJob(selectedJob)
-                        }
-                      }}
+                      onClick={() => { void vaxlaSparat(selectedJob) }}
                       className={cn(
                         "flex items-center justify-center gap-2 py-3 rounded-xl font-medium transition-colors min-h-[48px]",
                         isSaved(selectedJob.id)

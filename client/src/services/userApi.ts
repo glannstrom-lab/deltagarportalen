@@ -12,6 +12,7 @@ import type { Tables } from '../lib/supabase'
 import { APIError, handleError } from './apiError'
 import type { OnboardingProgress, ProfilePreferences, DesiredOccupation } from './supabaseApi'
 
+import { anvandareFranSession } from '@/lib/anvandareFranSession'
 /**
  * Normaliserar desired_jobs från DB. Stödjer både legacy-format (string[])
  * och nytt strukturerat format (DesiredOccupation[]). Säkerställer alltid
@@ -46,7 +47,7 @@ function normalizeDesiredJobs(raw: unknown): DesiredOccupation[] {
 
 export const userApi = {
   async getProfile() {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
 
     const { data, error } = await supabase
@@ -60,7 +61,7 @@ export const userApi = {
   },
 
   async updateProfile(updates: Partial<Tables['profiles']>) {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
 
     const { data, error } = await supabase
@@ -102,7 +103,7 @@ export const userApi = {
 
   // Get profile preferences (desired jobs, interests, onboarding, and extended profile data)
   async getPreferences(): Promise<ProfilePreferences> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
 
     const { data, error } = await supabase
@@ -137,7 +138,7 @@ export const userApi = {
 
   // Update profile preferences
   async updatePreferences(prefs: ProfilePreferences) {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
 
     const updates: Record<string, unknown> = {}
@@ -167,7 +168,7 @@ export const userApi = {
 
   // Update single onboarding step
   async updateOnboardingStep(step: keyof OnboardingProgress, completed: boolean) {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
 
     // First get current progress
@@ -200,7 +201,7 @@ export const userApi = {
 
   // Get onboarding progress
   async getOnboardingProgress(): Promise<OnboardingProgress> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
 
     const { data, error } = await supabase

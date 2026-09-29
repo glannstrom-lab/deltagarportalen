@@ -34,6 +34,7 @@ import type { EnhancedArticle } from '@/data/artikelkategorier'
 import { kategoriNamn } from '@/data/artikelkategorier'
 import { textUrMarkdown } from '../components/knowledge-base/articleMarkdown'
 import { generateArticlePDF, downloadPDF, type ArticleForPDF } from '../services/pdfExportService'
+import { kortDatum } from '@/lib/datumsprak'
 import { BookOpen } from '@/components/ui/icons'
 import { useFocusMode } from '@/components/FocusModeProvider'
 import { FokusVaxel } from '@/components/focus/shell/FokusVaxel'
@@ -395,7 +396,7 @@ function ArticleInner() {
             <span className="flex items-center gap-1.5">
               <Calendar size={16} aria-hidden="true" />
               {t('article.updatedOn', {
-                date: new Date(article.updatedAt).toLocaleDateString(i18n.language === 'en' ? 'en-US' : 'sv-SE'),
+                date: kortDatum(article.updatedAt, i18n.language),
                 defaultValue: 'Uppdaterad {{date}}',
               })}
             </span>
@@ -611,18 +612,26 @@ function ArticleInner() {
             {relatedExercises.map((exercise) => {
               const Icon = exercise.icon
               return (
-                <Link
+                // SV13: kortet är en yta, men länkens namn är bara rubriken. Tidigare låg
+                // hela beskrivningen, kategorin och tiden inuti <a>, och skärmläsaren läste
+                // allt som ett enda länknamn. Länken sträcks över kortet med ::after.
+                <div
                   key={exercise.id}
-                  to={`/exercises?id=${exercise.id}`}
-                  className="group block bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 rounded-xl p-4 hover:shadow-md transition-all border-l-4 border-l-[var(--c-solid)] dark:border-l-[var(--c-solid)]"
+                  data-testid="relaterad-ovning"
+                  className="group relative block bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 rounded-xl p-4 hover:shadow-md focus-within:ring-2 focus-within:ring-[var(--c-solid)] transition-all border-l-4 border-l-[var(--c-solid)] dark:border-l-[var(--c-solid)]"
                 >
                   <div className="flex items-start gap-4">
                     <div className="w-12 h-12 rounded-xl bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40 flex items-center justify-center flex-shrink-0">
-                      <Icon className="w-6 h-6 text-[var(--c-text)] dark:text-[var(--c-text)]" />
+                      <Icon className="w-6 h-6 text-[var(--c-text)] dark:text-[var(--c-text)]" aria-hidden="true" />
                     </div>
                     <div className="flex-1">
                       <h3 className="font-semibold text-stone-900 dark:text-stone-100 group-hover:text-[var(--c-text)] dark:group-hover:text-[var(--c-text)] transition-colors mb-1">
-                        {exercise.title}
+                        <Link
+                          to={`/exercises?id=${exercise.id}`}
+                          className="after:absolute after:inset-0 after:content-[''] focus:outline-none"
+                        >
+                          {exercise.title}
+                        </Link>
                       </h3>
                       <p className="text-sm text-stone-600 dark:text-stone-300 line-clamp-2 mb-2">
                         {exercise.description}
@@ -631,14 +640,14 @@ function ArticleInner() {
                         <span className="px-2 py-0.5 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40 text-[var(--c-text)] dark:text-[var(--c-text)] rounded-full">
                           {exercise.category}
                         </span>
-                        <span>•</span>
+                        <span aria-hidden="true">•</span>
                         <span>{exercise.duration}</span>
-                        <span>•</span>
+                        <span aria-hidden="true">•</span>
                         <span>{exercise.difficulty}</span>
                       </div>
                     </div>
                   </div>
-                </Link>
+                </div>
               )
             })}
           </div>

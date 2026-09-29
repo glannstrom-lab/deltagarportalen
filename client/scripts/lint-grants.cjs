@@ -80,8 +80,12 @@ const RLS_UNDANTAG = {}
  *   24 → 25  2026-09-29, SKK5: `mottaget_underlag_paket(id)` — handläggaren laddar ner
  *            underlagspaketets PDF i efterhand. Tar ett underlags-id, inget användar-id, och
  *            kräver `recipient_user_id = auth.uid()` (annars 42501).
+ *   25 → 27  2026-09-29, CH6 (Mikaels ja): `overlamningsdeltagare(org, från)` och
+ *            `overlamna_deltagare(org, deltagare, från, till)` — chefen lämnar över EN deltagare.
+ *            Båda kräver att auth.uid() är chef/admin i organisationen (annars 42501, prövat
+ *            som konsulent i prod); användar-id:na i argumenten avgör bara VAD, aldrig VEM.
  */
-const AUTH_TAK = 25
+const AUTH_TAK = 27
 
 const snapshot = JSON.parse(fs.readFileSync(SNAPSHOT, 'utf8'))
 const definerFunktioner = snapshot.functions.filter((f) => f.definer)

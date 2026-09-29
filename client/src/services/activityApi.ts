@@ -7,10 +7,11 @@
 import { supabase } from '../lib/supabase'
 import { APIError, handleError } from './apiError'
 
+import { anvandareFranSession } from '@/lib/anvandareFranSession'
 export const activityApi = {
 
   async getActivities(activityType?: string, limit: number = 30) {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
 
     let query = supabase
@@ -31,7 +32,7 @@ export const activityApi = {
   },
 
   async getCount(activityType: string) {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
 
     const { count, error } = await supabase

@@ -16,6 +16,7 @@
 
 import { supabase } from '@/lib/supabase'
 
+import { anvandareFranSession } from '@/lib/anvandareFranSession'
 export type PraktikTyp = 'praktik' | 'arbetstraning' | 'arbetsprovning' | 'subventionerad_anstallning'
 
 export interface MinPraktik {
@@ -51,7 +52,7 @@ export function valjAktuellPlats(rader: readonly MinPraktik[]): MinPraktik | nul
 export const minPraktikApi = {
   /** Deltagarens aktuella plats, eller null. Kastar vid läsfel — ett fel är inte "ingen plats". */
   async hamtaAktuell(): Promise<MinPraktik | null> {
-    const { data: { user }, error: authFel } = await supabase.auth.getUser()
+    const { data: { user }, error: authFel } = await anvandareFranSession()
     if (authFel) throw authFel
     if (!user) throw new Error('Inte inloggad')
     const { data, error } = await supabase

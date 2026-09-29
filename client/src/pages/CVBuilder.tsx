@@ -41,7 +41,9 @@ import { ExperienceEditor } from '@/components/cv/ExperienceEditor'
 import { EducationEditor } from '@/components/cv/EducationEditor'
 import { SkillsEditor } from '@/components/cv/SkillsEditor'
 import { ContextualHelp } from '@/components/cv/ContextualHelp'
-import { CVOnboarding, shouldShowOnboarding } from '@/components/cv/CVOnboarding'
+import { arOredigeradSnabbmall } from '@/components/cv/quickCvTexter'
+import { CVOnboarding, shouldShowOnboarding, minnsCvTurAvfardad } from '@/components/cv/CVOnboarding'
+import { claimOnboardingSession, releaseOnboardingSession } from '@/lib/onboardingCoordinator'
 import { ContextualKnowledgeWidget } from '@/components/workflow'
 import { QuickCVMode } from '@/components/cv/QuickCVMode'
 import { CVImportModal } from '@/components/cv/CVImportModal'
@@ -386,6 +388,8 @@ export default function CVBuilder() {
   const { upload: uploadImage, isUploading: isImageUploading } = useVercelImageUpload()
   const { user } = useAuthStore()
   const { confirm } = useConfirmDialog()
+  // EG8: är profiltext/kompetenser fortfarande Snabb-CV-mallens egen, oredigerade text?
+  const snabbmall = arOredigeradSnabbmall(data)
 
   // NYA FEATURES: Auto-save (täcker ALLA fält, inte bara workExperience)
   // saveStatus/lastSavedAt visas via SaveIndicator i CVPage-headern (läser från cvStore).
@@ -445,8 +449,11 @@ export default function CVBuilder() {
 
   // Fråga om att återställa draft vid mount - efter att server data laddats
   useEffect(() => {
-    // Visa onboarding om användaren inte sett den tidigare
-    if (!shouldShowOnboarding()) return
+    // Visa onboarding om användaren inte sett den tidigare. SV8/EG4: inte
+    // medan CV:t laddas eller Snabb-CV-flödet är aktivt — turen la sig
+    // annars ovanpå Snabb-CV-toasten. Avfärdandet är per användare.
+    if (!hasLoadedCV || showQuickMode) return
+    if (!shouldShowOnboarding(user?.id)) return
 
     // Timern MÅSTE rensas vid unmount (2026-07-27): utan cleanup levde den
     // vidare efter att komponenten lämnats och anropade setState på en
@@ -454,9 +461,12 @@ export default function CVBuilder() {
     // "ReferenceError: window is not defined" efter teardown, vilket ibland —
     // men inte alltid — fällde hela körningen. En grind som failar slumpvis
     // är värre än ingen grind, och i webbläsaren var det en läckt timer.
-    const timer = setTimeout(() => setShowOnboarding(true), 500)
+    const timer = setTimeout(() => {
+      // Max en tur per session (samma koordinator som övriga guider).
+      if (claimOnboardingSession('cv-builder')) setShowOnboarding(true)
+    }, 500)
     return () => clearTimeout(timer)
-  }, [])
+  }, [hasLoadedCV, showQuickMode, user?.id])
   
   // CB1 (2026-08-21): rensar BARA localStorage — inte sessionStorage.
   //
@@ -671,6 +681,10 @@ export default function CVBuilder() {
     setData(merged)
     setShowQuickMode(false)
     setStep(2) // Gå till "Om dig" för att kunna redigera vidare
+    // SV8/EG4: den som just skapat ett CV behöver inte turen ovanpå toasten.
+    minnsCvTurAvfardad(user?.id)
+    setShowOnboarding(false)
+    releaseOnboardingSession('cv-builder')
 
     try {
       const versionName = `${t('cv.quickMode.versionLabel', 'Snabb-CV')} – ${new Date().toLocaleDateString('sv-SE')}`
@@ -1263,7 +1277,7 @@ export default function CVBuilder() {
             <span className="text-xs font-medium uppercase tracking-wider text-stone-500 dark:text-stone-400">
               {t('cvBuilder.review.a4Note', 'Förhandsgranskning i A4-format')}
             </span>
-            <span className="text-xs text-stone-400 dark:text-stone-500">
+            <span className="text-xs text-stone-600 dark:text-stone-400">
               210 × 297 mm
             </span>
           </div>
@@ -1274,6 +1288,7 @@ export default function CVBuilder() {
           <div
             className="bg-white shadow-2xl mx-auto relative"
             style={{ maxWidth: '210mm', width: '100%' }}
+            data-cv-dokument
           >
             {/* Sidbrytningsmarkör — visuell hint var nya sidan börjar.
                 Användaren kan flytta innehåll om sektion bryts olämpligt. */}
@@ -1556,19 +1571,6 @@ export default function CVBuilder() {
               så delningslänkar gick ingenstans. Returneras när delningsflödet är
               komplett (cv_shares-tabellen behöver också cv_id-kolumn). */}
           <div className="flex items-center justify-end gap-2 flex-wrap mb-4">
-            {/* F31 (2026-08-17): knappens enda text låg i `hidden sm:inline`, så
-                under `sm` — mobil, alltså målgruppens vanligaste läge — hade den
-                noll tillgängligt namn och lästes upp som "knapp". `aria-label`
-                gäller på alla brytpunkter; ikonen döljs för uppläsning eftersom
-                etiketten nu bär betydelsen. WCAG 4.1.2. */}
-            <button
-              onClick={loadDemoData}
-              aria-label={t('cvBuilder.actions.exampleData')}
-              className="flex items-center gap-2 px-3 py-2 text-sm text-stone-600 dark:text-stone-400 hover:bg-stone-50 dark:hover:bg-stone-700/50 border border-stone-200 dark:border-stone-700 rounded-lg transition-colors"
-            >
-              <Sparkles className="w-4 h-4" aria-hidden="true" />
-              <span className="hidden sm:inline">{t('cvBuilder.actions.exampleData')}</span>
-            </button>
             {/* Importera ett befintligt CV. Ligger först: den som redan har
                 ett CV ska se vägen in innan hen börjar fylla i för hand. */}
             <button
@@ -1602,7 +1604,36 @@ export default function CVBuilder() {
               size="sm"
               showPreview={false}
             />
+            {/* EG6 (rollspel 2026-09-28): knappen stod först i raden med texten
+                "Exempeldata" och lästes som en statusetikett ("ditt CV innehåller
+                exempeldata") i stället för en handling. Den står nu sist, längst
+                från Spara/Exportera, med en text som är ett verb och syns på alla
+                bredder (mobil hade tidigare bara en ikon). Den fyller bara
+                tomma fält och frågar först — se loadDemoData. */}
+            <button
+              type="button"
+              onClick={loadDemoData}
+              className="flex items-center gap-2 px-3 py-2 text-sm text-stone-600 dark:text-stone-400 hover:bg-stone-50 dark:hover:bg-stone-700/50 border border-dashed border-stone-300 dark:border-stone-600 rounded-lg transition-colors"
+            >
+              <Sparkles className="w-4 h-4" aria-hidden="true" />
+              <span>{t('cvBuilder.actions.fillExampleData', 'Fyll i med exempeldata')}</span>
+            </button>
           </div>
+
+          {/* EG8: mild påminnelse — inte blockerande — när profiltext eller
+              kompetenser fortfarande är Snabb-CV-mallens egen text. */}
+          {(snabbmall.profil || snabbmall.kompetenser) && (
+            <p
+              role="status"
+              data-testid="snabbmall-paminnelse"
+              className="mb-4 rounded-lg border border-amber-200 dark:border-amber-800 bg-amber-50 dark:bg-amber-900/20 px-4 py-3 text-sm text-amber-900 dark:text-amber-100"
+            >
+              {t(
+                'cvBuilder.messages.snabbmallGranska',
+                'Läs igenom innan du exporterar: din profiltext eller dina kompetenser kommer från Snabb-CV-mallen och är inte skrivna av dig. Ändra dem så att de stämmer med dig.'
+              )}
+            </p>
+          )}
 
 
           <div className="min-h-[400px]">

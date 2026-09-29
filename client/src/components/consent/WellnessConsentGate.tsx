@@ -12,6 +12,7 @@ import { Heart, Shield, Settings, Loader2, AlertCircle } from '@/components/ui/i
 import { useAuthStore } from '@/stores/authStore'
 import { beviljaSamtycke } from '@/services/consentApi'
 import { cn } from '@/lib/utils'
+import { supabase } from '@/lib/supabase'
 
 interface WellnessConsentGateProps {
   children: ReactNode
@@ -49,8 +50,21 @@ export function WellnessConsentGate({
       // och art. 7.1 lägger bevisbördan för samtycket på oss.
       await beviljaSamtycke('wellness_data')
 
-      // Force refresh the auth store to get updated profile
-      window.location.reload()
+      // UT4 (2026-09-29): tidigare window.location.reload() — hela appen laddades om
+      // och deltagaren stirrade på två ordlösa snurror i flera sekunder. Nu hämtas
+      // bara tidsstämpeln och läggs i storen; barnen monteras direkt.
+      const id = useAuthStore.getState().profile?.id
+      const { data, error } = id
+        ? await supabase.from('profiles').select('wellness_consent_at').eq('id', id).maybeSingle()
+        : { data: null, error: null }
+      if (error || !data?.wellness_consent_at) {
+        // Samtycket är sparat men vi kunde inte läsa tillbaka det — den gamla vägen fungerar alltid.
+        window.location.reload()
+        return
+      }
+      useAuthStore.setState((s) =>
+        s.profile ? { profile: { ...s.profile, wellness_consent_at: data.wellness_consent_at } } : {},
+      )
     } catch (error) {
       console.error('Error granting wellness consent:', error)
       setGrantError(t('wellness.consent.grantError'))
@@ -62,8 +76,9 @@ export function WellnessConsentGate({
   // Show loading state
   if (isLoading) {
     return (
-      <div className={cn("flex items-center justify-center p-4", className)}>
-        <Loader2 className="w-5 h-5 animate-spin text-pink-500" />
+      <div className={cn("flex items-center justify-center gap-2 p-4", className)} role="status">
+        <Loader2 className="w-5 h-5 animate-spin text-pink-500" aria-hidden="true" />
+        <span className="text-sm text-stone-600 dark:text-stone-300">{t('common.loading', 'Laddar…')}</span>
       </div>
     )
   }

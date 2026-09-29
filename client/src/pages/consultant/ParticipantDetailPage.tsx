@@ -57,6 +57,7 @@ import { formatLocalDate } from '@/services/aktivitetSchema'
 import type { Placement } from '@/services/consultantService'
 import type { Uppfoljning } from './placeringsmatt'
 
+import { anvandareFranSession } from '@/lib/anvandareFranSession'
 interface Participant {
   participant_id: string
   email: string
@@ -438,7 +439,7 @@ export function ParticipantDetailPage() {
     try {
       setLoading(true)
 
-      const { data: { user } } = await supabase.auth.getUser()
+      const { data: { user } } = await anvandareFranSession()
       if (isStale()) return
 
       if (!user || !requestedId) {
@@ -592,7 +593,7 @@ export function ParticipantDetailPage() {
     const requestedId = participantId
     if (!requestedId) return
     try {
-      const { data: { user } } = await supabase.auth.getUser()
+      const { data: { user } } = await anvandareFranSession()
       if (!user || activeParticipantIdRef.current !== requestedId) return
 
       const { data: journalData, error: journalFetchError } = await supabase
@@ -642,7 +643,7 @@ export function ParticipantDetailPage() {
       return { ok: false, error: 'Ingen deltagare vald.' }
     }
     try {
-      const { data: { user } } = await supabase.auth.getUser()
+      const { data: { user } } = await anvandareFranSession()
       if (!user) {
         return { ok: false, error: 'Du är inte inloggad. Ladda om sidan och försök igen.' }
       }
@@ -748,7 +749,7 @@ export function ParticipantDetailPage() {
     if (!newNote.trim() || !participantId) return
 
     try {
-      const { data: { user } } = await supabase.auth.getUser()
+      const { data: { user } } = await anvandareFranSession()
       if (!user) return
 
       const { data, error } = await supabase

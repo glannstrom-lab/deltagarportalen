@@ -8,6 +8,7 @@ import { X, Mail, User, Phone, MessageSquare, CheckCircle, Loader2, UserPlus } f
 import { supabase } from '@/lib/supabase';
 import { Dialog } from '@/components/ui/Dialog';
 
+import { anvandareFranSession } from '@/lib/anvandareFranSession'
 interface InviteParticipantDialogProps {
   isOpen: boolean;
   onClose: () => void;
@@ -50,7 +51,7 @@ export const InviteParticipantDialog: React.FC<InviteParticipantDialogProps> = (
     setError(null);
 
     try {
-      const { data: { user } } = await supabase.auth.getUser();
+      const { data: { user } } = await anvandareFranSession();
       if (!user) throw new Error('Not authenticated');
 
       // Kolla om email redan finns. maybeSingle(): 0 rader är det vanliga

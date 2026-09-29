@@ -7,6 +7,7 @@ import { supabase } from '@/lib/supabase'
 import { applicationsApi } from './applicationsApi'
 import type { ApplicationStatus, ManualJobData } from '@/types/application.types'
 
+import { anvandareFranSession } from '@/lib/anvandareFranSession'
 // ============================================
 // TYPES
 // ============================================
@@ -161,7 +162,7 @@ export const workflowApi = {
       // aktiva deltagares CV för en konsulent, så `.maybeSingle()` fick flera
       // rader (fel → null) eller EN DELTAGARES CV, som då visades som
       // konsulentens egen "Din matchning". Samma fel som CreateApplicationModal.
-      const { data: { user } } = await supabase.auth.getUser()
+      const { data: { user } } = await anvandareFranSession()
       if (!user) return null
 
       const { data: cv, error } = await supabase

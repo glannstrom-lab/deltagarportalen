@@ -7,7 +7,6 @@
 
 import { useCallback, useEffect, useState } from 'react'
 import { CalendarDays, Star, Edit2, Trash2, Plus, Users, Clock } from '@/components/ui/icons'
-import { supabase } from '@/lib/supabase'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { LoadingState, ErrorState } from '@/components/ui/LoadingState'
@@ -20,6 +19,7 @@ import { mallensVeckotimmar } from '@/services/aktivitetSchema'
 import { SchemamallDialog } from './SchemamallDialog'
 import { AKTIVITETSTYP_CHIP, AKTIVITETSTYP_ETIKETT, formatTimmar } from './aktivitetEtiketter'
 
+import { anvandareFranSession } from '@/lib/anvandareFranSession'
 type Lage = { status: 'laddar' } | { status: 'fel'; fel: string } | { status: 'klart'; mallar: ActivityTemplate[] }
 
 export function SchemamallSektion() {
@@ -36,7 +36,7 @@ export function SchemamallSektion() {
     let aktiv = true
     ;(async () => {
       try {
-        const [{ data: { user } }, mallar] = await Promise.all([supabase.auth.getUser(), schemamallApi.list()])
+        const [{ data: { user } }, mallar] = await Promise.all([anvandareFranSession(), schemamallApi.list()])
         if (!aktiv) return
         setUserId(user?.id ?? null)
         setLage({ status: 'klart', mallar })

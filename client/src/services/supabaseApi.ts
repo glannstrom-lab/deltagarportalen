@@ -43,6 +43,7 @@ export type {
 import type { CVData } from '@/types/cv'
 import type { ApplicationStatus } from '@/types/application.types'
 
+import { anvandareFranSession } from '@/lib/anvandareFranSession'
 // CVVersion för versionshantering
 export interface CVVersion {
   id: string
@@ -154,7 +155,7 @@ export const authApi = {
   },
 
   async getCurrentUser() {
-    const { data: { user }, error } = await supabase.auth.getUser()
+    const { data: { user }, error } = await anvandareFranSession()
     if (error || !user) return null
     
     const { data: profile } = await supabase
@@ -480,7 +481,7 @@ export const spontaneousCompaniesApi = {
    * Get all spontaneous companies for the current user
    */
   async getAll(): Promise<SpontaneousCompany[]> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
 
     const { data, error } = await supabase
@@ -497,7 +498,7 @@ export const spontaneousCompaniesApi = {
    * Get companies by status
    */
   async getByStatus(status: SpontaneousStatus): Promise<SpontaneousCompany[]> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
 
     const { data, error } = await supabase
@@ -515,7 +516,7 @@ export const spontaneousCompaniesApi = {
    * Get a single company by ID
    */
   async getById(id: string): Promise<SpontaneousCompany | null> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
 
     const { data, error } = await supabase
@@ -533,7 +534,7 @@ export const spontaneousCompaniesApi = {
    * Check if a company is already saved
    */
   async exists(orgNumber: string): Promise<boolean> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
 
     const normalized = orgNumber.replace(/[-\s]/g, '')
@@ -551,7 +552,7 @@ export const spontaneousCompaniesApi = {
    * Add a new company
    */
   async create(company: CreateSpontaneousCompany): Promise<SpontaneousCompany> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
 
     const normalized = company.org_number.replace(/[-\s]/g, '')
@@ -579,7 +580,7 @@ export const spontaneousCompaniesApi = {
    * Update a company
    */
   async update(id: string, updates: UpdateSpontaneousCompany): Promise<SpontaneousCompany> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
 
     const { data, error } = await supabase
@@ -605,7 +606,7 @@ export const spontaneousCompaniesApi = {
    * Delete a company
    */
   async delete(id: string): Promise<void> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
 
     const { error } = await supabase
@@ -621,7 +622,7 @@ export const spontaneousCompaniesApi = {
    * Get statistics
    */
   async getStats(): Promise<Record<SpontaneousStatus, number>> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user } } = await anvandareFranSession()
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
 
     const { data, error } = await supabase

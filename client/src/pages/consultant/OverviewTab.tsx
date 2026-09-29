@@ -68,6 +68,7 @@ import { calculateGoalCategories } from './analytics'
 import { antal } from './antal'
 import { aktivitetstid } from './aktivitetstid'
 
+import { anvandareFranSession } from '@/lib/anvandareFranSession'
 interface DashboardStats {
   totalParticipants: number
   activeParticipants: number
@@ -417,7 +418,7 @@ export function OverviewTab() {
     try {
       setLoading(true)
       setError(null)
-      const { data: { user } } = await supabase.auth.getUser()
+      const { data: { user } } = await anvandareFranSession()
       if (!user) return
 
       // KK4: delad cache — se consultantParticipantsQuery.ts. Om

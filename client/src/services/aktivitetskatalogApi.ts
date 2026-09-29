@@ -15,6 +15,7 @@
 import { supabase } from '@/lib/supabase'
 import type { ActivityType, TemplateItem } from './aktivitetSchema'
 
+import { anvandareFranSession } from '@/lib/anvandareFranSession'
 export interface CatalogItem {
   id: string
   org_id: string | null
@@ -51,7 +52,7 @@ export interface CatalogItemInput {
 }
 
 async function requireUser() {
-  const { data: { user }, error } = await supabase.auth.getUser()
+  const { data: { user }, error } = await anvandareFranSession()
   if (error) throw error
   if (!user) throw new Error('Inte inloggad')
   return user

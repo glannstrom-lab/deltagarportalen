@@ -107,4 +107,43 @@ describe('HealthTab', () => {
     await waitFor(() => expect(screen.getByText('Gick en promenad i solen')).toBeInTheDocument())
     expect(screen.queryByText(/kunde inte hämta dina aktiviteter/i)).toBeNull()
   })
+
+  it('UT7: citatet visar ingen upphovsperson som inte finns ("— Okänd")', async () => {
+    // Mutation: sätt tillbaka author-raden i HealthTab → faller.
+    render(<HealthTab />)
+    await screen.findByText('Du har loggat ditt humör idag')
+    expect(screen.queryByText(/Okänd/)).toBeNull()
+    expect(screen.queryByText(/^—/)).toBeNull()
+  })
+
+  it('UT6: efter ett tungt humör visas ingen aktivitetslista med "0 av 4"', async () => {
+    // Mutation: ta bort lugnDag-grenen → faller.
+    m.getTodaysMood.mockResolvedValue({ mood: 'terrible', note: '' })
+    m.get.mockResolvedValue({ activities: {}, reflections: [] })
+    render(<HealthTab />)
+    expect(await screen.findByTestId('lugn-dag')).toBeInTheDocument()
+    expect(screen.queryByText(/0 av 4/)).toBeNull()
+    expect(screen.queryByRole('button', { name: /promenad/i })).toBeNull()
+    // Den som vill ha idéerna får dem.
+    fireEvent.click(screen.getByRole('button', { name: /visa idéerna ändå/i }))
+    expect(screen.getByRole('button', { name: /promenad/i })).toBeInTheDocument()
+  })
+
+  it('UT6: inget avklarat är en invit, inte "0 av 4"', async () => {
+    // Mutation: visa xOfYCompleted även när inget är avklarat → faller.
+    m.get.mockResolvedValue({ activities: {}, reflections: [] })
+    render(<HealthTab />)
+    expect(await screen.findByText(/Några små idéer för dagen/)).toBeInTheDocument()
+    expect(screen.queryByText(/0 av 4/)).toBeNull()
+  })
+
+  it('UT4: laddläget har text, och humörvalet väntar inte på aktiviteter eller svit', async () => {
+    // Mutation: gör isLoading beroende av loadWellness/streak igen → faller.
+    m.get.mockReturnValue(new Promise(() => {}))
+    m.getStreak.mockReturnValue(new Promise(() => {}))
+    render(<HealthTab />)
+    expect(screen.getByRole('status')).toHaveTextContent(/hämtar ditt mående/i)
+    expect(await screen.findByText('Du har loggat ditt humör idag')).toBeInTheDocument()
+    expect(screen.getByRole('status')).toHaveTextContent(/hämtar dina aktiviteter/i)
+  })
 })

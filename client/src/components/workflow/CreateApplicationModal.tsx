@@ -22,6 +22,7 @@ import { showToast } from '@/components/Toast'
 import { analyzeCVForJob, type CVOptimizationResult } from '@/services/cvOptimizer'
 import { supabase } from '@/lib/supabase'
 
+import { anvandareFranSession } from '@/lib/anvandareFranSession'
 interface CreateApplicationModalProps {
   job: PlatsbankenJob
   isOpen: boolean
@@ -78,7 +79,7 @@ export function CreateApplicationModal({
       // Hämta CV-data för avancerad analys — användarens EGET CV. Utan filtret
       // släppte RLS även igenom aktiva deltagares CV för ett konsulentkonto
       // (policyn KS2b), och frågan gav då fel CV eller flera rader.
-      const { data: { user } } = await supabase.auth.getUser()
+      const { data: { user } } = await anvandareFranSession()
       const { data: cv } = user
         ? await supabase
             .from('cvs')

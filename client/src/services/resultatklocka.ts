@@ -31,6 +31,7 @@
 import { supabase } from '@/lib/supabase'
 import type { Uppfoljning } from '@/pages/consultant/placeringsmatt'
 
+import { anvandareFranSession } from '@/lib/anvandareFranSession'
 /** PENDING_20260927d_resultat_och_msfa — true när migrationen körts och snapshotarna uppdaterats. */
 export const RESULTAT_MSFA_FINNS = true
 
@@ -96,7 +97,7 @@ export function betalKolumner(vilken: Uppfoljning, status: Betalstatus, userId: 
 }
 
 async function requireUser() {
-  const { data: { user }, error } = await supabase.auth.getUser()
+  const { data: { user }, error } = await anvandareFranSession()
   if (error) throw error
   if (!user) throw new Error('Inte inloggad')
   return user

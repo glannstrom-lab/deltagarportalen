@@ -6,6 +6,7 @@ import { supabase } from '@/lib/supabase'
 import type { ActivitySession } from '@/services/aktivitetApi'
 import type { Attendance } from '@/services/aktivitetSchema'
 
+import { anvandareFranSession } from '@/lib/anvandareFranSession'
 export type PassIdag = Pick<
   ActivitySession,
   'id' | 'participant_id' | 'plan_id' | 'date' | 'start_time' | 'end_time' | 'title' | 'attendance' | 'self_checkin_at'
@@ -67,7 +68,7 @@ function idagISO(): string {
  * `datum` (RK36, gruppnärvaro): samma urval för en annan dag. Utan = i dag.
  */
 export async function hamtaDagensPass(datum: string = idagISO()): Promise<PassIdag[]> {
-  const { data: { user }, error: userError } = await supabase.auth.getUser()
+  const { data: { user }, error: userError } = await anvandareFranSession()
   if (userError) throw userError
   if (!user) throw new Error('Inte inloggad')
 
