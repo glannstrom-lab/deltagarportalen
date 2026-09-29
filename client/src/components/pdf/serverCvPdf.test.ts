@@ -16,7 +16,8 @@ describe('generateServerCV (SV2)', () => {
       .mockResolvedValueOnce(svar(200))
     const blob = await generateServerCV('sidebar', undefined, 0)
     expect(f).toHaveBeenCalledTimes(2)
-    expect(blob).toBeInstanceOf(Blob)
+    // Inte toBeInstanceOf(Blob): i CI kommer Response.blob() från Nodes Blob, inte jsdoms — två klasser.
+    expect(blob.size).toBeGreaterThan(0)
   })
   it('försöker igen efter nätverksfel', async () => {
     const f = vi.spyOn(globalThis, 'fetch')
