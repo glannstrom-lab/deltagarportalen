@@ -3,6 +3,7 @@
  * Lista och hantera alla sparade CV-versioner
  */
 
+import { cvFilnamn } from '@/lib/cvFilnamn'
 import { useState, useEffect, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useNavigate } from 'react-router-dom'
@@ -738,7 +739,7 @@ export function MyCVs() {
                   type="cv"
                   data={previewCV.data}
                   versionId={previewCV.id}
-                  filename={`CV_${previewCV.data?.firstName || 'okänd'}_${previewCV.data?.lastName || ''}.pdf`}
+                  filename={cvFilnamn(previewCV.data)}
                   variant="primary"
                   size="sm"
                   showPreview={false}

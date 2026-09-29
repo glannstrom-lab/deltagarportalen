@@ -7,7 +7,8 @@
  * Mockarna är kopierade ur CVBuilder.mallsteg.test.tsx.
  */
 import { describe, it, expect, vi, afterEach } from 'vitest'
-import { render, screen, cleanup } from '@testing-library/react'
+import { render, screen, cleanup, waitFor } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
 import { I18nextProvider } from 'react-i18next'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
@@ -148,6 +149,14 @@ const ETT_CV = {
   template: 'sidebar',
 }
 
+/** EG3: ett befintligt CV öppnas på första ofullständiga steg — gå tillbaka till steg 1. */
+async function tillSteg1() {
+  const user = userEvent.setup()
+  const hitta = () => screen.getAllByRole('button').find(b => /(^|[^0-9])1([^0-9]|$)/.test(b.getAttribute('aria-label') ?? ''))
+  await waitFor(() => expect(hitta()).toBeTruthy())
+  await user.click(hitta()!)
+}
+
 function renderBuilder() {
   const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } })
   return render(
@@ -175,6 +184,7 @@ describe('CV-byggaren följer språket (RD5/RD6)', () => {
     i18n.addResourceBundle('en', 'translation', en, true, true)
     await i18n.changeLanguage('en')
     renderBuilder()
+    await tillSteg1()
 
     expect(await screen.findByText('Step 1 of 6')).toBeInTheDocument()
     expect(screen.getByText(/Step 1: Design/)).toBeInTheDocument()
@@ -187,6 +197,7 @@ describe('CV-byggaren följer språket (RD5/RD6)', () => {
     mockGetCV.mockResolvedValue(ETT_CV)
     await sattLattSvenska(true)
     renderBuilder()
+    await tillSteg1()
 
     expect(await screen.findByText('Del 1 av 6')).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /Spara som PDF/ })).toBeInTheDocument()
@@ -203,6 +214,7 @@ describe('CV-byggaren följer språket (RD5/RD6)', () => {
   it('RD16: stegraden säger vilket steg, inte hur många procent eller minuter', async () => {
     mockGetCV.mockResolvedValue(ETT_CV)
     renderBuilder()
+    await tillSteg1()
     expect(await screen.findByText('Steg 1 av 6')).toBeInTheDocument()
     expect(screen.queryByText(/% klart/)).toBeNull()
     expect(screen.queryByText(/~\d+ min kvar/)).toBeNull()

@@ -53,7 +53,7 @@ describe('TillampaMallDialog', () => {
     const mal = await screen.findByLabelText('Veckomål, timmar')
     fireEvent.change(mal, { target: { value: '20' } })
     fireEvent.click(screen.getByRole('button', { name: 'Skapa plan' }))
-    expect(await screen.findByText('Motivera varför målet avviker från lagens förslag')).toBeInTheDocument()
+    expect((await screen.findAllByText('Motivera varför målet avviker från lagens förslag')).length).toBeGreaterThan(0)
     expect(aktivitetsplanApi.createFromTemplate).not.toHaveBeenCalled()
   })
 

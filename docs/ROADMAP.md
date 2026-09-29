@@ -64,10 +64,10 @@ Sex agenter prövade ~190 funktioner hela vägen (skapa → ladda om → ändra 
   gav CORS-fel två gånger i passet (SJ3, SKK1). Byt mot `getSession()`/authStore där bara id:t behövs · ~1 dag
 - [ ] **SFT2** Mejl för handläggarens underlag och för företagets nya förslag (AT4 + FT-F1) — notis i klockan räcker inte
   för den som sällan loggar in · beslut om `vercel.json`-cron
-- [ ] **SFT3** Dagboken saknar redigering (SV4); energifliken är död kod (SV5); notisreglagen saknar `role="switch"` (SV6)
+- [x] **SFT3** ✅ **2026-09-29 (utom energifliken):** dagboken har "Ändra" per inlägg och i läsvyn. Det nya `diaryEntriesApi.uppdatera` ger samma utfallsform som `skapa`, så ett UPDATE som nekas för att samtycke saknas (MV2) visas i formuläret i stället för att sväljas (`JournalTab.andra.test.tsx`). Alla 8 reglage i Inställningar har `role="switch"` + `aria-checked` (`Settings.switch.test.tsx`). **Kvar:** `AlertsTab.tsx` använder också `<Toggle>` utan switch-roll, och energifliken (`EnergyTab.tsx`, noll importörer) väntar på SP3. — Ursprunglig post: Dagboken saknar redigering (SV4); energifliken är död kod (SV5); notisreglagen saknar `role="switch"` (SV6)
 - [ ] **SFT4** FT1:s återöppning går inte att nå i UI — företaget kan inte ändra ett givet ja. Beslut: ska det gå?
-- [ ] **SFT5** /login: skiplänk, landmärken, fokus på felet (SV3/SV4 från rollspelet) och LCP ~3,6 s på 3G (PUB-3)
-- [ ] **SFT6** `upload-image.js` saknas i CORS-grinden (PUB-2)
+- [x] **SFT5** ✅ **2026-09-29 (utom LCP):** skiplänk, `<header>`/`<main id="main-content">`, och felrutan får fokus efter ett misslyckat försök. Orsaken till SV4 var att `signIn` sätter `authLoading`, vilket avmonterar formuläret och släpper fokus till `<body>`. Felfärgen är nu `text-red-700` / `dark:text-red-300` (SV9, ~6:1 i ljust läge). Tester i `Login.test.tsx`; skiplänken ligger inuti rotbehållaren så TR1:s bottenpadding är kvar. **Kvar:** LCP ~3,6 s på 3G (PUB-3) är inte mätt eller åtgärdad. Kontrasten i mörkt läge är beräknad, inte sedd i webbläsare. — Ursprunglig post: /login: skiplänk, landmärken, fokus på felet (SV3/SV4 från rollspelet) och LCP ~3,6 s på 3G (PUB-3)
+- [x] **SFT6** ✅ **2026-09-29:** premissen höll till hälften. `'*'`-fallbacken nåddes aldrig. Tre verkliga avvikelser från de andra tre API-filerna: ett okänt ursprung fick `https://jobin.se` (som svarar 307) i stället för `www`, `VERCEL_URL`/`VERCEL_BRANCH_URL`/`VERCEL_PROJECT_PRODUCTION_URL` saknades (preview-deployer nekades), och localhost saknades i utveckling. Nu samma policy som `job-alerts.js`, och filen ligger i `FILER` i både `cors-avregistrerad-doman.test.ts` och `cors-preview.test.ts`. — Ursprunglig post: `upload-image.js` saknas i CORS-grinden (PUB-2)
 - [ ] **SFT7** Flytta en serie/ett pass till annan dag (finns inte; kvar sedan RK37)
 
 ## Rollspel 2026-09-28 — sju nya roller i prod
@@ -104,29 +104,29 @@ CH7 är en öppen fråga, inte ett fynd.
 
 ### Viktiga
 - [ ] **CH2** Enda vyn över hela enheten (caseload per konsulent) ligger under Inställningar → **CH8** chefsvy på Översikt
-- [ ] **CH3** Caseload-tabellen på mobil klipper kolumner och "Överlämna deltagare…" utan scrollsignal
+- [x] **CH3** ✅ 2026-09-29: under `sm` finns en synlig hinttext ("dra i sidled"), en fokuserbar `role="region"` med etikett och en kantmarkering till höger. Tabellen har `min-w-[34rem]`. Scroll valdes framför kortlayout. Testet (`OrganisationSektion.ch3.test.ts`) läser bara markeringen i källkoden; 375 px är **inte** prövat i webbläsare.
 - [ ] **CH6/CH13** Överlämning går bara för hela caseloaden, inte en deltagare
-- [ ] **KH5** "Skapa plan" misslyckas tyst när ett obligatoriskt fält längre ned i dialogen är tomt → **KH12** felsammanfattning + scroll till fel (generellt mönster)
-- [ ] **KH6/KH13** Hjälp-sidan är deltagarens även för konsulenten
-- [ ] **FT2** Ikryssad delning av kompetenser/erfarenhet renderas som ingenting när CV saknas (fallbacken finns men nås inte)
-- [ ] **FT3** Notisklockan hos företaget speglar inte vad som hänt
-- [ ] **NY2** "Ny i Sverige" har 0 nycklar på Lätt svenska (LIX 36)
-- [ ] **NY3** `/min-vecka` saknas i `PAGE_TITLE_RULES` (`usePageTitle.ts`) — fel sidtitel för skärmläsare
+- [x] **KH5 / KH12** ✅ 2026-09-29: ny `FelSammanfattning.tsx` + `gaTillFalt.ts` i `components/consultant/`. Rutan har `role="alert"` och ligger utanför dialogens scrollyta. Den får fokus vid varje misslyckat försök och listar felen som knappar som scrollar till fältet och fokuserar det. Tillämpad på "Tillämpa schemamall" (fem fält). **Kvar:** mönstret är inte infört i konsulentvyns andra dialoger.
+- [x] **KH6 / KH13** ✅ 2026-09-29: aktiv roll CONSULTANT/ADMIN ser `KonsulentHjalp` med fem frågor: närvaro, journal, skapa plan, lämna underlag, caseload/överlämning. Varje svar har källan i en kommentar, och `Help.roll.test.tsx` kontrollerar att knapptexterna som nämns finns i koden. SUPERADMIN ser deltagarens hjälp med flit (Visa som).
+- [x] **FT2** ✅ 2026-09-29: kompetenserna var redan rättade av SL2. Erfarenhet och utbildning föll fortfarande bort: vyn ger NULL utan CV-rad (`ag6_foretagskonto.sql:487-491`), och klienten krävde `!= null`. Nu styr `show_*` om rubriken visas, och ett tomt fält säger "Inget inlagt."
+- [x] **FT3** ✅ delvis 2026-09-29: notisen "väntar på svar" skapas för alla i företaget (`ag6:804`) och blev stående oläst hos den som inte svarade. `foretagApi.lasNotiserForBesvarade` städar den inloggades egna notiser för besvarade förslag när fliken Förslag öppnas. **Kvar:** klockan uppdateras inte i realtid vid nya förslag. Klockan är en delad komponent utanför företagsvyn.
+- [x] **NY2** ✅ 2026-09-29: 134 av 179 `international.*` har Lätt svenska: alla rubriker, ingresser, knappar, flikar och de 17 checklistposterna. 45 är kvar med flit: namn på nivåer och resurser, och de tio fraserna, som är svenskträning. Eget golv (134) i `lattSvenskaTackning.test.ts`. LIX är inte mätt om.
+- [x] **NY3** ✅ 2026-09-29: regeln tillagd; `usePageTitle.test.ts` "täcker samtliga rutter" faller utan den.
 - [ ] **NY4** English-läget: oöversatta artiklar blandar engelsk ram med svensk brödtext utan förklaring; datumformat växlar
-- [ ] **NY6** Min vecka utan plan är en återvändsgränd — länka aktivitetskravsguiden (NY-F3) och säg vad man gör under väntan (SV16)
-- [ ] **SV2** `/api/cv-pdf` svarade 500 vid första exporten, tyst i UI; fungerade vid omförsök (misstänkt kallstart med `CHROMIUM_PACK_URL`)
-- [ ] **SV3/SV19** `/login` saknar skiplänk och landmärken · **SV4** fokus flyttas inte till inloggningsfelet
-- [ ] **SV5/SV17** CV-erfarenhetsradens tillgängliga namn är tre saker ihopslagna · **SV6** månadsfälten läses upp dubbelt · **SV7** PDF heter `CV_okänd_.pdf`
+- [x] **NY6** ✅ 2026-09-29: under tomtillståndet ligger nu "Medan du väntar" med länk `<a href="/guider/aktivitetskrav-forsorjningsstod/">` (publicerad guide). **Kvar:** texten skiljer inte på "ingen konsulent" och "konsulent men ingen plan". Datan finns (`konsulentMeddelandeApi.minKonsulent`), men det kräver en extra fråga i tomvyn.
+- [x] **SV2** ✅ klientsidan 2026-09-29: `components/pdf/serverCvPdf.ts` gör ett omförsök efter 1,5 s vid 5xx eller nätverksfel. Faller det också visas ett läsbart fel i toasten (4xx görs inte om). `cv-pdf.js` är orörd, och kallstartsorsaken är inte undersökt i prod.
+- [x] **SV3/SV19 · SV4** ✅ 2026-09-29, se SFT5.
+- [x] **SV5/SV17** ✅ 2026-09-29: erfarenhets- och utbildningsraden får `aria-label` "titel, företag". **Kvar:** flytta-knapparna ligger fortfarande inuti `role="button"`. · **SV6** ❌ **premissen höll inte som appbugg:** fältet är ett enda `<input type="month">` med en `<label>`. Dubbeluppläsningen kommer från webbläsarens egna månad/år-segment. Att byta fältet kräver ett beslut. · **SV7** ✅ `lib/cvFilnamn.ts` ger `CV_Förnamn_Efternamn.pdf`, `CV_<titel>.pdf` eller `CV.pdf` på alla tre ställen (PDFExportButton, MyCVs, Resources).
 - [x] **EG1** ✅ `useId()` i CV-byggarens fältkomponent; prov i `rollspel-2026-09-28-kritiska.test.ts`. — Alla fält på CV:ts "Om dig"-steg har samma id `cvbuilder-f1` (hårdkodat i fältkomponenten, `CVBuilder.tsx` ~rad 330) — etiketterna pekar fel (WCAG 1.3.1/4.1.2)
-- [ ] **EG3** CV-byggaren börjar alltid om på mallvalet i stället för senast ofullständiga steg
-- [ ] **EG5** Intervjuträningens pass försvinner vid omladdning
-- [ ] **UT2** "Det finns luckor i din erfarenhet" visas innan något jobb är ifyllt — statisk text (`ContextualHelp.tsx:66-85`)
+- [x] **EG3** ✅ 2026-09-29: `components/cv/cvStartSteg.ts` öppnar ett befintligt CV på första ofullständiga steg 2–5, eller på granskningen när allt är ifyllt. Nya användare börjar fortfarande på mallvalet.
+- [x] **EG5** ✅ 2026-09-29: premissen höll till hälften. Utkastlagret fanns (`sparaSimulatorUtkast`) men sparade först efter första svaret, så en omladdning direkt efter första frågan gav tomt. Nu sparas det så snart en fråga visas. Nyckeln rensas vid utloggning (`safeStorage.ts:89`).
+- [x] **UT2** ✅ 2026-09-29: tipset "Tidsluckor" visas bara när `components/cv/tidsluckor.ts` hittar en faktisk lucka på mer än 3 månader mellan datumsatta jobb. Tipstexten i `helpDatabase` är fortfarande hårdkodad svenska.
 - [ ] **UT3** AI-teamets sidopanel är klickbar men gör ingenting när AI är av (`AITeam.tsx:158-172`; skyddet finns bara i `AgentChat.tsx`)
 
 ### Skav (i rapporterna)
 CH4, CH5 · KH7 dubbel mobilnav, KH8 `?tab=settings`, KH9 förvalt mål, KH10 Rapporter säger inte att siffrorna bara är
-mina · FT4 hårdkodat "hon", FT5 "vecka 0", FT6 två veckoräknare · NY5 "Internationell Guide" ≠ "Ny i Sverige" ·
-SV8 guideturen återkommer, SV9 kontrast på inloggningsfel, SV10–SV13 statusrad och rubrikhopp · UT4 tom snurra på Hälsa,
+mina · ~~FT4 hårdkodat "hon", FT5 "vecka 0", FT6 två veckoräknare~~ ✅ 2026-09-29 (`foretagApi.veckotext()` → "börjar om N dagar"; längden "vecka 2 (placeringen är 12 veckor)"; ForeslaDialog utan pronomen) · ~~NY5 "Internationell Guide" ≠ "Ny i Sverige"~~ ✅ 2026-09-29 (`nav.international` och sidtitelns reservtext) ·
+SV8 guideturen återkommer, ~~SV9 kontrast på inloggningsfel~~ ✅, SV10–SV13 statusrad och rubrikhopp · UT4 tom snurra på Hälsa,
 UT5–UT7 · EG4 guidetur ovanpå toasten, EG6 "Exempeldata"-knappen.
 
 ### Förslag — utveckling (35, grupperade)

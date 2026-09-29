@@ -204,12 +204,29 @@ export default function MinVecka() {
     innehall = <ErrorState message={t('minVecka.kundeInteHamta', 'Din vecka kunde inte hämtas just nu.')} onRetry={() => planQuery.refetch()} />
   } else if (!planQuery.data) {
     innehall = (
-      <EmptyState
-        icon={ClipboardCheck}
-        title={t('minVecka.ingenPlan.title', 'Ingen vecka planerad än')}
-        description={t('minVecka.ingenPlan.text', 'Din konsulent lägger upp veckan tillsammans med dig. Tills dess finns det inget du behöver göra här.')}
-        action={{ label: t('minVecka.ingenPlan.cta', 'Gå till din konsulent'), onClick: () => navigate('/my-consultant') }}
-      />
+      <div>
+        <EmptyState
+          icon={ClipboardCheck}
+          title={t('minVecka.ingenPlan.title', 'Ingen vecka planerad än')}
+          description={t('minVecka.ingenPlan.text', 'Din konsulent lägger upp veckan tillsammans med dig. Tills dess finns det inget du behöver göra här.')}
+          action={{ label: t('minVecka.ingenPlan.cta', 'Gå till din konsulent'), onClick: () => navigate('/my-consultant') }}
+        />
+        {/* NY6: medan du väntar — vad du kan göra själv. Vanlig <a>: /guider/ är prerenderad utanför HashRouter. */}
+        <div className="mx-auto mt-4 max-w-md text-center text-sm text-stone-700 dark:text-stone-300" data-testid="ingenplan-medan-du-vantar">
+          <p className="font-medium">{t('minVecka.ingenPlan.medanTitel', 'Medan du väntar')}</p>
+          <p className="mt-1">
+            {t('minVecka.ingenPlan.medanText', 'Du kan läsa om aktivitetskravet, till exempel vad som gäller och vad du kan göra om du inte kan komma till ett pass. Du kan också fylla i ditt CV eller titta på jobb.')}
+          </p>
+          <p className="mt-2">
+            <a
+              href="/guider/aktivitetskrav-forsorjningsstod/"
+              className="font-medium underline underline-offset-2 hover:no-underline focus-visible:outline focus-visible:outline-2"
+            >
+              {t('minVecka.ingenPlan.guideLank', 'Läs om aktivitetskravet')}
+            </a>
+          </p>
+        </div>
+      </div>
     )
   } else if (sessionsQuery.isError) {
     innehall = <ErrorState message={t('minVecka.kundeInteHamta', 'Din vecka kunde inte hämtas just nu.')} onRetry={() => sessionsQuery.refetch()} />

@@ -18,7 +18,7 @@ import { describe, it, expect } from 'vitest'
 import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 
-const FILER = ['ai.js', 'cv-pdf.js', 'job-alerts.js'] as const
+const FILER = ['ai.js', 'cv-pdf.js', 'job-alerts.js', 'upload-image.js'] as const
 
 type Cors = (origin: string) => Record<string, string>
 

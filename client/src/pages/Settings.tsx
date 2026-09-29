@@ -425,6 +425,8 @@ function SettingsInner() {
                 <Toggle
                   label={t('settings.accessibility.focusMode', 'Fokusläge (NPF-anpassat)')}
                   description={t('settings.accessibility.focusModeDesc', 'Visar ett steg i taget och minskar visuellt brus. Perfekt för ADHD, autism eller om du vill ha en enklare upplevelse.')}
+                  role="switch"
+                  aria-checked={focusMode}
                   checked={focusMode}
                   onChange={toggleFocusMode}
                 />
@@ -434,6 +436,8 @@ function SettingsInner() {
                 <Toggle
                   label={t('settings.accessibility.highContrast')}
                   description={t('settings.accessibility.highContrastDesc')}
+                  role="switch"
+                  aria-checked={highContrast}
                   checked={highContrast}
                   onChange={toggleHighContrast}
                 />
@@ -443,6 +447,8 @@ function SettingsInner() {
                 <Toggle
                   label={t('settings.accessibility.largeText')}
                   description={t('settings.accessibility.largeTextDesc')}
+                  role="switch"
+                  aria-checked={largeText}
                   checked={largeText}
                   onChange={toggleLargeText}
                 />
@@ -452,6 +458,8 @@ function SettingsInner() {
                 <Toggle
                   label={t('settings.accessibility.calmMode')}
                   description={t('settings.accessibility.calmModeDesc')}
+                  role="switch"
+                  aria-checked={calmMode}
                   checked={calmMode}
                   onChange={toggleCalmMode}
                 />
@@ -473,6 +481,8 @@ function SettingsInner() {
                 <Toggle
                   label={t('settings.notifications.email')}
                   description={t('settings.notifications.emailDesc')}
+                  role="switch"
+                  aria-checked={emailNotifications}
                   checked={emailNotifications}
                   onChange={() => setEmailNotifications(!emailNotifications)}
                 />
@@ -482,6 +492,8 @@ function SettingsInner() {
                 <Toggle
                   label={t('settings.notifications.push')}
                   description={t('settings.notifications.pushDesc')}
+                  role="switch"
+                  aria-checked={pushNotifications}
                   checked={pushNotifications}
                   onChange={() => setPushNotifications(!pushNotifications)}
                 />
@@ -491,6 +503,8 @@ function SettingsInner() {
                 <Toggle
                   label={t('settings.notifications.weekly')}
                   description={t('settings.notifications.weeklyDesc')}
+                  role="switch"
+                  aria-checked={weeklySummary}
                   checked={weeklySummary}
                   onChange={() => setWeeklySummary(!weeklySummary)}
                 />
@@ -1154,6 +1168,8 @@ function AppearanceSettings() {
             // togs bort samma dag. Inställningen är densamma — det är platsen
             // rådgivarna visas på som är ny.
             description="Råd från jobbcoach, mental coach, arbetsterapeut och de andra — i en kolumn till höger och infogade där de hör hemma på sidan. Stäng av om du vill ha en renare vy."
+            role="switch"
+            aria-checked={showCoachWidget}
             checked={showCoachWidget}
             onChange={toggleCoachWidget}
           />

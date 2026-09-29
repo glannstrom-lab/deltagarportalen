@@ -405,6 +405,24 @@ export const foretagApi = {
     if (error) throw new Error(foretagFelText(error))
   },
 
+  /**
+   * FT3: "väntar på svar"-notisen går till alla i företaget. Svarar en kollega, eller
+   * svarade någon före SL3, står den kvar oläst hos övriga — och klockan påstår att något
+   * väntar som redan är besvarat. Förslag som fått svar är inte längre en notis.
+   */
+  async lasNotiserForBesvarade(proposalIds: string[]): Promise<void> {
+    if (proposalIds.length === 0) return
+    const uid = await requireUserId()
+    const { error } = await supabase
+      .from('notifications')
+      .update({ read: true, read_at: new Date().toISOString() })
+      .eq('user_id', uid)
+      .eq('type', 'foretag_forslag')
+      .eq('read', false)
+      .in('data->>proposal_id', proposalIds)
+    if (error) throw new Error(foretagFelText(error))
+  },
+
   async markeraOppnad(id: string): Promise<void> {
     if (redanRaknadVisning(id)) return
     await requireUserId()
@@ -552,6 +570,21 @@ export function veckaAvTotal(
     }
   }
   return { vecka, totalt }
+}
+
+/**
+ * Veckotexten för en placering: "börjar om 10 dagar" före start (aldrig "vecka 0"),
+ * "vecka 2 (placeringen är 12 veckor)" under (FT5/FT6: totalen får inte likna en
+ * avstämningsvecka), null utan startdatum.
+ */
+export function veckotext(startDate: string | null, endDate: string | null, idag: Date = new Date()): string | null {
+  const v = veckaAvTotal(startDate, endDate, idag)
+  if (!v || !startDate) return null
+  if (v.vecka === 0) {
+    const dagar = Math.ceil((new Date(startDate).getTime() - idag.getTime()) / MS_PER_DAG)
+    return dagar <= 1 ? 'börjar imorgon' : `börjar om ${dagar} dagar`
+  }
+  return v.totalt ? `vecka ${v.vecka} (placeringen är ${v.totalt} veckor)` : `vecka ${v.vecka}`
 }
 
 /** Hela dagar sedan ett datum — för "äldsta väntar X dagar". */

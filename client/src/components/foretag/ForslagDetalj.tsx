@@ -55,6 +55,8 @@ function Kompetenser({ lista }: { lista: ForslagKompetens[] }) {
 }
 
 function CvLista({ varde }: { varde: unknown }) {
+  // Delat men ingen rad i cvs → vyn ger NULL (FT2). Det är "inget inlagt", inte ett okänt format.
+  if (varde == null) return <p className="text-sm text-stone-600 dark:text-stone-300">Inget inlagt.</p>
   const poster = cvPoster(varde)
   if (poster === null) {
     return <p className="text-sm text-stone-600 dark:text-stone-300">Delat, men i ett format vi inte kan visa här. Fråga konsulenten.</p>
@@ -135,7 +137,7 @@ export function ForslagDetalj({ forslag: f, oppnadFel, onSvara }: Props) {
         </dl>
       </Card>
 
-      {(harKontakt || f.participant_summary || f.participant_skills || f.participant_experience != null || f.participant_education != null) && (
+      {(harKontakt || f.participant_summary || f.participant_skills || f.show_experience || f.participant_experience != null || f.show_education || f.participant_education != null) && (
         <Card className="space-y-5">
           {harKontakt && (
             <Avsnitt rubrik="Kontakt">
@@ -162,10 +164,10 @@ export function ForslagDetalj({ forslag: f, oppnadFel, onSvara }: Props) {
           {(f.show_skills || f.participant_skills) && (
             <Avsnitt rubrik="Kompetenser"><Kompetenser lista={f.participant_skills ?? []} /></Avsnitt>
           )}
-          {f.participant_experience != null && (
+          {(f.show_experience || f.participant_experience != null) && (
             <Avsnitt rubrik="Erfarenhet"><CvLista varde={f.participant_experience} /></Avsnitt>
           )}
-          {f.participant_education != null && (
+          {(f.show_education || f.participant_education != null) && (
             <Avsnitt rubrik="Utbildning"><CvLista varde={f.participant_education} /></Avsnitt>
           )}
         </Card>

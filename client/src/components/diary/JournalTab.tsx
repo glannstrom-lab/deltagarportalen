@@ -5,7 +5,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
-  BookHeart, Plus, Search, X, Trash2,
+  BookHeart, Plus, Search, X, Trash2, PencilLine,
   Sparkles, RefreshCw, Calendar, Filter, Star
 } from '@/components/ui/icons'
 import { useDiaryEntries, useWritingPrompts } from '@/hooks/useDiary'
@@ -49,19 +49,23 @@ interface WriteModalProps {
     entry_type: 'diary' | 'reflection'
   }) => Promise<string | null>
   initialPrompt?: string
+  /** Ett sparat inlägg som ska ändras — formuläret fylls i med dess värden. */
+  redigera?: DiaryEntry | null
 }
 
-function WriteModal({ isOpen, onClose, onSave, initialPrompt }: WriteModalProps) {
+function WriteModal({ isOpen, onClose, onSave, initialPrompt, redigera = null }: WriteModalProps) {
   const { t } = useTranslation()
-  const [title, setTitle] = useState('')
-  const [content, setContent] = useState(initialPrompt ? `${initialPrompt}\n\n` : '')
+  const [title, setTitle] = useState(redigera?.title ?? '')
+  const [content, setContent] = useState(
+    redigera ? redigera.content : initialPrompt ? `${initialPrompt}\n\n` : ''
+  )
   // F6: ingen förvald mood — en ren jobbsökaranteckning kräver inte
   // hälsosamtycke, och ett förvalt värde hade skickat ett mood-fält även
   // när användaren aldrig rört reglaget (se check_wellness_consent-policyn
   // på diary_entries).
-  const [mood, setMood] = useState<number | null>(null)
+  const [mood, setMood] = useState<number | null>(redigera?.mood ?? null)
   const [tagInput, setTagInput] = useState('')
-  const [tags, setTags] = useState<string[]>([])
+  const [tags, setTags] = useState<string[]>(redigera?.tags ?? [])
   const [isSaving, setIsSaving] = useState(false)
   const [sparfel, setSparfel] = useState<string | null>(null)
   const contentRef = useRef<HTMLTextAreaElement>(null)
@@ -105,10 +109,12 @@ function WriteModal({ isOpen, onClose, onSave, initialPrompt }: WriteModalProps)
         return
       }
       // Reset form
-      setTitle('')
-      setContent('')
-      setMood(null)
-      setTags([])
+      if (!redigera) {
+        setTitle('')
+        setContent('')
+        setMood(null)
+        setTags([])
+      }
       onClose()
     } catch (e) {
       // RD26: ett kastat fel (nätet, sessionen) fick tidigare ingen felväg alls.
@@ -131,7 +137,9 @@ function WriteModal({ isOpen, onClose, onSave, initialPrompt }: WriteModalProps)
               <BookHeart className="w-5 h-5 text-[var(--c-text)]" />
             </div>
             <div>
-              <h2 className="text-lg font-bold text-stone-900 dark:text-stone-100">{t('diary.journal.writeModal.title')}</h2>
+              <h2 className="text-lg font-bold text-stone-900 dark:text-stone-100">{redigera
+                  ? t('diary.journal.writeModal.editTitle', 'Ändra ditt inlägg')
+                  : t('diary.journal.writeModal.title')}</h2>
               <p className="text-sm text-stone-700 dark:text-stone-300">{wordCount} {t('diary.words')}</p>
             </div>
           </div>
@@ -253,10 +261,11 @@ function WriteModal({ isOpen, onClose, onSave, initialPrompt }: WriteModalProps)
 
 export function JournalTab() {
   const { t } = useTranslation()
-  const { entries, isLoading, isError, retry, createEntry, deleteEntry, toggleFavorite } = useDiaryEntries()
+  const { entries, isLoading, isError, retry, createEntry, updateEntry, deleteEntry, toggleFavorite } = useDiaryEntries()
   const { prompt, getNewPrompt, isLoading: promptLoading } = useWritingPrompts()
   const [isWriteModalOpen, setIsWriteModalOpen] = useState(false)
   const [selectedEntry, setSelectedEntry] = useState<DiaryEntry | null>(null)
+  const [redigeraEntry, setRedigeraEntry] = useState<DiaryEntry | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
   const [filterTag, setFilterTag] = useState<string | null>(null)
   const [showFilters, setShowFilters] = useState(false)
@@ -299,6 +308,30 @@ export function JournalTab() {
       word_count: 0
     })
     if (utfall.ok) return null
+    return utfall.orsak === 'samtycke'
+      ? t('diary.journal.saveNeedsConsent')
+      : t('diary.saveFailed')
+  }
+
+  // Ändra ett sparat inlägg. Ett nekat UPDATE (t.ex. utan hälsosamtycke, MV2) ska
+  // synas i formuläret, inte försvinna — därför returneras texten som ett fel.
+  const handleUpdateEntry = async (entryData: {
+    title: string
+    content: string
+    mood: number | null
+    tags: string[]
+    entry_type: 'diary' | 'reflection'
+  }): Promise<string | null> => {
+    if (!redigeraEntry) return null
+    const utfall = await updateEntry(redigeraEntry.id, {
+      title: entryData.title,
+      content: entryData.content,
+      mood: entryData.mood,
+      tags: entryData.tags,
+    })
+    if (utfall.ok) {
+      return null
+    }
     return utfall.orsak === 'samtycke'
       ? t('diary.journal.saveNeedsConsent')
       : t('diary.saveFailed')
@@ -512,7 +545,14 @@ export function JournalTab() {
                     )}
                   </div>
                 </div>
-                <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity">
+                  <button
+                    onClick={(e) => { e.stopPropagation(); setRedigeraEntry(entry) }}
+                    aria-label={t('diary.journal.card.editEntry', { title: entry.title || t('diary.noTitle'), defaultValue: 'Ändra dagboksinlägget "{{title}}"' })}
+                    className="p-2 rounded-lg text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-700 transition-colors"
+                  >
+                    <PencilLine className="w-4 h-4" aria-hidden="true" />
+                  </button>
                   <button
                     onClick={(e) => { e.stopPropagation(); toggleFavorite(entry.id) }}
                     aria-label={entry.is_favorite ? t('diary.journal.card.removeFavorite', { title: entry.title || t('diary.noTitle') }) : t('diary.journal.card.markFavorite', { title: entry.title || t('diary.noTitle') })}
@@ -553,6 +593,17 @@ export function JournalTab() {
         initialPrompt={prompt?.prompt_text}
       />
 
+      {/* Edit Entry Modal — egen instans per inlägg så formuläret startar med dess värden */}
+      {redigeraEntry && (
+        <WriteModal
+          key={redigeraEntry.id}
+          isOpen
+          redigera={redigeraEntry}
+          onClose={() => setRedigeraEntry(null)}
+          onSave={handleUpdateEntry}
+        />
+      )}
+
       {/* View Entry Modal */}
       {selectedEntry && (
         <div
@@ -576,9 +627,18 @@ export function JournalTab() {
                   })} · {selectedEntry.word_count} {t('diary.words')}
                 </p>
               </div>
-              <button onClick={() => setSelectedEntry(null)} className="p-2 hover:bg-stone-100 rounded-lg">
-                <X className="w-5 h-5 text-stone-600 dark:text-stone-400" />
-              </button>
+              <div className="flex items-center gap-1">
+                <button
+                  onClick={() => { setRedigeraEntry(selectedEntry); setSelectedEntry(null) }}
+                  className="inline-flex items-center gap-1.5 px-3 py-2 hover:bg-stone-100 dark:hover:bg-stone-800 rounded-lg text-sm font-medium text-stone-700 dark:text-stone-300"
+                >
+                  <PencilLine className="w-4 h-4" aria-hidden="true" />
+                  {t('diary.journal.viewModal.edit', 'Ändra')}
+                </button>
+                <button onClick={() => setSelectedEntry(null)} aria-label={t('common.close')} className="p-2 hover:bg-stone-100 rounded-lg">
+                  <X className="w-5 h-5 text-stone-600 dark:text-stone-400" />
+                </button>
+              </div>
             </div>
 
             <div className="p-6">

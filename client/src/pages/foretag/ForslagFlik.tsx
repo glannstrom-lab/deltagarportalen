@@ -48,6 +48,15 @@ export function ForslagFlik({ org }: Props) {
       .catch(() => {})
   }, [valt, queryClient])
 
+  // FT3: besvarade förslag ska inte lämna en "väntar på svar"-notis oläst i klockan.
+  const besvaradeIds = (forslagQ.data ?? []).filter((f) => f.employer_response !== 'pending').map((f) => f.id).sort().join(',')
+  useEffect(() => {
+    if (!besvaradeIds) return
+    foretagApi.lasNotiserForBesvarade(besvaradeIds.split(','))
+      .then(() => queryClient.invalidateQueries({ queryKey: NOTIFICATIONS_KEY }))
+      .catch(() => {})
+  }, [besvaradeIds, queryClient])
+
   const svara = useMutation({
     mutationFn: ({ id, svar, meddelande }: { id: string; svar: 'interested' | 'declined'; meddelande: string }) =>
       foretagApi.svara(id, svar, meddelande),

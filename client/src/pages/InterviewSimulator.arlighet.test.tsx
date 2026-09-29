@@ -225,8 +225,13 @@ describe('utkastet räddar en avbruten övning', () => {
     const { container } = renderPage()
     await startaIntervju(container)
 
-    // Ingenting att rädda ännu — tomt formulär ska inte skriva utkast.
-    expect(sparaUtkastMock).not.toHaveBeenCalled()
+    // EG5: redan när första frågan visas finns något att rädda vid omladdning.
+    await waitFor(() => {
+      expect(sparaUtkastMock).toHaveBeenCalled()
+    })
+    const forsta = sparaUtkastMock.mock.calls.at(-1)?.[0] as { nuvarandeFraga: string; anvandarSvar: string }
+    expect(forsta.nuvarandeFraga).toBe('Berätta om dig själv')
+    expect(forsta.anvandarSvar).toBe('')
 
     const textarea = container.querySelector('textarea') as HTMLTextAreaElement
     fireEvent.change(textarea, { target: { value: 'Ett halvskrivet svar' } })

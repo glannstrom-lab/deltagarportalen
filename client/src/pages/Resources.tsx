@@ -45,6 +45,7 @@
  * konstaterade aldrig var byggd, men vars nyckeltal ändå visade ett hårt "0").
  */
 
+import { cvFilnamn } from '@/lib/cvFilnamn'
 import type { CVData } from '@/types/cv'
 import { skillNamn } from '@/utils/skillText'
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react'
@@ -755,7 +756,7 @@ function ResourcesInner() {
                           data={versionData}
                           versionId={version.id}
                           label="PDF"
-                          filename={`CV_${versionData.firstName || ''}_${versionData.lastName || ''}.pdf`}
+                          filename={cvFilnamn(versionData)}
                           variant="ghost"
                           size="sm"
                           showPreview={false}
@@ -815,7 +816,7 @@ function ResourcesInner() {
                 <PDFExportButton
                   type="cv"
                   data={cvData}
-                  filename={`CV_${cvData.firstName || ''}_${cvData.lastName || ''}.pdf`}
+                  filename={cvFilnamn(cvData)}
                   variant="primary"
                   size="sm"
                   showPreview={false}
@@ -1298,7 +1299,7 @@ function ResourcesInner() {
                         <PDFExportButton
                           type="cv"
                           data={cv}
-                          filename={`CV_${cv.firstName || ''}_${cv.lastName || ''}.pdf`}
+                          filename={cvFilnamn(cv)}
                           variant="primary"
                           size="sm"
                           showPreview={false}

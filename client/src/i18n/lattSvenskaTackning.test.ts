@@ -101,6 +101,18 @@ describe('Lätt svenska täcker deltagarens huvudväg (RD30)', () => {
   })
 })
 
+// NY2 2026-09-29: Ny i Sverige fick Lätt svenska (0 → 134 av 179). Resten är med flit
+// kvar på vanlig svenska: namn på nivåer och resurser, och de tio fraserna, som är
+// svenskträning och inte ska förenklas. Egen golvsiffra eftersom huvudvägens golv är 100 %.
+const NY_I_SVERIGE_GOLV = 134
+
+describe('Lätt svenska på Ny i Sverige (NY2)', () => {
+  it(`minst ${NY_I_SVERIGE_GOLV} av international.*-nycklarna har Lätt svenska`, () => {
+    const r = tackning(FSV, FLATT, ['international.'])
+    expect(r.tackta, `${r.tackta}/${r.totalt}`).toBeGreaterThanOrEqual(NY_I_SVERIGE_GOLV)
+  })
+})
+
 // Ett test som inte kan falla bevisar ingenting.
 describe('grinden kan faktiskt falla', () => {
   it('ser en saknad nyckel', () => {

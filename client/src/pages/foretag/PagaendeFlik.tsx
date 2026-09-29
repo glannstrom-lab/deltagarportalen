@@ -14,7 +14,7 @@ import { Button } from '@/components/ui/Button'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { Handshake, Mail, Phone } from '@/components/ui/icons'
 import type { Organization } from '@/services/orgApi'
-import { foretagApi, formateraDatum, fulltNamn, veckaAvTotal, type AvstamningInput, type AvstamningVecka, type PagaendePlacering } from '@/services/foretagApi'
+import { foretagApi, formateraDatum, fulltNamn, veckaAvTotal, veckotext, type AvstamningInput, type AvstamningVecka, type PagaendePlacering } from '@/services/foretagApi'
 import { FelRuta, Laddar } from '@/components/foretag/Tillstand'
 import { AvstamningDialog } from '@/components/foretag/AvstamningDialog'
 import { CHIP_KLASS, FORTSATT_INTRESSE_LABEL, PLACERING_STATUS_LABEL, PLACERING_TYP_LABEL, foretagNycklar } from '@/components/foretag/foretagEtiketter'
@@ -69,7 +69,7 @@ export function PagaendeFlik({ org }: Props) {
       <div>
         <h2 className="text-xl font-bold text-stone-900 dark:text-stone-100">Pågående</h2>
         <p className="text-sm text-stone-700 dark:text-stone-200 mt-1">
-          De som är hos er nu, och de ni sagt ja till. Avstämningen vid vecka 12 och 24 går till konsulenten.
+          De som är hos er nu, och de ni sagt ja till. Avstämningen görs 12 och 24 veckor efter start och går till konsulenten.
         </p>
       </div>
 
@@ -89,7 +89,7 @@ export function PagaendeFlik({ org }: Props) {
       ) : (
         <ul className="space-y-4">
           {pagaendeQ.data.map((p) => {
-            const v = veckaAvTotal(p.start_date, p.end_date)
+            const v = veckotext(p.start_date, p.end_date)
             const konsulent = fulltNamn(p.consultant_first_name, p.consultant_last_name) || 'Konsulenten'
             const tidigare = avstamningarFor(p.id)
             return (
@@ -102,7 +102,7 @@ export function PagaendeFlik({ org }: Props) {
                       </h3>
                       <p className="text-sm text-stone-700 dark:text-stone-200">
                         {p.place_title || p.occupation || 'Plats hos er'} · {PLACERING_TYP_LABEL[p.placement_type]}
-                        {v ? ` · vecka ${v.vecka}${v.totalt ? ` av ${v.totalt}` : ''}` : ''}
+                        {v ? ` · ${v}` : ''}
                       </p>
                       {(p.start_date || p.end_date) && (
                         <p className="text-xs text-stone-600 dark:text-stone-300">

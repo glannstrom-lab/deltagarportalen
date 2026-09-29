@@ -385,7 +385,7 @@
     "education": "Utbildningar",
     "salary": "Lön & Förhandling",
     "personalBrand": "Personligt varumärke",
-    "international": "Internationell Guide",
+    "international": "Ny i Sverige",
     "externalResources": "Externa resurser",
     "interestGuide": "Intresseguide",
     "exercises": "Övningar",
@@ -1252,13 +1252,15 @@
       "selectLevel": "Välj nivå...",
       "degreePlaceholder": "t.ex. Civilingenjör",
       "currentLabel": "Pågående utbildning",
-      "descriptionPlaceholder": "Beskriv vad du lärt dig, specialiseringar, projekt..."
+      "descriptionPlaceholder": "Beskriv vad du lärt dig, specialiseringar, projekt...",
+      "newEducation": "Ny utbildning"
     },
     "experienceEditor": {
       "emptyTitle": "Inga jobb tillagda ännu",
       "emptySubtitle": "Lägg till din första arbetslivserfarenhet",
       "titlePlaceholder": "t.ex. Butikssäljare",
-      "currentLabel": "Jag jobbar här fortfarande"
+      "currentLabel": "Jag jobbar här fortfarande",
+      "newPosition": "Ny position"
     },
     "skillsEditor": {
       "addTitle": "Lägg till kompetens",
@@ -4260,7 +4262,8 @@
         "contentLabel": "Dina tankar",
         "contentPlaceholder": "Skriv dina tankar...",
         "addTagLabel": "Lägg till tagg",
-        "addTagPlaceholder": "Lägg till tagg..."
+        "addTagPlaceholder": "Lägg till tagg...",
+        "editTitle": "Ändra ditt inlägg"
       },
       "prompt": {
         "title": "Dagens skrivtips",
@@ -4283,10 +4286,12 @@
         "removeFavorite": "Ta bort \"{{title}}\" som favorit",
         "markFavorite": "Markera \"{{title}}\" som favorit",
         "confirmDelete": "Ta bort detta inlägg?",
-        "deleteEntry": "Radera dagboksinlägget \"{{title}}\""
+        "deleteEntry": "Radera dagboksinlägget \"{{title}}\"",
+        "editEntry": "Ändra dagboksinlägget \"{{title}}\""
       },
       "viewModal": {
-        "mood": "Humör: {{mood}}/5"
+        "mood": "Humör: {{mood}}/5",
+        "edit": "Ändra"
       }
     }
   },
@@ -9338,7 +9343,10 @@
     "ingenPlan": {
       "title": "Ingen vecka planerad än",
       "text": "Din konsulent lägger upp veckan tillsammans med dig. Tills dess finns det inget du behöver göra här.",
-      "cta": "Gå till din konsulent"
+      "cta": "Gå till din konsulent",
+      "medanTitel": "Medan du väntar",
+      "medanText": "Du kan läsa om aktivitetskravet, till exempel vad som gäller och vad du kan göra om du inte kan komma till ett pass. Du kan också fylla i ditt CV eller titta på jobb.",
+      "guideLank": "Läs om aktivitetskravet"
     },
     "saldo": {
       "ingaPass": "Inget inplanerat den här veckan.",

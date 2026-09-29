@@ -205,6 +205,7 @@ export function ExperienceEditor({ experiences, onChange }: ExperienceEditorProp
                     onClick={() => setExpandedId(isExpanded ? null : exp.id)}
                     className="flex items-center gap-3 p-4 cursor-pointer hover:bg-stone-50 transition-colors"
                     role="button"
+                    aria-label={[exp.title || t('cv.experienceEditor.newPosition', 'Ny position'), exp.company].filter(Boolean).join(', ')}
                     aria-expanded={isExpanded}
                     tabIndex={0}
                     onKeyDown={(e) => {

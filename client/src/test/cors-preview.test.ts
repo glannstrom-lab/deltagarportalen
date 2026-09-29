@@ -25,10 +25,10 @@ import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 
 /** De tre filer som hade det förfalskningsbara mönstret. */
-const FILER = ['ai.js', 'job-alerts.js', 'cv-pdf.js']
+const FILER = ['ai.js', 'job-alerts.js', 'cv-pdf.js', 'upload-image.js']
 
-/** Den fjärde har aldrig haft vare sig mönstret eller credentials-rubriken. */
-const OVRIGA = ['upload-image.js']
+/** SFT6: upload-image följer sedan 2026-09-29 samma policy och ligger i FILER. */
+const OVRIGA: string[] = []
 
 function las(fil: string): string {
   return readFileSync(resolve(__dirname, '../../api', fil), 'utf8')

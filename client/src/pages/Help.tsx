@@ -16,6 +16,11 @@ import type { LucideIcon } from '@/components/ui/icons'
 import { useFocusMode } from '@/components/FocusModeProvider'
 import { PageFocusShell } from '@/components/focus/shell/PageFocusShell'
 import { FocusHelpWizard } from '@/components/focus/pages/FocusHelpWizard'
+import { KonsulentHjalp } from '@/components/consultant/KonsulentHjalp'
+import { useAuthStore } from '@/stores/authStore'
+
+// KH6/KH13: samma roller som App.tsx skickar till konsulentvyn (rad ~225). SUPERADMIN är med flit utanför — kontot används för att se deltagarvyn.
+const PERSONALROLLER = ['CONSULTANT', 'ADMIN']
 
 interface FaqItem {
   qKey: string
@@ -88,6 +93,16 @@ const quickLinkDefs: QuickLink[] = [
 export default function Help() {
   const { t } = useTranslation()
   const { isFocusMode, leaveWizard } = useFocusMode()
+  const aktivRoll = useAuthStore((state) => state.profile?.activeRole)
+  const arPersonal = !!aktivRoll && PERSONALROLLER.includes(aktivRoll)
+
+  if (arPersonal) {
+    return (
+      <PageLayout title={t('help.title')} description="Så gör du i konsulentvyn." showTabs={false} domain="info">
+        <KonsulentHjalp />
+      </PageLayout>
+    )
+  }
 
   if (isFocusMode) {
     return (

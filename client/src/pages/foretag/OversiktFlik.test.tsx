@@ -70,7 +70,7 @@ describe('OversiktFlik', () => {
     expect(screen.getByRole('button', { name: 'Läs presentationen' })).toBeInTheDocument()
     expect(screen.getByText('Öppen')).toBeInTheDocument()
     expect(screen.getByText(/20 h\/vecka, lyft, stående, handledning: hög/)).toBeInTheDocument()
-    expect(screen.getByText(/vecka \d+ av 12/)).toBeInTheDocument()
+    expect(screen.getByText(/vecka \d+ \(placeringen är 12 veckor\)/)).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Skriv till Kim Konsulent' })).toBeInTheDocument()
   })
 

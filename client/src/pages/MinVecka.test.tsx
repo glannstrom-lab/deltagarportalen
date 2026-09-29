@@ -140,6 +140,15 @@ describe('Min vecka', () => {
     expect(listMySessions).not.toHaveBeenCalled()
   })
 
+  it('NY6: tomtillståndet säger vad man kan göra medan man väntar och länkar aktivitetskravsguiden', async () => {
+    getMyPlan.mockResolvedValue(null)
+    render(<MinVecka />)
+    await screen.findByText('Ingen vecka planerad än')
+    expect(screen.getByText('Medan du väntar')).toBeInTheDocument()
+    const lank = screen.getByRole('link', { name: 'Läs om aktivitetskravet' })
+    expect(lank).toHaveAttribute('href', '/guider/aktivitetskrav-forsorjningsstod/')
+  })
+
   it('räknar veckans planerade timmar ur passen och listar dem', async () => {
     getMyPlan.mockResolvedValue(plan)
     // Ett pass en annan dag i veckan så att båda ligger inom mån–sön oavsett

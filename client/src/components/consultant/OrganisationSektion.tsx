@@ -164,8 +164,19 @@ export function OrganisationSektion() {
               {lage.caseload.length === 0 ? (
                 <p className="text-sm text-stone-500 dark:text-stone-400">Inga konsulenter i organisationen än.</p>
               ) : (
-                <div className="relative overflow-x-auto">
-                  <table className="w-full text-sm">
+                <>
+                {/* CH3 (rollspelet 2026-09-28): på 375 px klipptes kolumnerna och åtgärden
+                    "Överlämna deltagare…" utan någon signal om att tabellen går att skrolla. */}
+                <p data-testid="caseload-scrollhint" className="sm:hidden mb-2 text-xs text-stone-600 dark:text-stone-400">
+                  Tabellen är bredare än skärmen — dra i sidled för fler kolumner och åtgärder →
+                </p>
+                <div
+                  className="relative overflow-x-auto rounded-lg border-r-4 border-stone-300 dark:border-stone-600 sm:border-r-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-stone-500"
+                  role="region"
+                  aria-label="Caseload per konsulent"
+                  tabIndex={0}
+                >
+                  <table className="w-full min-w-[34rem] text-sm">
                     <thead>
                       <tr className="text-left text-xs uppercase tracking-wide text-stone-500 dark:text-stone-400">
                         <th className="py-2 pr-3 font-medium">Konsulent</th>
@@ -203,6 +214,7 @@ export function OrganisationSektion() {
                     </tbody>
                   </table>
                 </div>
+                </>
               )}
               {caseloadFel && (
                 <p role="alert" className="mt-3 text-sm text-red-700 dark:text-red-300">

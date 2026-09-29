@@ -468,7 +468,9 @@ function InterviewSimulatorInner() {
     if (!harStartat) return
     // SK1 (skarpt test 2026-09-28): ett avslutat pass är sparat som session — inget utkast.
     if (visarSammanfattning) return
-    if (historik.length === 0 && !anvandarSvar.trim()) return
+    // EG5: en fråga som visats är redan värd att rädda — annars ger en omladdning direkt efter
+    // första frågan ett tomt startformulär.
+    if (historik.length === 0 && !anvandarSvar.trim() && !nuvarandeFraga.trim()) return
     sparaSimulatorUtkast({
       roll,
       foretag,

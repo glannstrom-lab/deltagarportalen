@@ -154,6 +154,7 @@ export function EducationEditor({ education, onChange }: EducationEditorProps) {
                     onClick={() => setExpandedId(isExpanded ? null : ed.id)}
                     className="flex items-center gap-3 p-4 cursor-pointer hover:bg-stone-50 transition-colors"
                     role="button"
+                    aria-label={[ed.degree || t('cv.educationEditor.newEducation', 'Ny utbildning'), ed.school].filter(Boolean).join(', ')}
                     aria-expanded={isExpanded}
                     tabIndex={0}
                     onKeyDown={(e) => {

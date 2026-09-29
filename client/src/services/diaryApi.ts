@@ -223,6 +223,34 @@ export const diaryEntriesApi = {
     return utfall.ok ? utfall.entry : null
   },
 
+  /**
+   * Ändra ett sparat inlägg och returnera utfallet. Dagbokens UPDATE är grindad av
+   * hälsosamtycke i RLS (MV2) — 42501 ska nå användaren som ett besked, inte sväljas.
+   */
+  async uppdatera(id: string, updates: Partial<DiaryEntry>): Promise<SparaInlaggUtfall> {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return { ok: false, orsak: 'utloggad' }
+
+    const skrivning = { ...updates }
+    if (skrivning.content) {
+      skrivning.word_count = skrivning.content.split(/\s+/).filter(w => w).length
+    }
+
+    const { data, error } = await supabase
+      .from('diary_entries')
+      .update(skrivning)
+      .eq('id', id)
+      .eq('user_id', user.id)
+      .select()
+      .single()
+
+    if (error || !data) {
+      console.error('Error updating diary entry:', error)
+      return { ok: false, orsak: error?.code === '42501' ? 'samtycke' : 'fel' }
+    }
+    return { ok: true, entry: data }
+  },
+
   async update(id: string, updates: Partial<DiaryEntry>): Promise<DiaryEntry | null> {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return null

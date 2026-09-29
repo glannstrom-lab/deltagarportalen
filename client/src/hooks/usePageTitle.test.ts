@@ -72,6 +72,7 @@ describe('resolvePageTitleRule', () => {
       '/spontanansökan', '/nätverk', '/personal-brand', '/linkedin-optimizer',
       '/skills-gap-analysis', '/interview-simulator', '/ai-team', '/exercises',
       '/international', '/externa-resurser', '/consultant', '/admin',
+      '/min-vecka', // NY3 (2026-09-29): saknades och fick varumärkestiteln
     ]
     const utan = routes.filter((r) => !resolvePageTitleRule(r))
     expect(utan).toEqual([])

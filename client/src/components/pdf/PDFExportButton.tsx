@@ -14,42 +14,10 @@ import {
   type ApplicationHistoryItem,
 } from '@/services/pdfExportService';
 import { showToast } from '@/components/Toast';
-import { supabase } from '@/lib/supabase';
+import { generateServerCV } from './serverCvPdf';
 import type { CVData, JobData } from '@/types/pdf.types';
+import { cvFilnamn } from '@/lib/cvFilnamn';
 import { formatLocalDate } from '@/services/aktivitetSchema';
-
-/**
- * Server-side CV PDF: POSTar mot /api/cv-pdf som lanserar headless Chromium
- * och genererar en PDF med exakta A4-margins (12mm top / 10mm bottom).
- * Anledningen är att ren CSS-print inte kan ge per-sida-padding utan
- * tradeoff (vita band ELLER gleshet ELLER block-i-kanten på sida 2). Detta
- * är samma teknik Resume.io/Kickresume använder i sin paid-tier.
- */
-async function generateServerCV(template: string, versionId?: string): Promise<Blob> {
-  const { data: { session } } = await supabase.auth.getSession()
-  const token = session?.access_token
-  if (!token) throw new Error('Du måste vara inloggad för att exportera CV.')
-
-  const res = await fetch('/api/cv-pdf', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`,
-    },
-    body: JSON.stringify(versionId ? { template, versionId } : { template }),
-  })
-
-  if (!res.ok) {
-    let msg = 'PDF-generering misslyckades'
-    try {
-      const err = await res.json()
-      if (err?.error) msg = err.error
-    } catch { /* ignore */ }
-    throw new Error(msg)
-  }
-
-  return await res.blob()
-}
 
 interface PDFExportButtonProps {
   type: 'cv' | 'job' | 'applications';
@@ -123,9 +91,7 @@ export const PDFExportButton: React.FC<PDFExportButtonProps> = ({
       switch (type) {
         case 'cv': {
           const cvData = data as CVData;
-          const firstName = cvData?.firstName || 'okänd';
-          const lastName = cvData?.lastName || '';
-          return `CV_${firstName}_${lastName}.pdf`;
+          return cvFilnamn(cvData);
         }
         case 'job': {
           const jobData = data as JobData;

@@ -49,7 +49,7 @@ vi.mock('@/lib/supabase', () => ({
   },
 }))
 
-import { foretagApi, veckaAvTotal, dagarSedan, foretagFelText, nollstallVisningsminne } from './foretagApi'
+import { foretagApi, veckaAvTotal, veckotext, dagarSedan, foretagFelText, nollstallVisningsminne } from './foretagApi'
 
 function steg(namn: string) {
   const k = kedjor[kedjor.length - 1]
@@ -218,6 +218,23 @@ describe('foretagApi', () => {
       expect(veckaAvTotal('2026-10-01', '2026-12-01', idag)?.vecka).toBe(0)
       expect(veckaAvTotal(null, '2026-12-01', idag)).toBeNull()
       expect(veckaAvTotal('ogiltigt', null, idag)).toBeNull()
+    })
+
+    it('FT5/FT6: veckotext säger "börjar om N dagar" före start och skiljer placeringens längd från veckan', () => {
+      const idag = new Date('2026-09-13T12:00:00Z')
+      expect(veckotext('2026-09-23', '2026-12-01', idag)).toBe('börjar om 10 dagar')
+      expect(veckotext('2026-09-14', null, idag)).toBe('börjar imorgon')
+      expect(veckotext('2026-09-01', '2026-11-24', idag)).toBe('vecka 2 (placeringen är 12 veckor)')
+      expect(veckotext('2026-09-01', null, idag)).toBe('vecka 2')
+      expect(veckotext(null, null, idag)).toBeNull()
+    })
+
+    it('FT3: lasNotiserForBesvarade läser bara egna foretag_forslag-notiser för de givna förslagen', async () => {
+      await foretagApi.lasNotiserForBesvarade(['f1', 'f2'])
+      expect(kedjor[0].tabell).toBe('notifications')
+      expect(steg('in')).toEqual(['data->>proposal_id', ['f1', 'f2']])
+      await foretagApi.lasNotiserForBesvarade([])
+      expect(kedjor).toHaveLength(1)
     })
 
     it('dagarSedan ger hela dagar och aldrig negativt', () => {

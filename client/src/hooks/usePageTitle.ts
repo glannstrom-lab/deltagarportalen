@@ -82,7 +82,7 @@ export const PAGE_TITLE_RULES: PageTitleRule[] = [
   { path: '/interview-simulator', key: 'nav.interviewSimulator', sv: 'Intervjuträning' },
   { path: '/salary', key: 'nav.salary', sv: 'Lön och förhandling' },
   { path: '/linkedin-optimizer', key: 'nav.linkedinOptimizer', sv: 'LinkedIn-optimering' },
-  { path: '/international', key: 'nav.international', sv: 'Internationell guide' },
+  { path: '/international', key: 'nav.international', sv: 'Ny i Sverige' },
 
   // Karriär
   { path: '/career', key: 'nav.career', sv: 'Karriär' },
@@ -106,6 +106,7 @@ export const PAGE_TITLE_RULES: PageTitleRule[] = [
   { path: '/calendar', key: 'nav.calendar', sv: 'Kalender' },
   { path: '/exercises', key: 'nav.exercises', sv: 'Övningar' },
   { path: '/my-consultant', key: 'nav.myConsultant', sv: 'Din konsulent' },
+  { path: '/min-vecka', key: 'nav.minVecka', sv: 'Min vecka' },
 
   // Konto och administration
   { path: '/profile', key: 'nav.profile', sv: 'Min profil' },

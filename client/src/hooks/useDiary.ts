@@ -71,11 +71,12 @@ export function useDiaryEntries() {
   }
 
   const updateEntry = async (id: string, updates: Partial<DiaryEntry>) => {
-    const updated = await diaryEntriesApi.update(id, updates)
-    if (updated) {
+    const utfall = await diaryEntriesApi.uppdatera(id, updates)
+    if (utfall.ok) {
+      const updated = utfall.entry
       setEntries(prev => prev.map(e => e.id === id ? updated : e))
     }
-    return updated
+    return utfall
   }
 
   const deleteEntry = async (id: string) => {

@@ -139,7 +139,7 @@ export function ForeslaDialog({ open, placering, deltagarNamn, onClose, onSkapad
 
       <form onSubmit={handleSubmit} className="p-5 space-y-5">
         <p className="text-sm text-stone-700 p-3 rounded-lg bg-stone-50 border border-stone-200">
-          Deltagaren får frågan och bestämmer. Företaget ser inget förrän hon sagt ja, och bara det hon kryssat
+          Deltagaren får frågan och bestämmer. Företaget ser inget förrän deltagaren sagt ja, och då bara de uppgifter deltagaren sagt
           ja till.
         </p>
 
@@ -187,7 +187,7 @@ export function ForeslaDialog({ open, placering, deltagarNamn, onClose, onSkapad
             className="w-full px-3 py-2 rounded-lg border border-stone-200 text-sm"
           />
           <span className="block mt-1 text-[11px] text-stone-500">
-            Du skriver texten själv — AI används inte här. Deltagaren läser texten innan hon svarar, och kan tacka nej.
+            Du skriver texten själv — AI används inte här. Deltagaren läser texten först och kan tacka nej.
           </span>
         </label>
 

@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
+import { SkipLinks } from '@/components/SkipLinks'
 import { useNavigate, useSearchParams, Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useAuthStore } from '../stores/authStore'
@@ -45,6 +46,9 @@ const MALNAMN: Record<string, string> = {
   '/my-consultant': 'nav.myConsultant',
   '/profile': 'nav.profile',
 }
+
+/** Bara huvudinnehåll — inloggningssidan har ingen navigation att hoppa till. */
+const SKIPLANK = [{ id: 'main-content', labelKey: 'skipLinks.toMain' }]
 
 /** Nyckeln för verktyget en säker `returnTo`-sökväg pekar på, eller `undefined` om okänt. */
 function malNyckelFor(returnTo: string | null): string | undefined {
@@ -107,6 +111,9 @@ export default function Login() {
   })
 
   const [showPassword, setShowPassword] = useState(false)
+  const [forsok, setForsok] = useState(0)
+  const hanteratForsok = useRef(0)
+  const felRef = useRef<HTMLDivElement>(null)
 
   // KO2: subtiteln säger VART hon var på väg när returnTo finns, i stället
   // för det generiska "Logga in för att fortsätta" — som är sant men
@@ -130,12 +137,17 @@ export default function Login() {
     }
   }, [isAuthenticated, navigate, searchParams])
 
-  // Sync auth error from store
+  // SV4: fokus till felet efter ett misslyckat FÖRSÖK. Store-inloggningen sätter
+  // isLoading, vilket avmonterar formuläret (fokus föll till <body>). Därför
+  // väntar vi in att laddningen är klar, och fokuserar bara efter ett submit —
+  // annars skulle ett blur-fel flytta fokus mitt under tabbning.
+  const harFel = !!(authError || errors.email || errors.password)
   useEffect(() => {
-    if (authError) {
-      // Error is displayed below
+    if (forsok > hanteratForsok.current && harFel && !authLoading) {
+      hanteratForsok.current = forsok
+      felRef.current?.focus()
     }
-  }, [authError])
+  }, [forsok, harFel, authLoading])
 
   // Show loading while checking auth state
   if (authLoading) {
@@ -152,16 +164,19 @@ export default function Login() {
     )
   }
 
+  // TR1: bottenpaddingen reserverar kakbannerns höjd (0 när den är stängd),
+  // annars låg bannern över "Skapa ett konto" utan väg att skrolla fram länken.
   return (
-    // TR1: bottenpaddingen reserverar kakbannerns höjd (0 när den är stängd),
-    // annars låg bannern över "Skapa ett konto" utan väg att skrolla fram länken.
     <div
       className="min-h-screen bg-stone-50 dark:bg-stone-900 flex items-center justify-center p-4"
       style={{ paddingBottom: PUBLIC_PAGE_BOTTOM_PADDING }}
     >
+      {/* SFT5/SV3: samma skiplänk som resten av appen. Bara huvudinnehållet — sidan har ingen navigation.
+          Inuti den yttre behållaren (absolut positionerad) så TR1:s padding sitter kvar på sidans rot. */}
+      <SkipLinks links={SKIPLANK} />
       <div className="w-full max-w-md">
         {/* Logo */}
-        <div className="text-center mb-8">
+        <header className="text-center mb-8">
           <OptimizedImage
             src="/logo-icon.svg"
             alt="Jobin"
@@ -170,26 +185,37 @@ export default function Login() {
           />
           <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100">Jobin</h1>
           <p className="text-gray-600 dark:text-gray-300 mt-1">{t('auth.yourPath')}</p>
-        </div>
+        </header>
 
+        <main id="main-content" tabIndex={-1} className="outline-none">
         {/* Login Card */}
         <div className="bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 rounded-2xl shadow-xl p-8">
           <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-2 text-center">{t('auth.welcomeBack')}</h2>
           <p className="text-gray-600 dark:text-gray-300 text-center mb-6">{subtitel}</p>
 
-          {(authError || errors.email || errors.password) && (
+          {/* SV9: red-700 på red-50 (≈6:1) och red-300 mot mörk bakgrund — red-600 gav 4,36:1.
+              SV4: tabIndex=-1 så felet kan ta emot fokus efter ett misslyckat försök. */}
+          {harFel && (
             <div
+              ref={felRef}
+              tabIndex={-1}
               role="alert"
               aria-live="assertive"
-              className="mb-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg"
+              className="mb-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-[var(--c-solid)]"
             >
-              {authError && <p className="text-red-600 dark:text-red-400 text-sm">{authError}</p>}
-              {errors.email && <p className="text-red-600 dark:text-red-400 text-sm">{errors.email}</p>}
-              {errors.password && <p className="text-red-600 dark:text-red-400 text-sm">{errors.password}</p>}
+              {authError && <p className="text-red-700 dark:text-red-300 text-sm">{authError}</p>}
+              {errors.email && <p className="text-red-700 dark:text-red-300 text-sm">{errors.email}</p>}
+              {errors.password && <p className="text-red-700 dark:text-red-300 text-sm">{errors.password}</p>}
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form
+            onSubmit={(e) => {
+              setForsok((n) => n + 1)
+              return handleSubmit(e)
+            }}
+            className="space-y-4"
+          >
             {/* Email */}
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-800 dark:text-gray-100 mb-1">
@@ -216,7 +242,7 @@ export default function Login() {
                 />
               </div>
               {touched.email && errors.email && (
-                <p id="email-error" className="mt-1 text-sm text-red-600 dark:text-red-400" role="alert">
+                <p id="email-error" className="mt-1 text-sm text-red-700 dark:text-red-300" role="alert">
                   {errors.email}
                 </p>
               )}
@@ -257,7 +283,7 @@ export default function Login() {
                 </button>
               </div>
               {touched.password && errors.password && (
-                <p id="password-error" className="mt-1 text-sm text-red-600 dark:text-red-400" role="alert">
+                <p id="password-error" className="mt-1 text-sm text-red-700 dark:text-red-300" role="alert">
                   {errors.password}
                 </p>
               )}
@@ -337,6 +363,7 @@ export default function Login() {
             ← {t('auth.backToJobin')}
           </Link>
         </div>
+        </main>
       </div>
     </div>
   )

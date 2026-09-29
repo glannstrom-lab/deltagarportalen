@@ -5,6 +5,7 @@
 
 import { useState, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
+import { harTidslucka } from './tidsluckor'
 import {
   Lightbulb, X, ChevronRight, CheckCircle,
   AlertCircle, Info, Sparkles
@@ -124,6 +125,8 @@ export function ContextualHelp({ context, data }: ContextualHelpProps) {
       if (dismissedTips.has(tip.id)) return false
 
       // Context-specific logic
+      // UT2: tidslucks-tipset kräver en faktisk lucka i användarens datum
+      if (context === 'experience' && tip.id === 'ex-3' && !harTidslucka(data)) return false
       if (context === 'summary' && data && typeof data === 'object' && 'length' in data) {
         const length = (data.length as number) || 0
         if (tip.id === 'su-2' && length >= 100) return false

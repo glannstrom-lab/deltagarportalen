@@ -7,7 +7,10 @@
     "ingenPlan": {
       "title": "Du har ingen vecka planerad än",
       "text": "Din konsulent planerar veckan tillsammans med dig. Du behöver inte göra något här nu.",
-      "cta": "Gå till din konsulent"
+      "cta": "Gå till din konsulent",
+      "medanTitel": "Medan du väntar",
+      "medanText": "Du kan läsa om aktivitetskravet. Där står vad som gäller. Där står också vad du kan göra om du inte kan komma till ett pass. Du kan också jobba med ditt CV eller titta på jobb.",
+      "guideLank": "Läs om aktivitetskravet"
     },
     "saldo": {
       "ingaPass": "Du har inget planerat den här veckan.",
@@ -265,6 +268,12 @@
       "savedAt": "Sparat kl {{time}}",
       "unsaved": "Inte sparat än",
       "utanNat": "Inte sparat. Du har inget internet nu. Det du skrev finns kvar. Det sparas när du har internet igen."
+    },
+    "experienceEditor": {
+      "newPosition": "Nytt jobb"
+    },
+    "educationEditor": {
+      "newEducation": "Ny utbildning"
     }
   },
   "cvBuilder": {
@@ -1163,5 +1172,229 @@
     "myndighetsnamn": "Namn på myndigheter ska vara på svenska. Till exempel Arbetsförmedlingen och Försäkringskassan. Använd det svenska namnet när du söker på nätet eller ringer.",
     "listEtikett": "Välj språk",
     "original": "Svenska (inte översatt)"
+  },
+  "international": {
+    "pageTitle": "Ny i Sverige",
+    "pageDescription": "Här får du hjälp när du är ny i Sverige. Du får veta vad du behöver göra för att kunna jobba här. Du får också hjälp med papper, myndigheter och svenska.",
+    "tabs": {
+      "validation": {
+        "label": "Din utbildning"
+      },
+      "integration": {
+        "label": "Första tiden"
+      },
+      "language": {
+        "label": "Svenska"
+      }
+    },
+    "checkedNote": "Vi läste myndigheternas webbplatser {{date}}. Reglerna kan ändras. Titta alltid på myndighetens sida innan du bestämmer dig.",
+    "opensInNewTab": "Öppnas i en ny flik",
+    "validation": {
+      "description": "Har du en utbildning eller ett yrke från ett annat land? Då finns två frågor. Vad är din utbildning värd i Sverige? Och behöver du ett svenskt tillstånd för ditt yrke?",
+      "uhr": {
+        "title": "Få din utbildning bedömd",
+        "body": "Universitets- och högskolerådet (UHR) tittar på utbildning från andra länder. De skriver ett papper om vad utbildningen är värd i Sverige. Det kostar inget. Du kan skicka med pappret när du söker jobb eller utbildning.",
+        "link": "UHR — bedömning av utländsk utbildning",
+        "tip": "Har du inte kvar dina betyg? Ansök ändå. UHR skriver på sin sida vad du kan göra när papper saknas."
+      },
+      "regulated": {
+        "title": "Behöver du legitimation för ditt yrke?",
+        "body": "I en del yrken får du inte jobba utan ett svenskt tillstånd. Det gäller även om du har jobbat länge. Det gäller till exempel många yrken inom vården och lärare. Då är det en särskild myndighet som prövar din utbildning. Det är inte UHR.",
+        "health": "Vård och omsorg: Socialstyrelsen ger legitimation. Vägen är olika om du har studerat i eller utanför EU/EES. Du behöver kunna mycket bra svenska. Vilken nivå står på deras sida.",
+        "teacher": "Skola och förskola: Skolverket ger legitimation för lärare och förskollärare.",
+        "other": "Vet du inte om ditt yrke kräver legitimation? Börja med UHR. Fråga också Arbetsförmedlingen. De vet vilken myndighet som prövar vad.",
+        "healthLink": "Socialstyrelsen — legitimation",
+        "teacherLink": "Skolverket — legitimation"
+      },
+      "permit": {
+        "title": "Behöver du arbetstillstånd?",
+        "eu": "Är du medborgare i ett land i EU/EES eller Norden? Då behöver du inget arbetstillstånd. Du får börja jobba direkt. Du ska inte kontakta Migrationsverket. Gå till nästa flik.",
+        "thirdCountry": "Kommer du från ett land utanför EU/EES? Då behöver du oftast arbetstillstånd. Du ska oftast ansöka innan du reser hit. Bor du redan här av ett annat skäl kan andra regler gälla.",
+        "noNumbers": "Vi skriver inga belopp och inga väntetider här. De ändras varje år. Ett gammalt tal kan göra att du gör fel. Migrationsverket har alltid det som gäller nu.",
+        "linkPermit": "Migrationsverket — arbetstillstånd",
+        "linkEu": "Migrationsverket — EU/EES-medborgare",
+        "linkException": "Migrationsverket — vem får arbeta utan tillstånd"
+      },
+      "next": {
+        "title": "Vad gör du sedan?",
+        "body": "När du vet vad din utbildning är värd: skriv det i ditt CV. Skriv den svenska motsvarigheten inom parentes. Då förstår en svensk chef vad du kan.",
+        "toCv": "Öppna CV-byggaren",
+        "toJobSearch": "Sök lediga jobb"
+      }
+    },
+    "integration": {
+      "description": "Ordningen är viktig. Nästan allt börjar med att du blir folkbokförd. Kryssa i det du har gjort. Det sparas.",
+      "yourProgress": "Så långt har du kommit",
+      "emptyHint": "Börja med första steget när du orkar. Du behöver inte göra något i dag.",
+      "progressCount": "{{done}} av {{total}} klara",
+      "loading": "Hämtar hur långt du har kommit …",
+      "saveFailed": "Krysset kunde inte sparas nu. Försök igen snart.",
+      "onlyThirdCountry": "För dig som inte kommer från EU/EES eller Norden",
+      "firstNote": {
+        "title": "Läs det här först",
+        "body": "Nästan allt annat kräver att du är folkbokförd och har personnummer. Det tar tid. Det kan ta flera veckor. Under tiden kan du inte få BankID. Många tjänster kräver BankID. Det är inte ditt fel. Så här fungerar systemet."
+      },
+      "categories": {
+        "start": "Börja här",
+        "afterId": "När du har personnummer",
+        "work": "När du börjar söka jobb",
+        "later": "Senare"
+      },
+      "notesLabel": "Egna anteckningar",
+      "notesPlaceholder": "Skriv det du vill komma ihåg. Till exempel tider du har bokat eller besked du har fått.",
+      "notesSave": "Spara",
+      "notesClear": "Ta bort anteckningen",
+      "notesCancel": "Avbryt",
+      "notesAdd": "Skriv en anteckning",
+      "dateLabel": "När vill du vara klar?",
+      "showDetails": "Visa mer om {{title}}",
+      "hideDetails": "Dölj {{title}}",
+      "doneAt": "Klart",
+      "loadFailed": "Vi kunde inte hämta dina kryss nu. Dina kryss är inte borta. Du kan läsa listan. Men vi sparar inget nytt förrän vi vet vad du redan har kryssat.",
+      "items": {
+        "folkbokforing": {
+          "title": "Anmäl att du har flyttat till Sverige",
+          "body": "Du ansöker inte om personnummer. Du anmäler din flytt till Skatteverket. Då blir du folkbokförd, och du får personnummer. Du ska tänka bo här i minst ett år. Du anmäler i Skatteverkets e-tjänst. Du kan anmäla tidigast 14 dagar före flytten. Sedan måste du gå till ett servicekontor och visa vem du är. Boka tid först.",
+          "linkLabel": "Skatteverket — flytta till Sverige"
+        },
+        "samordningsnummer": {
+          "title": "Ska du bo här kortare tid än ett år?",
+          "body": "Då får du inte personnummer. Du kan få ett samordningsnummer i stället. Du söker det för sig. Några tjänster fungerar sämre med det. Skatteverket förklarar skillnaden.",
+          "linkLabel": "Skatteverket — folkbokföring"
+        },
+        "idkort": {
+          "title": "Skaffa id-kort",
+          "body": "För Skatteverkets id-kort måste du vara folkbokförd. Du betalar avgiften innan du bokar tid. Du tar med kvittot. Du måste också kunna visa vem du är. Du kan visa en id-handling. Eller så kan en person intyga vem du är.",
+          "linkLabel": "Skatteverket — id-kort"
+        },
+        "bankkonto": {
+          "title": "Öppna ett bankkonto",
+          "body": "Du har rätt till ett enkelt bankkonto om du bor lagligt i EES. Banken får inte säga nej bara för att du saknar personnummer. Får du ändå nej ska du få det skriftligt. Då kan du klaga hos bankens klagomålsansvarige. Sedan kan du vända dig till Allmänna reklamationsnämnden.",
+          "linkLabel": "Allmänna reklamationsnämnden"
+        },
+        "bankid": {
+          "title": "Skaffa BankID",
+          "body": "Du beställer BankID hos din bank. Därför behöver du först ett bankkonto. Mycket i Sverige kräver BankID. Vissa myndigheter tar också Freja. Fråga på plats."
+        },
+        "forsakringskassan": {
+          "title": "Anmäl din flytt till Försäkringskassan",
+          "body": "Du anmäler att du har flyttat hit. Det behövs mest om du har barn med dig, vill ha EU-kort eller vill söka ersättning. Om du är försäkrad beror på att du bor eller jobbar här.",
+          "linkLabel": "Försäkringskassan"
+        },
+        "vardcentral": {
+          "title": "Välj vårdcentral",
+          "body": "Du väljer själv vilken vårdcentral du vill gå till. Dit ringer du när du är sjuk. De hjälper dig vidare om det behövs.",
+          "linkLabel": "1177 Vårdguiden"
+        },
+        "sfi": {
+          "title": "Anmäl dig till svenska för invandrare (sfi)",
+          "body": "Sfi kostar inget. Du ska vara minst 16 år, bo i kommunen och inte kunna grundläggande svenska. Du anmäler dig hos kommunen. När du är folkbokförd ska kommunen ge dig plats inom tre månader.",
+          "linkLabel": "Skolverket — om sfi"
+        },
+        "validering": {
+          "title": "Få din utbildning bedömd",
+          "body": "UHR skriver ett papper om vad din utbildning är värd i Sverige. Det kostar inget. Med pappret förstår en arbetsgivare ofta vad du kan.",
+          "linkLabel": "UHR — bedömning av utländsk utbildning"
+        },
+        "arbetsformedlingen": {
+          "title": "Skriv in dig på Arbetsförmedlingen",
+          "body": "Skriv in dig så tidigt du kan. Det påverkar vilket stöd och vilken ersättning du kan få. Vissa insatser kräver att du har varit inskriven en tid.",
+          "linkLabel": "Arbetsförmedlingen"
+        },
+        "akassa": {
+          "title": "Gå med i en a-kassa",
+          "body": "A-kassan är frivillig. Du betalar en avgift varje månad. Ersättningen beror på hur länge du har varit med och hur mycket du har jobbat. Därför är det bra att gå med tidigt, även om du inte behöver den nu."
+        },
+        "korkort": {
+          "title": "Gäller ditt körkort här?",
+          "body": "Körkort från EU/EES gäller i Sverige. Kommer ditt körkort från ett annat land gäller andra regler. Det finns också tidsgränser. Transportstyrelsen skriver vad som gäller för ditt land.",
+          "linkLabel": "Transportstyrelsen — körkort"
+        },
+        "skatt": {
+          "title": "Kolla din skattetabell",
+          "body": "När du har fått jobb tas skatt från din lön. Hur mycket beror på var du bor. Om det blir fel kan du ansöka om jämkning hos Skatteverket. Då betalar du inte för mycket eller för lite.",
+          "linkLabel": "Skatteverket"
+        },
+        "pension": {
+          "title": "Din pension när du har flyttat hit",
+          "body": "Har du jobbat i ett annat land kan du ha sparat pension där. Pensionsmyndigheten kan berätta vad som gäller mellan Sverige och det landet.",
+          "linkLabel": "Pensionsmyndigheten"
+        }
+      }
+    },
+    "language": {
+      "title": "Svenska",
+      "description": "Du behöver inte vänta med att söka jobb tills du kan bra svenska. Men svenska öppnar många dörrar. Här ser du hur du kan lära dig.",
+      "levelsTitle": "Hur bra svenska behöver du?",
+      "levelsBody": "Det beror på yrket. I många jobb bestämmer arbetsgivaren. Vardagssvenska räcker långt. I några yrken finns ett krav. För legitimation i vården vill Socialstyrelsen att du kan mycket bra svenska.",
+      "sfiTitle": "Sfi har egna nivåer",
+      "sfiBody": "Sfi har fyra kurser: A, B, C och D. Det finns också tre studievägar. Du får en studieväg efter hur mycket du har gått i skola. Nivåerna är inte samma sak som den europeiska skalan A1–C2. Det finns ingen officiell tabell mellan dem. Fråga din kommun vilken kurs som passar dig.",
+      "cefrTitle": "Den europeiska skalan (CEFR)",
+      "cefrNote": "Många språkkurser och en del jobbannonser använder skalan.",
+      "levels": {
+        "a1": {
+          "description": "Enkla ord och hälsningar"
+        },
+        "a2": {
+          "description": "Enkla samtal om vardagen"
+        },
+        "b1": {
+          "description": "Du klarar samtal på jobbet om du känner ämnet"
+        },
+        "b2": {
+          "description": "Du hänger med i de flesta situationer på jobbet"
+        },
+        "c1": {
+          "description": "Du säger vad du vill, även om svåra saker"
+        },
+        "c2": {
+          "description": "Du förstår nästan allt du hör och läser"
+        }
+      },
+      "resourcesTitle": "Här kan du lära dig",
+      "filterAll": "Alla",
+      "filterFree": "Bara gratis",
+      "filterCourse": "Kurser",
+      "filterSelf": "Öva själv",
+      "resultCount_one": "{{count}} förslag",
+      "resultCount_other": "{{count}} förslag",
+      "free": "Gratis",
+      "paid": "Kostar pengar",
+      "freemium": "Gratis, med en del som kostar",
+      "resources": {
+        "sfi": {
+          "description": "Kommunens svenskundervisning. Det kostar inget om du bor i kommunen, är minst 16 år och inte kan grundläggande svenska. Du anmäler dig hos kommunen."
+        },
+        "utbildningsguiden": {
+          "description": "Skolverkets guide. Här kan du söka vuxenutbildning på din ort. Du kan också söka svenska som andraspråk."
+        },
+        "folkuniversitetet": {
+          "description": "Svenskkurser på kvällar och helger. De kostar pengar. Priset står på deras sida."
+        },
+        "klartext": {
+          "description": "Dagens nyheter på lätt svenska. Bra att lyssna på varje dag. Gratis."
+        },
+        "duolingo": {
+          "description": "En app med korta övningar. Grunden är gratis. Du kan betala för en version utan reklam."
+        },
+        "swedishpod": {
+          "description": "Lektioner som pod. För olika nivåer. En del är gratis. Resten kostar pengar."
+        },
+        "tandem": {
+          "description": "Språkutbyte. Du övar svenska med någon som vill öva ditt språk. Grunden är gratis."
+        }
+      },
+      "phrasesTitle": "Fraser att ha med sig",
+      "phrasesIntro": "De första är för när du söker jobb. De sista är för när du har fått jobb.",
+      "listen": "Lyssna på {{phrase}}",
+      "tipsTitle": "Det här brukar hjälpa",
+      "tips": {
+        "t1": "Säg det du kan, även om det blir fel. Du lär dig snabbare när du pratar.",
+        "t2": "Lyssna på nyheter på lätt svenska en stund varje dag. Samma ord kommer tillbaka.",
+        "t3": "Ändra telefonen till svenska. Du läser den många gånger varje dag.",
+        "t4": "Säg de tio fraserna högt före en intervju.",
+        "t5": "Be någon rätta dig. De flesta gör det gärna om du frågar."
+      }
+    }
   }
 }

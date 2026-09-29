@@ -399,7 +399,7 @@
     "network": "Network",
     "salary": "Salary & Negotiation",
     "personalBrand": "Personal brand",
-    "international": "International Guide",
+    "international": "New in Sweden",
     "externalResources": "External Resources",
     "myConsultant": "My Consultant",
     "calendar": "Calendar",
@@ -1252,13 +1252,15 @@
       "selectLevel": "Choose a level...",
       "degreePlaceholder": "e.g. Engineer",
       "currentLabel": "I am studying now",
-      "descriptionPlaceholder": "Describe what you learned, your focus areas, and projects..."
+      "descriptionPlaceholder": "Describe what you learned, your focus areas, and projects...",
+      "newEducation": "New education"
     },
     "experienceEditor": {
       "emptyTitle": "You haven't added any jobs yet",
       "emptySubtitle": "Add your first work experience",
       "titlePlaceholder": "e.g. Sales Assistant",
-      "currentLabel": "I still work here"
+      "currentLabel": "I still work here",
+      "newPosition": "New job"
     },
     "skillsEditor": {
       "addTitle": "Add a skill",
@@ -4260,7 +4262,8 @@
         "contentLabel": "Your thoughts",
         "contentPlaceholder": "Write your thoughts...",
         "addTagLabel": "Add a tag",
-        "addTagPlaceholder": "Add a tag..."
+        "addTagPlaceholder": "Add a tag...",
+        "editTitle": "Change your entry"
       },
       "prompt": {
         "title": "Today's writing prompt",
@@ -4283,10 +4286,12 @@
         "removeFavorite": "Remove \"{{title}}\" from favorites",
         "markFavorite": "Mark \"{{title}}\" as a favorite",
         "confirmDelete": "Remove this entry?",
-        "deleteEntry": "Delete the diary entry \"{{title}}\""
+        "deleteEntry": "Delete the diary entry \"{{title}}\"",
+        "editEntry": "Change the diary entry \"{{title}}\""
       },
       "viewModal": {
-        "mood": "Mood: {{mood}}/5"
+        "mood": "Mood: {{mood}}/5",
+        "edit": "Change"
       }
     }
   },
@@ -9338,7 +9343,10 @@
     "ingenPlan": {
       "title": "No week planned yet",
       "text": "Your consultant plans the week together with you. Until then there is nothing you need to do here.",
-      "cta": "Go to your consultant"
+      "cta": "Go to your consultant",
+      "medanTitel": "While you wait",
+      "medanText": "You can read about the activity requirement (aktivitetskravet): what applies, and what you can do if you cannot come to a session. You can also fill in your CV or look at jobs.",
+      "guideLank": "Read about the activity requirement (in Swedish)"
     },
     "saldo": {
       "ingaPass": "Nothing planned this week.",

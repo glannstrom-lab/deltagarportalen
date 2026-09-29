@@ -12,6 +12,7 @@ const mock = vi.hoisted(() => ({
   listaForslag: vi.fn(),
   markeraOppnad: vi.fn(),
   svara: vi.fn(),
+  lasNotiserForBesvarade: vi.fn(),
 }))
 vi.mock('@/services/foretagApi', async () => {
   const actual = await vi.importActual<typeof import('@/services/foretagApi')>('@/services/foretagApi')
@@ -25,6 +26,7 @@ describe('ForslagFlik', () => {
     Object.values(mock).forEach((m) => m.mockReset())
     mock.markeraOppnad.mockResolvedValue(undefined)
     mock.svara.mockResolvedValue(undefined)
+    mock.lasNotiserForBesvarade.mockResolvedValue(undefined)
   })
 
   it('tomt: invit, ingen lista över personer', async () => {
@@ -73,6 +75,31 @@ describe('ForslagFlik', () => {
     expect(screen.getByText('ICA · 2020–2022')).toBeInTheDocument()
     expect(screen.getByText('Sommarjobb på camping')).toBeInTheDocument()
     expect(screen.getByText(/format vi inte kan visa här/)).toBeInTheDocument()
+  })
+
+  // FT2: delat men tomt får inte försvinna — vyn ger NULL när deltagaren saknar CV-rad.
+  it('delad erfarenhet/utbildning utan CV visas som "Inget inlagt", inte som ingenting', async () => {
+    mock.listaForslag.mockResolvedValue([
+      forslag({ show_experience: true, show_education: true, participant_experience: null, participant_education: null }),
+    ])
+    rendera(<ForslagFlik org={ORG} />, '/foretag/forslag?id=f1')
+    expect(await screen.findByRole('heading', { name: 'Erfarenhet' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Utbildning' })).toBeInTheDocument()
+    expect(screen.getAllByText('Inget inlagt.')).toHaveLength(2)
+  })
+
+  it('ej delad erfarenhet visas inte alls', async () => {
+    mock.listaForslag.mockResolvedValue([forslag({ show_experience: false, participant_experience: null })])
+    rendera(<ForslagFlik org={ORG} />, '/foretag/forslag?id=f1')
+    await screen.findByText('Truckkort')
+    expect(screen.queryByRole('heading', { name: 'Erfarenhet' })).not.toBeInTheDocument()
+  })
+
+  // FT3: en "väntar på svar"-notis för ett besvarat förslag ska inte stå oläst.
+  it('besvarade förslag städas bort ur notisklockan', async () => {
+    mock.listaForslag.mockResolvedValue([forslag({ employer_response: 'interested' }), forslag({ id: 'f2', employer_response: 'pending' })])
+    rendera(<ForslagFlik org={ORG} />, '/foretag/forslag')
+    await waitFor(() => expect(mock.lasNotiserForBesvarade).toHaveBeenCalledWith(['f1']))
   })
 
   it('visar databasens text när visningstaket är nått', async () => {

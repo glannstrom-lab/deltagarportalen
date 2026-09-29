@@ -6,7 +6,7 @@
  * Mockarna är kopierade ur CVPage.test.tsx, som renderar samma komponent.
  */
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { render, screen, within } from '@testing-library/react'
+import { render, screen, within, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
 import { I18nextProvider } from 'react-i18next'
@@ -151,6 +151,13 @@ function cvMedMall(template: string) {
   }
 }
 
+/** EG3: ett befintligt CV öppnas på första ofullständiga steg — gå tillbaka till mallsteget. */
+async function tillSteg1() {
+  const user = userEvent.setup()
+  await waitFor(() => expect(screen.getAllByRole('button').some(b => /(^|[^0-9])1([^0-9]|$)/.test(b.getAttribute('aria-label') ?? ''))).toBe(true))
+  await user.click(screen.getAllByRole('button').find(b => /(^|[^0-9])1([^0-9]|$)/.test(b.getAttribute('aria-label') ?? ''))!)
+}
+
 function renderBuilder() {
   const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } })
   return render(
@@ -189,6 +196,7 @@ describe('LS3: mallsteget visar ett urval och fäller ut resten', () => {
   it('visar bara de rekommenderade från början, med en knapp som säger att det finns fler', async () => {
     mockGetCV.mockResolvedValue(cvMedMall('sidebar'))
     renderBuilder()
+    await tillSteg1()
 
     const knapp = await screen.findByRole('button', { name: /Visa fler mallar/ })
     expect(knapp).toHaveAttribute('aria-expanded', 'false')
@@ -199,6 +207,7 @@ describe('LS3: mallsteget visar ett urval och fäller ut resten', () => {
     const user = userEvent.setup()
     mockGetCV.mockResolvedValue(cvMedMall('sidebar'))
     renderBuilder()
+    await tillSteg1()
 
     await user.click(await screen.findByRole('button', { name: /Visa fler mallar/ }))
     const knapp = screen.getByRole('button', { name: /Visa färre mallar/ })
@@ -209,6 +218,7 @@ describe('LS3: mallsteget visar ett urval och fäller ut resten', () => {
   it('en vald mall utanför urvalet syns utan att man fäller ut', async () => {
     mockGetCV.mockResolvedValue(cvMedMall('berlin'))
     renderBuilder()
+    await tillSteg1()
 
     // Vänta tills det sparade CV:t är inläst och Berlin är vald.
     await screen.findByText(/Berlin är vald/)

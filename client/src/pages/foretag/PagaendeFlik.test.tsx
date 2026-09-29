@@ -44,7 +44,7 @@ describe('PagaendeFlik', () => {
     mock.listaAvstamningar.mockResolvedValue([avstamning()])
     rendera(<PagaendeFlik org={ORG} />, '/foretag/pagaende')
     expect(await screen.findByRole('heading', { name: 'Anna Andersson' })).toBeInTheDocument()
-    expect(screen.getByText(/Arbetsträning · vecka \d+ av 12/)).toBeInTheDocument()
+    expect(screen.getByText(/Arbetsträning · vecka \d+ \(placeringen är 12 veckor\)/)).toBeInTheDocument()
     expect(screen.getByText('Kim Konsulent')).toBeInTheDocument()
     expect(screen.getByText('033-123 45 67 · Ring före 07.00.')).toBeInTheDocument()
     expect(screen.getByText('Korta, tydliga instruktioner. En sak i taget.')).toBeInTheDocument()
@@ -52,6 +52,22 @@ describe('PagaendeFlik', () => {
     expect(screen.getByText(/Vecka 12 ·/)).toBeInTheDocument()
     expect(screen.getByText('Kommer i tid, trivs.')).toBeInTheDocument()
     expect(screen.getByText('Ja, vi vill fortsätta')).toBeInTheDocument()
+  })
+
+  it('FT5: en placering som inte börjat säger när den börjar — aldrig "vecka 0"', async () => {
+    const start = new Date(Date.now() + 10 * 86_400_000).toISOString().slice(0, 10)
+    const slut = new Date(Date.now() + 80 * 86_400_000).toISOString().slice(0, 10)
+    mock.listaPagaende.mockResolvedValue([pagaende({ start_date: start, end_date: slut })])
+    rendera(<PagaendeFlik org={ORG} />, '/foretag/pagaende')
+    expect(await screen.findByText(/börjar om \d+ dagar/)).toBeInTheDocument()
+    expect(screen.queryByText(/vecka 0/i)).not.toBeInTheDocument()
+  })
+
+  it('FT6: avstämningsveckorna och placeringens längd förklaras som olika saker', async () => {
+    mock.listaPagaende.mockResolvedValue([pagaende()])
+    rendera(<PagaendeFlik org={ORG} />, '/foretag/pagaende')
+    expect(await screen.findByText(/12 och 24 veckor efter start/)).toBeInTheDocument()
+    expect(await screen.findByText(/placeringen är 12 veckor/)).toBeInTheDocument()
   })
 
   it('utan sjukanmälan: säger det, hittar inte på ett nummer', async () => {

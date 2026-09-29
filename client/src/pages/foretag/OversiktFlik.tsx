@@ -12,7 +12,7 @@ import { Button } from '@/components/ui/Button'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { Building2, Handshake, Inbox } from '@/components/ui/icons'
 import type { Organization } from '@/services/orgApi'
-import { foretagApi, dagarSedan, formateraDatum, fulltNamn, veckaAvTotal, type Forslag } from '@/services/foretagApi'
+import { foretagApi, dagarSedan, formateraDatum, fulltNamn, veckotext, type Forslag } from '@/services/foretagApi'
 import { FelRuta, Laddar } from '@/components/foretag/Tillstand'
 import { SvarDialog } from '@/components/foretag/SvarDialog'
 import { CHIP_KLASS, PLACERING_TYP_LABEL, PLATS_STATUS_KLASS, PLATS_STATUS_LABEL, foretagNycklar, kravSammanfattning } from '@/components/foretag/foretagEtiketter'
@@ -155,7 +155,7 @@ export function OversiktFlik({ org }: Props) {
           ) : (
             <ul className="divide-y divide-stone-200 dark:divide-stone-700">
               {pagaendeQ.data.map((p) => {
-                const v = veckaAvTotal(p.start_date, p.end_date)
+                const v = veckotext(p.start_date, p.end_date)
                 const konsulent = fulltNamn(p.consultant_first_name, p.consultant_last_name)
                 return (
                   <li key={p.id} className="py-3 space-y-1">
@@ -164,7 +164,7 @@ export function OversiktFlik({ org }: Props) {
                     </p>
                     <p className="text-sm text-stone-700 dark:text-stone-200">
                       {p.place_title || p.occupation || PLACERING_TYP_LABEL[p.placement_type]}
-                      {v ? ` · vecka ${v.vecka}${v.totalt ? ` av ${v.totalt}` : ''}` : ''}
+                      {v ? ` · ${v}` : ''}
                     </p>
                     {konsulent && <p className="text-xs text-stone-600 dark:text-stone-300">Konsulent: {konsulent}</p>}
                     <div className="flex flex-wrap gap-2 pt-1">

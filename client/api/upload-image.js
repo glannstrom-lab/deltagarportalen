@@ -33,17 +33,29 @@ const RATE_LIMIT_PER_USER_PER_WINDOW = 5;
 const RATE_LIMIT_WINDOW_MINUTES = 15;
 const RATE_LIMIT_CONFIG = { limit: RATE_LIMIT_PER_USER_PER_WINDOW, windowMinutes: RATE_LIMIT_WINDOW_MINUTES };
 
+// SFT6/PUB-2 (2026-09-29): samma policy som ai.js, cv-pdf.js och job-alerts.js.
+// www.jobin.se STAR FORST: ALLOWED_ORIGINS[0] ar vad ett okant ursprung far tillbaka
+// (jobin.se svarar 307 till www.). Ingen '*'-fallback. Deployens egen URL kommer ur
+// Vercels systemvariabler, aldrig ur ett namnmonster (A32).
 const ALLOWED_ORIGINS = [
-  'https://jobin.se',
   'https://www.jobin.se',
+  'https://jobin.se',
   'https://deltagarportalen.vercel.app',
   process.env.FRONTEND_URL,
+  ...(process.env.NODE_ENV !== 'production' ? [
+    'http://localhost:3000',
+    'http://localhost:5173',
+    'http://localhost:5174',
+  ] : []),
+  process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null,
+  process.env.VERCEL_BRANCH_URL ? `https://${process.env.VERCEL_BRANCH_URL}` : null,
+  process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : null,
 ].filter(Boolean);
 
 function getCorsHeaders(origin) {
   const allowedOrigin = ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0];
   return {
-    'Access-Control-Allow-Origin': allowedOrigin || '*',
+    'Access-Control-Allow-Origin': allowedOrigin,
     'Access-Control-Allow-Methods': 'POST, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type, Authorization',
   };

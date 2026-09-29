@@ -26,6 +26,8 @@ import {
   veckomalMotSchema,
 } from '@/services/aktivitetSchema'
 import { formatTimmar } from './aktivitetEtiketter'
+import { FelSammanfattning } from './FelSammanfattning'
+import type { FormularFel } from './gaTillFalt'
 
 interface TillampaMallDialogProps {
   isOpen: boolean
@@ -66,6 +68,7 @@ function TillampaMallForm({ isOpen, onClose, participantId, participantName, onC
   const [beslutsdatum, setBeslutsdatum] = useState(() => formatLocalDate(new Date()))
   const [forsorjningshinder, setForsorjningshinder] = useState<'' | Forsorjningshinder>('')
   const [forsokt, setForsokt] = useState(false)
+  const [felSignal, setFelSignal] = useState(0)
   const [sparar, setSparar] = useState(false)
   const [sparfel, setSparfel] = useState<string | null>(null)
 
@@ -103,6 +106,14 @@ function TillampaMallForm({ isOpen, onClose, participantId, participantName, onC
     motivering: avviker && !motivering.trim() ? 'Motivera varför målet avviker från lagens förslag' : null,
   }
   const harFel = Object.values(fel).some((f) => f !== null)
+  // KH5/KH12: ordningen följer dialogen uppifrån och ned.
+  const felLista: FormularFel[] = [
+    fel.mall && { faltId: 'tillampa-mall', text: fel.mall },
+    fel.start && { faltId: 'tillampa-start', text: fel.start },
+    fel.slut && { faltId: 'tillampa-slut', text: fel.slut },
+    fel.veckomal && { faltId: 'tillampa-veckomal', text: fel.veckomal },
+    fel.motivering && { faltId: 'tillampa-motivering', text: fel.motivering },
+  ].filter((f): f is FormularFel => !!f)
   const glapp = useMemo(() => {
     if (!mall || !Number.isFinite(malTal)) return null
     const schema = mallensTimmarPerTyp(mall.items)
@@ -116,7 +127,10 @@ function TillampaMallForm({ isOpen, onClose, participantId, participantName, onC
 
   const skapa = async () => {
     setForsokt(true)
-    if (harFel || !mall) return
+    if (harFel || !mall) {
+      setFelSignal((n) => n + 1)
+      return
+    }
     setSparar(true)
     setSparfel(null)
     try {
@@ -158,6 +172,8 @@ function TillampaMallForm({ isOpen, onClose, participantId, participantName, onC
           <X className="w-5 h-5" aria-hidden="true" />
         </button>
       </div>
+
+      <FelSammanfattning signal={felSignal} fel={felLista} />
 
       <div className="flex-1 overflow-y-auto p-5 space-y-5">
         {mallLage.status === 'laddar' && <LoadingState message="Hämtar mallar…" size="sm" />}

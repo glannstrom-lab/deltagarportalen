@@ -6,6 +6,7 @@ import { useState, useEffect, useRef, useId } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { TFunction } from 'i18next'
 import { useQueryClient } from '@tanstack/react-query'
+import { cvStartSteg } from '@/components/cv/cvStartSteg'
 import { cvApi } from '@/services/supabaseApi'
 import {
   Plus, Trash2, ChevronLeft, ChevronRight, Eye, X, Check,
@@ -584,6 +585,8 @@ export default function CVBuilder() {
         // Kolla om vi ska visa quick mode (ingen befintlig CV-data)
         const hasExistingData = !!(cv.firstName || cv.lastName || cv.title || cv.summary)
         setShowQuickMode(!hasExistingData)
+        // EG3: återuppta där användaren var, inte på mallvalet
+        if (hasExistingData) setStep(cvStartSteg({ ...cv, ...(utkast ?? {}) } as Parameters<typeof cvStartSteg>[0]))
       } else {
         // Ingen CV finns - visa quick mode
         setShowQuickMode(true)
@@ -1073,7 +1076,7 @@ export default function CVBuilder() {
   // STEG 4: ERFARENHET
   const renderStep4 = () => (
     <div className="space-y-6">
-      <ContextualHelp context="experience" />
+      <ContextualHelp context="experience" data={data.workExperience} />
 
       <div>
         <h3 className="font-semibold text-stone-800 dark:text-stone-200 mb-4 flex items-center gap-2">

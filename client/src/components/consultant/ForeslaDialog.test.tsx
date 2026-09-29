@@ -121,7 +121,7 @@ describe('ForeslaDialog — opt-in per fält', () => {
   it('bär texten om att deltagaren bestämmer och att AI inte används', () => {
     renderDialog()
     expect(
-      screen.getByText(/Deltagaren får frågan och bestämmer\. Företaget ser inget förrän hon sagt ja, och bara det hon kryssat ja till\./)
+      screen.getByText(/Deltagaren får frågan och bestämmer\. Företaget ser inget förrän deltagaren sagt ja, och då bara de uppgifter deltagaren sagt ja till\./)
     ).toBeInTheDocument()
     expect(screen.getByText(/AI används inte här/)).toBeInTheDocument()
   })

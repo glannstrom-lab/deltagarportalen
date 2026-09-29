@@ -129,6 +129,48 @@ describe('Login', () => {
     expect(screen.queryByLabelText(/e-post/i)).not.toBeInTheDocument()
   })
 
+  // SFT5 / SV3 / SV4 / SV9 (2026-09-29)
+  describe('tillgänglighet (SV3/SV4/SV9)', () => {
+    it('har skiplänk till huvudinnehållet och ett <main> som länken pekar på', () => {
+      const { container } = renderLogin()
+      const lank = screen.getByRole('link', { name: /hoppa till huvudinnehåll/i })
+      expect(lank).toHaveAttribute('href', '#main-content')
+      const main = screen.getByRole('main')
+      expect(main).toHaveAttribute('id', 'main-content')
+      expect(main).toContainElement(screen.getByLabelText(/e-post/i))
+      expect(container.querySelector('header')).not.toBeNull()
+    })
+
+    it('flyttar fokus till felet efter ett misslyckat försök', async () => {
+      mockAuthState.error = 'Fel e-post eller lösenord'
+      mockSignIn.mockResolvedValue({ error: 'Fel e-post eller lösenord' })
+      renderLogin()
+      fireEvent.change(screen.getByLabelText(/e-post/i), { target: { value: 'anna@example.com', name: 'email' } })
+      fireEvent.change(screen.getByLabelText(/^lösenord$/i), { target: { value: 'hemligt123', name: 'password' } })
+      screen.getByLabelText(/e-post/i).focus()
+      fireEvent.click(screen.getByRole('button', { name: /logga in/i }))
+      await waitFor(() => {
+        expect(screen.getByRole('alert')).toHaveFocus()
+      })
+      expect(screen.getByRole('alert')).toHaveAttribute('tabindex', '-1')
+    })
+
+    it('flyttar inte fokus till felet innan något försök gjorts', () => {
+      mockAuthState.error = 'Något'
+      renderLogin()
+      expect(screen.getByRole('alert')).not.toHaveFocus()
+    })
+
+    it('felfärgen är red-700 (ljust) / red-300 (mörkt), inte red-600/400 som gav 4,36:1', () => {
+      mockAuthState.error = 'Fel lösenord'
+      renderLogin()
+      const text = screen.getByText('Fel lösenord')
+      expect(text.className).toContain('text-red-700')
+      expect(text.className).toContain('dark:text-red-300')
+      expect(text.className).not.toContain('text-red-600')
+    })
+  })
+
   // KO2: subtiteln ska säga VART hon var på väg när returnTo finns i URL:en,
   // i stället för det generiska "Logga in för att fortsätta".
   describe('returnTo-subtitel (KO2)', () => {
