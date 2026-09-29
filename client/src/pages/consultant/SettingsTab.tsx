@@ -8,7 +8,6 @@ import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import {
   Settings,
-  Clock,
   Shield,
   Palette,
   Calendar,
@@ -392,30 +391,12 @@ export function SettingsTab() {
               av deltagaren själv. Valet är borttaget; `language` ligger kvar i
               sparade inställningar men läses inte. */}
 
-          <SettingRow
-            icon={Clock}
-            label={t('consultant.settings.timezone')}
-            description={t('consultant.settings.usedForMeetings')}
-          >
-            {/* PG-skav 9 (persona-genomgången 2026-09-12): London/New York
-                borttagna — en svensk kommunkonsulentportal har ingen
-                användning för dem, och `preferences.timezone` läses inte av
-                någon annan kod (grep i hela client/src och supabase/functions,
-                2026-09-13) — mötestider visas i webbläsarens lokala tid
-                oavsett detta värde. */}
-            <select
-              value={preferences.timezone}
-              onChange={e => updatePreference('timezone', e.target.value)}
-              className={cn(
-                'px-4 py-2 rounded-xl',
-                'bg-stone-100 dark:bg-stone-800',
-                'border-0',
-                'text-stone-900 dark:text-stone-100'
-              )}
-            >
-              <option value="Europe/Stockholm">Stockholm (CET)</option>
-            </select>
-          </SettingRow>
+          {/* SV12-rest (2026-09-29): tidszonsvalet är borttaget. Det hade ETT
+              alternativ (Stockholm), sparades i preferences.timezone men lästes
+              av ingen kod (grep client/src + supabase/functions), och raden
+              lovade "Används för mötesbokning och påminnelser" — ett löfte
+              inställningen aldrig höll. Mötestider visas i webbläsarens
+              lokala tid. `timezone` ligger kvar i sparade inställningar. */}
 
           <SettingRow
             icon={Calendar}

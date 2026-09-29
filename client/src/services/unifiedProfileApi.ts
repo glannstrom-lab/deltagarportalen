@@ -335,11 +335,15 @@ export const unifiedProfileApi = {
       // Update career goals if any career goal fields provided
       if (data.careerGoals || data.preferredRoles || data.targetIndustries) {
         // First get existing career_goals to merge
-        const { data: existing } = await supabase
+        // Läsfelet kontrolleras: ett transient fel gav `existing = null` och
+        // merge:n skrev över hela career_goals med bara de nya fälten.
+        const { data: existing, error: lasfel } = await supabase
           .from('profiles')
           .select('career_goals')
           .eq('id', user.id)
           .single()
+
+        if (lasfel) throw lasfel
 
         updateData.career_goals = {
           ...(existing?.career_goals || {}),

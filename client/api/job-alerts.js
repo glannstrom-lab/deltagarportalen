@@ -9,6 +9,7 @@
 
 const { createClient } = require('@supabase/supabase-js');
 const { medFelrapport } = require('./_utils/sentry.js');
+const { arReserveradAdress } = require('./_utils/mejlutfall.js');
 
 // Service-klient: används för cron-jobb och för operationer som kräver
 // service-role (skriva till email_notifications, läsa profiles utan RLS).
@@ -334,7 +335,7 @@ const templates = {
             <div style="margin-top: 10px;">
               ${alert.newJobs.slice(0, 2).map(job => `
                 <p style="margin: 5px 0; font-size: 14px; color: #4b5563;">
-                  • ${esc(job.headline || job.title)} - ${esc(job.employer?.name || job.company)}
+                  • ${esc(job.headline || job.title || job.job_title)} - ${esc(job.employer?.name || (typeof job.employer === 'string' ? job.employer : '') || job.company)}
                 </p>
               `).join('')}
               ${alert.newJobs.length > 2 ? `<p style="margin: 5px 0; font-size: 12px; color: #9ca3af;">... och ${alert.newJobs.length - 2} fler</p>` : ''}
@@ -400,6 +401,27 @@ function afLanskod(region) {
   return null;
 }
 
+const AF_ANSTALLNINGSTYP = {
+  // Samma koncept-id som klientens jobbsök (services/arbetsformedlingenApi.ts).
+  heltid: 'Y29uY2VwdF9pZDovVFlCLzEwL0FCL0FVRA',
+  deltid: 'Y29uY2VwdF9pZDovVFlCLzEwL0FCL0FWUQ',
+};
+
+/**
+ * Anställningstyper som AF inte filtrerar på server-side (allt utom heltid/deltid)
+ * filtreras på träffarnas etikett, som klienten gör.
+ *
+ * @template T
+ * @param {T[]} hits
+ * @param {string | null | undefined} typ
+ * @returns {T[]}
+ */
+function filtreraAnstallningstyp(hits, typ) {
+  const t = String(typ || '').trim().toLowerCase();
+  if (!t || AF_ANSTALLNINGSTYP[t]) return hits;
+  return hits.filter((j) => String(/** @type {{ employment_type?: { label?: string } }} */ (j).employment_type?.label || '').toLowerCase().includes(t));
+}
+
 /**
  * Bygger AF-frågan för en bevakning — samma tolkning som jobbsöket i klienten.
  *
@@ -409,7 +431,7 @@ function afLanskod(region) {
  * och det gör vi här också.
  *
  * @param {{ query?: string | null, region?: string | null, municipality?: string | null,
- *   remote?: boolean | null, publishedAfter?: string, limit?: number | string }} params
+ *   remote?: boolean | null, employmentType?: string | null, publishedAfter?: string, limit?: number | string }} params
  * @returns {URLSearchParams}
  */
 function byggAfSokparametrar(params) {
@@ -423,6 +445,8 @@ function byggAfSokparametrar(params) {
   const lan = afLanskod(params.region);
   if (lan) searchParams.append('region', lan);
   if (params.remote) searchParams.append('remote', 'true');
+  const anstTyp = AF_ANSTALLNINGSTYP[String(params.employmentType || '').trim().toLowerCase()];
+  if (anstTyp) searchParams.append('employment-type', anstTyp);
   if (params.publishedAfter) searchParams.append('published-after', params.publishedAfter);
   searchParams.append('limit', String(params.limit || '20'));
   return searchParams;
@@ -473,6 +497,12 @@ async function searchJobs(params) {
 // 500 (se `saknarAvsandare`), och skulle vi ändå hamna här markeras mejlet
 // 'failed' i stället för att gå till sandlådan.
 async function sendEmail(to, subject, html, text) {
+  // 2026-09-29: demo-/testkonton ligger på reserverade domäner (@example.com,
+  // .test …) som aldrig kan ta emot post. Resend svarar 422 och mejlet loggades
+  // som `failed`. Överhoppat, inte fel — samma regel som pass-paminnelse och
+  // aktivitet-mejl. Vaktat av src/test/api-job-alerts-reserverade-domaner.test.ts.
+  if (arReserveradAdress(to)) return true;
+
   const resendApiKey = process.env.RESEND_API_KEY;
   const emailFrom = process.env.EMAIL_FROM;
 
@@ -698,6 +728,7 @@ async function checkUserAlerts(userId) {
       region: alert.region,
       municipality: alert.municipality,
       remote: alert.remote,
+      employmentType: alert.employment_type,
       publishedAfter: lastChecked,
       limit: 50
     });
@@ -716,7 +747,7 @@ async function checkUserAlerts(userId) {
     // avisering hos en användare.
     /** @typedef {{ id?: string, headline?: string, employer?: { name?: string },
      *   workplace_address?: { municipality?: string }, publication_date?: string }} AfJobb */
-    const newJobs = /** @type {{ hits?: AfJobb[] }} */ (result).hits || [];
+    const newJobs = filtreraAnstallningstyp(/** @type {{ hits?: AfJobb[] }} */ (result).hits || [], alert.employment_type);
 
     if (newJobs.length > 0) {
       totalNewJobs += newJobs.length;
@@ -731,18 +762,24 @@ async function checkUserAlerts(userId) {
         .eq('id', alert.id);
 
       // Store notifications
+      // job_id, job_title och employer är NOT NULL i prod. En annons utan
+      // arbetsgivarnamn (AF har sådana) fick förr hela upsert:en att avvisas,
+      // och felet lästes aldrig — annonsen föll bort tyst. Nu reservvärde för
+      // titel/arbetsgivare, överhopp utan id, och felet loggas.
       for (const job of newJobs.slice(0, 10)) {
-        await supabase.from('job_notifications').upsert({
+        if (!job.id) continue;
+        const { error: notisFel } = await supabase.from('job_notifications').upsert({
           alert_id: alert.id,
           user_id: userId,
           job_id: job.id,
-          job_title: job.headline,
-          employer: job.employer?.name,
+          job_title: job.headline || 'Jobb utan rubrik',
+          employer: job.employer?.name || 'Arbetsgivare ej angiven',
           location: job.workplace_address?.municipality,
           publication_date: job.publication_date,
           read: false,
           created_at: new Date().toISOString()
         }, { onConflict: 'alert_id,job_id' });
+        if (notisFel) console.error('[job-alerts] Kunde inte spara jobbnotis:', notisFel.message);
       }
 
       // Notisen på klockan i toppnaven. Den lyder INTE under shouldEmailToday()
@@ -775,10 +812,11 @@ async function checkUserAlerts(userId) {
         region: alert.region,
         municipality: alert.municipality,
         remote: alert.remote,
+        employmentType: alert.employment_type,
         publishedAfter: new Date(nu.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString(),
         limit: 50
       });
-      if (veckan !== null) mejlJobb = /** @type {{ hits?: AfJobb[] }} */ (veckan).hits || [];
+      if (veckan !== null) mejlJobb = filtreraAnstallningstyp(/** @type {{ hits?: AfJobb[] }} */ (veckan).hits || [], alert.employment_type);
     }
     if (mejlJobb.length > 0) {
       const template = templates.newJobsAlert(alert.name, mejlJobb, userEmail);
@@ -1035,4 +1073,5 @@ module.exports.saknarAvsandare = saknarAvsandare;
 module.exports.templates = templates;
 // 2026-09-24: AF-frågan och länsöversättningen — src/test/api-job-alerts-sokparametrar.test.ts.
 module.exports.byggAfSokparametrar = byggAfSokparametrar;
+module.exports.filtreraAnstallningstyp = filtreraAnstallningstyp;
 module.exports.NUTS_TILL_LANSKOD = NUTS_TILL_LANSKOD;

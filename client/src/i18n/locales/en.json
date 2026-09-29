@@ -1775,7 +1775,16 @@
     "statusRemoved": "Job removed from saved jobs: {{title}}",
     "statusSaveFailed": "We could not save the job. Please try again.",
     "statusRemoveFailed": "We could not remove the job. Please try again.",
-    "resultsHeading": "Search results"
+    "resultsHeading": "Search results",
+    "savedJobsHeading": "Saved jobs",
+    "savedJobsCount_one": "{{count}} job saved",
+    "savedJobsCount_other": "{{count}} jobs saved",
+    "sortSavedJobs": "Sort saved jobs",
+    "removeSavedTitle": "Remove this job?",
+    "removeSavedConfirm": "Remove this saved job?",
+    "viewAd": "View ad",
+    "interviewPrep": "Interview preparation",
+    "commuteInfo": "Commute info"
   },
   "jobs": {
     "card": {
@@ -2805,7 +2814,8 @@
         "jobFirst": "Having the job sorted before you move often makes housing easier to get.",
         "firstMonths": "Expect the first months to cost more than usual: deposit, furniture, overlapping rent."
       },
-      "queueYears": "{{min}}–{{max}} years"
+      "queueYears": "{{min}}–{{max}} years",
+      "amountSek": "{{belopp}} SEK"
     },
     "networkTab": {
       "loading": "Loading network data...",
@@ -3238,7 +3248,27 @@
       "footer": "Your answers are saved while you answer, so you can pause and continue when you want."
     },
     "jobCard": {
-      "careerPath": "Career path:"
+      "careerPath": "Career path:",
+      "education": "Education",
+      "prognosis": {
+        "growing": "Growing",
+        "declining": "Shrinking",
+        "stable": "Stable"
+      },
+      "selectForCompare": "Select {{name}} to compare",
+      "placeLabel": "No.",
+      "university": "University",
+      "upperSecondary": "Upper secondary school",
+      "challenges": "Challenges",
+      "relatedJobs": "Related jobs:",
+      "aboutPlaceTitle": "About the ranking",
+      "aboutPlaceText": "The place shows how close the profile of this job is to your answers, compared with the other jobs. It does not tell you how well you would like the job or do well in it. You find that out by exploring the job and talking to someone who works there.",
+      "adaptationsTitle": "Adjustments that can help you:",
+      "adaptationsLead": "Based on your answers, these adjustments may make it easier to work in this job:",
+      "adaptationsLaw": "Under the Work Environment Act (Arbetsmiljölagen) you have the right to reasonable workplace adjustments. Talk to an employment consultant (arbetskonsulent) or your employer.",
+      "warningsTitle": "Challenges to be aware of:",
+      "warningsLead": "This job may bring some challenges, based on what you told us you need:",
+      "warningsNote": "This does not mean you cannot work in this job, but you may need extra support or adjustments."
     },
     "results": {
       "howToReadRiasec": "How to read your RIASEC profile",
@@ -3263,8 +3293,6 @@
       "doneHeading": "You have found your direction",
       "doneLead": "Here is what your answers say about jobs that may suit you.",
       "riasecType": "Your RIASEC type",
-      "goodMatches": "Good matches",
-      "goodMatchesUnit": "jobs (70%+)",
       "totalOccupations": "Jobs in total",
       "toExplore": "to explore",
       "fromDate": "From {{date}}",
@@ -3277,7 +3305,6 @@
       "top5Heading": "Top 5 job matches:",
       "top3Heading": "Your top 3 job matches",
       "seeAll": "See all",
-      "matchLabel": "match",
       "tipLabel": "Tip:",
       "tipText": "Take the test again later if your interests change. Then you can compare your results over time and see how you develop.",
       "nextStep": "Next step",
@@ -3285,7 +3312,12 @@
       "createCvText": "Use what you learned in the interest guide to build a professional CV",
       "download": "Download results",
       "share": "Share results",
-      "restart": "Take the test again"
+      "restart": "Take the test again",
+      "linkCopied": "Link copied to the clipboard!",
+      "rankPlace": "No. {{place}} of {{total}}, based on your answers",
+      "rankPlaceShort": "No. {{place}}, based on your answers",
+      "closestOccupation": "The job closest to your answers",
+      "closestOccupationHint": "based on your answers in the test"
     },
     "occupations": {
       "growingShare": "of these are growing, based on our editorial assessment",
@@ -3293,6 +3325,174 @@
       "sortName": "Sort: Name (A-Z)",
       "sortSalary": "Sort: Salary (highest first)",
       "salaryRange": "Salary range"
+    },
+    "rv": {
+      "riasec": {
+        "R": {
+          "name": "Realistic",
+          "desc": "Practical work with your hands, machines, technology or outdoors",
+          "examples": "Mechanic, electrician, gardener, cook"
+        },
+        "I": {
+          "name": "Investigative",
+          "desc": "Analysing, researching, solving problems and understanding complex connections",
+          "examples": "Researcher, programmer, doctor, engineer"
+        },
+        "A": {
+          "name": "Artistic",
+          "desc": "Creating things, working with design and beauty, expressing yourself",
+          "examples": "Graphic designer, musician, journalist, architect"
+        },
+        "S": {
+          "name": "Social",
+          "desc": "Helping, teaching, caring for and working with people",
+          "examples": "Teacher, nurse, social worker, psychologist"
+        },
+        "E": {
+          "name": "Enterprising",
+          "desc": "Leading, influencing, selling and running projects",
+          "examples": "Salesperson, marketer, manager, estate agent"
+        },
+        "C": {
+          "name": "Conventional",
+          "desc": "Organising, structuring, working with data and details",
+          "examples": "Economist, administrator, controller, auditor"
+        },
+        "description": "RIASEC (also called Holland Codes) is a model that describes six types of personality and work environment. It helps you see which kinds of jobs may suit you, based on your interests and how you like to work."
+      },
+      "bigFive": {
+        "openness": {
+          "name": "Openness",
+          "desc": "Curiosity, imagination and wanting to try new things",
+          "workImpact": "High openness suits creative jobs with a lot of variety. Low openness suits structured tasks that are easy to predict."
+        },
+        "conscientiousness": {
+          "name": "Conscientiousness",
+          "desc": "Being careful, organised and self-disciplined",
+          "workImpact": "High conscientiousness is important in jobs that need precision and reliability. Most employers value this trait highly."
+        },
+        "extraversion": {
+          "name": "Extraversion",
+          "desc": "Being social, energetic and outgoing",
+          "workImpact": "High extraversion suits jobs with a lot of contact with people. Low extraversion (introversion) can suit independent work well."
+        },
+        "agreeableness": {
+          "name": "Agreeableness",
+          "desc": "Empathy, willingness to cooperate and care for others",
+          "workImpact": "High agreeableness is important in care and service jobs. Very low agreeableness can suit competitive jobs that need toughness."
+        },
+        "stability": {
+          "name": "Emotional stability",
+          "desc": "Being able to handle stress and stay calm",
+          "workImpact": "High stability helps in stressful situations. Lower stability can mean being more sensitive, but also having more empathy."
+        },
+        "description": "The five-factor model (Big Five) is an established model in personality psychology. It describes five traits that affect how we act in different situations, including at work. The questions here are our own, two for each trait. That is enough for a hint, but not for a measurement."
+      },
+      "riasecCombo": {
+        "RI": "You like solving practical problems in an analytical way. Technical jobs may suit you.",
+        "RA": "You like making things with your hands. Jobs in design, crafts or artistic technology may suit you.",
+        "RS": "You want to help others in a practical way. Care jobs with practical tasks may suit you.",
+        "IA": "You combine analytical skills with creativity. Jobs in research or development may suit you.",
+        "IS": "You want to understand and help people. Psychology, medicine or teaching may suit you.",
+        "AS": "You want to express yourself and communicate with others. Jobs in media, art or teaching may suit you.",
+        "SE": "You want to lead and help people at the same time. Manager roles in care or education may suit you.",
+        "EC": "You want to organise and move a business forward. Administrative leadership roles may suit you.",
+        "fallback": "You have a unique mix of interests, and that gives you many possibilities!"
+      },
+      "bigFiveTrait": {
+        "openness": "like trying new things",
+        "conscientiousness": "are careful and keep things in order",
+        "extraversion": "enjoy having people around you",
+        "agreeableness": "like to help others",
+        "stability": "stay calm under pressure"
+      },
+      "bigFiveMiddle": "You answered near the middle of the scale on most questions. This does not mean you lack these traits. It only means you did not pick an extreme this time.",
+      "bigFiveSummary": "You answered that you {{traits}}. This is based on two questions for each trait, so see it as a start for a conversation, not as a personality assessment.",
+      "readyBadge": "Your results are ready!",
+      "uniqueProfile": "Your own profile",
+      "headerLead": "Based on your answers, we have made an analysis of your interests, personality and needs. Use this to explore career paths that suit you.",
+      "top3Interests": "Your top 3 interests",
+      "yourPersonality": "Your personality",
+      "yourStrengths": "Your strengths",
+      "shareResult": "Share your results",
+      "saveAsFile": "Save as a file",
+      "redoGuide": "Do the guide again",
+      "exploreProfile": "Explore your profile",
+      "seeSuggestions": "See job suggestions",
+      "riasecHeading": "RIASEC - Your work interests",
+      "riasecSub": "Six types of work environment that fit different personalities",
+      "examples": "Examples: {{examples}}",
+      "whatDoesResultMean": "What does your result mean?",
+      "riasecMeaning": "The areas where you scored highest ({{areas}}) are the environments where you probably feel best. The higher the score, the stronger your interest in that environment.",
+      "bigFiveHeading": "Big Five - Your personality profile",
+      "bigFiveSub": "Five basic traits that describe what you are like as a person",
+      "bigFiveNoBetter": "No profile is \"better\" than another. Different jobs need different qualities. What matters is finding a job that suits you.",
+      "icfHeading": "ICF - Your abilities at work",
+      "icfSub": "Understand what you need to work well, and which adjustments can help",
+      "icfAbout": "About ICF and workplace adjustments",
+      "icfTerm": "ICF (International Classification of Functioning)",
+      "icfDesc": "is the framework of the WHO (World Health Organization) for describing health and ability. It focuses on what you can do, not on any limits.",
+      "tipLabel": "Tip:",
+      "icfTip": "Talk to an employment consultant (arbetskonsulent) about which support and adjustments are available for the job you are interested in. Many employers are positive about adjustments that help you do your best.",
+      "icfRemember": "What you need is not fixed. It can change over time and depend on the situation. What matters is finding a job where you can use your strengths and get support where you need it. With the right adjustments, most jobs can work for most people.",
+      "matchesHeading": "Your job matches",
+      "matchesLead": "These are jobs that are close to your profile. The job closest to your answers comes first. Remember that these are only suggestions. Explore the jobs that seem interesting to you!",
+      "allOccupations": "All jobs",
+      "requiresUniversity": "Needs university",
+      "upperSecondary": "Upper secondary school / vocational college",
+      "selectedCount": "{{count}} selected",
+      "compare": "Compare",
+      "showingTop": "Showing the {{shown}} jobs closest to your answers, out of {{total}} possible jobs",
+      "property": "Feature",
+      "placeRow": "Place based on your answers",
+      "placeShort": "No. {{place}} of {{total}}",
+      "prognosis": "Outlook"
+    },
+    "rec": {
+      "title": "Career suggestions",
+      "basedOn": "Based on your {{code}} profile and personality",
+      "salaryNoteBefore": "We do not show a salary here, because we do not have official salary statistics for each job. Check",
+      "scbSalarySearch": "the salary search from SCB (Statistics Sweden, official statistics)",
+      "salaryNoteMiddle": "or the",
+      "salaryPage": "salary page in the portal",
+      "educationDown": "We cannot reach the education register right now, so the education paths are missing here. Try again in a while.",
+      "educationPaths": "Education paths",
+      "analyzeSkills": "Analyse skills gap",
+      "searchEducation": "Search for education",
+      "seeJobs": "See open jobs",
+      "tipsTitle": "Tips for your career path",
+      "tipProfile": "With a {{code}} profile, you often suit jobs that combine {{focus}} with your personal strengths.",
+      "tipSkills": "Use the skills gap analysis to see which skills you can develop.",
+      "tipConsultant": "Talk to your employment consultant (arbetskonsulent) for personal career guidance.",
+      "exploreAll": "Explore all matching jobs",
+      "focus": {
+        "R": "practical work",
+        "I": "analytical thinking",
+        "A": "creative work",
+        "S": "contact with people",
+        "E": "leadership",
+        "C": "structured work"
+      }
+    },
+    "icf": {
+      "names": {
+        "kognitiv": "Thinking, planning and remembering",
+        "kommunikation": "Talking, listening and working with others",
+        "koncentration": "Focusing and keeping your attention",
+        "motorik": "Moving around and steady hands",
+        "sensorisk": "Sound, light and other sensory input",
+        "energi": "Energy and stamina"
+      },
+      "answer": {
+        "veryGood": "You answered that this works very well for you",
+        "good": "You answered that this works well for you",
+        "partly": "You answered that this works partly",
+        "harder": "You answered that this is harder for you",
+        "hard": "You answered that this is hard for you"
+      },
+      "scoreOf": "{{score}} out of 5",
+      "notAnswered": "You have not answered this part yet",
+      "helpTitle": "Things that often help, and are worth talking about"
     }
   },
   "international": {
@@ -4095,7 +4295,39 @@
       "Medel": "Medium",
       "Utmanande": "Challenging"
     },
-    "errorLoadingExercises": "Could not load the exercises"
+    "errorLoadingExercises": "Could not load the exercises",
+    "completeSaveFailedTitle": "The exercise was not saved",
+    "completeSaveFailedText": "You finished it, but we could not save it right now. Try again when you are online.",
+    "clearProgressTitle": "Clear your answers?",
+    "notLoggedIn": {
+      "label": "Please note:",
+      "text": "You are not logged in. Your answers are only saved for a short time in your browser.",
+      "logIn": "Log in",
+      "tail": "to save them in the cloud for good."
+    },
+    "forYouToday": "For you today",
+    "shownOf": "{{shown}} of {{total}} exercises",
+    "exploreByCategory": "Explore by category",
+    "moreExercises": "(+{{count}} exercises)",
+    "pickCategoryHint": "Choose a category above to see all exercises in that area.",
+    "backToExercises": "Back to exercises",
+    "wellDone": "Well done!",
+    "completedExercise": "You have finished the exercise \"{{title}}\"",
+    "yourAnswers": "Your answers",
+    "notAnswered": "Not answered",
+    "doAgain": "Do the exercise again",
+    "printResult": "Print your result",
+    "backToAll": "Back to all exercises",
+    "stepOf": "Step {{current}} of {{total}}",
+    "clearProgress": "Clear my answers",
+    "tipLabel": "Tip:",
+    "tipText": "Take your time to think through your answers. Your answers are saved automatically in the cloud, so you can continue from any device.",
+    "previous": "Previous",
+    "finish": "Finish",
+    "next": "Next",
+    "aiCoach": "AI Coach",
+    "aiCoachText": "Do you need help with this exercise? The AI can give guidance, examples and follow-up questions.",
+    "seeAllArticles": "See all articles"
   },
   "diary": {
     "title": "Diary",
@@ -7771,8 +8003,6 @@
       "chooseDefaultView": "Choose how the participant list is displayed by default",
       "grid": "Grid",
       "list": "List",
-      "timezone": "Timezone",
-      "usedForMeetings": "Used for meeting booking and reminders",
       "weekStart": "Week starts",
       "affectsCalendar": "Affects calendar view",
       "monday": "Monday",

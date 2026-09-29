@@ -69,6 +69,29 @@ Sex agenter prövade ~190 funktioner hela vägen (skapa → ladda om → ändra 
 - [x] **SFT6** ✅ **2026-09-29:** premissen höll till hälften. `'*'`-fallbacken nåddes aldrig. Tre verkliga avvikelser från de andra tre API-filerna: ett okänt ursprung fick `https://jobin.se` (som svarar 307) i stället för `www`, `VERCEL_URL`/`VERCEL_BRANCH_URL`/`VERCEL_PROJECT_PRODUCTION_URL` saknades (preview-deployer nekades), och localhost saknades i utveckling. Nu samma policy som `job-alerts.js`, och filen ligger i `FILER` i både `cors-avregistrerad-doman.test.ts` och `cors-preview.test.ts`. — Ursprunglig post: `upload-image.js` saknas i CORS-grinden (PUB-2)
 - [x] **SFT7** ✅ 2026-09-29: `AndraPassDialog` flyttar ett pass till ett annat datum, eller resten av serien till en annan veckodag (varje pass i sin egen vecka). Pass med markerad närvaro rörs aldrig (`.is('attendance', null)`), och en halv flytt kastar fel. Deltagaren får en notis. Dialogen säger vad som flyttas innan det görs. Ingen migration. **Inte prövat** mot triggern i prod.
 
+## Äldre kvar-listor genomgångna 2026-09-29 (sju agenter, premiss först)
+
+Driftpasset 23/9, Buggpasset 22/9, Städpasset 22/9 och 24/9. **Nästan hälften var redan lösta** — raderna stod kvar.
+
+**Rättat:**
+- **Dataförlust:** `unifiedProfileApi.updateCareer` skrev över `career_goals` med tomt vid ett läsfel (mutationsprövat). `wellnessDataApi.get` föll tyst tillbaka på localStorage — nästa bock skrev gammal lokal data över molnet; kastar nu.
+- **AI-servern:** `fetchWithRetry` har 20 s per försök / 50 s totalt; följdfrågor utan `usage` räknas mot taket (uppskattning); intervjufeedbacken 500 → 900 tokens + `reasoningEffort: 'low'` (samma som övriga grenar — tomt svar inte prövat mot prod).
+- **Jobbevakningen (`job-alerts.js`):** veckodigesten läste `job.headline`/`employer.name` men raderna har `job_title`/`employer` — **titlarna var tomma i varje veckomejl**. En annons utan arbetsgivarnamn fällde hela upserten mot NOT NULL (felet lästes aldrig). Reserverade domäner hoppas över. `employment_type` skickas/filtreras.
+- **i18n:** Övningar (`useConfirmDialog` i stället för `confirm()`), sparade jobb, intresseguidens resultat (≈145 nycklar), flyttens belopp (`sv-SE` → språket), skrivförslagen i dagboken (`data/skrivfragor.ts`, 15 av 15). 378 nya nycklar.
+- **Intresseguiden:** procenten borta på fem ställen (beslutet om plats). **Lönerutan visade 20 handskrivna rader som "Löneläge 2026" med percentiler** — siffrorna borta, länk till SCB:s lönesök och /salary.
+- **Övrigt:** `EmptyState` har `headingLevel` (default h3, ingen sida ändrad än); Settings h3→h4; `getSharedCV`/`shareCV` raderade; konsulentens tidszonsval borttaget (lästes av ingen, lovade mötesbokning).
+
+**Redan lösta (premissen föll):** dagbokens läsfel, `moodApi.getStreak`, `interestGuideApi.getHistory(Count)`, `savedJobsApi.getAll`, `getUnreadCount`, `userApi.updateOnboardingStep`, `workflowApi`-cvs, `tidslinjeApi` UTC, SSE-avbrott, job-alerts-eskapering, brevmallarna, CredentialsTab, flyttdatans kötider, `check_role_change_allowed` (prövat som USER i rollback — tät).
+
+**Väntar på Mikael (PENDING-filer i `supabase/migrations/`):**
+- [ ] **RL1** `check_rate_limit` går att anropa som anon — **bevisat i prod** (rollback): 30 anrop på ett offers id brände kvoten (`allowed=false`). Kräver att de sex anroparna byter till service-nyckeln FÖRST, sedan `PENDING_20260929_check_rate_limit_service_role.sql`. Kodbytet är inte gjort.
+- [ ] **CR1** `consultant_requests` kan aldrig besvaras (UPDATE-policy utan WITH CHECK), RPC:erna har noll anropare, men `InviteParticipantDialog` skapar förfrågningar som ingen ser. Beslut: (a) avskriv (rekommenderat; `consultant_consents` gör jobbet) eller (b) bygg svarsflödet. Del A i `PENDING_20260929_consultant_requests_avskrivning.sql`.
+- [ ] **ST5** STA-grenarna i `handle_first_signin`/`handle_invitation_acceptance` — `PENDING_20260929_sta_grenar_handle_invitation.sql`, inget beteende ändras (0 inbjudningar bär nyckeln).
+- [ ] **GA1** Gallringen raderar konton men inte Storage/Vercel Blob (1 cron-raderat konto har okänt Blob-läge). `PENDING_20260929_gallring_storage_ko.sql` lägger en kö; sopan som tömmer den kräver beslut: edge + GitHub Actions `schedule:` (rekommenderat) eller pg_net.
+- [ ] **EX1** Övningarnas tak på 6 (DESIGN §8) tänds aldrig: koden jämför `filter === 'all'`, filtret heter `'alla'`. Att rätta gör att chippet "Alla" visar 6 av alla — beslut om chippet ska heta något annat eller taket strykas.
+
+**Kvar, ingen blockering:** `wellnessDataApi.save` skriver fortfarande till localStorage vid fel och ser lyckad ut; `matchningsplats()` i `interestGuideData.ts` och anpassnings-/varningstexterna är svenska; OccupationsTab/ExploreTab/BigFiveChart/QuestionCard och `MatchesTab`/`ShareJobDialog`/`DailyJobTab` har hårdkodad svenska; `scbSalaryApi.ts` heter fortfarande SCB (ingen visar den längre — kandidat för radering); 44 `dark:text-stone-600`; supabase-js i två versioner; `schema:refresh` utan index.
+
 ## Rollspel 2026-09-28 — sju nya roller i prod
 
 Översikt: <https://claude.ai/artifact/RUXWYRooZ9dWzzo6wRvgYB> · rapporter med skärmdump per fynd i `docs/review-2026-09-28-rollspel/`

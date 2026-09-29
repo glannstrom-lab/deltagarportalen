@@ -22,6 +22,8 @@
  * ICF-namn i gränssnittet. Anpassningsförslagen visas för alla domäner där
  * användaren angett att något är svårare — som förslag, inte recept.
  */
+import { useTranslation } from 'react-i18next'
+import type { TFunction } from 'i18next'
 import { type ICFScores, type ProfileCoverage } from '@/services/interestGuideData'
 import { useIcfAnpassningar } from '@/services/useIntresseguideInnehall'
 import { Brain, MessageCircle, Focus, Hand, Ear, Zap } from '@/components/ui/icons'
@@ -41,36 +43,40 @@ const icfIcons: Record<string, typeof Brain> = {
   energi: Zap,
 }
 
-const icfNames: Record<string, string> = {
-  kognitiv: 'Att tänka, planera och komma ihåg',
-  kommunikation: 'Att prata, lyssna och samarbeta',
-  koncentration: 'Att fokusera och hålla uppmärksamheten',
-  motorik: 'Rörlighet och stadiga händer',
-  sensorisk: 'Ljud, ljus och andra sinnesintryck',
-  energi: 'Ork och uthållighet',
+function icfNames(t: TFunction): Record<string, string> {
+  return {
+    kognitiv: t('interestGuide.icf.names.kognitiv', 'Att tänka, planera och komma ihåg'),
+    kommunikation: t('interestGuide.icf.names.kommunikation', 'Att prata, lyssna och samarbeta'),
+    koncentration: t('interestGuide.icf.names.koncentration', 'Att fokusera och hålla uppmärksamheten'),
+    motorik: t('interestGuide.icf.names.motorik', 'Rörlighet och stadiga händer'),
+    sensorisk: t('interestGuide.icf.names.sensorisk', 'Ljud, ljus och andra sinnesintryck'),
+    energi: t('interestGuide.icf.names.energi', 'Ork och uthållighet'),
+  }
 }
 
 /**
  * Vad användaren svarade, i klartext. Beskriver svaret — inte personen.
  * Skalan är densamma som i frågan (1–5), så texten går att spåra tillbaka.
  */
-function svarstext(score: number): string {
-  if (score >= 4.5) return 'Du svarade att det här fungerar mycket bra för dig'
-  if (score >= 3.5) return 'Du svarade att det här fungerar bra för dig'
-  if (score >= 2.5) return 'Du svarade att det här fungerar delvis'
-  if (score >= 1.5) return 'Du svarade att det här är svårare för dig'
-  return 'Du svarade att det här är svårt för dig'
+function svarstext(score: number, t: TFunction): string {
+  if (score >= 4.5) return t('interestGuide.icf.answer.veryGood', 'Du svarade att det här fungerar mycket bra för dig')
+  if (score >= 3.5) return t('interestGuide.icf.answer.good', 'Du svarade att det här fungerar bra för dig')
+  if (score >= 2.5) return t('interestGuide.icf.answer.partly', 'Du svarade att det här fungerar delvis')
+  if (score >= 1.5) return t('interestGuide.icf.answer.harder', 'Du svarade att det här är svårare för dig')
+  return t('interestGuide.icf.answer.hard', 'Du svarade att det här är svårt för dig')
 }
 
 export function ICFSection({ scores, coverage }: ICFSectionProps) {
+  const { t } = useTranslation()
   const icfAdaptations = useIcfAnpassningar()
+  const namn = icfNames(t)
   const entries = Object.entries(scores) as [keyof ICFScores, number][]
 
   return (
     <div className="space-y-4">
       {entries.map(([key, score]) => {
         const Icon = icfIcons[key]
-        const name = icfNames[key]
+        const name = namn[key]
         const adaptation = icfAdaptations[key]
         // Ingen täckning = ingen fråga besvarad i den domänen. Visa inget tal.
         const harUnderlag = coverage ? coverage[key] > 0 : true
@@ -89,12 +95,12 @@ export function ICFSection({ scores, coverage }: ICFSectionProps) {
                   <span className="font-semibold text-sm text-stone-800 dark:text-stone-100">{name}</span>
                   {harUnderlag && (
                     <span className="text-xs px-2 py-0.5 rounded-full bg-white/70 dark:bg-white/10 font-medium text-stone-700 dark:text-stone-300 tabular-nums">
-                      {score} av 5
+                      {t('interestGuide.icf.scoreOf', '{{score}} av 5', { score })}
                     </span>
                   )}
                 </div>
                 <p className="text-xs mt-0.5 text-stone-700 dark:text-stone-300">
-                  {harUnderlag ? svarstext(score) : 'Du har inte svarat på den här delen än'}
+                  {harUnderlag ? svarstext(score, t) : t('interestGuide.icf.notAnswered', 'Du har inte svarat på den här delen än')}
                 </p>
                 {harUnderlag && (
                   <div className="h-2 bg-white/60 dark:bg-white/10 rounded-full mt-1.5 overflow-hidden">
@@ -114,7 +120,7 @@ export function ICFSection({ scores, coverage }: ICFSectionProps) {
                     med mandat att skriva ut det. Det här är uppslag att ta med
                     till sin konsulent. */}
                 <p className="text-sm font-medium mb-2 text-stone-800 dark:text-stone-100">
-                  Sånt som brukar hjälpa — värt att prata om
+                  {t('interestGuide.icf.helpTitle', 'Sånt som brukar hjälpa — värt att prata om')}
                 </p>
                 <ul className="text-sm space-y-1 text-stone-700 dark:text-stone-300">
                   {adaptation.adaptations.slice(0, 2).map((item, i) => (

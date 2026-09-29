@@ -285,65 +285,6 @@ describe('cvApi.deleteVersion', () => {
   })
 })
 
-describe('cvApi.shareCV', () => {
-  it('kastar APIError om ingen user är inloggad', async () => {
-    loggedOut()
-    await expect(cvApi.shareCV()).rejects.toThrow('Inte inloggad')
-  })
-
-  it('genererar share-kod, sätter expires_at 30 dagar fram och bygger share-URL', async () => {
-    loggedIn()
-    mockFromBuilder.single.mockResolvedValue({ data: { id: 'share-1' }, error: null })
-    const result = await cvApi.shareCV()
-    expect(mockFrom).toHaveBeenCalledWith('cv_shares')
-    const insertArg = mockFromBuilder.insert.mock.calls[0][0]
-    expect(insertArg.user_id).toBe('user-1')
-    expect(insertArg.share_code).toEqual(result.shareCode)
-    expect(result.shareUrl).toContain(result.shareCode)
-    expect(result.qrCode).toContain(encodeURIComponent(result.shareUrl))
-    const expiresAt = new Date(result.expiresAt)
-    const daysDiff = (expiresAt.getTime() - Date.now()) / (1000 * 60 * 60 * 24)
-    expect(daysDiff).toBeGreaterThan(29)
-    expect(daysDiff).toBeLessThan(31)
-  })
-})
-
-describe('cvApi.getSharedCV', () => {
-  it('hämtar cv_shares join:ad med cvs, filtrerat på icke-utgången kod', async () => {
-    mockFromBuilder.maybeSingle.mockResolvedValue({
-      data: { share_code: 'abc123', cvs: { title: 'Delat CV' } },
-      error: null,
-    })
-    const result = await cvApi.getSharedCV('abc123')
-    expect(mockFrom).toHaveBeenCalledWith('cv_shares')
-    expect(mockFromBuilder.eq).toHaveBeenCalledWith('share_code', 'abc123')
-    expect(mockFromBuilder.gt).toHaveBeenCalledWith('expires_at', expect.any(String))
-    expect(result).toMatchObject({ share_code: 'abc123' })
-  })
-
-  it('kastar APIError(NOT_FOUND, "länken har gått ut") vid 0 rader (utgången/ogiltig kod)', async () => {
-    mockFromBuilder.maybeSingle.mockResolvedValue({
-      data: null,
-      error: null,
-    })
-    await expect(cvApi.getSharedCV('utgangen')).rejects.toMatchObject({
-      code: 'NOT_FOUND',
-      status: 404,
-      message: expect.stringContaining('gått ut'),
-    })
-  })
-
-  it('kastar vidare ett äkta läsfel via handleError, inte NOT_FOUND', async () => {
-    mockFromBuilder.maybeSingle.mockResolvedValue({
-      data: null,
-      error: { code: '500', message: 'nätverksfel' },
-    })
-    await expect(cvApi.getSharedCV('vilken-som')).rejects.toMatchObject({
-      message: 'nätverksfel',
-    })
-  })
-})
-
 describe('APIError', () => {
   it('exporteras och kan matchas mot instanceof', async () => {
     loggedOut()

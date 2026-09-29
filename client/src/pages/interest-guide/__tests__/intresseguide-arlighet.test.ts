@@ -339,6 +339,26 @@ describe('Lönestatistiken', () => {
   })
 })
 
+describe('Karriärpanelen', () => {
+  const k = kod('components/interest-guide/CareerRecommendationsPanel.tsx')
+
+  it('visar inga påhittade löner (scbSalaryApi är tjugo handskrivna rader, inte SCB-data)', () => {
+    // Panelen visade "Löneläge 2026" med median och percentiler ur
+    // SALARY_DATA_2026 — utan märkning, och SCB nämndes bara när data saknades.
+    expect(k).not.toContain('scbSalaryService')
+    expect(k).not.toMatch(/salaryData|\.median|\.p10|\.p90/)
+    expect(k).not.toContain('Löneläge')
+  })
+
+  it('pekar i stället på SCB:s riktiga lönesök', () => {
+    expect(k).toContain('EXTERNA_LONEKALLOR')
+  })
+
+  it('visar plats, inte matchningsprocent', () => {
+    expect(k).not.toMatch(/matchPercentage/)
+  })
+})
+
 describe('Historiken', () => {
   const h = kod('pages/interest-guide/HistoryTab.tsx')
 

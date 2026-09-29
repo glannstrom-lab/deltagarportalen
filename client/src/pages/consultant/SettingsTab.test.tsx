@@ -22,7 +22,7 @@
  * aktivt val.
  */
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { render, screen, within, fireEvent, waitFor } from '@testing-library/react'
+import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { I18nextProvider } from 'react-i18next'
 import i18n from '@/i18n/config'
@@ -235,24 +235,11 @@ describe('SettingsTab — KK5: exportens omfattning', () => {
   })
 })
 
-// SettingRow renderar <label-text><select> som syskon i en gemensam rad, på
-// olika djup — vandra uppåt från etiketten tills raden innehåller en <select>,
-// i stället för att anta ett bestämt antal .parentElement-hopp.
-function settingsRowFor(label: string): HTMLElement {
-  let el: HTMLElement | null = screen.getByText(label)
-  while (el && !el.querySelector('select')) {
-    el = el.parentElement
-  }
-  if (!el) throw new Error(`Ingen inställningsrad med select hittades för "${label}"`)
-  return el
-}
-
-describe('SettingsTab — PG-skav 9 (persona-genomgången 2026-09-12): tidszonen förenklad', () => {
-  it('erbjuder bara Stockholm — London och New York är borttagna', async () => {
+describe('SettingsTab — tidszonsvalet är borttaget (lästes av ingen kod)', () => {
+  it('visar ingen tidszonsrad och inget löfte om mötesbokning', async () => {
     renderTab()
-    await screen.findByText('Tidszon')
-    const select = within(settingsRowFor('Tidszon')).getByRole('combobox')
-    const optioner = within(select).getAllByRole('option').map(o => o.textContent)
-    expect(optioner).toEqual(['Stockholm (CET)'])
+    await screen.findByText('Veckan börjar')
+    expect(screen.queryByText('Tidszon')).toBeNull()
+    expect(screen.queryByText(/Används för mötesbokning/)).toBeNull()
   })
 })

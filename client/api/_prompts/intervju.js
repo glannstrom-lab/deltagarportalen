@@ -46,7 +46,13 @@ Fråga: ${data?.tidigareFragor?.[data.tidigareFragor.length-1]?.fraga || 'Berät
 Deltagarens svar: ${data.anvandarSvar}
 
 Ge kort feedback på svaret, betygsätt det 1-5 om det går att bedöma, och ställ nästa relevanta intervjufråga. Svara ENDAST med JSON.`,
-        maxTokens: 500,
+        // 2026-09-29: var 500 utan `reasoningEffort`. Samma fälla som öppnings-
+        // frågan nedan: modellen resonerar först, tänkandet äter budgeten och
+        // `content` kommer tillbaka tomt (502 "No response from AI"). JSON-svaret
+        // är ~150 tokens; 900 + låg nivå ger tänkandet plats. Vaktat av
+        // src/test/api-prompt-budget.test.ts.
+        maxTokens: 900,
+        reasoningEffort: 'low',
         responseKey: 'resultat',
         parseJson: true
       }

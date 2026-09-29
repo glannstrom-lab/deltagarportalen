@@ -284,11 +284,10 @@ export const wellnessDataApi = {
       .eq('user_id', user.id)
       .maybeSingle()
 
-    if (error) {
-      handleStorageError(error, 'hämta wellness data')
-      const localData = localStorage.getItem('wellness_data')
-      return localData ? JSON.parse(localData) : null
-    }
+    // Läsfel KASTAS. Tidigare föll det tillbaka på localStorage — gammal, ofta
+    // tom data som visades som sanning, och som HealthTab sedan skrev tillbaka
+    // över molnets (save skriver hela objektet). Anroparen visar felet.
+    if (error) kastaLagringsFel(error, 'hämta wellness data')
     return data?.wellness_data || null
   },
 

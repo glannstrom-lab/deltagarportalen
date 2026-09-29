@@ -1775,7 +1775,16 @@
     "statusRemoved": "Jobbet är borttaget från sparade jobb: {{title}}",
     "statusSaveFailed": "Det gick inte att spara jobbet. Försök igen.",
     "statusRemoveFailed": "Det gick inte att ta bort jobbet. Försök igen.",
-    "resultsHeading": "Sökresultat"
+    "resultsHeading": "Sökresultat",
+    "savedJobsHeading": "Sparade jobb",
+    "savedJobsCount_one": "{{count}} jobb sparat",
+    "savedJobsCount_other": "{{count}} jobb sparade",
+    "sortSavedJobs": "Sortera sparade jobb",
+    "removeSavedTitle": "Ta bort jobbet?",
+    "removeSavedConfirm": "Ta bort detta sparade jobb?",
+    "viewAd": "Visa annons",
+    "interviewPrep": "Intervjuförberedelse",
+    "commuteInfo": "Pendlingsinfo"
   },
   "jobs": {
     "card": {
@@ -2805,7 +2814,8 @@
         "jobFirst": "Har du jobbet klart innan flytten blir det ofta lättare att få bostad.",
         "firstMonths": "Räkna med att de första månaderna kostar mer än vanligt: deposition, möbler, dubbla hyror."
       },
-      "queueYears": "{{min}}–{{max}} år"
+      "queueYears": "{{min}}–{{max}} år",
+      "amountSek": "{{belopp}} kr"
     },
     "networkTab": {
       "loading": "Laddar nätverksdata...",
@@ -3238,7 +3248,27 @@
       "footer": "Dina svar sparas medan du svarar, så du kan pausa och fortsätta när du vill."
     },
     "jobCard": {
-      "careerPath": "Karriärväg:"
+      "careerPath": "Karriärväg:",
+      "education": "Utbildning",
+      "prognosis": {
+        "growing": "Växande",
+        "declining": "Krympande",
+        "stable": "Stabil"
+      },
+      "selectForCompare": "Välj {{name}} för jämförelse",
+      "placeLabel": "Nr",
+      "university": "Högskola",
+      "upperSecondary": "Gymnasium",
+      "challenges": "Utmaningar",
+      "relatedJobs": "Relaterade yrken:",
+      "aboutPlaceTitle": "Om placeringen",
+      "aboutPlaceText": "Platsen visar hur nära yrkets profil ligger dina svar, jämfört med de andra yrkena. Den säger inte hur väl du skulle trivas eller lyckas. Det får du veta genom att utforska yrket och prata med någon som arbetar där.",
+      "adaptationsTitle": "Anpassningar som kan hjälpa dig:",
+      "adaptationsLead": "Baserat på dina svar kan följande anpassningar göra det lättare att arbeta inom detta yrke:",
+      "adaptationsLaw": "Enligt Arbetsmiljölagen har du rätt till rimliga arbetsanpassningar. Diskutera med en arbetskonsulent eller arbetsgivare.",
+      "warningsTitle": "Utmaningar att vara medveten om:",
+      "warningsLead": "Detta yrke kan innebära vissa utmaningar baserat på dina angivna förutsättningar:",
+      "warningsNote": "Detta betyder inte att du inte kan arbeta med detta yrke, men det kan krävas extra stöd eller anpassningar."
     },
     "results": {
       "howToReadRiasec": "Så här läser du din RIASEC-profil",
@@ -3263,8 +3293,6 @@
       "doneHeading": "Du har hittat din riktning",
       "doneLead": "Här är vad dina svar säger om vilka yrken som kan passa dig.",
       "riasecType": "Din RIASEC-typ",
-      "goodMatches": "Bra matchningar",
-      "goodMatchesUnit": "yrken (70%+)",
       "totalOccupations": "Totalt yrken",
       "toExplore": "att utforska",
       "fromDate": "Från {{date}}",
@@ -3277,7 +3305,6 @@
       "top5Heading": "Topp 5 yrkesmatchningar:",
       "top3Heading": "Dina topp 3 yrkesmatchningar",
       "seeAll": "Se alla",
-      "matchLabel": "match",
       "tipLabel": "Tips:",
       "tipText": "Gör om testet senare om dina intressen ändras. Du kan då jämföra resultaten över tid för att se hur du utvecklas.",
       "nextStep": "Nästa steg",
@@ -3285,7 +3312,12 @@
       "createCvText": "Använd dina insikter från intresseguiden för att bygga ett professionellt CV",
       "download": "Ladda ner resultat",
       "share": "Dela resultat",
-      "restart": "Gör om testet"
+      "restart": "Gör om testet",
+      "linkCopied": "Länk kopierad till urklipp!",
+      "rankPlace": "Nr {{place}} av {{total}} utifrån dina svar",
+      "rankPlaceShort": "Nr {{place}} utifrån dina svar",
+      "closestOccupation": "Yrket närmast dina svar",
+      "closestOccupationHint": "utifrån dina svar i testet"
     },
     "occupations": {
       "growingShare": "av dem växer, enligt vår redaktionella bedömning",
@@ -3293,6 +3325,174 @@
       "sortName": "Sortera: Namn (A-Z)",
       "sortSalary": "Sortera: Lön (högst först)",
       "salaryRange": "Lönespann"
+    },
+    "rv": {
+      "riasec": {
+        "R": {
+          "name": "Realistisk",
+          "desc": "Praktiskt arbete med händerna, maskiner, teknik eller utomhus",
+          "examples": "Mekaniker, elektriker, trädgårdsmästare, kock"
+        },
+        "I": {
+          "name": "Investigativ",
+          "desc": "Analysera, forska, lösa problem och förstå komplexa samband",
+          "examples": "Forskare, programmerare, läkare, civilingenjör"
+        },
+        "A": {
+          "name": "Konstnärlig",
+          "desc": "Kreativt skapande, estetiskt arbete, uttrycka sig",
+          "examples": "Grafisk designer, musiker, journalist, arkitekt"
+        },
+        "S": {
+          "name": "Social",
+          "desc": "Hjälpa, undervisa, vårda och samarbeta med människor",
+          "examples": "Lärare, sjuksköterska, socionom, psykolog"
+        },
+        "E": {
+          "name": "Entreprenöriell",
+          "desc": "Leda, påverka, sälja och driva projekt",
+          "examples": "Försäljare, marknadsförare, chef, mäklare"
+        },
+        "C": {
+          "name": "Konventionell",
+          "desc": "Organisera, strukturera, arbeta med data och detaljer",
+          "examples": "Ekonom, administratör, controller, revisor"
+        },
+        "description": "RIASEC (även kallad Holland Codes) är en modell som beskriver sex olika personlighetstyper och arbetsmiljöer. Den hjälper dig förstå vilka typer av yrken som kan passa dig baserat på dina intressen och arbetsstil."
+      },
+      "bigFive": {
+        "openness": {
+          "name": "Öppenhet",
+          "desc": "Nyfikenhet, fantasi och vilja att prova nya saker",
+          "workImpact": "Hög öppenhet passar bra för kreativa och varierande yrken. Låg öppenhet passar för strukturerade och förutsägbara arbetsuppgifter."
+        },
+        "conscientiousness": {
+          "name": "Samvetsgrannhet",
+          "desc": "Noggrannhet, organisation och självdisciplin",
+          "workImpact": "Hög samvetsgrannhet är viktigt för yrken som kräver precision och pålitlighet. De flesta arbetsgivare värdesätter detta drag högt."
+        },
+        "extraversion": {
+          "name": "Extraversion",
+          "desc": "Socialt engagemang, energi och utåtriktning",
+          "workImpact": "Hög extraversion passar för yrken med mycket social kontakt. Låg extraversion (introversion) kan passa bra för självständigt arbete."
+        },
+        "agreeableness": {
+          "name": "Vänlighet",
+          "desc": "Empati, samarbetsvilja och omtanke om andra",
+          "workImpact": "Hög vänlighet är viktigt i vårdyrken och service. Mycket låg vänlighet kan passa för konkurrensutsatta yrken som kräver hårdhet."
+        },
+        "stability": {
+          "name": "Emotionell stabilitet",
+          "desc": "Förmåga att hantera stress och behålla lugnet",
+          "workImpact": "Hög stabilitet hjälper i pressade situationer. Lägre stabilitet kan innebära större känslighet, men också större empati."
+        },
+        "description": "Femfaktormodellen (Big Five) är en etablerad modell inom personlighetspsykologi. Den beskriver fem drag som påverkar hur vi fungerar i olika situationer, också på jobbet. Frågorna här är våra egna och två per drag — tillräckligt för en fingervisning, inte för en mätning."
+      },
+      "riasecCombo": {
+        "RI": "Du trivs med att lösa praktiska problem på ett analytiskt sätt. Tekniska yrken kan passa dig.",
+        "RA": "Du gillar att skapa saker med händerna. Yrken inom design, hantverk eller konstnärligt teknik kan passa.",
+        "RS": "Du vill hjälpa andra på ett praktiskt sätt. Vårdyrken med praktiska uppgifter kan passa.",
+        "IA": "Du kombinerar analytisk förmåga med kreativitet. Forskar- eller utvecklingsyrken kan passa.",
+        "IS": "Du vill förstå och hjälpa människor. Psykologi, medicin eller pedagogik kan passa.",
+        "AS": "Du vill uttrycka dig och kommunicera med andra. Yrken inom media, konst eller undervisning kan passa.",
+        "SE": "Du vill leda och hjälpa människor samtidigt. Chefsroller inom vård eller utbildning kan passa.",
+        "EC": "Du vill organisera och driva verksamheter framåt. Administrativa ledarroller kan passa.",
+        "fallback": "Du har en unik kombination av intressen som ger dig många möjligheter!"
+      },
+      "bigFiveTrait": {
+        "openness": "gillar att prova nytt",
+        "conscientiousness": "är noggrann och håller ordning",
+        "extraversion": "trivs med människor omkring dig",
+        "agreeableness": "gärna hjälper andra",
+        "stability": "håller dig lugn under press"
+      },
+      "bigFiveMiddle": "Du svarade ganska mitt på skalan på de flesta frågorna. Det säger inte att du saknar de här dragen — bara att du inte lade dig i någon ytterkant den här gången.",
+      "bigFiveSummary": "Du svarade att du {{traits}}. Det bygger på två frågor per drag, så se det som en öppning för ett samtal — inte som en personlighetsbedömning.",
+      "readyBadge": "Dina resultat är klara!",
+      "uniqueProfile": "Din unika profil",
+      "headerLead": "Baserat på dina svar har vi skapat en analys av dina intressen, personlighet och förutsättningar. Använd denna information för att utforska yrkesvägar som passar just dig.",
+      "top3Interests": "Dina topp 3 intressen",
+      "yourPersonality": "Din personlighet",
+      "yourStrengths": "Dina styrkor",
+      "shareResult": "Dela resultat",
+      "saveAsFile": "Spara som fil",
+      "redoGuide": "Gör om guiden",
+      "exploreProfile": "Utforska din profil",
+      "seeSuggestions": "Se yrkesförslag",
+      "riasecHeading": "RIASEC - Dina arbetsintressen",
+      "riasecSub": "Sex typer av arbetsmiljöer som matchar olika personligheter",
+      "examples": "Exempel: {{examples}}",
+      "whatDoesResultMean": "Vad betyder ditt resultat?",
+      "riasecMeaning": "De områden där du har högst poäng ({{areas}}) är de miljöer där du troligen trivs bäst. Ju högre poäng, desto starkare är ditt intresse för den miljön.",
+      "bigFiveHeading": "Big Five - Din personlighetsprofil",
+      "bigFiveSub": "Fem grundläggande drag som beskriver hur du är som person",
+      "bigFiveNoBetter": "Ingen profil är \"bättre\" än en annan - olika yrken kräver olika egenskaper. Det viktiga är att hitta ett yrke som passar just dig.",
+      "icfHeading": "ICF - Dina funktionsförutsättningar",
+      "icfSub": "Förstå dina förutsättningar för arbete och vilka anpassningar som kan hjälpa",
+      "icfAbout": "Om ICF och arbetsanpassningar",
+      "icfTerm": "ICF (International Classification of Functioning)",
+      "icfDesc": "är WHO:s ramverk för att beskriva hälsa och funktionsförmåga. Det fokuserar på vad du kan göra, inte på eventuella begränsningar.",
+      "tipLabel": "Tips:",
+      "icfTip": "Prata med en arbetskonsulent om vilka stöd och anpassningar som finns tillgängliga för det yrke du är intresserad av. Många arbetsgivare är positiva till anpassningar som gör att du kan prestera ditt bästa.",
+      "icfRemember": "Dina förutsättningar är inte statiska - de kan förändras över tid och variera beroende på situation. Det viktiga är att hitta ett yrke där du kan använda dina styrkor och få stöd där det behövs. Med rätt anpassningar kan de flesta yrken fungera för de flesta människor.",
+      "matchesHeading": "Dina yrkesmatchningar",
+      "matchesLead": "Här är yrken som ligger nära din profil, med det yrke som ligger närmast dina svar överst. Kom ihåg att detta är förslag - utforska de yrken som känns intressanta för dig!",
+      "allOccupations": "Alla yrken",
+      "requiresUniversity": "Kräver högskola",
+      "upperSecondary": "Gymnasium/YH",
+      "selectedCount": "{{count}} valda",
+      "compare": "Jämför",
+      "showingTop": "Visar de {{shown}} yrken som ligger närmast dina svar av {{total}} möjliga yrken",
+      "property": "Egenskap",
+      "placeRow": "Plats utifrån dina svar",
+      "placeShort": "Nr {{place}} av {{total}}",
+      "prognosis": "Prognos"
+    },
+    "rec": {
+      "title": "Karriärrekommendationer",
+      "basedOn": "Baserat på din {{code}}-profil och personlighet",
+      "salaryNoteBefore": "Vi visar ingen lön här, eftersom vi inte har officiell lönestatistik per yrke. Titta i",
+      "scbSalarySearch": "SCB:s lönesök (officiell statistik)",
+      "salaryNoteMiddle": "eller på",
+      "salaryPage": "lönesidan i portalen",
+      "educationDown": "Vi når inte utbildningsregistret just nu, så utbildningsvägarna saknas här. Försök igen om en stund.",
+      "educationPaths": "Utbildningsvägar",
+      "analyzeSkills": "Analysera kompetensgap",
+      "searchEducation": "Sök utbildningar",
+      "seeJobs": "Se lediga jobb",
+      "tipsTitle": "Tips för din karriärväg",
+      "tipProfile": "Med en {{code}}-profil passar du ofta bra för yrken som kombinerar {{focus}} med dina personliga styrkor.",
+      "tipSkills": "Använd kompetensgap-analysen för att se vilka färdigheter du kan utveckla.",
+      "tipConsultant": "Prata med din arbetskonsulent för personlig karriärvägledning.",
+      "exploreAll": "Utforska alla matchande yrken",
+      "focus": {
+        "R": "praktiskt arbete",
+        "I": "analytiskt tänkande",
+        "A": "kreativt skapande",
+        "S": "social kontakt",
+        "E": "ledarskap",
+        "C": "strukturerat arbete"
+      }
+    },
+    "icf": {
+      "names": {
+        "kognitiv": "Att tänka, planera och komma ihåg",
+        "kommunikation": "Att prata, lyssna och samarbeta",
+        "koncentration": "Att fokusera och hålla uppmärksamheten",
+        "motorik": "Rörlighet och stadiga händer",
+        "sensorisk": "Ljud, ljus och andra sinnesintryck",
+        "energi": "Ork och uthållighet"
+      },
+      "answer": {
+        "veryGood": "Du svarade att det här fungerar mycket bra för dig",
+        "good": "Du svarade att det här fungerar bra för dig",
+        "partly": "Du svarade att det här fungerar delvis",
+        "harder": "Du svarade att det här är svårare för dig",
+        "hard": "Du svarade att det här är svårt för dig"
+      },
+      "scoreOf": "{{score}} av 5",
+      "notAnswered": "Du har inte svarat på den här delen än",
+      "helpTitle": "Sånt som brukar hjälpa — värt att prata om"
     }
   },
   "international": {
@@ -4095,7 +4295,39 @@
       "Medel": "Medel",
       "Utmanande": "Utmanande"
     },
-    "errorLoadingExercises": "Kunde inte hämta övningarna"
+    "errorLoadingExercises": "Kunde inte hämta övningarna",
+    "completeSaveFailedTitle": "Övningen sparades inte",
+    "completeSaveFailedText": "Du är klar med den, men vi kunde inte spara det just nu. Prova igen när du har uppkoppling.",
+    "clearProgressTitle": "Rensa dina svar?",
+    "notLoggedIn": {
+      "label": "Obs!",
+      "text": "Du är inte inloggad. Dina svar sparas endast tillfälligt i webbläsaren.",
+      "logIn": "Logga in",
+      "tail": "för att spara permanent i molnet."
+    },
+    "forYouToday": "För dig idag",
+    "shownOf": "{{shown}} av {{total}} övningar",
+    "exploreByCategory": "Utforska efter kategori",
+    "moreExercises": "(+{{count}} övningar)",
+    "pickCategoryHint": "Välj en kategori ovan för att se alla övningar inom det området.",
+    "backToExercises": "Tillbaka till övningar",
+    "wellDone": "Bra jobbat!",
+    "completedExercise": "Du har genomfört övningen \"{{title}}\"",
+    "yourAnswers": "Dina svar",
+    "notAnswered": "Ej besvarat",
+    "doAgain": "Gör om övningen",
+    "printResult": "Skriv ut resultat",
+    "backToAll": "Tillbaka till alla övningar",
+    "stepOf": "Steg {{current}} av {{total}}",
+    "clearProgress": "Rensa mina svar",
+    "tipLabel": "Tips:",
+    "tipText": "Ta dig tid att verkligen tänka igenom dina svar. Dina svar sparas automatiskt i molnet så du kan fortsätta från vilken enhet som helst.",
+    "previous": "Föregående",
+    "finish": "Avsluta",
+    "next": "Nästa",
+    "aiCoach": "AI Coach",
+    "aiCoachText": "Behöver du hjälp med denna övning? AI:n kan ge vägledning, exempel och följdfrågor.",
+    "seeAllArticles": "Se alla artiklar"
   },
   "diary": {
     "title": "Dagbok",
@@ -8027,8 +8259,6 @@
       "chooseDefaultView": "Välj hur deltagarlistan visas som standard",
       "grid": "Rutnät",
       "list": "Lista",
-      "timezone": "Tidszon",
-      "usedForMeetings": "Används för mötesbokning och påminnelser",
       "weekStart": "Veckan börjar",
       "affectsCalendar": "Påverkar kalendervisning",
       "monday": "Måndag",

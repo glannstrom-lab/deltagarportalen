@@ -30,6 +30,7 @@
  */
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
+import { datumSprak } from '@/lib/datumsprak'
 import { Link } from 'react-router-dom'
 import {
   Home, MapPin, Calculator, ExternalLink, CheckCircle,
@@ -65,7 +66,11 @@ interface Overkomlighet {
 }
 
 export default function RelocationTab() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
+  // Tal och belopp följer språket: 14 500 på svenska, 14,500 på engelska. Ett
+  // hårdkodat 'sv-SE' gav engelsk läsare tusentalsavgränsaren som blank.
+  const tal = (n: number) => n.toLocaleString(datumSprak(i18n.language))
+  const kronor = (n: number) => t('career.relocation.amountSek', { belopp: tal(n), defaultValue: '{{belopp}} kr' })
   const kotidText = (kotid: Parameters<typeof formateraKotid>[0]) =>
     formateraKotid(kotid, (nyckel, reserv, varden) => t(nyckel, { ...varden, defaultValue: reserv }))
 
@@ -393,7 +398,7 @@ export default function RelocationTab() {
           <p className="text-sm text-stone-700 dark:text-stone-300 mt-4 flex items-start gap-2">
             <Info className="w-4 h-4 mt-0.5 shrink-0 text-[var(--c-solid)]" aria-hidden="true" />
             {t('career.relocation.netExplained', {
-              netto: nettoUppgift.nettoManad.toLocaleString('sv-SE'),
+              netto: tal(nettoUppgift.nettoManad),
               skatt: KOMMUNALSKATT_RIKSGENOMSNITT,
               ar: SKATTEAR,
             })}
@@ -471,12 +476,12 @@ export default function RelocationTab() {
                       )}
                     </th>
                     <td className="py-2 px-2 text-stone-700 dark:text-stone-300 tabular-nums">
-                      {region.uppskattadHyra.toLocaleString('sv-SE')} kr
+                      {kronor(region.uppskattadHyra)}
                     </td>
                     <td className="py-2 px-2 text-stone-700 dark:text-stone-300">{kotidText(region.uppskattadKotidAr)}</td>
                     <td className="py-2 px-2 text-stone-700 dark:text-stone-300 tabular-nums">
                       {typeof jobb === 'number'
-                        ? jobb.toLocaleString('sv-SE')
+                        ? tal(jobb)
                         : <span className="text-stone-500 dark:text-stone-400">{t('career.relocation.jobsUnavailable')}</span>}
                     </td>
                     {nettoUppgift && (
@@ -488,7 +493,7 @@ export default function RelocationTab() {
                     )}
                     {nettoUppgift && (
                       <td className="py-2 px-2 text-stone-700 dark:text-stone-300 tabular-nums">
-                        {o ? `${o.kvar.toLocaleString('sv-SE')} kr` : '—'}
+                        {o ? kronor(o.kvar) : '—'}
                       </td>
                     )}
                   </tr>
@@ -535,19 +540,19 @@ export default function RelocationTab() {
                   </span>
                   <dl className="mt-2 grid grid-cols-2 gap-x-3 gap-y-1 text-sm">
                     <dt className="text-stone-600 dark:text-stone-400">{t('career.relocation.colRent')}</dt>
-                    <dd className="text-stone-800 dark:text-stone-100 tabular-nums">{region.uppskattadHyra.toLocaleString('sv-SE')} kr</dd>
+                    <dd className="text-stone-800 dark:text-stone-100 tabular-nums">{kronor(region.uppskattadHyra)}</dd>
                     <dt className="text-stone-600 dark:text-stone-400">{t('career.relocation.colQueue')}</dt>
                     <dd className="text-stone-800 dark:text-stone-100">{kotidText(region.uppskattadKotidAr)}</dd>
                     <dt className="text-stone-600 dark:text-stone-400">{t('career.relocation.colJobs')}</dt>
                     <dd className="text-stone-800 dark:text-stone-100 tabular-nums">
-                      {typeof jobb === 'number' ? jobb.toLocaleString('sv-SE') : t('career.relocation.jobsUnavailable')}
+                      {typeof jobb === 'number' ? tal(jobb) : t('career.relocation.jobsUnavailable')}
                     </dd>
                     {o && (
                       <>
                         <dt className="text-stone-600 dark:text-stone-400">{t('career.relocation.colShare')}</dt>
                         <dd className="text-stone-800 dark:text-stone-100 tabular-nums">{o.andel} %</dd>
                         <dt className="text-stone-600 dark:text-stone-400">{t('career.relocation.colLeft')}</dt>
-                        <dd className="text-stone-800 dark:text-stone-100 tabular-nums">{o.kvar.toLocaleString('sv-SE')} kr</dd>
+                        <dd className="text-stone-800 dark:text-stone-100 tabular-nums">{kronor(o.kvar)}</dd>
                       </>
                     )}
                   </dl>

@@ -31,6 +31,7 @@ import {
   EmptySearch,
   EmptyState,
   Card,
+  useConfirmDialog,
 } from '@/components/ui';
 import { arSparat } from '@/data/ansokningsstatus';
 import { MotionList } from '@/components/ui/MotionList';
@@ -1174,7 +1175,7 @@ function SearchTab() {
                     )}
                   >
                     <MessageSquare size={16} />
-                    Intervjuförberedelse
+                    {t('jobSearch.interviewPrep', 'Intervjuförberedelse')}
                   </button>
                   <button
                     onClick={() => setShowCommutePlanner(!showCommutePlanner)}
@@ -1186,7 +1187,7 @@ function SearchTab() {
                     )}
                   >
                     <Train size={16} />
-                    Pendlingsinfo
+                    {t('jobSearch.commuteInfo', 'Pendlingsinfo')}
                   </button>
                 </div>
 
@@ -1279,6 +1280,7 @@ function SearchTab() {
 // Enhanced Saved Jobs Tab
 function SavedJobsTab() {
   const { t, i18n } = useTranslation();
+  const { confirm } = useConfirmDialog();
   const navigate = useNavigate();
   const { savedJobs, removeJob, updateJobStatus, isLoaded, error: hamtfel, refresh } = useSavedJobs();
   const [filter] = useState<'all' | SavedJob['status']>('all');
@@ -1350,12 +1352,12 @@ function SavedJobsTab() {
       {/* Header with stats and filters */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-lg font-semibold text-stone-900 dark:text-stone-100">Sparade jobb</h2>
-          <p className="text-sm text-stone-700 dark:text-stone-400">{onlySaved.length} jobb sparade</p>
+          <h2 className="text-lg font-semibold text-stone-900 dark:text-stone-100">{t('jobSearch.savedJobsHeading', 'Sparade jobb')}</h2>
+          <p className="text-sm text-stone-700 dark:text-stone-400">{t('jobSearch.savedJobsCount', { count: onlySaved.length, defaultValue_one: '{{count}} jobb sparat', defaultValue_other: '{{count}} jobb sparade' })}</p>
         </div>
         <div className="flex items-center gap-2">
           <select
-            aria-label="Sortera sparade jobb"
+            aria-label={t('jobSearch.sortSavedJobs', 'Sortera sparade jobb')}
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value as 'date' | 'company' | 'status')}
             className="px-3 py-2 text-sm border border-stone-200 dark:border-stone-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] dark:focus:ring-[var(--c-solid)] bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100"
@@ -1410,13 +1412,19 @@ function SavedJobsTab() {
                     <CheckCircle className="w-5 h-5" />
                   </button>
                   <button
-                    onClick={() => {
-                      if (confirm('Ta bort detta sparade jobb?')) {
-                        removeJob(job.id);
-                      }
+                    onClick={async () => {
+                      const ok = await confirm({
+                        title: t('jobSearch.removeSavedTitle', 'Ta bort jobbet?'),
+                        message: t('jobSearch.removeSavedConfirm', 'Ta bort detta sparade jobb?'),
+                        confirmText: t('common.delete'),
+                        cancelText: t('common.cancel'),
+                        variant: 'danger',
+                      });
+                      if (ok) removeJob(job.id);
                     }}
                     className="p-2 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors text-stone-600 dark:text-stone-400 hover:text-red-600 dark:hover:text-red-400"
-                    title="Ta bort"
+                    title={t('common.delete')}
+                    aria-label={t('common.delete')}
                   >
                     <Trash2 className="w-5 h-5" />
                   </button>
@@ -1433,7 +1441,7 @@ function SavedJobsTab() {
                     className="flex items-center gap-1 text-sm text-[var(--c-text)] dark:text-[var(--c-text)] hover:text-[var(--c-text)] dark:hover:text-[var(--c-text)] font-medium"
                   >
                     <ExternalLink className="w-4 h-4" />
-                    Visa annons
+                    {t('jobSearch.viewAd', 'Visa annons')}
                   </a>
                 </div>
               )}

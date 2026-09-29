@@ -47,6 +47,7 @@ vi.mock('@/components/focus/pages/FocusExercisesWizard', () => ({ FocusExercises
 vi.mock('@/components/FocusModeProvider', () => ({ useFocusMode: () => ({ leaveWizard: vi.fn() }) }))
 
 import Exercises from './Exercises'
+import { ConfirmDialogProvider } from '@/components/ui/ConfirmDialog'
 
 function GaTill({ till }: { till: string }) {
   const navigate = useNavigate()
@@ -59,14 +60,14 @@ describe('Exercises — djuplänk ?id=', () => {
   window.scrollTo = vi.fn() as unknown as typeof window.scrollTo
 
   it('öppnar övningen i länken vid första laddningen', async () => {
-    render(<MemoryRouter initialEntries={['/exercises?id=a']}><Exercises /></MemoryRouter>)
+    render(<MemoryRouter initialEntries={['/exercises?id=a']}><ConfirmDialogProvider><Exercises /></ConfirmDialogProvider></MemoryRouter>)
     expect(await screen.findByLabelText('Fråga i A')).toBeInTheDocument()
   })
 
   it('byter övning när ?id= ändras utan att sidan monteras om', async () => {
     render(
       <MemoryRouter initialEntries={['/exercises?id=a']}>
-        <Exercises />
+        <ConfirmDialogProvider><Exercises /></ConfirmDialogProvider>
         <GaTill till="/exercises?id=b" />
       </MemoryRouter>,
     )

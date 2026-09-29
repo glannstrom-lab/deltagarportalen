@@ -65,6 +65,12 @@ interface EmptyStateProps {
   }
   compact?: boolean
   className?: string
+  /**
+   * Rubriknivå för titeln. Standard h3 (oförändrat). Sätt h2 när tomtillståndet
+   * ligger direkt under sidans h1, h4 när det ligger under en h3 — annars hoppar
+   * rubrikstrukturen för skärmläsare (SV12).
+   */
+  headingLevel?: 'h2' | 'h3' | 'h4'
 }
 
 export function EmptyState({
@@ -77,6 +83,7 @@ export function EmptyState({
   secondaryAction,
   compact = false,
   className,
+  headingLevel: Heading = 'h3',
 }: EmptyStateProps) {
   if (compact) {
     return (
@@ -101,7 +108,7 @@ export function EmptyState({
             <Icon className="w-6 h-6 text-stone-600 dark:text-stone-300" />
           </div>
         )}
-        <h3 className="text-sm font-medium text-stone-800 dark:text-stone-100">{title}</h3>
+        <Heading className="text-sm font-medium text-stone-800 dark:text-stone-100">{title}</Heading>
         {description && (
           <p className="text-xs text-stone-700 dark:text-stone-300 mt-1 max-w-xs">{description}</p>
         )}
@@ -141,7 +148,7 @@ export function EmptyState({
           <Icon className="w-8 h-8 text-stone-600 dark:text-stone-300" />
         </div>
       )}
-      <h3 className="text-lg font-semibold text-stone-800 dark:text-stone-100">{title}</h3>
+      <Heading className="text-lg font-semibold text-stone-800 dark:text-stone-100">{title}</Heading>
       {description && (
         <p className="text-sm text-stone-700 dark:text-stone-300 mt-2 max-w-xs mx-auto">
           {description}

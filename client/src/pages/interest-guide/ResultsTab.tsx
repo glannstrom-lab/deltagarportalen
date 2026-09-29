@@ -205,7 +205,9 @@ export default function ResultsTab() {
     )
   }
 
-  const goodMatches = jobMatches.filter(m => m.matchPercentage >= 70).length
+  // Närmaste yrket i stället för "antal yrken över 70 %": procenttalet är inte
+  // tolkbart som lämplighet (se matchningsplats i interestGuideData).
+  const narmasteYrke = oversattaTopMatches[0]?.occupation.name
 
   return (
     <MotionConfig reducedMotion="user">
@@ -262,9 +264,9 @@ export default function ResultsTab() {
         <Card className="p-6 bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800">
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-sm text-green-600 dark:text-green-400 font-medium mb-2">{t('interestGuide.results.goodMatches')}</p>
-              <p className="text-2xl font-bold text-green-900 dark:text-green-100">{goodMatches}</p>
-              <p className="text-xs text-green-700 dark:text-green-300 mt-1">{t('interestGuide.results.goodMatchesUnit')}</p>
+              <p className="text-sm text-green-600 dark:text-green-400 font-medium mb-2">{t('interestGuide.results.closestOccupation', 'Yrket närmast dina svar')}</p>
+              <p className="text-lg font-bold text-green-900 dark:text-green-100">{narmasteYrke ?? '—'}</p>
+              <p className="text-xs text-green-700 dark:text-green-300 mt-1">{t('interestGuide.results.closestOccupationHint', 'utifrån dina svar i testet')}</p>
             </div>
             <Trophy className="w-6 h-6 text-green-600 dark:text-green-400 opacity-50" />
           </div>
@@ -434,7 +436,6 @@ export default function ResultsTab() {
                               {entry.top_occupations.slice(0, 5).map((occ, i) => (
                                 <div key={i} className="flex justify-between text-sm">
                                   <span className="text-gray-700 dark:text-gray-300">{i + 1}. {occ.name}</span>
-                                  <span className="font-medium text-amber-600 dark:text-amber-400">{occ.matchPercentage}%</span>
                                 </div>
                               ))}
                             </div>
@@ -477,10 +478,8 @@ export default function ResultsTab() {
                 <div className="flex-1">
                   <p className="font-semibold text-gray-900 dark:text-gray-100">{match.occupation.name}</p>
                   <p className="text-sm text-gray-700 dark:text-gray-300">{match.occupation.description.substring(0, 60)}...</p>
-                </div>
-                <div className="flex-shrink-0 text-right">
-                  <p className="text-lg font-bold text-amber-600 dark:text-amber-400">{match.matchPercentage}%</p>
-                  <p className="text-xs text-gray-700 dark:text-gray-300">{t('interestGuide.results.matchLabel')}</p>
+                  {/* Plats i stället för procent: se matchningsplats i interestGuideData. */}
+                  <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">{t('interestGuide.results.rankPlace', 'Nr {{place}} av {{total}} utifrån dina svar', { place: index + 1, total: jobMatches.length })}</p>
                 </div>
               </div>
             ))}
@@ -497,6 +496,7 @@ export default function ResultsTab() {
         <CareerRecommendationsPanel
           profile={profile}
           topMatches={jobMatches.slice(0, 5)}
+          totalMatches={jobMatches.length}
         />
       </motion.div>
 

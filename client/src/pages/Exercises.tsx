@@ -18,6 +18,7 @@ import {
   AlertCircle
 } from '@/components/ui/icons'
 import { Button } from '@/components/ui/Button'
+import { useConfirmDialog } from '@/components/ui/ConfirmDialog'
 import { Card } from '@/components/ui/Card'
 import { type Exercise } from '@/data/exercises'
 import { contentExerciseApi, contentArticleApi } from '@/services/contentApi'
@@ -91,6 +92,7 @@ export default function Exercises() {
 
 function ExercisesInner() {
   const { t } = useTranslation()
+  const { confirm } = useConfirmDialog()
   const [searchParams] = useSearchParams()
   const deepLinkId = searchParams.get('id')
   const [exercises, setExercises] = useState<Exercise[]>([])
@@ -365,8 +367,8 @@ function ExercisesInner() {
         if (error) {
           console.error('Kunde inte spara övningen:', error)
           showToast.warning(
-            'Övningen sparades inte',
-            'Du är klar med den, men vi kunde inte spara det just nu. Prova igen när du har uppkoppling.'
+            t('exercises.completeSaveFailedTitle', 'Övningen sparades inte'),
+            t('exercises.completeSaveFailedText', 'Du är klar med den, men vi kunde inte spara det just nu. Prova igen när du har uppkoppling.')
           )
         }
       }
@@ -388,7 +390,14 @@ function ExercisesInner() {
 
   const handleClearProgress = async () => {
     if (!selectedExercise || !user) return
-    if (!confirm(t('exercises.clearProgressConfirm'))) return
+    const ok = await confirm({
+      title: t('exercises.clearProgressTitle', 'Rensa dina svar?'),
+      message: t('exercises.clearProgressConfirm'),
+      confirmText: t('common.clear'),
+      cancelText: t('common.cancel'),
+      variant: 'danger',
+    })
+    if (!ok) return
 
     // En väntande skrivning får inte återuppliva svaren efter raderingen.
     vantandeRef.current.delete(selectedExercise.id)
@@ -481,8 +490,8 @@ function ExercisesInner() {
         {!user && (
           <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl p-4">
             <p className="text-amber-800 dark:text-amber-300 text-sm">
-              <strong>Obs!</strong> Du är inte inloggad. Dina svar sparas endast tillfälligt i webbläsaren.
-              <a href="/login" className="underline ml-1">Logga in</a> för att spara permanent i molnet.
+              <strong>{t('exercises.notLoggedIn.label', 'Obs!')}</strong> {t('exercises.notLoggedIn.text', 'Du är inte inloggad. Dina svar sparas endast tillfälligt i webbläsaren.')}
+              <a href="/login" className="underline ml-1">{t('exercises.notLoggedIn.logIn', 'Logga in')}</a> {t('exercises.notLoggedIn.tail', 'för att spara permanent i molnet.')}
             </p>
           </div>
         )}
@@ -576,10 +585,10 @@ function ExercisesInner() {
         {isAllFilter && filtered.length > VISIBLE_CAP && (
           <div className="flex items-baseline justify-between gap-3">
             <h2 className="text-base font-semibold text-stone-900 dark:text-stone-100">
-              För dig idag
+              {t('exercises.forYouToday', 'För dig idag')}
             </h2>
             <p className="text-sm text-stone-500 dark:text-stone-400">
-              {VISIBLE_CAP} av {filtered.length} övningar
+              {t('exercises.shownOf', '{{shown}} av {{total}} övningar', { shown: VISIBLE_CAP, total: filtered.length })}
             </p>
           </div>
         )}
@@ -667,13 +676,13 @@ function ExercisesInner() {
               }}
               className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-[var(--c-text)] font-medium hover:bg-[var(--c-bg)] hover:border-[var(--c-accent)] transition-colors"
             >
-              Utforska efter kategori
+              {t('exercises.exploreByCategory', 'Utforska efter kategori')}
               <span className="text-stone-500 font-normal">
-                (+{hiddenCount} övningar)
+                {t('exercises.moreExercises', '(+{{count}} övningar)', { count: hiddenCount })}
               </span>
             </button>
             <p className="text-xs text-stone-500 dark:text-stone-400 mt-3 max-w-md mx-auto">
-              Välj en kategori ovan för att se alla övningar inom det området.
+              {t('exercises.pickCategoryHint', 'Välj en kategori ovan för att se alla övningar inom det området.')}
             </p>
           </div>
         )}
@@ -701,16 +710,16 @@ function ExercisesInner() {
           className="flex items-center gap-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
         >
           <ChevronLeft className="w-5 h-5" />
-          Tillbaka till övningar
+          {t('exercises.backToExercises', 'Tillbaka till övningar')}
         </button>
 
         <div className="text-center space-y-4">
           <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-emerald-100 dark:bg-emerald-900/30">
             <Trophy className="w-10 h-10 text-emerald-600 dark:text-emerald-400" />
           </div>
-          <h2 className="text-3xl font-bold text-gray-800 dark:text-gray-100">Bra jobbat!</h2>
+          <h2 className="text-3xl font-bold text-gray-800 dark:text-gray-100">{t('exercises.wellDone', 'Bra jobbat!')}</h2>
           <p className="text-lg text-gray-600 dark:text-gray-300">
-            Du har genomfört övningen "{selectedExercise.title}"
+            {t('exercises.completedExercise', 'Du har genomfört övningen "{{title}}"', { title: selectedExercise.title })}
           </p>
 
           {/* Cloud saved indicator */}
@@ -723,7 +732,7 @@ function ExercisesInner() {
         <Card className="p-6 space-y-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
           <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100 flex items-center gap-2">
             <Sparkles className="w-5 h-5 text-amber-500 dark:text-amber-400" />
-            Dina svar
+            {t('exercises.yourAnswers', 'Dina svar')}
           </h2>
 
           {selectedExercise.steps.map((step) => (
@@ -741,7 +750,7 @@ function ExercisesInner() {
                     <div key={question.id} className="bg-gray-50 dark:bg-stone-700 rounded-lg p-4">
                       <p className="text-sm text-gray-600 dark:text-gray-300 mb-2">{question.text}</p>
                       <p className="text-gray-800 dark:text-gray-100 whitespace-pre-wrap">
-                        {answer || <span className="text-gray-400 dark:text-gray-500 italic">Ej besvarat</span>}
+                        {answer || <span className="text-gray-400 dark:text-gray-500 italic">{t('exercises.notAnswered', 'Ej besvarat')}</span>}
                       </p>
                     </div>
                   )
@@ -754,14 +763,14 @@ function ExercisesInner() {
         <div className="flex flex-wrap justify-center gap-4">
           <Button variant="outline" onClick={handleRestart}>
             <RotateCcw className="w-4 h-4 mr-2" />
-            Gör om övningen
+            {t('exercises.doAgain', 'Gör om övningen')}
           </Button>
           <Button variant="outline" onClick={() => window.print()}>
-            Skriv ut resultat
+            {t('exercises.printResult', 'Skriv ut resultat')}
           </Button>
           <Button onClick={handleBackToList}>
             <CheckCircle className="w-4 h-4 mr-2" />
-            Tillbaka till alla övningar
+            {t('exercises.backToAll', 'Tillbaka till alla övningar')}
           </Button>
         </div>
       </div>
@@ -783,7 +792,7 @@ function ExercisesInner() {
         className="flex items-center gap-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
       >
         <ChevronLeft className="w-5 h-5" />
-        Tillbaka till övningar
+        {t('exercises.backToExercises', 'Tillbaka till övningar')}
       </button>
 
       {/* Header */}
@@ -815,19 +824,19 @@ function ExercisesInner() {
       {/* Progress */}
       <div className="space-y-2">
         <div className="flex items-center justify-between text-sm">
-          <span className="text-gray-500 dark:text-gray-400">Steg {currentStep + 1} av {selectedExercise.steps.length}</span>
+          <span className="text-gray-500 dark:text-gray-400">{t('exercises.stepOf', 'Steg {{current}} av {{total}}', { current: currentStep + 1, total: selectedExercise.steps.length })}</span>
           <div className="flex items-center gap-2">
             {saving && (
               <span className="text-amber-600 dark:text-amber-400 flex items-center gap-1">
                 <Cloud className="w-4 h-4 animate-pulse" />
-                Sparar...
+                {t('exercises.saving')}
               </span>
             )}
             <button
               onClick={handleClearProgress}
               className="text-red-500 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 text-sm"
             >
-              Rensa progress
+              {t('exercises.clearProgress', 'Rensa mina svar')}
             </button>
           </div>
         </div>
@@ -853,8 +862,7 @@ function ExercisesInner() {
 
           <div className="bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 rounded-lg p-4">
             <p className="text-sm text-emerald-800 dark:text-emerald-300">
-              <strong>Tips:</strong> Ta dig tid att verkligen tänka igenom dina svar.
-              Dina svar sparas automatiskt i molnet så du kan fortsätta från vilken enhet som helst.
+              <strong>{t('exercises.tipLabel', 'Tips:')}</strong> {t('exercises.tipText', 'Ta dig tid att verkligen tänka igenom dina svar. Dina svar sparas automatiskt i molnet så du kan fortsätta från vilken enhet som helst.')}
             </p>
           </div>
         </div>
@@ -903,14 +911,14 @@ function ExercisesInner() {
             className="flex items-center gap-2"
           >
             <ArrowLeft className="w-4 h-4" />
-            Föregående
+            {t('exercises.previous', 'Föregående')}
           </Button>
 
           <Button
             onClick={handleNext}
             className="flex items-center gap-2"
           >
-            {currentStep === selectedExercise.steps.length - 1 ? 'Avsluta' : 'Nästa'}
+            {currentStep === selectedExercise.steps.length - 1 ? t('exercises.finish', 'Avsluta') : t('exercises.next', 'Nästa')}
             {currentStep === selectedExercise.steps.length - 1 ? (
               <CheckCircle className="w-4 h-4" />
             ) : (
@@ -925,9 +933,9 @@ function ExercisesInner() {
         <div className="flex items-start gap-3">
           <Lightbulb className="w-5 h-5 text-emerald-600 dark:text-emerald-400 mt-0.5" />
           <div className="flex-1">
-            <h3 className="font-medium text-emerald-900 dark:text-emerald-100">AI Coach</h3>
+            <h3 className="font-medium text-emerald-900 dark:text-emerald-100">{t('exercises.aiCoach', 'AI Coach')}</h3>
             <p className="text-sm text-emerald-700 dark:text-emerald-300 mt-1 mb-3">
-              Behöver du hjälp med denna övning? AI:n kan ge vägledning, exempel och följdfrågor.
+              {t('exercises.aiCoachText', 'Behöver du hjälp med denna övning? AI:n kan ge vägledning, exempel och följdfrågor.')}
             </p>
             {/* Samma fynd som "AI Help Button" ovan — AIAssistant tar inga
                 props och är en generell flytande knapp/modal, inte
@@ -978,7 +986,7 @@ function ExercisesInner() {
                 to="/knowledge-base"
                 className="inline-flex items-center gap-1 text-sm text-[var(--c-text)] dark:text-[var(--c-solid)] hover:text-[var(--c-text)] mt-3 font-medium"
               >
-                Se alla artiklar
+                {t('exercises.seeAllArticles', 'Se alla artiklar')}
                 <ArrowRight className="w-4 h-4" />
               </Link>
             </div>

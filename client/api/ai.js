@@ -583,27 +583,38 @@ async function checkPersonalOrgAiEnabled(serviceClient, userId) {
 // för att Vercel dödar funktionen mitt i en rad.
 const STROM_TIDSGRANS_MS = 45_000;
 
-async function fetchWithRetry(url, options, maxRetries = 2) {
+// 2026-09-29: anropet hade ingen tidsgräns. Ett OpenRouter som hängde höll
+// funktionen till Vercels maxDuration (60 s), som då dog utan svar — och med
+// två retries och backoff kunde en enda hängande begäran multipliceras. Varje
+// försök har nu en egen gräns, och hela anropet en gemensam budget så att vi
+// alltid hinner svara ärligt före 60 s.
+const OPENROUTER_FORSOK_MS = 20_000;
+const OPENROUTER_TOTAL_MS = 50_000;
+
+async function fetchWithRetry(url, options, maxRetries = 2, forsokMs = OPENROUTER_FORSOK_MS, totalMs = OPENROUTER_TOTAL_MS) {
+  const borjade = Date.now();
   let lastError;
   for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    const kvar = totalMs - (Date.now() - borjade);
     try {
-      const response = await fetch(url, options);
+      const signal = AbortSignal.timeout(Math.max(1, Math.min(forsokMs, kvar)));
+      const response = await fetch(url, { ...options, signal: options?.signal ? AbortSignal.any([options.signal, signal]) : signal });
       // 5xx + 429 → retry. Annars returnera direkt (succees eller permanenta fel)
       if (response.ok || (response.status < 500 && response.status !== 429)) {
         return response;
       }
       lastError = new Error(`HTTP ${response.status}`);
-      if (attempt < maxRetries) {
-        const backoff = 2000 * Math.pow(2, attempt); // 2s, 4s
+      const backoff = 2000 * Math.pow(2, attempt); // 2s, 4s
+      if (attempt < maxRetries && Date.now() - borjade + backoff < totalMs) {
         console.warn(`[AI] ${response.status} from OpenRouter, retry ${attempt + 1}/${maxRetries} in ${backoff}ms`);
         await new Promise(r => setTimeout(r, backoff));
         continue;
       }
-      return response; // sista försöket: returnera vad vi har
+      return response; // sista försöket eller slut på budget: returnera vad vi har
     } catch (err) {
       lastError = err;
-      if (attempt < maxRetries) {
-        const backoff = 2000 * Math.pow(2, attempt);
+      const backoff = 2000 * Math.pow(2, attempt);
+      if (attempt < maxRetries && Date.now() - borjade + backoff < totalMs) {
         console.warn(`[AI] Network error, retry ${attempt + 1}/${maxRetries} in ${backoff}ms:`, err.message);
         await new Promise(r => setTimeout(r, backoff));
         continue;
@@ -1334,7 +1345,10 @@ const hanterare = async (req, res) => {
         if (suggestionsResponse.ok && !klientenBorta) {
           const suggestionsData = /** @type {OpenRouterSvar} */ (await suggestionsResponse.json());
           // Följdfrågorna är ett eget anrop — också det ska taket se.
-          foljdfragorTokens = suggestionsData.usage?.total_tokens || 0;
+          // Utan `usage` i svaret: uppskatta (~4 tecken/token) i stället för
+          // att räkna noll — annars är följdfrågorna ur taket.
+          foljdfragorTokens = suggestionsData.usage?.total_tokens
+            || Math.ceil((600 + String(data?.meddelande || '').length + Math.min(fullResponse.length, 500) + String(suggestionsData.choices?.[0]?.message?.content || '').length) / 4);
           const suggestionsText = suggestionsData.choices?.[0]?.message?.content || '[]';
           try {
             const suggestions = JSON.parse(suggestionsText);
@@ -1517,6 +1531,7 @@ module.exports.extractJsonContent = extractJsonContent;
 module.exports.RESPONSE_VALIDATORS = RESPONSE_VALIDATORS;
 module.exports.resolveModel = resolveModel;
 module.exports.LOCKED_MODEL = LOCKED_MODEL;
+module.exports.fetchWithRetry = fetchWithRetry;
 // BL2: organisationens AI-brytare för personalens egna anrop. Exponeras för
 // test av samma skäl som grindarna ovan — det är den som gör B2B-sidans löfte
 // ("AI-funktionerna kan stängas av för hela organisationen") sant.

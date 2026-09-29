@@ -17,6 +17,7 @@ import {
   interestGuideApi,
   moodApi,
   personalBrandApi,
+  wellnessDataApi,
   calendarApi,
 } from './cloudStorage'
 
@@ -316,6 +317,17 @@ describe('moodApi.getHistory', () => {
     loggedIn()
     setResult({ data: null, error: { code: 'XX000', message: 'boom' } })
     await expect(moodApi.getHistory()).resolves.toEqual([])
+  })
+})
+
+describe('wellnessDataApi.get', () => {
+  // 2026-09-29: läsfel föll tillbaka på localStorage (gammal data som sanning).
+  // Mutation: återinför fallbacken i maende.ts -> faller.
+  it('kastar vid databasfel i stället för att visa lokal data', async () => {
+    loggedIn()
+    vi.mocked(window.localStorage.getItem).mockReturnValue(JSON.stringify({ reflections: ['gammal'] }))
+    setResult({ data: null, error: { code: 'XX000', message: 'boom' } })
+    await expect(wellnessDataApi.get()).rejects.toThrow()
   })
 })
 

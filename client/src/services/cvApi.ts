@@ -182,59 +182,6 @@ export const cvApi = {
 
     if (error) handleError(error)
     return true
-  },
-
-  async shareCV() {
-    const { data: { user } } = await anvandareFranSession()
-    if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
-
-    // Generate unique share code
-    const shareCode = Math.random().toString(36).substring(2, 15) +
-                      Math.random().toString(36).substring(2, 15)
-    const expiresAt = new Date()
-    expiresAt.setDate(expiresAt.getDate() + 30)
-
-    const { error } = await supabase
-      .from('cv_shares')
-      .insert({
-        user_id: user.id,
-        share_code: shareCode,
-        expires_at: expiresAt.toISOString()
-      })
-      .select()
-      .single()
-
-    if (error) handleError(error)
-
-    const shareUrl = `${window.location.origin}/cv/shared/${shareCode}`
-    const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(shareUrl)}`
-
-    return {
-      shareUrl,
-      qrCode: qrCodeUrl,
-      expiresAt: expiresAt.toISOString(),
-      shareCode
-    }
-  },
-
-  async getSharedCV(shareCode: string) {
-    // maybeSingle(): `.gt('expires_at', ...)` gör att en utgången eller
-    // ogiltig delningskod strukturellt ger 0 rader, inte ett databasfel.
-    // .single() lät det se ut som ett generiskt fel; ge i stället ett
-    // begripligt "länken har gått ut" som sidan kan visa direkt.
-    const { data, error } = await supabase
-      .from('cv_shares')
-      .select(`
-        *,
-        cvs(*)
-      `)
-      .eq('share_code', shareCode)
-      .gt('expires_at', new Date().toISOString())
-      .maybeSingle()
-
-    if (error) handleError(error)
-    if (!data) throw new APIError('Länken har gått ut eller är ogiltig', 'NOT_FOUND', 404)
-    return data
   }
 }
 

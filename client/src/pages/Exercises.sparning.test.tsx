@@ -56,6 +56,7 @@ vi.mock('@/components/focus/pages/FocusExercisesWizard', () => ({ FocusExercises
 vi.mock('@/components/FocusModeProvider', () => ({ useFocusMode: () => ({ leaveWizard: vi.fn() }) }))
 
 import Exercises from './Exercises'
+import { ConfirmDialogProvider } from '@/components/ui/ConfirmDialog'
 
 beforeEach(() => {
   upserts.length = 0
@@ -69,7 +70,7 @@ afterEach(() => {
 })
 
 async function oppnaOvning() {
-  const utils = render(<MemoryRouter><Exercises /></MemoryRouter>)
+  const utils = render(<MemoryRouter><ConfirmDialogProvider><Exercises /></ConfirmDialogProvider></MemoryRouter>)
   fireEvent.click(await screen.findByText('Dina styrkor'))
   const falt = await screen.findByLabelText('Vad är du bra på?')
   vi.useFakeTimers()
@@ -125,7 +126,7 @@ describe('Exercises — filterraden på engelska (drift 2026-09-22)', () => {
     i18n.addResourceBundle('en', 'translation', en, true, true)
     await i18n.changeLanguage('en')
     try {
-      render(<MemoryRouter><Exercises /></MemoryRouter>)
+      render(<MemoryRouter><ConfirmDialogProvider><Exercises /></ConfirmDialogProvider></MemoryRouter>)
       await screen.findByText('Dina styrkor')
       const namn = (en as unknown as { exercises: { categories: Record<string, string> } }).exercises.categories['Självkännedom']
       const knapp = screen.getAllByRole('button', { name: namn }).find((b) => b.hasAttribute('aria-pressed'))

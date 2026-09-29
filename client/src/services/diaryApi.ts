@@ -6,6 +6,8 @@ import { supabase } from '@/lib/supabase'
 import { formatLocalDate, veckansMandag } from './aktivitetSchema'
 
 import { anvandareFranSession } from '@/lib/anvandareFranSession'
+import { skrivfragaText } from '@/data/skrivfragor'
+import i18n from '@/i18n/config'
 /**
  * Dagens datum och veckans måndag som `YYYY-MM-DD` i användarens tidszon.
  *
@@ -668,6 +670,12 @@ const DEFAULT_PROMPTS: WritingPrompt[] = [
   { id: '5', prompt_text: 'Beskriv din perfekta arbetsdag.', category: 'career', is_active: true },
 ]
 
+/** Frågetexten på aktivt språk (tabellen och reserven är svenska). */
+function pafragaSprak(p: WritingPrompt): WritingPrompt {
+  const text = skrivfragaText(p.prompt_text, i18n.language)
+  return text === p.prompt_text ? p : { ...p, prompt_text: text }
+}
+
 export const writingPromptsApi = {
   async getRandom(category?: string): Promise<WritingPrompt | null> {
     try {
@@ -687,14 +695,14 @@ export const writingPromptsApi = {
         const filtered = category
           ? DEFAULT_PROMPTS.filter(p => p.category === category)
           : DEFAULT_PROMPTS
-        return filtered[Math.floor(Math.random() * filtered.length)] || DEFAULT_PROMPTS[0]
+        return pafragaSprak(filtered[Math.floor(Math.random() * filtered.length)] || DEFAULT_PROMPTS[0])
       }
 
       // Return random prompt
-      return data[Math.floor(Math.random() * data.length)]
+      return pafragaSprak(data[Math.floor(Math.random() * data.length)])
     } catch {
       // Return default prompt on any error
-      return DEFAULT_PROMPTS[Math.floor(Math.random() * DEFAULT_PROMPTS.length)]
+      return pafragaSprak(DEFAULT_PROMPTS[Math.floor(Math.random() * DEFAULT_PROMPTS.length)])
     }
   },
 
@@ -706,11 +714,11 @@ export const writingPromptsApi = {
         .eq('is_active', true)
 
       if (error || !data || data.length === 0) {
-        return DEFAULT_PROMPTS
+        return DEFAULT_PROMPTS.map(pafragaSprak)
       }
-      return data
+      return data.map(pafragaSprak)
     } catch {
-      return DEFAULT_PROMPTS
+      return DEFAULT_PROMPTS.map(pafragaSprak)
     }
   }
 }

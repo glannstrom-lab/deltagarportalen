@@ -24,7 +24,7 @@ vi.mock('@/services/afTrendsApi', () => ({
 
 import RelocationTab from '../RelocationTab'
 
-const NYA_EN = { career: { relocation: { queueYears: '{{min}}–{{max}} years' } } }
+const NYA_EN = { career: { relocation: { queueYears: '{{min}}–{{max}} years', amountSek: '{{belopp}} SEK' } } }
 
 const tMed = (nyckel: string, reserv: string, varden: Record<string, unknown>) =>
   i18n.t(nyckel, { ...varden, defaultValue: reserv })
@@ -59,5 +59,24 @@ describe('flyttdatans kötid', () => {
     const { container } = render(<MemoryRouter><RelocationTab /></MemoryRouter>)
     expect((await screen.findAllByText('5–15 years')).length).toBeGreaterThan(0)
     expect(container.textContent).not.toMatch(/\d+–\d+ år/)
+  })
+})
+
+describe('belopp och tal på flyttfliken följer språket', () => {
+  afterEach(async () => {
+    await i18n.changeLanguage('sv')
+  })
+
+  it('engelskt läge: SEK och engelsk tusentalsavgränsare, aldrig kr', async () => {
+    await engelska()
+    const { container } = render(<MemoryRouter><RelocationTab /></MemoryRouter>)
+    expect((await screen.findAllByText('14,500 SEK')).length).toBeGreaterThan(0)
+    expect(container.textContent).not.toMatch(/\d\s?kr\b/)
+  })
+
+  it('svenskt läge: kr med svensk avgränsare', async () => {
+    const { container } = render(<MemoryRouter><RelocationTab /></MemoryRouter>)
+    await screen.findAllByText(/5–15 år/)
+    expect(container.textContent).toMatch(/14\s500\s+kr/)
   })
 })

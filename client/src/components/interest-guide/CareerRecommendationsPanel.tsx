@@ -6,6 +6,7 @@
 
 import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
 import {
   calculateJobMatches,
@@ -14,19 +15,17 @@ import {
 } from '@/services/interestGuideData'
 import { educationApi, type Education } from '@/services/educationApi'
 import { sakerUrl } from '@/lib/sakerUrl'
-import { scbSalaryService, type SalaryData } from '@/services/scbSalaryApi'
+import { EXTERNA_LONEKALLOR } from '@/data/lonedata'
 import {
   GraduationCap,
   Briefcase,
   Target,
   Sparkles,
   ArrowRight,
-  DollarSign,
   Clock,
   ExternalLink,
   ChevronDown,
   ChevronUp,
-  BarChart3,
   Lightbulb,
   BookOpen,
 } from '@/components/ui/icons'
@@ -36,23 +35,30 @@ import { cn } from '@/lib/utils'
 interface CareerRecommendationsPanelProps {
   profile: UserProfile
   topMatches?: JobMatch[]
+  /** Hur många yrken som finns totalt — för "Nr 2 av 142". */
+  totalMatches?: number
   className?: string
 }
 
 interface CareerPathRecommendation {
   occupation: string
-  salaryData: SalaryData | null
   educations: Education[]
   /** Anropet mot utbildningsregistret föll. Skiljs från "inga utbildningar". */
   utbildningsfel: boolean
-  matchPercentage: number
+  /** Platsen i rangordningen (1 = närmast dina svar). Ingen procent: se matchningsplats. */
+  place: number
 }
+
+/** SCB:s lönesök — den officiella källan, hämtad ur den delade källistan i lonedata.ts. */
+const SCB_LONESOK_URL = EXTERNA_LONEKALLOR.find((k) => k.nyckel === 'scb')!.url
 
 export function CareerRecommendationsPanel({
   profile,
   topMatches,
+  totalMatches,
   className,
 }: CareerRecommendationsPanelProps) {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const [isLoading, setIsLoading] = useState(true)
   const [recommendations, setRecommendations] = useState<CareerPathRecommendation[]>([])
@@ -61,12 +67,15 @@ export function CareerRecommendationsPanel({
   // Get top matches if not provided.
   //
   // MEDVETET inte översatt: `occupationName` (nedan) skickas rätt in som
-  // sökterm till `scbSalaryService.getSalaryByOccupation` och
-  // `educationApi.matchByJobTitle`, som båda matchar mot SVENSKA yrkestitlar
-  // (SCB:s lönedata, utbildningsregistret). Ett engelskt namn skulle inte
-  // hitta någon träff där. Namnet är alltså en uppslagsnyckel här, inte bara
+  // sökterm till `educationApi.matchByJobTitle`, som matchar mot SVENSKA
+  // yrkestitlar (utbildningsregistret). Ett engelskt namn skulle inte hitta
+  // någon träff där. Namnet är alltså en uppslagsnyckel här, inte bara
   // renderad text — samma undantag som poängberäkningen i
   // `useJobbmatchningar`s docstring pekar ut.
+  //
+  // Lön hämtas INTE här längre: `scbSalaryApi` är tjugo handskrivna rader, inte
+  // SCB-data, och panelen visade dem som "Löneläge 2026" med percentiler.
+  // Panelen pekar i stället på SCB:s lönesök (EXTERNA_LONEKALLOR).
   const matches = topMatches || calculateJobMatches(profile).slice(0, 5)
 
   // Load career data for top matches
@@ -75,24 +84,19 @@ export function CareerRecommendationsPanel({
       setIsLoading(true)
 
       try {
-        const recommendationPromises = matches.slice(0, 3).map(async (match) => {
+        const recommendationPromises = matches.slice(0, 3).map(async (match, index) => {
           const occupationName = match.occupation.name
 
-          // Fetch salary and education data in parallel
-          const [salaryData, educationResult] = await Promise.all([
-            scbSalaryService.getSalaryByOccupation(occupationName),
-            educationApi.matchByJobTitle(occupationName, { limit: 3 }),
-          ])
+          const educationResult = await educationApi.matchByJobTitle(occupationName, { limit: 3 })
 
           return {
             occupation: occupationName,
-            salaryData,
             educations: educationResult.educations,
             // `'error'` betyder att anropet FÖLL — inte att yrket saknar
             // utbildningar. Utan den här flaggan blev ett avbrott en tyst
             // tom sektion. Se docstringen på SearchResult.source.
             utbildningsfel: educationResult.source === 'error',
-            matchPercentage: match.matchPercentage,
+            place: index + 1,
           }
         })
 
@@ -116,6 +120,17 @@ export function CareerRecommendationsPanel({
     .slice(0, 2)
     .map(([key]) => key)
     .join('')
+
+  // Första bokstaven i profilkoden avgör vilken typ av arbete tipset nämner.
+  const riasecFokusPerTyp: Record<string, string> = {
+    R: t('interestGuide.rec.focus.R', 'praktiskt arbete'),
+    I: t('interestGuide.rec.focus.I', 'analytiskt tänkande'),
+    A: t('interestGuide.rec.focus.A', 'kreativt skapande'),
+    S: t('interestGuide.rec.focus.S', 'social kontakt'),
+    E: t('interestGuide.rec.focus.E', 'ledarskap'),
+    C: t('interestGuide.rec.focus.C', 'strukturerat arbete'),
+  }
+  const riasecFokus = riasecFokusPerTyp[riasecCode.charAt(0)] ?? ''
 
   // Navigate to skills gap with pre-filled occupation
   const handleAnalyzeSkills = (occupation: string) => {
@@ -151,10 +166,10 @@ export function CareerRecommendationsPanel({
           </div>
           <div>
             <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">
-              Karriärrekommendationer
+              {t('interestGuide.rec.title', 'Karriärrekommendationer')}
             </h2>
             <p className="text-sm text-gray-600 dark:text-gray-400">
-              Baserat på din {riasecCode}-profil och personlighet
+              {t('interestGuide.rec.basedOn', 'Baserat på din {{code}}-profil och personlighet', { code: riasecCode })}
             </p>
           </div>
         </div>
@@ -189,29 +204,15 @@ export function CareerRecommendationsPanel({
                   </h3>
                   <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
                     <span className="flex items-center gap-1">
-                      <Target className="w-4 h-4 text-[var(--c-solid)]" />
-                      {rec.matchPercentage}% match
+                      <Target className="w-4 h-4 text-[var(--c-solid)]" aria-hidden="true" />
+                      {totalMatches
+                        ? t('interestGuide.results.rankPlace', 'Nr {{place}} av {{total}} utifrån dina svar', { place: rec.place, total: totalMatches })
+                        : t('interestGuide.results.rankPlaceShort', 'Nr {{place}} utifrån dina svar', { place: rec.place })}
                     </span>
-                    {rec.salaryData && (
-                      <span className="flex items-center gap-1">
-                        <DollarSign className="w-4 h-4 text-emerald-500" />
-                        {rec.salaryData.median.toLocaleString('sv-SE')} kr/mån
-                      </span>
-                    )}
                   </div>
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                <span className={cn(
-                  'px-2 py-1 rounded-full text-xs font-medium',
-                  rec.matchPercentage >= 80
-                    ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300'
-                    : rec.matchPercentage >= 60
-                    ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300'
-                    : 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300'
-                )}>
-                  {rec.matchPercentage >= 80 ? 'Utmärkt' : rec.matchPercentage >= 60 ? 'Bra' : 'Möjlig'}
-                </span>
                 {expandedOccupation === rec.occupation ? (
                   <ChevronUp className="w-5 h-5 text-gray-400" />
                 ) : (
@@ -229,66 +230,38 @@ export function CareerRecommendationsPanel({
               >
                 <div className="p-4 space-y-6">
                   {/*
-                    Rutan visades för ALLA yrken, eftersom uppslaget alltid
-                    returnerade något: 128 av 142 yrken fick medelvärdet av tjugo
-                    handskrivna rader presenterat som "Median" med percentiler.
-                    Nu returnerar uppslaget null utan underlag, och vi säger det
-                    i stället för att tyst utelämna raden. Året skrivs ut.
+                    Här stod "Löneläge 2026" med median, 10:e och 90:e percentilen
+                    ur SALARY_DATA_2026 i scbSalaryApi.ts — tjugo handskrivna rader,
+                    mest IT- och kontorsyrken, som aldrig varit hämtade från SCB
+                    (filen säger det själv). Talen såg ut som statistik och
+                    saknade märkning. Ett värde utan underlag visas inte: vi
+                    hänvisar till SCB:s lönesök, som har den riktiga siffran.
                   */}
-                  {!rec.salaryData && (
-                    <div className="rounded-xl p-4 bg-[var(--c-bg)] border border-[var(--c-accent)]">
-                      <p className="text-sm text-stone-700 dark:text-stone-300">
-                        Vi har ingen lönestatistik för det här yrket. Kolla{' '}
-                        <a
-                          href="https://www.scb.se/hitta-statistik/sverige-i-siffror/lonesok/"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="underline text-[var(--c-text)]"
-                        >
-                          SCB:s lönesök
-                        </a>{' '}
-                        eller lönesidan i portalen.
-                      </p>
-                    </div>
-                  )}
-                  {rec.salaryData && (
-                    <div className="bg-[var(--c-bg)] border border-[var(--c-accent)] rounded-xl p-4">
-                      <div className="flex items-center gap-2 mb-3">
-                        <BarChart3 className="w-5 h-5 text-[var(--c-solid)]" aria-hidden="true" />
-                        <h4 className="font-semibold text-stone-800 dark:text-stone-100">
-                          Löneläge {rec.salaryData.year}
-                        </h4>
-                      </div>
-                      <div className="grid grid-cols-3 gap-4 text-center">
-                        <div>
-                          <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">10:e percentilen</p>
-                          <p className="font-bold text-[var(--c-text)]">
-                            {rec.salaryData.p10.toLocaleString('sv-SE')} kr
-                          </p>
-                        </div>
-                        <div className="border-x border-[var(--c-accent)]">
-                          <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">Median</p>
-                          <p className="font-bold text-[var(--c-text)] text-lg">
-                            {rec.salaryData.median.toLocaleString('sv-SE')} kr
-                          </p>
-                        </div>
-                        <div>
-                          <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">90:e percentilen</p>
-                          <p className="font-bold text-[var(--c-text)]">
-                            {rec.salaryData.p90.toLocaleString('sv-SE')} kr
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  )}
+                  <div className="rounded-xl p-4 bg-[var(--c-bg)] border border-[var(--c-accent)]">
+                    <p className="text-sm text-stone-700 dark:text-stone-300">
+                      {t('interestGuide.rec.salaryNoteBefore', 'Vi visar ingen lön här, eftersom vi inte har officiell lönestatistik per yrke. Titta i')}{' '}
+                      <a
+                        href={SCB_LONESOK_URL}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="underline text-[var(--c-text)]"
+                      >
+                        {t('interestGuide.rec.scbSalarySearch', 'SCB:s lönesök (officiell statistik)')}
+                      </a>{' '}
+                      {t('interestGuide.rec.salaryNoteMiddle', 'eller på')}{' '}
+                      <Link to="/salary" className="underline text-[var(--c-text)]">
+                        {t('interestGuide.rec.salaryPage', 'lönesidan i portalen')}
+                      </Link>
+                      .
+                    </p>
+                  </div>
 
                   {/* Utbildningsregistret svarade inte. Utan den här raden
                       blev ett avbrott en sektion som bara inte fanns — och
                       läsaren drog slutsatsen att yrket saknar utbildningar. */}
                   {rec.utbildningsfel && rec.educations.length === 0 && (
                     <p className="text-sm text-stone-600 dark:text-stone-400">
-                      Vi når inte utbildningsregistret just nu, så
-                      utbildningsvägarna saknas här. Försök igen om en stund.
+                      {t('interestGuide.rec.educationDown', 'Vi når inte utbildningsregistret just nu, så utbildningsvägarna saknas här. Försök igen om en stund.')}
                     </p>
                   )}
 
@@ -298,7 +271,7 @@ export function CareerRecommendationsPanel({
                       <div className="flex items-center gap-2 mb-3">
                         <GraduationCap className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-solid)]" />
                         <h4 className="font-semibold text-gray-900 dark:text-gray-100">
-                          Utbildningsvägar
+                          {t('interestGuide.rec.educationPaths', 'Utbildningsvägar')}
                         </h4>
                       </div>
                       <div className="space-y-2">
@@ -348,18 +321,18 @@ export function CareerRecommendationsPanel({
                       className="gap-2 bg-[var(--c-solid)] hover:bg-[var(--c-solid)]"
                     >
                       <Target className="w-4 h-4" />
-                      Analysera kompetensgap
+                      {t('interestGuide.rec.analyzeSkills', 'Analysera kompetensgap')}
                     </Button>
                     <Link to="/education">
                       <Button size="sm" variant="outline" className="gap-2">
                         <GraduationCap className="w-4 h-4" />
-                        Sök utbildningar
+                        {t('interestGuide.rec.searchEducation', 'Sök utbildningar')}
                       </Button>
                     </Link>
                     <Link to="/job-search">
                       <Button size="sm" variant="outline" className="gap-2">
                         <Briefcase className="w-4 h-4" />
-                        Se lediga jobb
+                        {t('interestGuide.rec.seeJobs', 'Se lediga jobb')}
                       </Button>
                     </Link>
                   </div>
@@ -375,27 +348,20 @@ export function CareerRecommendationsPanel({
             <Lightbulb className="w-6 h-6 text-amber-600 dark:text-amber-400 flex-shrink-0" />
             <div>
               <h4 className="font-semibold text-amber-900 dark:text-amber-100 mb-2">
-                Tips för din karriärväg
+                {t('interestGuide.rec.tipsTitle', 'Tips för din karriärväg')}
               </h4>
               <ul className="text-sm text-amber-800 dark:text-amber-200 space-y-2">
                 <li className="flex items-start gap-2">
                   <span className="text-amber-500">•</span>
-                  Med en {riasecCode}-profil passar du ofta bra för yrken som kombinerar{' '}
-                  {riasecCode.charAt(0) === 'R' && 'praktiskt arbete '}
-                  {riasecCode.charAt(0) === 'I' && 'analytiskt tänkande '}
-                  {riasecCode.charAt(0) === 'A' && 'kreativt skapande '}
-                  {riasecCode.charAt(0) === 'S' && 'social kontakt '}
-                  {riasecCode.charAt(0) === 'E' && 'ledarskap '}
-                  {riasecCode.charAt(0) === 'C' && 'strukturerat arbete '}
-                  med dina personliga styrkor.
+                  {t('interestGuide.rec.tipProfile', 'Med en {{code}}-profil passar du ofta bra för yrken som kombinerar {{focus}} med dina personliga styrkor.', { code: riasecCode, focus: riasecFokus })}
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-amber-500">•</span>
-                  Använd kompetensgap-analysen för att se vilka färdigheter du kan utveckla.
+                  {t('interestGuide.rec.tipSkills', 'Använd kompetensgap-analysen för att se vilka färdigheter du kan utveckla.')}
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-amber-500">•</span>
-                  Prata med din arbetskonsulent för personlig karriärvägledning.
+                  {t('interestGuide.rec.tipConsultant', 'Prata med din arbetskonsulent för personlig karriärvägledning.')}
                 </li>
               </ul>
             </div>
@@ -406,7 +372,7 @@ export function CareerRecommendationsPanel({
         <div className="flex justify-center pt-4">
           <Link to="/interest-guide/occupations">
             <Button variant="outline" className="gap-2">
-              Utforska alla matchande yrken
+              {t('interestGuide.rec.exploreAll', 'Utforska alla matchande yrken')}
               <ArrowRight className="w-4 h-4" />
             </Button>
           </Link>

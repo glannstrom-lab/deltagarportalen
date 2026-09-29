@@ -294,6 +294,16 @@ describe('unifiedProfileApi.updateCareer', () => {
     })
   })
 
+  it('avbryter utan att skriva om läsningen av befintliga career_goals misslyckas', async () => {
+    loggedIn()
+    mockFromBuilder.single.mockResolvedValue({ data: null, error: new Error('lasfel') })
+    await expect(
+      unifiedProfileApi.updateCareer({ preferredRoles: ['Snickare'] })
+    ).rejects.toThrow('lasfel')
+    expect(mockFromBuilder.update).not.toHaveBeenCalled()
+    expect(mockFromBuilder.upsert).not.toHaveBeenCalled()
+  })
+
   it('kastar och visar error-toast om profiles-update failar', async () => {
     loggedIn()
     queueResult({ data: null, error: new Error('career-update-fel') })

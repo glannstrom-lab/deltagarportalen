@@ -906,7 +906,7 @@ function SettingsInner() {
 
             <div className="space-y-4">
               <Card variant="flat">
-                <h3 className="font-medium text-stone-900 dark:text-stone-100 mb-4">{t('settings.security.changePassword')}</h3>
+                <h4 className="font-medium text-stone-900 dark:text-stone-100 mb-4">{t('settings.security.changePassword')}</h4>
                 {/* BP6: formuläret gjorde ingenting (knapp utan onClick) — se BytLosenord.tsx. */}
                 <BytLosenord />
               </Card>
