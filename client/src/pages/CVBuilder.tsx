@@ -1523,7 +1523,9 @@ export default function CVBuilder() {
             React-trädet är oförändrat, så `setStep` och `completedSteps`
             fungerar precis som när listan stod här. Bara den fysiska platsen
             flyttar, så sidan slipper sin andra vänsterkolumn. */}
-        {step < STEPS.length && skenSlot && createPortal(
+        {/* EG3 (2026-09-29): ett färdigt CV öppnas på granskningen. Översikten visas därför
+            även där — annars var "Föregående" fem gånger enda vägen tillbaka till mallen. */}
+        {skenSlot && createPortal(
           <nav aria-label={t('cvBuilder.contentOverview', 'Innehåll i ditt CV')} className="mb-3">
             <SkenEtikett text={t('cvBuilder.yourCv', 'Ditt CV')} />
             {/* Stigen (N2, 2026-09-10): stegen är en ordning man går igenom,

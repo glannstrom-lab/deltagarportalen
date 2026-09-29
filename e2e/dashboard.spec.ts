@@ -68,7 +68,9 @@ test.describe('Översikt', () => {
     await expect(subnav).toBeVisible()
     await subnav.getByRole('link', { name: /^cv$/i }).click()
     await expect(page).toHaveURL(/\/#\/cv/)
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText(/^cv$/i)
+    // Namnet, inte "den enda h1:an": ett färdigt CV öppnas på granskningen (EG3), och
+    // mallens eget dokument bär en h1 med personens namn (CVK1).
+    await expect(page.getByRole('heading', { level: 1, name: /^cv$/i })).toBeVisible()
   })
 
   test('mobil: bottennavigeringen och menyn visar hubbarna', async ({ page }) => {

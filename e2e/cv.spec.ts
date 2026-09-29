@@ -37,6 +37,12 @@ test.describe('CV-byggaren', () => {
       await guide.getByRole('button', { name: /stäng guiden/i }).click()
     }
     await expect(guide).toBeHidden()
+
+    // EG3 (2026-09-29): ett befintligt CV öppnas på första ofullständiga steget —
+    // testkontots CV är komplett, så sidan landar på granskningen. Testerna nedan
+    // är skrivna för steg 1, så de går dit som en användare gör: via stegöversikten.
+    await page.getByRole('navigation', { name: /innehåll i ditt cv/i }).getByRole('button').first().click()
+    await expect(page.getByRole('button', { name: /^föregående$/i })).toBeDisabled()
   })
 
   test('sidan har rubrik och verktygslänkarna i sidoskenan', async ({ page }) => {
