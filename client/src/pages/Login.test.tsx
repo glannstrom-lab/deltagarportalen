@@ -155,10 +155,23 @@ describe('Login', () => {
       expect(screen.getByRole('alert')).toHaveAttribute('tabindex', '-1')
     })
 
-    it('flyttar inte fokus till felet innan något försök gjorts', () => {
-      mockAuthState.error = 'Något'
+    it('fokuserar serverfelet även när sidan monterats om under laddningen (prod 2026-09-29)', async () => {
+      // I prod monteras Login om medan signIn laddar: `forsok` är 0 igen när felet kommer.
+      // Felet i storen är då enda spåret av försöket.
+      mockAuthState.error = 'Fel e-post eller lösenord'
       renderLogin()
-      expect(screen.getByRole('alert')).not.toHaveFocus()
+      await waitFor(() => expect(screen.getByRole('alert')).toHaveFocus())
+    })
+
+    it('ett fältfel vid blur flyttar inte fokus mitt under tabbning', () => {
+      mockAuthState.error = null
+      renderLogin()
+      const epost = screen.getByLabelText(/e-post/i)
+      epost.focus()
+      fireEvent.change(epost, { target: { value: 'inte-en-adress', name: 'email' } })
+      fireEvent.blur(epost)
+      screen.getByLabelText(/^lösenord$/i).focus()
+      expect(screen.getByLabelText(/^lösenord$/i)).toHaveFocus()
     })
 
     it('felfärgen är red-700 (ljust) / red-300 (mörkt), inte red-600/400 som gav 4,36:1', () => {

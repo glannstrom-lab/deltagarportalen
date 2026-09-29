@@ -149,6 +149,14 @@ export default function Login() {
     }
   }, [forsok, harFel, authLoading])
 
+  // SV4, andra halvan (prod 2026-09-29): ett serverfel kommer efter en laddning som
+  // kan montera om hela sidan — då är `forsok` nollställd och effekten ovan tiger.
+  // authError bor i storen och överlever ommonteringen, så den styr fokus själv.
+  // Fältfel (zod) når aldrig servern och hanteras ovan.
+  useEffect(() => {
+    if (authError && !authLoading) felRef.current?.focus()
+  }, [authError, authLoading])
+
   // Show loading while checking auth state
   if (authLoading) {
     return (
