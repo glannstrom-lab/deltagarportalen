@@ -30,6 +30,7 @@ import { BookOpen, Headphones, MessageSquare, Volume2, ExternalLink, Info } from
 import { Card } from '@/components/ui'
 import { cn } from '@/lib/utils'
 import { KONTROLLERAD } from '../International'
+import { LasMer } from '@/components/ui/LasMer'
 
 type Kostnad = 'free' | 'paid' | 'freemium'
 type Form = 'course' | 'self'
@@ -53,12 +54,15 @@ const RESURSER: Resurs[] = [
 
 const NIVAER = ['a1', 'a2', 'b1', 'b2', 'c1', 'c2'] as const
 const FRASER = ['p1', 'p2', 'p3', 'p4', 'p5', 'p6', 'p7', 'p8', 'p9', 'p10'] as const
+/** Så många fraser syns innan "Visa alla" — de tre första handlar om att söka jobb. */
+const FRASER_FORST = 4
 
 type Filter = 'all' | 'free' | 'course' | 'self'
 
 export default function LanguageTab() {
   const { t } = useTranslation()
   const [filter, setFilter] = useState<Filter>('all')
+  const [allaFraser, setAllaFraser] = useState(false)
 
   const resurser = useMemo(() => {
     switch (filter) {
@@ -81,20 +85,19 @@ export default function LanguageTab() {
   }
 
   return (
-    <div className="space-y-6">
-      <p className="text-sm text-stone-700 dark:text-stone-300">
-        {t('international.language.description')}
-      </p>
-
+    <div className="space-y-4">
       {/* Hur bra svenska behöver du? */}
-      <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
+      <Card className="p-5 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
         <h2 className="font-semibold text-stone-900 dark:text-stone-100 mb-2">
           {t('international.language.levelsTitle')}
         </h2>
-        <p className="text-sm text-stone-700 dark:text-stone-200 mb-4">
+        <p className="text-sm text-stone-700 dark:text-stone-200">
           {t('international.language.levelsBody')}
         </p>
 
+        {/* Designpass 2026-10-09: nivåskalorna är referens, inte första
+            läsningen — de ligger kvar ordagrant bakom ett klick. */}
+        <LasMer etikett={t('international.language.levelsMore', 'Om nivåerna: sfi och A1–C2')}>
         <h3 className="text-sm font-semibold text-stone-800 dark:text-stone-100 mb-2">
           {t('international.language.sfiTitle')}
         </h3>
@@ -123,10 +126,11 @@ export default function LanguageTab() {
         <p className="text-xs text-stone-600 dark:text-stone-400 mt-2">
           {t('international.language.cefrNote')}
         </p>
+        </LasMer>
       </Card>
 
       {/* Var du kan lära dig */}
-      <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
+      <Card className="p-5 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
         <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
           <h2 className="font-semibold text-stone-900 dark:text-stone-100">
             {t('international.language.resourcesTitle')}
@@ -186,17 +190,13 @@ export default function LanguageTab() {
       </Card>
 
       {/* Fraser */}
-      <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
+      <Card className="p-5 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
         <h2 className="flex items-center gap-2 font-semibold text-stone-900 dark:text-stone-100 mb-1">
           <MessageSquare className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-text)]" aria-hidden="true" />
           {t('international.language.phrasesTitle')}
         </h2>
-        <p className="text-sm text-stone-700 dark:text-stone-200 mb-4">
-          {t('international.language.phrasesIntro')}
-        </p>
-
-        <ul className="space-y-2">
-          {FRASER.map((nyckel) => {
+        <ul id="fraslista" className="space-y-2 mt-3">
+          {(allaFraser ? FRASER : FRASER.slice(0, FRASER_FORST)).map((nyckel) => {
             const sv = t(`international.language.phrases.${nyckel}.sv`)
             const en = t(`international.language.phrases.${nyckel}.en`)
             const sammanhang = t(`international.language.phrases.${nyckel}.context`)
@@ -205,16 +205,18 @@ export default function LanguageTab() {
                 key={nyckel}
                 className="flex items-start justify-between gap-3 p-3 rounded-lg bg-stone-50 dark:bg-stone-700"
               >
-                <div>
+                <div className="min-w-0 flex-1">
+                  {/* Sammanhanget står ovanför frasen, inte bredvid — på mobil
+                      tryckte etiketten ihop frasen till ett ord per rad. */}
+                  <span className="inline-block text-xs px-2 py-0.5 mb-1 rounded-full bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 text-[var(--c-text)] dark:text-[var(--c-text)]">
+                    {sammanhang}
+                  </span>
                   {/* lang-märkningen är inte kosmetik: utan den läser svensk
                       talsyntes den engelska raden som svenska. */}
                   <p lang="sv" className="font-medium text-stone-900 dark:text-stone-100">{sv}</p>
                   <p lang="en" className="text-sm text-stone-700 dark:text-stone-300">{en}</p>
                 </div>
                 <div className="flex items-center gap-2 shrink-0">
-                  <span className="text-xs px-2 py-0.5 rounded-full bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 text-[var(--c-text)] dark:text-[var(--c-text)]">
-                    {sammanhang}
-                  </span>
                   {kanLasaUpp && (
                     <button
                       onClick={() => lasUpp(sv)}
@@ -229,10 +231,21 @@ export default function LanguageTab() {
             )
           })}
         </ul>
+        <button
+          type="button"
+          onClick={() => setAllaFraser((v) => !v)}
+          aria-expanded={allaFraser}
+          aria-controls="fraslista"
+          className="mt-3 min-h-[44px] text-sm font-medium text-[var(--c-text)] underline"
+        >
+          {allaFraser
+            ? t('international.language.phrasesFewer', 'Visa färre fraser')
+            : t('international.language.phrasesAll', 'Visa alla {{count}} fraser', { count: FRASER.length })}
+        </button>
       </Card>
 
       {/* Tips */}
-      <Card className="p-6 bg-[var(--c-bg)]/60 dark:bg-[var(--c-bg)]/20 border-[var(--c-accent)]/60">
+      <Card className="p-5 bg-[var(--c-bg)]/60 dark:bg-[var(--c-bg)]/20 border-[var(--c-accent)]/60">
         <h2 className="font-semibold text-stone-900 dark:text-stone-100 mb-3">
           {t('international.language.tipsTitle')}
         </h2>

@@ -21,7 +21,6 @@ import {
   type SimulatorSession,
 } from '@/services/interviewService'
 import { IntervjuSimulatorResultSchema, safeParseAiResponse, type IntervjuResult } from '@/services/aiSchemas'
-import { RadgivarTips } from '@/components/radgivare/RadgivarPanel'
 import { Link } from 'react-router-dom'
 import { useArticles } from '@/hooks/knowledge-base/useArticles'
 import { datumSprak } from '@/lib/datumsprak'
@@ -1121,7 +1120,6 @@ ${t('interviewSimulator.download.tipsForImprovement')}:
           <TidigareOvningar sessioner={tidigareOvningar} />
         )}
 
-        <RadgivarTips pathname="/interview-simulator" index={1} />
 
         {/* Tips Section */}
         <Card className="p-6 bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800/50">

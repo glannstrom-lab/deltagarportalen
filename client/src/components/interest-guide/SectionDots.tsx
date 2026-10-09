@@ -74,38 +74,3 @@ export function SectionDots({
     </div>
   )
 }
-
-// Enkel sektionsinfo-komponent
-interface SectionInfoProps {
-  sectionId: SectionId
-}
-
-export function SectionInfo({ sectionId }: SectionInfoProps) {
-  const info = {
-    riasec: {
-      title: 'Dina arbetsintressen',
-      description: 'RIASEC-modellen hjälper oss förstå vilka typer av arbete du trivs bäst med.'
-    },
-    bigfive: {
-      title: 'Din personlighet',
-      description: 'Big Five är världens mest forskade personlighetsmodell.'
-    },
-    strong: {
-      title: 'Vad intresserar dig?',
-      description: 'Dina intressen är en stark indikator på yrken du ska trivas med.'
-    },
-    icf: {
-      title: 'Dina förutsättningar',
-      description: 'ICF kartlägger dina styrkor och visar var du kan behöva anpassningar.'
-    }
-  }
-
-  const currentInfo = info[sectionId]
-  
-  return (
-    <div className="text-center mb-6">
-      <h2 className="text-lg font-semibold text-gray-900 mb-1">{currentInfo.title}</h2>
-      <p className="text-sm text-gray-500">{currentInfo.description}</p>
-    </div>
-  )
-}

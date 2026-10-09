@@ -14,6 +14,7 @@ import { SkenSlotContext } from './skenSlot'
 import SidRailStats from './SidRailStats'
 import { cn } from '@/lib/utils'
 import { getTabsForPath } from '@/data/pageTabs'
+import { useSidbild } from '@/data/sidbilder'
 import { getDomainForPath, type LegacyColorDomain } from '@/lib/domains'
 
 type TabVariant = 'minimal' | 'pills' | 'floating' | 'underline' | 'glass'
@@ -98,6 +99,8 @@ export function PageLayout({
   // Auto-resolve domain from route if not explicitly provided.
   // tokens.css mappar [data-domain] → CSS-variabler som driver --c-* per sida.
   const resolvedDomain = domain ?? getDomainForPath(location.pathname)
+  // Sidans scenbild — i skenan på desktop, som tumnagel vid rubriken på mobil.
+  const sidbild = useSidbild(location.pathname)
 
   // Skenan ritas bara när den har något att visa. En sida utan rubrik och
   // utan flikar ska inte få en tom 186px-kolumn.
@@ -128,6 +131,7 @@ export function PageLayout({
               sidoflikar={sidoflikar}
               slotRef={setSkenSlot}
               tabsEtikett={tabsEtikett}
+              bild={sidbild}
             >
               {(actions || (stats && stats.length > 0)) && (
                 <div className="space-y-3">
@@ -160,14 +164,27 @@ export function PageLayout({
           {visaSkena && (title || actions || (stats && stats.length > 0)) && (
             <div className="lg:hidden mb-3">
               {title && (
-                <h1 className="text-[1.25rem] font-semibold tracking-tight text-stone-900 dark:text-stone-100 m-0">
-                  {title}
-                </h1>
-              )}
-              {title && (subtitle || description) && (
-                <p className="mt-0.5 text-[0.8125rem] text-stone-600 dark:text-stone-400 m-0">
-                  {subtitle || description}
-                </p>
+                <div className="flex items-center gap-3">
+                  {sidbild && (
+                    <img
+                      src={sidbild}
+                      alt=""
+                      aria-hidden="true"
+                      decoding="async"
+                      className="w-14 h-14 shrink-0 rounded-lg object-cover bg-[var(--c-bg)]"
+                    />
+                  )}
+                  <div className="min-w-0">
+                    <h1 className="text-[1.25rem] font-semibold tracking-tight text-stone-900 dark:text-stone-100 m-0">
+                      {title}
+                    </h1>
+                    {(subtitle || description) && (
+                      <p className="mt-0.5 text-[0.8125rem] text-stone-600 dark:text-stone-400 m-0">
+                        {subtitle || description}
+                      </p>
+                    )}
+                  </div>
+                </div>
               )}
               {stats && stats.length > 0 && (
                 <div className="mt-2 -mx-2">

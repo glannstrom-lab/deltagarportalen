@@ -147,7 +147,7 @@ export function RiasecChart({ scores, size = 280 }: RiasecChartProps) {
         role="img"
         aria-labelledby="riasec-chart-title riasec-chart-desc"
       >
-        <title id="riasec-chart-title">RIASEC Arbetsintressen</title>
+        <title id="riasec-chart-title">{t('interestGuide.charts.riasecTitle', 'RIASEC Arbetsintressen')}</title>
         <desc id="riasec-chart-desc">{accessibleDescription}</desc>
         <defs>
           {/* Diagramfyllnad (SVG) — datavisualisering, undantag från DESIGN.md §6 */}

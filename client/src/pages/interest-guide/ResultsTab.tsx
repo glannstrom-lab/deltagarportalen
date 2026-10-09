@@ -17,13 +17,10 @@ import { interestGuideApi, type InterestGuideHistoryEntry } from '@/services/clo
 import { showToast } from '@/components/Toast'
 import { riasecForandring } from './riasecForandring'
 import {
-  Sparkles,
+  RotateCcw,
   Download,
   Share2,
-  BarChart3,
-  Trophy,
   ArrowRight,
-  CheckCircle,
   FileText,
   History,
   TrendingUp,
@@ -42,7 +39,6 @@ export default function ResultsTab() {
   const [profile, setProfile] = useState<UserProfile | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [showComparisonHint, setShowComparisonHint] = useState(true)
   const [history, setHistory] = useState<InterestGuideHistoryEntry[]>([])
   const [showHistory, setShowHistory] = useState(false)
   const [selectedHistoryId, setSelectedHistoryId] = useState<string | null>(null)
@@ -205,13 +201,17 @@ export default function ResultsTab() {
     )
   }
 
-  // Närmaste yrket i stället för "antal yrken över 70 %": procenttalet är inte
-  // tolkbart som lämplighet (se matchningsplats i interestGuideData).
-  const narmasteYrke = oversattaTopMatches[0]?.occupation.name
-
+  /*
+    Designpasset 2026-10-09 ("för texttungt"): fliken var ~750 ord och 7 000 px.
+    Tre färgade sammanfattningskort (RIASEC-koden, närmaste yrket, antal yrken)
+    upprepade det som står i topp 3 och i profilen; ett tipskort om att göra om
+    testet senare och en andra knapprad i ResultsView dubblerade knapparna
+    längst ner. De är borta. Ordningen är nu: hälsning → topp 3 → profilen →
+    karriärvägar → historik → nästa steg → knappar.
+  */
   return (
     <MotionConfig reducedMotion="user">
-    <div className="max-w-5xl mx-auto space-y-8 min-h-screen  p-4">
+    <div className="max-w-5xl mx-auto space-y-6 p-4">
       {error && (
         <InfoCard variant="error" className="mb-6">
           {error}
@@ -239,49 +239,62 @@ export default function ResultsTab() {
         </div>
       </motion.div>
 
-      {/* Results Summary Cards */}
+      {/* Top Job Matches Preview */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="grid grid-cols-1 md:grid-cols-3 gap-4"
+        transition={{ delay: 0.15 }}
       >
-        <Card className="p-6 bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800">
-          <div className="flex items-start justify-between">
-            <div>
-              <p className="text-sm text-amber-600 dark:text-amber-400 font-medium mb-2">{t('interestGuide.results.riasecType')}</p>
-              <p className="text-2xl font-bold text-amber-900 dark:text-amber-100">
-                {Object.entries(profile.riasec)
-                  .sort(([, a], [, b]) => b - a)
-                  .slice(0, 3)
-                  .map(([key]) => key)
-                  .join('')}
-              </p>
-            </div>
-            <BarChart3 className="w-6 h-6 text-amber-600 dark:text-amber-400 opacity-50" />
+        <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100">{t('interestGuide.results.top3Heading')}</h3>
+            <Button
+              variant="ghost"
+              onClick={() => navigate('/interest-guide/occupations')}
+              className="gap-2 text-[var(--c-text)] dark:text-stone-100"
+            >
+              {t('interestGuide.results.seeAll')}
+              <ArrowRight className="w-4 h-4" />
+            </Button>
+          </div>
+          <div className="space-y-3">
+            {oversattaTopMatches.map((match, index) => (
+              <div key={match.occupation.id} className="flex items-center gap-4 p-3 bg-stone-50 dark:bg-stone-900/50 rounded-lg">
+                <div className="flex-shrink-0 w-8 h-8 bg-[var(--c-solid)] rounded-full flex items-center justify-center text-white font-bold text-sm">
+                  {index + 1}
+                </div>
+                <div className="flex-1">
+                  <p className="font-semibold text-gray-900 dark:text-gray-100">{match.occupation.name}</p>
+                  <p className="text-sm text-gray-700 dark:text-gray-300 line-clamp-1">{match.occupation.description}</p>
+                  {/* Plats i stället för procent: se matchningsplats i interestGuideData. */}
+                  <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">{t('interestGuide.results.rankPlace', 'Nr {{place}} av {{total}} utifrån dina svar', { place: index + 1, total: jobMatches.length })}</p>
+                </div>
+              </div>
+            ))}
           </div>
         </Card>
+      </motion.div>
 
-        <Card className="p-6 bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800">
-          <div className="flex items-start justify-between">
-            <div>
-              <p className="text-sm text-green-600 dark:text-green-400 font-medium mb-2">{t('interestGuide.results.closestOccupation', 'Yrket närmast dina svar')}</p>
-              <p className="text-lg font-bold text-green-900 dark:text-green-100">{narmasteYrke ?? '—'}</p>
-              <p className="text-xs text-green-700 dark:text-green-300 mt-1">{t('interestGuide.results.closestOccupationHint', 'utifrån dina svar i testet')}</p>
-            </div>
-            <Trophy className="w-6 h-6 text-green-600 dark:text-green-400 opacity-50" />
-          </div>
-        </Card>
+      {/* Main Results View */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.25 }}
+      >
+        <ResultsView profile={profile} />
+      </motion.div>
 
-        <Card className="p-6 bg-purple-50 dark:bg-purple-900/20 border-[var(--c-accent)] dark:border-[var(--c-accent)]/50">
-          <div className="flex items-start justify-between">
-            <div>
-              <p className="text-sm text-[var(--c-solid)] dark:text-[var(--c-solid)] font-medium mb-2">{t('interestGuide.results.totalOccupations')}</p>
-              <p className="text-2xl font-bold text-purple-900 dark:text-purple-100">{jobMatches.length}</p>
-              <p className="text-xs text-[var(--c-text)] dark:text-[var(--c-text)] mt-1">{t('interestGuide.results.toExplore')}</p>
-            </div>
-            <CheckCircle className="w-6 h-6 text-[var(--c-solid)] dark:text-[var(--c-solid)] opacity-50" />
-          </div>
-        </Card>
+      {/* Career Recommendations Panel */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+      >
+        <CareerRecommendationsPanel
+          profile={profile}
+          topMatches={jobMatches.slice(0, 5)}
+          totalMatches={jobMatches.length}
+        />
       </motion.div>
 
       {/* History Comparison Section */}
@@ -291,11 +304,11 @@ export default function ResultsTab() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.05 }}
         >
-          <Card className="p-6 bg-blue-50 dark:bg-blue-900/20 border-[var(--c-accent)] dark:border-[var(--c-accent)]/50">
+          <Card className="p-5 bg-[var(--c-bg)] border-[var(--c-accent)] dark:border-[var(--c-accent)]/50">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-blue-100 dark:bg-blue-800/50 rounded-xl flex items-center justify-center">
-                  <History className="w-5 h-5 text-[var(--c-text)] dark:text-blue-400" />
+                <div className="w-10 h-10 bg-white dark:bg-stone-800 rounded-xl flex items-center justify-center">
+                  <History className="w-5 h-5 text-[var(--c-text)] dark:text-stone-100" />
                 </div>
                 <div>
                   <h3 className="font-bold text-gray-900 dark:text-gray-100">{t('interestGuide.results.comparisonWithPreviousTest')}</h3>
@@ -304,7 +317,7 @@ export default function ResultsTab() {
                   </p>
                 </div>
               </div>
-              <span className="text-xs bg-blue-100 dark:bg-blue-800/50 text-[var(--c-text)] dark:text-blue-300 px-2 py-1 rounded-full">
+              <span className="text-xs bg-white dark:bg-stone-800 text-[var(--c-text)] dark:text-stone-100 px-2 py-1 rounded-full">
                 {t('interestGuide.results.testsTotal', { count: history.length })}
               </span>
             </div>
@@ -364,7 +377,7 @@ export default function ResultsTab() {
                     <div
                       key={entry.id}
                       className={`p-4 border-b border-stone-100 dark:border-stone-700 last:border-0 ${
-                        index === 0 ? 'bg-amber-50 dark:bg-amber-900/20' : 'hover:bg-stone-50 dark:hover:bg-stone-700/50'
+                        index === 0 ? 'bg-[var(--c-bg)]' : 'hover:bg-stone-50 dark:hover:bg-stone-700/50'
                       } transition-colors cursor-pointer focus-visible:outline-2 focus-visible:outline-[var(--c-solid)]`}
                       role="button"
                       tabIndex={0}
@@ -392,7 +405,7 @@ export default function ResultsTab() {
                                 day: 'numeric'
                               })}
                               {index === 0 && (
-                                <span className="ml-2 text-xs bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 px-2 py-0.5 rounded-full">
+                                <span className="ml-2 text-xs bg-[var(--c-bg)] text-[var(--c-text)] dark:text-stone-100 border border-[var(--c-accent)] px-2 py-0.5 rounded-full">
                                   {t('interestGuide.results.current')}
                                 </span>
                               )}
@@ -451,115 +464,21 @@ export default function ResultsTab() {
         </motion.div>
       )}
 
-      {/* Top Job Matches Preview */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.15 }}
+      {/* Nästa steg: CV. Var en helfärgad banderoll med ikonplatta, etikett,
+          rubrik och ett stycke; nu ett vanligt länkkort. (2026-10-09) */}
+      <Link
+        to="/cv"
+        className="flex items-center gap-4 rounded-2xl p-4 sm:p-5 bg-[var(--c-bg)] border border-[var(--c-accent)] hover:border-[var(--c-solid)] transition-colors group"
       >
-        <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100">{t('interestGuide.results.top3Heading')}</h3>
-            <Button
-              variant="ghost"
-              onClick={() => navigate('/interest-guide/occupations')}
-              className="gap-2 text-amber-600 dark:text-amber-400"
-            >
-              {t('interestGuide.results.seeAll')}
-              <ArrowRight className="w-4 h-4" />
-            </Button>
-          </div>
-          <div className="space-y-3">
-            {oversattaTopMatches.map((match, index) => (
-              <div key={match.occupation.id} className="flex items-center gap-4 p-3 bg-stone-50 dark:bg-stone-900/50 rounded-lg">
-                <div className="flex-shrink-0 w-8 h-8 bg-[var(--c-solid)] rounded-full flex items-center justify-center text-white font-bold text-sm">
-                  {index + 1}
-                </div>
-                <div className="flex-1">
-                  <p className="font-semibold text-gray-900 dark:text-gray-100">{match.occupation.name}</p>
-                  <p className="text-sm text-gray-700 dark:text-gray-300">{match.occupation.description.substring(0, 60)}...</p>
-                  {/* Plats i stället för procent: se matchningsplats i interestGuideData. */}
-                  <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">{t('interestGuide.results.rankPlace', 'Nr {{place}} av {{total}} utifrån dina svar', { place: index + 1, total: jobMatches.length })}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </Card>
-      </motion.div>
-
-      {/* Career Recommendations Panel */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2 }}
-      >
-        <CareerRecommendationsPanel
-          profile={profile}
-          topMatches={jobMatches.slice(0, 5)}
-          totalMatches={jobMatches.length}
-        />
-      </motion.div>
-
-      {/* Main Results View */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.25 }}
-      >
-        <ResultsView profile={profile} onRestart={handleRestart} />
-      </motion.div>
-
-      {/* Comparison Hint - only show if no history yet */}
-      {showComparisonHint && history.length <= 1 && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-        >
-          <Card className="p-6 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border-[var(--c-accent)] relative">
-            <button
-              type="button"
-              onClick={() => setShowComparisonHint(false)}
-              aria-label={t('common.close')}
-              className="absolute top-4 right-4 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200"
-            >
-              x
-            </button>
-            <p className="text-sm text-gray-700 dark:text-gray-300">
-              <span className="font-semibold">{t('interestGuide.results.tipLabel')}</span> {t('interestGuide.results.tipText')}
-            </p>
-          </Card>
-        </motion.div>
-      )}
-
-      {/* Next Step: CV CTA */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.35 }}
-      >
-        <Link
-          to="/cv"
-          className="block bg-[var(--c-solid)] hover:brightness-110 rounded-2xl p-6 text-white shadow-lg hover:shadow-xl transition-all hover:scale-[1.01] group"
-        >
-          <div className="flex items-center gap-4">
-            <div className="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center flex-shrink-0">
-              <FileText className="w-7 h-7" />
-            </div>
-            <div className="flex-1">
-              <div className="flex items-center gap-2 text-amber-100 text-sm font-medium mb-1">
-                <Sparkles className="w-4 h-4" />
-                {t('interestGuide.results.nextStep')}
-              </div>
-              <h2 className="text-xl font-bold">{t('interestGuide.results.createCvHeading')}</h2>
-              <p className="text-amber-100 text-sm mt-1">
-                {t('interestGuide.results.createCvText')}
-              </p>
-            </div>
-            <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform flex-shrink-0" />
-          </div>
-        </Link>
-      </motion.div>
+        <div className="w-12 h-12 bg-white dark:bg-stone-800 rounded-xl flex items-center justify-center flex-shrink-0">
+          <FileText className="w-6 h-6 text-[var(--c-solid)]" aria-hidden="true" />
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className="text-xs font-medium text-stone-600 dark:text-stone-400">{t('interestGuide.results.nextStep')}</p>
+          <h2 className="text-lg font-bold text-stone-900 dark:text-stone-100">{t('interestGuide.results.createCvHeading')}</h2>
+        </div>
+        <ArrowRight className="w-5 h-5 text-[var(--c-solid)] group-hover:translate-x-1 transition-transform flex-shrink-0" aria-hidden="true" />
+      </Link>
 
       {/* Action Buttons */}
       <motion.div
@@ -589,7 +508,7 @@ export default function ResultsTab() {
           variant="outline"
           className="gap-2"
         >
-          <Sparkles className="w-4 h-4" />
+          <RotateCcw className="w-4 h-4" aria-hidden="true" />
           {t('interestGuide.results.restart')}
         </Button>
       </motion.div>

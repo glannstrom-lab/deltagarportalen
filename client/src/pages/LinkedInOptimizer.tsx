@@ -14,7 +14,6 @@ import { AIGeneratedWatermark } from '@/components/ai/AIBadge'
 import { useFocusMode } from '@/components/FocusModeProvider'
 import { PageFocusShell } from '@/components/focus/shell/PageFocusShell'
 import { FocusLinkedInWizard } from '@/components/focus/pages/FocusLinkedInWizard'
-import { RadgivarTips } from '@/components/radgivare/RadgivarPanel'
 import { articleChecklistApi } from '@/services/cloudStorage'
 import { cvApi } from '@/services/supabaseApi'
 import { useProfileStore } from '@/stores/profileStore'
@@ -661,7 +660,6 @@ function LinkedInOptimizerInner({ aktivTab, setAktivTab, formData, setFormData }
             )}
           </div>
 
-          <RadgivarTips pathname="/linkedin-optimizer" index={0} />
         </>
       ) : (
         <>
@@ -833,7 +831,6 @@ function LinkedInOptimizerInner({ aktivTab, setAktivTab, formData, setFormData }
             </Card>
           )}
 
-          <RadgivarTips pathname="/linkedin-optimizer" index={1} />
         </>
       )}
     </PageLayout>

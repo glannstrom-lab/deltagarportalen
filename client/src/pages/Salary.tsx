@@ -24,7 +24,6 @@ import type { Tab } from '@/components/layout/PageTabs'
 import { useFocusMode } from '@/components/FocusModeProvider'
 import { PageFocusShell } from '@/components/focus/shell/PageFocusShell'
 import { FocusSalaryWizard } from '@/components/focus/pages/FocusSalaryWizard'
-import { RadgivarTips } from '@/components/radgivare/RadgivarPanel'
 
 // Tab components
 import SalaryCalculatorTab from './salary/SalaryCalculatorTab'
@@ -63,30 +62,15 @@ export default function SalaryPage() {
           <Routes>
             <Route
               path="/"
-              element={
-                <>
-                  <SalaryCalculatorTab val={val} onValChange={setVal} />
-                  <RadgivarTips pathname="/salary" index={0} />
-                </>
-              }
+              element={<SalaryCalculatorTab val={val} onValChange={setVal} />}
             />
             <Route
               path="/negotiation"
-              element={
-                <>
-                  <NegotiationTab />
-                  <RadgivarTips pathname="/salary/negotiation" index={0} />
-                </>
-              }
+              element={<NegotiationTab />}
             />
             <Route
               path="/market"
-              element={
-                <>
-                  <MarketDataTab />
-                  <RadgivarTips pathname="/salary/market" index={1} />
-                </>
-              }
+              element={<MarketDataTab />}
             />
             <Route path="*" element={<Navigate to="/salary" replace />} />
           </Routes>

@@ -56,6 +56,9 @@ import { oppnaPalett } from '@/lib/palettEvent'
 // FAB:en täckte innehåll på 17 av 19 verktygssidor, inklusive
 // GDPR-kontrollerna i Inställningar (fynd F25).
 const RadgivarPanel = lazy(() => import('./radgivare/RadgivarPanel'))
+// Rådgivarens hälsning med röst (2026-10-09). Lazy av samma skäl som panelen:
+// den drar in coaches.ts och hälsningstexterna.
+const RadgivarHalsning = lazy(() => import('./radgivare/RadgivarHalsning'))
 // Fokusläget som fällbar panel under rådgivarna. Lazy av samma skäl som
 // panelen ovan: den syns bara på breda skärmar och behöver inte ligga i
 // entry-bundlen.
@@ -398,6 +401,12 @@ export default function Layout() {
   // 1280 px = Tailwinds `xl`, samma brytpunkt som griden nedan använder.
   // Hålls de två isär hamnar panelen i kolumnen men får flödets utgångsläge.
   const radgivarKolumn = useMediaQuery('(min-width: 1280px)')
+  // Hälsningen följer samma brytare som panelen men inte samma plats: på
+  // breda skärmar leder den högerkolumnen, annars står den överst i
+  // innehållet — sist i flödet hade gjort "nästa steg" till sidans sista rad.
+  // CV-byggaren har egen panel men ingen egen hälsning, så den räknas med.
+  const visaHalsning = showBars && !radgivareAv && harRadgivare
+  const halsningIKolumn = visaRadgivare && radgivarKolumn
 
   // Vilka råd står redan infogade i sidan? Kortet registrerar sitt råd,
   // kolumnen hoppar över det. Utan detta säger de två ytorna samma mening
@@ -531,12 +540,28 @@ export default function Layout() {
                 <VisadeTipsContext.Provider value={visadeRad}>
                   <div className={cn(visaRadgivare && 'xl:grid xl:grid-cols-[minmax(0,1fr)_300px] xl:gap-6')}>
                     <div className="min-w-0">
+                      {visaHalsning && !halsningIKolumn && (
+                        <div className="mb-4" data-focus-chrome="radgivare">
+                          <Suspense fallback={null}>
+                            <RadgivarHalsning pathname={location.pathname} iKolumn={false} />
+                          </Suspense>
+                        </div>
+                      )}
                       <Outlet />
                     </div>
                     {visaRadgivare && (
                       <div className="mt-6 xl:mt-0 space-y-3" data-focus-chrome="radgivare">
+                        {halsningIKolumn && (
+                          <Suspense fallback={null}>
+                            <RadgivarHalsning pathname={location.pathname} iKolumn />
+                          </Suspense>
+                        )}
                         <Suspense fallback={null}>
-                          <RadgivarPanel pathname={location.pathname} iKolumn={radgivarKolumn} />
+                          <RadgivarPanel
+                            pathname={location.pathname}
+                            iKolumn={radgivarKolumn}
+                            halsningOvan={halsningIKolumn}
+                          />
                         </Suspense>
                         {/* Fokusläget under rådgivarna (2026-08-18, beslut
                             Mikael). Enda vägen in var tidigare en textlös ikon

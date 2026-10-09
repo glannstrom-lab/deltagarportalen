@@ -56,6 +56,9 @@ import {
 const RIMLIG_HYRESANDEL = 30
 
 /** AF:s stödöversikt A–Ö. Kontrollerad 2026-08-21 → HTTP 200. */
+/** Så många rader av flyttchecklistan som visas innan "Visa alla". */
+const CHECKLISTA_FORST = 6
+
 const AF_STOD_AO = 'https://arbetsformedlingen.se/for-arbetssokande/extra-stod/stod-a-o'
 
 interface Overkomlighet {
@@ -78,6 +81,7 @@ export default function RelocationTab() {
   const [currentRegion, setCurrentRegion] = useState<string>('')
   const [salary, setSalary] = useState<string>('')
   const [checkedItems, setCheckedItems] = useState<string[]>([])
+  const [visaHelaListan, setVisaHelaListan] = useState(false)
   const [profileLocation, setProfileLocation] = useState<string>('')
 
   /** Verkliga annonsantal per kommun från Arbetsförmedlingen. */
@@ -304,9 +308,6 @@ export default function RelocationTab() {
         <h2 className="text-xl font-bold text-stone-800 dark:text-stone-100">
           {t('career.relocation.heading')}
         </h2>
-        <p className="text-stone-600 dark:text-stone-400 mt-1">
-          {t('career.relocation.intro')}
-        </p>
         {profileLocation && (
           <p className="text-sm text-stone-600 dark:text-stone-400 mt-2 flex items-center gap-1">
             <MapPin className="w-4 h-4" aria-hidden="true" />
@@ -343,13 +344,10 @@ export default function RelocationTab() {
 
       {/* Budget */}
       <Card className="p-6">
-        <h3 className="font-semibold text-stone-800 dark:text-stone-100 mb-1 flex items-center gap-2">
+        <h3 className="font-semibold text-stone-800 dark:text-stone-100 mb-4 flex items-center gap-2">
           <Calculator className="w-5 h-5 text-[var(--c-solid)]" aria-hidden="true" />
           {t('career.relocation.budgetTitle')}
         </h3>
-        <p className="text-sm text-stone-600 dark:text-stone-400 mb-4">
-          {t('career.relocation.budgetIntro')}
-        </p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
@@ -570,7 +568,14 @@ export default function RelocationTab() {
 
         {/* Stämpeln. Utan den kunde talen ligga i tre år utan att någon
             reagerade — jfr ValideringTab på /international. */}
-        <div className="mt-5 pt-4 border-t border-stone-200 dark:border-stone-700 space-y-2 text-xs text-stone-600 dark:text-stone-400">
+        {/* Designpasset 2026-10-09: fyra rader text under tabellen ligger nu
+            bakom ett klick. Sammanfattningen säger fortfarande rakt ut att
+            siffrorna är grova uppskattningar — det är det viktiga. */}
+        <details className="mt-5 pt-4 border-t border-stone-200 dark:border-stone-700 text-xs text-stone-600 dark:text-stone-400">
+          <summary className="cursor-pointer w-fit text-sm text-[var(--c-text)] dark:text-stone-200 hover:underline">
+            {t('career.relocation.aboutNumbers', 'Hyror och kötider är grova uppskattningar — läs mer')}
+          </summary>
+          <div className="mt-2 space-y-2">
           <p>{t('career.relocation.estimateNote', { datum: UPPGIFTERNA_ANGAVS })}</p>
           <p>
             {t('career.relocation.estimateSources')}{' '}
@@ -584,7 +589,8 @@ export default function RelocationTab() {
           </p>
           <p>{t('career.relocation.jobsSource')}</p>
           <p>{t('career.relocation.rentRule')}</p>
-        </div>
+          </div>
+        </details>
       </Card>
 
       {/* Innan du flyttar för ett jobb — inga belopp, inga villkor */}
@@ -630,7 +636,7 @@ export default function RelocationTab() {
                   <span className="font-medium text-stone-800 dark:text-stone-100">{sajt.namn}</span>
                   <ExternalLink className="w-4 h-4 text-stone-500 dark:text-stone-400" aria-hidden="true" />
                 </span>
-                <span className="block text-sm text-stone-600 dark:text-stone-400 mt-1">
+                <span className="block text-sm text-stone-600 dark:text-stone-400 mt-1 line-clamp-2">
                   {t(sajt.beskrivningKey)}
                 </span>
               </a>
@@ -641,7 +647,7 @@ export default function RelocationTab() {
 
       {/* Checklista */}
       <Card className="p-6">
-        <div className="flex items-start justify-between gap-3 mb-1">
+        <div className="flex items-start justify-between gap-3 mb-4">
           <h3 className="font-semibold text-stone-800 dark:text-stone-100 flex items-center gap-2">
             <CheckCircle className="w-5 h-5 text-[var(--c-solid)]" aria-hidden="true" />
             {t('career.relocation.checklistTitle')}
@@ -654,9 +660,6 @@ export default function RelocationTab() {
             </span>
           )}
         </div>
-        <p className="text-sm text-stone-600 dark:text-stone-400 mb-4">
-          {t('career.relocation.checklistIntro')}
-        </p>
 
         {giltigaKryss > 0 && (
           <div
@@ -672,7 +675,7 @@ export default function RelocationTab() {
         )}
 
         <ul className="space-y-2">
-          {FLYTTCHECKLISTA.map((item) => {
+          {(visaHelaListan ? FLYTTCHECKLISTA : FLYTTCHECKLISTA.slice(0, CHECKLISTA_FORST)).map((item) => {
             const klar = checkedItems.includes(item.id)
             return (
               <li key={item.id}>
@@ -709,20 +712,34 @@ export default function RelocationTab() {
             )
           })}
         </ul>
+        {/* Tolv rader på en gång var den längsta listan på sidan. De första
+            sex visas; resten bakom en knapp. Kryssen sparas som förut. */}
+        {FLYTTCHECKLISTA.length > CHECKLISTA_FORST && (
+          <button
+            type="button"
+            onClick={() => setVisaHelaListan((v) => !v)}
+            aria-expanded={visaHelaListan}
+            className="mt-3 text-sm font-medium text-[var(--c-text)] dark:text-stone-200 underline underline-offset-2 hover:no-underline"
+          >
+            {visaHelaListan
+              ? t('career.relocation.checklistFewer', 'Visa färre')
+              : t('career.relocation.checklistAll', 'Visa alla {{count}}', { count: FLYTTCHECKLISTA.length })}
+          </button>
+        )}
       </Card>
 
-      {/* Tips */}
-      <Card className="p-6 bg-[var(--c-bg)] border-[var(--c-accent)]">
-        <h3 className="font-semibold text-stone-800 dark:text-stone-100 mb-2">
+      {/* Tips — bakom ett klick sedan 2026-10-09 */}
+      <details className="rounded-2xl p-5 bg-[var(--c-bg)] border border-[var(--c-accent)]">
+        <summary className="cursor-pointer font-semibold text-stone-800 dark:text-stone-100">
           {t('career.relocation.tipsTitle')}
-        </h3>
-        <ul className="text-sm text-stone-700 dark:text-stone-300 space-y-2 list-disc pl-5">
+        </summary>
+        <ul className="mt-3 text-sm text-stone-700 dark:text-stone-300 space-y-2 list-disc pl-5">
           <li>{t('career.relocation.tips.queue')}</li>
           <li>{t('career.relocation.tips.sublet')}</li>
           <li>{t('career.relocation.tips.jobFirst')}</li>
           <li>{t('career.relocation.tips.firstMonths')}</li>
         </ul>
-      </Card>
+      </details>
     </div>
   )
 }

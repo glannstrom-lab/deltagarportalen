@@ -137,7 +137,8 @@
     "optional": "optional",
     "required": "Required",
     "copy": "Copy",
-    "tagCounter": "{{count}} of {{max}}"
+    "tagCounter": "{{count}} of {{max}}",
+    "lasMer": "Read more"
   },
   "pageTabs": {
     "cv": {
@@ -1583,7 +1584,6 @@
     "saved": "Saved",
     "saveJob": "Save job",
     "searchAndFilter": "Search & Filter",
-    "clickToSearch": "Click to search for jobs",
     "filtersActive": "{{count}} filters active",
     "whatDoYouWantToWork": "What do you want to work with?",
     "location": "Location",
@@ -2280,14 +2280,14 @@
       "error": "Something went wrong. Please try again.",
       "aiSearch": "AI search",
       "orgNumber": "Org. number",
-      "aiDescription": "Describe what companies you're looking for, e.g., \"IT consultants in Stockholm\" or \"law firms specializing in employment law\"",
       "orgNumberDescription": "Enter an organization number to fetch information. Find org. numbers at",
       "aiSearchLabel": "Describe the companies you are looking for",
       "orgSearchLabel": "Organization number",
       "aiPlaceholder": "E.g. 'Ad agencies in Gothenburg with 10-50 employees'",
       "enterOrgNumber": "Enter an organization number",
       "searching": "Searching …",
-      "foundAnnouncement": "{{name}} was found."
+      "foundAnnouncement": "{{name}} was found.",
+      "aiDescriptionShort": "Write the type of business, the town and, if you like, the size."
     },
     "company": {
       "address": "Address",
@@ -2744,7 +2744,6 @@
         "keys": "Hand back the keys"
       },
       "heading": "If you are thinking about moving",
-      "intro": "Compare cities, see what rent would take out of your pay, and keep track of what needs doing.",
       "fromProfile": "According to your profile you live in",
       "loading": "Loading…",
       "loadErrorTitle": "Could not load your moving plans",
@@ -2759,7 +2758,6 @@
       "planRegions_other": "{{count}} cities you are looking at",
       "planChecklist": "{{count}} of {{total}} items ticked off",
       "budgetTitle": "What would it cost to live there?",
-      "budgetIntro": "Enter what you expect to earn and we will show how much of it rent would take in each city.",
       "salaryLabel": "Monthly salary before tax (SEK)",
       "salaryHelp": "Not sure? See what the occupation usually pays on the salary page.",
       "salaryLink": "Open the salary compass",
@@ -2797,7 +2795,6 @@
       "supportBody": "Talk to your case worker first. What Arbetsförmedlingen can help with when you move depends on your situation, and they are the ones who decide — we deliberately give no amounts or conditions here, because such figures go stale without anyone noticing.",
       "supportLink": "Arbetsförmedlingen’s support A–Z",
       "checklistTitle": "Things to do before the move",
-      "checklistIntro": "Tick them off at your own pace. The list is saved.",
       "when": {
         "sixMonths": "Six months before",
         "threeMonths": "A few months before",
@@ -2815,7 +2812,11 @@
         "firstMonths": "Expect the first months to cost more than usual: deposit, furniture, overlapping rent."
       },
       "queueYears": "{{min}}–{{max}} years",
-      "amountSek": "{{belopp}} SEK"
+      "amountSek": "{{belopp}} SEK",
+      "aboutNumbers": "Rents and waiting times are rough estimates — read more",
+      "checklistAll_one": "Show all {{count}}",
+      "checklistAll_other": "Show all {{count}}",
+      "checklistFewer": "Show fewer"
     },
     "networkTab": {
       "loading": "Loading network data...",
@@ -2917,11 +2918,11 @@
       "kalla": "According to Arbetsförmedlingen’s occupational barometer, round {{omgang}}",
       "publicerad": "published {{datum}}",
       "licens": "Open data, CC0",
-      "flerTraffar": "Several occupations match — here are the first {{antal}}."
+      "flerTraffar": "Several occupations match — here are the first {{antal}}.",
+      "omBarometern": "What is this based on?"
     },
     "laborMarket": {
       "heading": "The Swedish labour market",
-      "source": "Figures from Arbetsförmedlingen’s job bank",
       "refresh": "Refresh",
       "loading": "Loading market data…",
       "errorTitle": "Could not fetch market data",
@@ -2929,7 +2930,7 @@
       "retry": "Try again",
       "openJobs": "open positions right now",
       "newThisWeek": "{{antal}} of them were posted in the past week",
-      "skillsTitle": "Skills in the occupational fields with the most jobs",
+      "skillsTitle": "Skills in the largest job areas",
       "skillsEmpty": "Arbetsförmedlingen returned no occupational fields this time.",
       "skillsField": "{{field}} — {{antal}} open positions",
       "occupationsTitle": "Occupational groups with the most open positions",
@@ -2944,7 +2945,7 @@
     "title": "My Consultant",
     "laslogg": {
       "title": "Who has opened your information",
-      "desc": "Every time your consultant opens your page, it is logged here. You can see it yourself.",
+      "desc": "Every time your consultant opens your page, you see it here.",
       "rad": "Your consultant opened {{vad}} on {{datum}} at {{tid}}",
       "vad": {
         "sida": "your page (contact details, CV status, goals and journal)",
@@ -2956,7 +2957,9 @@
         "platser": "your work placements"
       },
       "tomt": "No one has opened your information yet. It will show here when your consultant does.",
-      "fel": "We could not load the log right now."
+      "fel": "We could not load the log right now.",
+      "visaAlla": "Show all {{count}}",
+      "visaFarre": "Show fewer"
     },
     "subtitle": "Communicate with {{name}}",
     "subtitleNoConsultant": "No consultant yet",
@@ -3003,7 +3006,6 @@
       }
     },
     "sharedInfoTitle": "What your consultant can see",
-    "sharedInfoDesc": "An overview of what is visible to your consultant — and what only you can see.",
     "legend": {
       "shared": "Your consultant can see this",
       "notShared": "Only you can see this",
@@ -3122,8 +3124,6 @@
       "retry": "Try again"
     },
     "occupationsThatSuitYou": "Occupations that suit you",
-    "basedOnYourProfile": "Based on your profile",
-    "occupationsDescription": "We have analyzed your profile and found occupations that match your interests, personality and prerequisites.",
     "completeTestFirst": "Complete the test first",
     "completeTestForSuggestions": "You need to complete the interest test to get personalized career suggestions.",
     "startTest": "Start the test",
@@ -3139,11 +3139,15 @@
       "riasecTableAria": "RIASEC results in table form",
       "riasecTableCaption": "Your RIASEC results show your work interests on a scale of 1-5",
       "riasecTableArea": "Interest area",
-      "riasecTableScore": "Score (1-5)"
+      "riasecTableScore": "Score (1-5)",
+      "levelHigh": "high",
+      "levelMedium": "medium",
+      "levelLow": "low",
+      "bigFiveValue": "{{namn}}: {{score}} percent, {{niva}} level",
+      "riasecTitle": "RIASEC work interests"
     },
     "explore": {
       "title": "All occupations",
-      "description": "Browse all occupations in our database. Filter by industry, education level or future outlook.",
       "searchPlaceholder": "Search among all occupations...",
       "filters": {
         "field": "Industry",
@@ -3162,7 +3166,18 @@
       "shownOfTotal": "Showing {{visade}} of {{totalt}}",
       "universityLevel": "University",
       "length": "Length",
-      "level": "Level"
+      "level": "Level",
+      "filterButton": "Filter",
+      "fields": {
+        "tech": "Technology & IT",
+        "healthcare": "Health & care",
+        "education": "Education",
+        "business": "Business & finance",
+        "creative": "Creative & design",
+        "service": "Service & shops",
+        "construction": "Building & crafts",
+        "nature": "Nature & environment"
+      }
     },
     "history": {
       "title": "Test results over time",
@@ -3179,7 +3194,11 @@
       "previousResults": "Previous times you took the test",
       "noDate": "Date missing",
       "errorBody": "We could not load your earlier results. Nothing has changed — reload the page and try again.",
-      "retry": "Try again"
+      "retry": "Try again",
+      "traits": "Personality traits",
+      "aboutTitle": "About your history",
+      "aboutBody": "Your interests and traits can change over time, after new experiences, studies or changes in your life. You can take the test again now and then to see how you change.",
+      "aboutTip": "Tip: Take the test every 6 months, or after a big change in your life."
     },
     "question": {
       "sliderLabel": "Answer question {{number}}: {{text}}",
@@ -3205,33 +3224,22 @@
       "pauseContinue": "Keep answering",
       "pauseConfirm": "Pause and go back",
       "pauseButton": "Pause",
-      "resumeModal": {
-        "takeYourTime": "It is okay to take your time."
-      }
+      "resumeModal": {}
     },
     "intro": {
-      "questionsLayout": "How the questions are set up",
-      "whatYouGet": "What you get",
-      "get1": "A picture of the kinds of work that attract you",
-      "get2": "How you describe yourself on five personality traits",
-      "get3": "Your own answers about what works well and less well for you at work",
       "get4": "Ideas from {{count}} jobs, with adjustments you can talk about",
       "sections": {
         "work": {
-          "name": "Work interests",
-          "description": "What kinds of work do you like?"
+          "name": "Work interests"
         },
         "personality": {
-          "name": "Personality",
-          "description": "How would you describe yourself?"
+          "name": "Personality"
         },
         "interests": {
-          "name": "Areas of interest",
-          "description": "What do you find interesting?"
+          "name": "Areas of interest"
         },
         "conditions": {
-          "name": "Your situation",
-          "description": "How do you feel about what you can manage at work?"
+          "name": "Your situation"
         }
       },
       "questionsCount_one": "{{count}} question",
@@ -3245,7 +3253,8 @@
       "continue": "Continue where you stopped",
       "restart": "Start again from the beginning",
       "start": "Start the interest guide",
-      "footer": "Your answers are saved while you answer, so you can pause and continue when you want."
+      "footer": "Your answers are saved while you answer, so you can pause and continue when you want.",
+      "heading": "Four parts, at your own pace"
     },
     "jobCard": {
       "careerPath": "Career path:",
@@ -3273,7 +3282,6 @@
     "results": {
       "howToReadRiasec": "How to read your RIASEC profile",
       "understandTraits": "Understand your personality traits",
-      "whatResultSays": "What does the result say about you?",
       "greenAreasHeading": "🟢 Green areas (4-5)",
       "greenAreasDesc": "Your strengths! These areas give you an advantage in the job market.",
       "yellowRedAreasHeading": "🟡 Yellow/red areas (1-3)",
@@ -3292,9 +3300,6 @@
       "unchanged": "No change",
       "doneHeading": "You have found your direction",
       "doneLead": "Here is what your answers say about jobs that may suit you.",
-      "riasecType": "Your RIASEC type",
-      "totalOccupations": "Jobs in total",
-      "toExplore": "to explore",
       "fromDate": "From {{date}}",
       "testsTotal_one": "{{count}} test in total",
       "testsTotal_other": "{{count}} tests in total",
@@ -3305,26 +3310,45 @@
       "top5Heading": "Top 5 job matches:",
       "top3Heading": "Your top 3 job matches",
       "seeAll": "See all",
-      "tipLabel": "Tip:",
-      "tipText": "Take the test again later if your interests change. Then you can compare your results over time and see how you develop.",
       "nextStep": "Next step",
       "createCvHeading": "Create your CV",
-      "createCvText": "Use what you learned in the interest guide to build a professional CV",
       "download": "Download results",
       "share": "Share results",
       "restart": "Take the test again",
-      "linkCopied": "Link copied to the clipboard!",
       "rankPlace": "No. {{place}} of {{total}}, based on your answers",
-      "rankPlaceShort": "No. {{place}}, based on your answers",
-      "closestOccupation": "The job closest to your answers",
-      "closestOccupationHint": "based on your answers in the test"
+      "rankPlaceShort": "No. {{place}}, based on your answers"
     },
     "occupations": {
       "growingShare": "of these are growing, based on our editorial assessment",
       "sortMatch": "Sort: Match",
       "sortName": "Sort: Name (A-Z)",
       "sortSalary": "Sort: Salary (highest first)",
-      "salaryRange": "Salary range"
+      "salaryRange": "Salary range",
+      "errCalcProfile": "We could not work out your profile. Try taking the test again.",
+      "errNotCompleted": "You have not finished the test yet. Go to the test to finish it.",
+      "errLoad": "We could not load your results. Please try again later.",
+      "errCalcMatches": "We could not work out the job suggestions: {{fel}}",
+      "unknownError": "Unknown error",
+      "sortLabel": "Sort the list of jobs",
+      "educationFilter": "Education:",
+      "university": "University",
+      "upperSecondary": "Upper secondary / yrkeshögskola",
+      "showingOf": "Showing {{visade}} of {{totalt}} jobs",
+      "favorite": "Favourite",
+      "alreadyFavorite": "Already a favourite",
+      "addFavorite": "Add as favourite",
+      "clearFavorites": "Clear favourites",
+      "favoritesCount_one": "You have {{count}} favourite",
+      "favoritesCount_other": "You have {{count}} favourites",
+      "declining": "Shrinking",
+      "whyHere": "Why is it here?",
+      "partWeight": "{{poang}} % · counts {{andel}} %",
+      "codingNote": "The part scores come from your answers, compared with how we have described the job. That description is our own editorial judgement — it does not come from SSYK, O*NET or any other job database. Use the order as a list of ideas, not as the right answer.",
+      "showAll_one": "Show all {{count}} jobs",
+      "showAll_other": "Show all {{count}} jobs",
+      "showFewer": "Show fewer",
+      "toExplore_one": "{{count}} job to explore",
+      "toExplore_other": "{{count}} jobs to explore"
     },
     "rv": {
       "riasec": {
@@ -3408,34 +3432,19 @@
       },
       "bigFiveMiddle": "You answered near the middle of the scale on most questions. This does not mean you lack these traits. It only means you did not pick an extreme this time.",
       "bigFiveSummary": "You answered that you {{traits}}. This is based on two questions for each trait, so see it as a start for a conversation, not as a personality assessment.",
-      "readyBadge": "Your results are ready!",
-      "uniqueProfile": "Your own profile",
-      "headerLead": "Based on your answers, we have made an analysis of your interests, personality and needs. Use this to explore career paths that suit you.",
-      "top3Interests": "Your top 3 interests",
-      "yourPersonality": "Your personality",
-      "yourStrengths": "Your strengths",
-      "shareResult": "Share your results",
-      "saveAsFile": "Save as a file",
-      "redoGuide": "Do the guide again",
       "exploreProfile": "Explore your profile",
       "seeSuggestions": "See job suggestions",
-      "riasecHeading": "RIASEC - Your work interests",
-      "riasecSub": "Six types of work environment that fit different personalities",
       "examples": "Examples: {{examples}}",
-      "whatDoesResultMean": "What does your result mean?",
       "riasecMeaning": "The areas where you scored highest ({{areas}}) are the environments where you probably feel best. The higher the score, the stronger your interest in that environment.",
       "bigFiveHeading": "Big Five - Your personality profile",
-      "bigFiveSub": "Five basic traits that describe what you are like as a person",
       "bigFiveNoBetter": "No profile is \"better\" than another. Different jobs need different qualities. What matters is finding a job that suits you.",
       "icfHeading": "ICF - Your abilities at work",
-      "icfSub": "Understand what you need to work well, and which adjustments can help",
       "icfAbout": "About ICF and workplace adjustments",
       "icfTerm": "ICF (International Classification of Functioning)",
       "icfDesc": "is the framework of the WHO (World Health Organization) for describing health and ability. It focuses on what you can do, not on any limits.",
       "tipLabel": "Tip:",
       "icfTip": "Talk to an employment consultant (arbetskonsulent) about which support and adjustments are available for the job you are interested in. Many employers are positive about adjustments that help you do your best.",
       "icfRemember": "What you need is not fixed. It can change over time and depend on the situation. What matters is finding a job where you can use your strengths and get support where you need it. With the right adjustments, most jobs can work for most people.",
-      "matchesHeading": "Your job matches",
       "matchesLead": "These are jobs that are close to your profile. The job closest to your answers comes first. Remember that these are only suggestions. Explore the jobs that seem interesting to you!",
       "allOccupations": "All jobs",
       "requiresUniversity": "Needs university",
@@ -3446,7 +3455,11 @@
       "property": "Feature",
       "placeRow": "Place based on your answers",
       "placeShort": "No. {{place}} of {{total}}",
-      "prognosis": "Outlook"
+      "prognosis": "Outlook",
+      "sexVarldar": "Six kinds of work — how you answered",
+      "avFem": "{{value}} of 5",
+      "viewLabel": "Show",
+      "icfKraverSamtycke": "This part is only shown if you agree to us using health data — read more"
     },
     "rec": {
       "title": "Career suggestions",
@@ -3512,12 +3525,12 @@
     "checkedNote": "This information was checked against the authorities’ own websites on {{date}}. The rules change — always check with the authority before making a decision.",
     "opensInNewTab": "Opens in a new tab",
     "validation": {
-      "description": "If you have education or a profession from another country, there are two things to sort out: what your education corresponds to here, and whether your profession requires a Swedish licence.",
       "uhr": {
         "title": "Have your education assessed",
         "body": "The Swedish Council for Higher Education (UHR) assesses education from other countries and writes a statement of what it corresponds to in Sweden. It is free of charge, and you can attach the statement when you apply for jobs or studies. UHR assesses upper secondary education, post-secondary vocational education and higher education.",
         "link": "UHR — assessment of foreign qualifications",
-        "tip": "Do not have your certificates any more? Apply anyway — UHR explains on their site what can be done when documents are missing."
+        "tip": "Do not have your certificates any more? Apply anyway — UHR explains on their site what can be done when documents are missing.",
+        "lead": "UHR (Swedish Council for Higher Education) writes, for free, what your education is equal to in Sweden."
       },
       "regulated": {
         "title": "Does your profession require a licence?",
@@ -3526,7 +3539,8 @@
         "teacher": "Schools and preschools: the Swedish National Agency for Education decides on teacher certification.",
         "other": "Not sure whether your profession is regulated — start with UHR and ask Arbetsförmedlingen. They know who assesses what.",
         "healthLink": "National Board of Health and Welfare — licensing",
-        "teacherLink": "National Agency for Education — certification"
+        "teacherLink": "National Agency for Education — certification",
+        "lead": "Many jobs in health care and schools need a Swedish licence."
       },
       "permit": {
         "title": "Do you need a work permit?",
@@ -3535,7 +3549,11 @@
         "noNumbers": "We deliberately do not state any amounts or processing times here. They change every year, and an outdated figure on this page could cost you a permit. Migrationsverket always has what applies right now.",
         "linkPermit": "Migrationsverket — work permit",
         "linkEu": "Migrationsverket — EU/EEA citizens",
-        "linkException": "Migrationsverket — who may work without a permit"
+        "linkException": "Migrationsverket — who may work without a permit",
+        "euShort": "Citizen of an EU/EEA or Nordic country",
+        "euAnswer": "You do not need a permit.",
+        "thirdShort": "Citizen of a country outside the EU/EEA",
+        "thirdAnswer": "You usually need a work permit."
       },
       "next": {
         "title": "What next?",
@@ -3545,7 +3563,6 @@
       }
     },
     "integration": {
-      "description": "The order matters: almost everything depends on being registered as a resident first. Tick off what you have done — it is saved.",
       "yourProgress": "How far you have come",
       "emptyHint": "Start with the first step when you have the energy. Nothing has to happen today.",
       "progressCount": "{{done}} of {{total}} done",
@@ -3554,7 +3571,8 @@
       "onlyThirdCountry": "Applies to you if you are not an EU/EEA or Nordic citizen",
       "firstNote": {
         "title": "Read this first",
-        "body": "Almost everything else requires you to be registered as a resident and to have a personnummer (Swedish personal identity number). That takes time — count on several weeks. Until then you cannot get a BankID, and many services require BankID. It is not you doing something wrong; that is how the system fits together."
+        "body": "Almost everything else requires you to be registered as a resident and to have a personnummer (Swedish personal identity number). That takes time — count on several weeks. Until then you cannot get a BankID, and many services require BankID. It is not you doing something wrong; that is how the system fits together.",
+        "lead": "Almost everything else needs you to be registered in the population register (folkbokförd) and have a personnummer first."
       },
       "categories": {
         "start": "Start here",
@@ -3648,7 +3666,6 @@
     },
     "language": {
       "title": "Swedish",
-      "description": "You do not have to wait until your Swedish is solid to apply for jobs. But it opens doors, and here are the routes.",
       "levelsTitle": "How good does your Swedish need to be?",
       "levelsBody": "It depends on the job. In many jobs the employer decides, and everyday Swedish goes a long way. In a few professions the requirement is regulated — for a healthcare licence the National Board of Health and Welfare requires a high level of Swedish.",
       "sfiTitle": "Sfi has its own structure",
@@ -3722,7 +3739,6 @@
         }
       },
       "phrasesTitle": "Phrases to take with you",
-      "phrasesIntro": "The first ones are for when you are looking for work, the last for when you have found it.",
       "listen": "Listen to {{phrase}}",
       "phrases": {
         "p1": {
@@ -3783,7 +3799,10 @@
         "t3": "Set your phone to Swedish. You read it a hundred times a day anyway.",
         "t4": "Practise the ten phrases above out loud before you go to an interview.",
         "t5": "Ask someone to correct you. Most people are happy to if you ask."
-      }
+      },
+      "levelsMore": "About the levels: sfi and A1–C2",
+      "phrasesAll": "Show all {{count}} phrases",
+      "phrasesFewer": "Show fewer phrases"
     }
   },
   "personalBrand": {
@@ -3806,7 +3825,7 @@
     "pitch": {
       "header": {
         "title": "Your personal pitch",
-        "description": "Create and practice your elevator pitch. A good pitch takes 30-60 seconds and leaves a strong impression."
+        "short": "A short presentation of yourself — half a minute to one minute."
       },
       "newPitch": "New pitch",
       "yourPitches": "Your pitches",
@@ -3938,7 +3957,6 @@
     },
     "audit": {
       "title": "How you come across",
-      "intro": "{{antal}} questions about how you appear to an employer. Tick what you have already done — the rest are suggestions, not requirements.",
       "loading": "Fetching your answers …",
       "loadFailed": "We could not fetch your answers right now. That does not mean they are gone.",
       "saving": "Saving …",
@@ -4044,7 +4062,8 @@
           "tip": "Knowing who you are writing for makes both texts and applications easier to put together.",
           "action": ""
         }
-      }
+      },
+      "questionCount": "{{antal}} questions"
     },
     "portfolio": {
       "title": "Your work samples",
@@ -4246,25 +4265,24 @@
           "body": "If you intend to post regularly."
         }
       },
-      "openLinkedIn": "Open the LinkedIn help"
+      "openLinkedIn": "Open the LinkedIn help",
+      "showAll": "Show all {{antal}}",
+      "showFewer": "Show fewer"
     }
   },
   "exercises": {
     "title": "Exercises",
     "description": "Practical exercises to develop your job search skills",
     "loadingAnswers": "Loading your answers...",
-    "cloudSynced": "Synced with cloud",
     "saving": "Saving...",
     "stats": {
-      "totalExercises": "Total exercises",
-      "started": "Started",
-      "active": "Active",
-      "invit": "{{antal}} exercises to choose from. You have not started any yet — pick one below that suits you."
+      "rad": "You have started {{paborjade}} of {{totalt}} exercises."
     },
     "filters": {
       "all": "All exercises",
       "started": "Started",
-      "notStarted": "Not started"
+      "notStarted": "Not started",
+      "topics": "Choose topic"
     },
     "noMatch": "No exercises match the selected filter.",
     "answersSavedCloud": "Your answers are saved in the cloud",
@@ -4315,14 +4333,14 @@
     "backToAll": "Back to all exercises",
     "stepOf": "Step {{current}} of {{total}}",
     "clearProgress": "Clear my answers",
-    "tipLabel": "Tip:",
-    "tipText": "Take your time to think through your answers. Your answers are saved automatically in the cloud, so you can continue from any device.",
     "previous": "Previous",
     "finish": "Finish",
     "next": "Next",
     "aiCoach": "AI Coach",
     "aiCoachText": "Do you need help with this exercise? The AI can give guidance, examples and follow-up questions.",
-    "seeAllArticles": "See all articles"
+    "seeAllArticles": "See all articles",
+    "showMore": "Show more ({{kvar}} more)",
+    "tipKort": "Take the time you need. Your answers are saved while you write."
   },
   "diary": {
     "title": "Diary",
@@ -4737,13 +4755,9 @@
           "name": "Health line 1177",
           "description": "Healthcare advice 24/7"
         },
-        "bup": {
-          "name": "Child and Youth Psychiatry (BUP)",
-          "description": "Emergency help for children and youth"
-        },
-        "healthcare": {
-          "name": "Healthcare information",
-          "description": "Advice and guidance"
+        "mind": {
+          "name": "Mind suicide prevention line",
+          "description": "If you have thoughts of taking your own life. Open day and night. You do not have to give your name."
         }
       }
     },
@@ -4776,25 +4790,12 @@
         "lunchWalkDesc": "Fresh air and movement",
         "weeklyReviewDesc": "Think back over the day"
       },
-      "today": "Today",
-      "routinesCompleted": "routines done",
-      "share": "Share",
-      "bestStreak": "Best streak",
-      "streakDays": "days in a row",
-      "dailyProgress": "Today's progress",
       "timeLabel": "Time",
-      "suggestedIntro": "Suggested routines that can help you build a structured day:",
       "templates": {
-        "title": "Routine templates",
-        "morning": {
-          "title": "Morning routine",
-          "description": "5 activities for a good start"
-        },
-        "evening": {
-          "title": "Evening routine",
-          "description": "4 activities for better sleep"
-        }
-      }
+        "morning": {},
+        "evening": {}
+      },
+      "todayLine": "{{klara}} of {{totalt}} routines done today"
     },
     "cognitive": {
       "title": "Cognitive training",
@@ -4853,11 +4854,7 @@
         "sequence": "Sequence: {{sequence}}",
         "yourSequence": "Your sequence: {{sequence}}"
       },
-      "streakBanner": {
-        "title": "Training streak",
-        "days": "{{count}} days",
-        "subtitle": "Keep it up — you're building a great habit!"
-      },
+      "streakBanner": {},
       "completedCount": "{{count}} done",
       "gameTag": "Game"
     },
@@ -4927,33 +4924,28 @@
       "action": "Try again"
     },
     "infoBanner": {
-      "description": "Programmes come from Arbetsförmedlingen's service JobEd Connect and cover yrkeshögskola (vocational higher education), universities, komvux (municipal adult education), folk high schools, labour market training and arts and culture programmes. The portal shows what exists and where — not what it costs or what you are eligible for."
+      "description": "Programmes come from Arbetsförmedlingen's service JobEd Connect and cover yrkeshögskola (vocational higher education), universities, komvux (municipal adult education), folk high schools, labour market training and arts and culture programmes. The portal shows what exists and where — not what it costs or what you are eligible for.",
+      "summary": "Where do the courses come from?"
     },
     "quickSearch": {
       "title": "What are you curious about?",
       "yh": {
-        "title": "Yrkeshögskola",
-        "description": "Practical education with high employment rates"
+        "title": "Yrkeshögskola"
       },
       "university": {
-        "title": "University & College",
-        "description": "Academic education and degrees"
+        "title": "University & College"
       },
       "it": {
-        "title": "IT & Programming",
-        "description": "Web development, data and technology"
+        "title": "IT & Programming"
       },
       "healthcare": {
-        "title": "Healthcare",
-        "description": "Medical care, elderly care and social work"
+        "title": "Healthcare"
       },
       "business": {
-        "title": "Business & Finance",
-        "description": "Accounting, marketing and leadership"
+        "title": "Business & Finance"
       },
       "creative": {
-        "title": "Creative Professions",
-        "description": "Design, media and communication"
+        "title": "Creative Professions"
       }
     },
     "links": {
@@ -4997,8 +4989,6 @@
     },
     "searchLabel": "What are you looking for?",
     "searchPlaceholderShort": "Search the knowledge base",
-    "searchHint_one": "Searching 1 article — try \"cover letter\", \"rejection\" or \"salary\".",
-    "searchHint_other": "Searching {{count}} articles — try \"cover letter\", \"rejection\" or \"salary\".",
     "searchButton": "Search",
     "shortcutsLabel": "Try one of these:",
     "browseHeading": "What would you like to read about?",
@@ -5011,7 +5001,6 @@
     "relatedExercises_one": "1 related exercise",
     "relatedExercises_other": "{{count}} related exercises",
     "aiTeamHeading": "Can’t find an answer?",
-    "aiTeamBody": "The AI team can answer questions the articles do not cover. It has five specialists, all part of the same AI.",
     "aiTeamCta": "Open the AI team",
     "categories": {
       "getting-started": {
@@ -5068,7 +5057,6 @@
       },
       "other": "Other"
     },
-    "searchHint": "Searching {{count}} articles — try \"cover letter\", \"rejection\" or \"salary\".",
     "categoryCount": "{{count}} articles",
     "relatedExercises": "{{count}} related exercises",
     "difficultyBadge": {
@@ -5077,7 +5065,10 @@
     "readingProgress": {
       "ariaLabel": "How far you have read in the article"
     },
-    "baraSvenskaKort": "In Swedish only"
+    "baraSvenskaKort": "In Swedish only",
+    "searchHintKort_one": "Searches {{count}} article.",
+    "searchHintKort_other": "Searches {{count}} articles.",
+    "aiTeamBodyKort": "Ask the AI team about things the articles do not cover."
   },
   "resources": {
     "title": "Your saved resources",
@@ -5345,7 +5336,9 @@
         "title": "Support & benefits",
         "description": "Rights, benefits and help"
       }
-    }
+    },
+    "showAllTopics_one": "Show more topics ({{count}} more)",
+    "showAllTopics_other": "Show more topics ({{count}} more)"
   },
   "settings": {
     "title": "Settings",
@@ -5553,6 +5546,8 @@
       "tipCombinedPermissions": "Everything you can do in each role is still there when you switch back"
     },
     "coachTipsTitle": "Coach tips on every page",
+    "coachVoice": "The advisor speaks",
+    "coachVoiceDesc": "When you open a page, the advisor tells you a good next step — out loud. Turn this off if you want silence. The text and the button stay.",
     "navEtikett": "Parts of the settings"
   },
   "auth": {
@@ -7189,9 +7184,7 @@
       "noShareLinks": "No share links created yet. Create a link to share your profile with employers.",
       "loadError": "We could not load your share links right now. This does not mean they are gone."
     },
-    "onboarding": {
-      "inlineTip": "This is where you collect what describes you. Fill in what you can, when you want. Everything is saved."
-    },
+    "onboarding": {},
     "history": {
       "previousValue": "Previous value",
       "newValue": "New value",
@@ -7464,7 +7457,6 @@
       "placeholder": "Paste a job advert, or just write the name of the role …\n\nExample:\nCare assistant",
       "tip": "A real job advert gives the most accurate comparison — but the name of the role is enough."
     },
-    "dreamJobDescription": "Write the name of the role, or paste an advert",
     "dreamJobLabel": "Role",
     "favoriteOccupations": "Your saved occupations:",
     "analyzeGap": "Show what is needed",
@@ -7540,7 +7532,8 @@
       "skillsOverview": "SKILLS",
       "educationSource": "Source: Arbetsförmedlingen's education database.",
       "actionPlan": "NEXT STEPS"
-    }
+    },
+    "showUnderlag": "Show the text we compare with"
   },
   "cvBuilder": {
     "templates": {
@@ -7659,7 +7652,6 @@
     },
     "profileImage": {
       "title": "Profile picture",
-      "description": "Add a professional profile picture to make your CV more personal",
       "mustBeLoggedIn": "You must be logged in to upload images",
       "uploadFailed": "Upload failed: ",
       "uploading": "Uploading..."
@@ -7733,10 +7725,7 @@
     },
     "help": {
       "title": "Need help?",
-      "description": "See the guide again for tips on creating a great CV.",
-      "showGuide": "Show guide again",
-      "aiWriting": "AI writing help",
-      "aiWritingDesc": "Get help improving your summary"
+      "showGuide": "Show guide again"
     },
     "messages": {
       "imported": "Your CV has been read in. Go through the steps and fill in what's missing.",
@@ -7768,14 +7757,13 @@
     },
     "review": {
       "a4Note": "Preview in A4 format",
-      "actionsDesc": "Your CV is saved in the cloud. Download it as a PDF or create a version backup to go back to.",
       "actionsTitle": "Done?",
       "checklistTitle": "Contents of your CV",
-      "editHint": "If a section breaks awkwardly — go back and edit it. The dashed line shows exactly where page 2 starts.",
+      "editHint": "Does something break in a bad place? Go back and change it.",
       "exportWord": "Download Word",
       "missingHint": "Sections you have not filled in are not required — you can still download.",
       "pageBreak": "Page 2 starts here",
-      "subtitle": "Here is your CV. Everything is saved automatically — download it when you are happy with it.",
+      "subtitle": "Everything is saved automatically.",
       "title": "Review and save your CV",
       "wordError": "Could not create the Word file",
       "wordSuccess": "Word file downloaded"
@@ -8363,7 +8351,6 @@
     "selectPersonality": "Select personality",
     "clearChat": "Clear chat",
     "chatHistory": "Chat history",
-    "intro": "Here is your team. Pick who you would like to talk to — you can change the personality and reply length in the side panel at any time.",
     "aiBadge": "AI coach",
     "chat": {
       "taskCreateErrorTitle": "Could not create the task",
@@ -8579,7 +8566,6 @@
       }
     },
     "calculator": {
-      "description": "These figures are rough estimates for whole occupational areas — not sourced statistics. Use them as a starting point, and get a real figure before you say one out loud in a negotiation.",
       "enterDetails": "Tell us a little about you",
       "occupation": "Occupational area",
       "selectCategory": "Choose an area",
@@ -8636,10 +8622,10 @@
         "timingDesc": "At a new job, in the annual review, or when your duties have grown.",
         "knowMarket": "Find out the going rate",
         "knowMarketDesc": "Knowing what other employers pay makes the conversation easier."
-      }
+      },
+      "descriptionShort": "The numbers are rough estimates, not real statistics."
     },
     "negotiation": {
-      "description": "How to prepare for the salary conversation — step by step, with room to write down what you decide.",
       "swedishMarket": "How it works in Sweden",
       "swedishMarketDesc": "In many sectors a collective agreement sets the framework for pay, and salaries are usually reviewed once a year in a salary conversation. If you belong to a union they can give you data and support.",
       "stepsTitle": "Five steps through the conversation",
@@ -9424,8 +9410,7 @@
       "moodLatest": "Last {{nar}}",
       "event": "Next in the calendar"
     },
-    "hubsHeading": "Everything in the portal",
-    "historyLead": "Your history in the portal, week by week."
+    "hubsHeading": "Everything in the portal"
   },
   "hubOverviewHistory": {
     "title": "Activity",
@@ -9594,7 +9579,8 @@
       "vadRaknasJobbsok_other": "Only sessions that your konsulent has planned count here. Your own job search counts separately: {{count}} hours per week in your plan.",
       "radAnvisat_other": "You have {{planerade}} of {{mal}} hours of assigned sessions this week.",
       "radOver_one": "You have {{planerade}} hour of assigned sessions this week. That is more than the goal of {{mal}}.",
-      "radOver_other": "You have {{planerade}} hours of assigned sessions this week. That is more than the goal of {{mal}}."
+      "radOver_other": "You have {{planerade}} hours of assigned sessions this week. That is more than the goal of {{mal}}.",
+      "lasMer": "How the hours are counted"
     },
     "nastaPass": "Next: {{titel}}, {{dag}} at {{tid}}",
     "forraVeckan": "Last week",
@@ -9628,7 +9614,8 @@
       "fel": "The certificate could not be created right now. Please try again in a moment.",
       "textLeverantor": "A certificate for one month with your sessions and what your konsulent (job coach) has marked. You can show it to your handläggare (case officer) at Arbetsförmedlingen.",
       "textNeutral": "A certificate for one month with your sessions and what your konsulent (job coach) has marked. You can show it to anyone who needs to see your attendance.",
-      "egenRedovisning": "The certificate also shows your own check-ins and your job search in Jobin, as your own report."
+      "egenRedovisning": "The certificate also shows your own check-ins and your job search in Jobin, as your own report.",
+      "lasMer": "What does the certificate show?"
     },
     "fraga": {
       "knapp": "Ask about this session",
@@ -9780,7 +9767,8 @@
           "arbetsprovning": "Your arbetsprövning (work trial)",
           "subventionerad_anstallning": "Your job with support"
         }
-      }
+      },
+      "lasMer": "About your plan"
     }
   },
   "minVardagHub": {
@@ -9890,9 +9878,7 @@
     }
   },
   "inlineTip": {
-    "aria": {
-      "close": "Close tip"
-    }
+    "aria": {}
   },
   "workflow": {
     "common": {
@@ -10076,7 +10062,17 @@
     "tipFrom": "Advice from {{namn}}",
     "showMore_one": "{{count}} more tip",
     "showMore_other": "{{count}} more tips",
-    "showLess": "Show fewer"
+    "showLess": "Show fewer",
+    "halsning": {
+      "label": "{{namn}} says hello",
+      "listen": "Listen to {{namn}}",
+      "pause": "Pause {{namn}}",
+      "close": "Collapse",
+      "listenShort": "Listen",
+      "pauseShort": "Pause",
+      "again": "Listen again"
+    },
+    "moreFrom": "More advice from {{namn}}"
   },
   "network": {
     "description": "Build and maintain your professional network",

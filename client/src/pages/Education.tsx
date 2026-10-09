@@ -51,7 +51,6 @@ import { useEducationSearch } from '@/hooks/useEducationSearch';
 import { useFocusMode } from '@/components/FocusModeProvider';
 import { FokusVaxel } from '@/components/focus/shell/FokusVaxel';
 import { FocusEducationWizard } from '@/components/focus/pages/FocusEducationWizard';
-import { RadgivarTips } from '@/components/radgivare/RadgivarPanel';
 
 // ============== CONSTANTS ==============
 
@@ -242,19 +241,18 @@ function EducationSkeleton() {
 function QuickSearchCard({
   icon: Icon,
   title,
-  description,
   onClick,
 }: {
   icon: React.ComponentType<{ className?: string }>;
   title: string;
-  description: string;
   onClick: () => void;
 }) {
   return (
     <button
+      type="button"
       onClick={onClick}
       className={cn(
-        'flex items-start gap-3 p-4 rounded-xl text-left w-full',
+        'flex items-center gap-3 px-3 py-3 rounded-xl text-left w-full',
         'bg-white dark:bg-stone-800',
         'border-2 border-stone-300 dark:border-stone-700',
         'hover:border-[var(--c-accent)] hover:shadow-[0_4px_8px_rgb(0_0_0/0.04)]',
@@ -264,11 +262,8 @@ function QuickSearchCard({
       <div className="p-2 rounded-lg bg-[var(--c-bg)] flex-shrink-0">
         <Icon className="w-5 h-5 text-[var(--c-solid)]" aria-hidden="true" />
       </div>
-      <div className="flex-1 min-w-0">
-        <h3 className="font-medium text-stone-900 dark:text-stone-100">{title}</h3>
-        <p className="text-sm text-stone-600 dark:text-stone-400 mt-0.5">{description}</p>
-      </div>
-      <ChevronRight className="w-5 h-5 text-stone-500 dark:text-stone-400 ml-auto self-center flex-shrink-0" aria-hidden="true" />
+      <span className="flex-1 min-w-0 font-medium text-stone-900 dark:text-stone-100">{title}</span>
+      <ChevronRight className="w-5 h-5 text-stone-500 dark:text-stone-400 flex-shrink-0" aria-hidden="true" />
     </button>
   );
 }
@@ -615,7 +610,6 @@ function EducationInner({ guideFraga }: { guideFraga?: { text: string; nonce: nu
         </div>
       </PageSection>
 
-      <RadgivarTips pathname="/education" index={0} />
 
       {/* Permanent liveregion. Måste finnas i DOM:en INNAN texten skrivs —
           en region som monteras tillsammans med sitt innehåll annonseras
@@ -629,36 +623,38 @@ function EducationInner({ guideFraga }: { guideFraga?: { text: string; nonce: nu
       {!visaResultatyta && (
         <div className="mt-6 space-y-6">
           {/*
-            Rubriken "Hitta rätt utbildning för dig" sa samma sak som skenans
-            "Sök och utforska utbildningar från hela Sverige", 200 px till
-            vänster, och panelen runt den tog ~120 px. Kvar står den enda
-            uppgift raden faktiskt bar: vilka källor sökningen täcker. Den hör
-            till sökrutan ovanför, inte till en egen yta.
+            Designpasset 2026-10-09: snabbvalen var sex kort med en
+            beskrivningsrad var, och källraden ovanför var fyra rader lång.
+            Nu är snabbvalen rader med ikon och namn, och källan ligger bakom
+            ett klick under dem. Beskrivningarna sa mest samma sak som namnet
+            ("Yrkeshögskola — Praktiska utbildningar …").
           */}
-          <p className="-mt-2 text-sm text-stone-600 dark:text-stone-400 max-w-3xl">
-            {t('education.infoBanner.description')}
-          </p>
-
-          {/* Quick Search Options */}
           <div>
-            <h2 className="text-lg font-semibold text-stone-900 dark:text-stone-100 mb-4">
+            <h2 className="text-lg font-semibold text-stone-900 dark:text-stone-100 mb-3">
               {t('education.quickSearch.title')}
             </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 min-[420px]:grid-cols-2 lg:grid-cols-3 gap-3">
               {SNABBVAL.map((val) => (
                 <QuickSearchCard
                   key={val.nyckel}
                   icon={val.icon}
                   title={t(`education.quickSearch.${val.nyckel}.title`)}
-                  description={t(`education.quickSearch.${val.nyckel}.description`)}
                   onClick={() => handleQuickSearch(val.query, val.type)}
                 />
               ))}
             </div>
+            <details className="mt-3 text-sm max-w-3xl">
+              <summary className="cursor-pointer w-fit text-stone-600 dark:text-stone-400 hover:text-[var(--c-text)]">
+                {t('education.infoBanner.summary', 'Var kommer utbildningarna ifrån?')}
+              </summary>
+              <p className="mt-2 text-stone-600 dark:text-stone-400">
+                {t('education.infoBanner.description')}
+              </p>
+            </details>
           </div>
 
           {/* Links to related pages */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <Link
               to="/interest-guide"
               className="flex items-center gap-3 p-4 rounded-xl bg-white dark:bg-stone-800 border-2 border-stone-300 dark:border-stone-700 hover:border-[var(--c-accent)] transition-colors"
@@ -667,10 +663,10 @@ function EducationInner({ guideFraga }: { guideFraga?: { text: string; nonce: nu
                 <Sparkles className="w-5 h-5 text-[var(--c-solid)]" aria-hidden="true" />
               </div>
               <div className="flex-1 min-w-0">
-                <h3 className="font-medium text-stone-900 dark:text-stone-100">
+                <h3 className="text-base font-medium text-stone-900 dark:text-stone-100">
                   {t('education.links.interestGuide.title')}
                 </h3>
-                <p className="text-sm text-stone-600 dark:text-stone-400">
+                <p className="text-sm text-stone-600 dark:text-stone-400 line-clamp-1">
                   {t('education.links.interestGuide.description')}
                 </p>
               </div>
@@ -684,10 +680,10 @@ function EducationInner({ guideFraga }: { guideFraga?: { text: string; nonce: nu
                 <Target className="w-5 h-5 text-[var(--c-solid)]" aria-hidden="true" />
               </div>
               <div className="flex-1 min-w-0">
-                <h3 className="font-medium text-stone-900 dark:text-stone-100">
+                <h3 className="text-base font-medium text-stone-900 dark:text-stone-100">
                   {t('education.links.skillsGap.title')}
                 </h3>
-                <p className="text-sm text-stone-600 dark:text-stone-400">
+                <p className="text-sm text-stone-600 dark:text-stone-400 line-clamp-1">
                   {t('education.links.skillsGap.description')}
                 </p>
               </div>

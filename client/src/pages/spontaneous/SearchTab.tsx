@@ -24,6 +24,7 @@ import {
   Save,
   MessageSquare,
   X,
+  ChevronDown,
 } from 'lucide-react'
 import { Card } from '@/components/ui/Card'
 import { Button, IconButton } from '@/components/ui/Button'
@@ -633,9 +634,9 @@ export default function SearchTab() {
           </Button>
         </div>
 
-        <p className="text-stone-600 dark:text-stone-400 mb-4">
+        <p className="text-sm text-stone-600 dark:text-stone-400 mb-3">
           {searchMode === 'ai' ? (
-            <>{t('spontaneous.search.aiDescription')}</>
+            <>{t('spontaneous.search.aiDescriptionShort', 'Skriv bransch, ort och gärna storlek.')}</>
           ) : (
             <>
               {t('spontaneous.search.orgNumberDescription')}{' '}
@@ -1250,10 +1251,15 @@ export default function SearchTab() {
         </Card>
       )}
 
-      {/* Tips Section */}
-      <Card className="p-6 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border-[var(--c-accent)] dark:border-[var(--c-accent)]/50">
-        <h3 className="font-medium mb-2 text-stone-800 dark:text-stone-100">{t('spontaneous.tips.title')}</h3>
-        <ul className="text-sm text-stone-600 dark:text-stone-400 space-y-1.5">
+      {/* Tips — infällda (designpass 2026-10-09): de behövs första gången,
+          inte varje gång. */}
+      <Card className="p-4 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border-[var(--c-accent)] dark:border-[var(--c-accent)]/50">
+        <details className="group">
+        <summary className="flex cursor-pointer list-none items-center justify-between gap-3 rounded min-h-[44px] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--c-solid)] [&::-webkit-details-marker]:hidden">
+          <h3 className="font-medium text-stone-800 dark:text-stone-100">{t('spontaneous.tips.title')}</h3>
+          <ChevronDown className="w-5 h-5 text-stone-500 transition-transform group-open:rotate-180" aria-hidden="true" />
+        </summary>
+        <ul className="text-sm text-stone-600 dark:text-stone-400 space-y-1.5 mt-2">
           {searchMode === 'ai' ? (
             <>
               <li>{t('spontaneous.tips.aiTip1')}</li>
@@ -1270,6 +1276,7 @@ export default function SearchTab() {
             </>
           )}
         </ul>
+        </details>
       </Card>
     </div>
   )

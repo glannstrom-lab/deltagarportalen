@@ -56,7 +56,6 @@ import { PageLayout } from '@/components/layout/PageLayout'
 import { RevokeConsultantLinkSection } from '@/components/consultant/RevokeConsultantLinkSection'
 import { VemHarOppnatKort } from '@/components/consultant/VemHarOppnatKort'
 import { Delningsforslag } from '@/components/participant/Delningsforslag'
-import { RadgivarTips } from '@/components/radgivare/RadgivarPanel'
 import { FokusVaxel } from '@/components/focus/shell/FokusVaxel'
 import { datumSprak, kortDatum } from '@/lib/datumsprak'
 
@@ -298,9 +297,6 @@ function SharedInformationSection({ sharedInfo }: { sharedInfo: SharedInfo[] }) 
             {t('myConsultant.sharedInfoTitle', 'Det här ser din konsulent')}
           </h2>
         </div>
-        <p className="text-sm text-stone-500 dark:text-stone-400 mt-1">
-          {t('myConsultant.sharedInfoDesc', 'En översikt över vad som är synligt för din konsulent — och vad bara du ser.')}
-        </p>
       </div>
 
       <div className="divide-y divide-stone-200 dark:divide-stone-700">
@@ -1136,7 +1132,6 @@ function MyConsultantInner() {
           <div className="space-y-6">
             <ConsultantCard consultant={consultant} nextMeeting={nextMeeting} />
             <GoalsSection goals={goals} />
-            <RadgivarTips pathname="/my-consultant" index={0} />
           </div>
 
           {/* Middle column - Messages */}

@@ -50,6 +50,8 @@ import { COACHES, getPageKeyForPath, type CoachId } from '@/data/coaches'
 import { useInnehall } from '@/data/oversattningar'
 import { radgivareForPath } from './radgivarData'
 import { useRadgivarTipsApi, useVisadeTips } from './radgivarKontext'
+import { useSettingsStore } from '@/stores/settingsStore'
+import { SIDHALSNINGAR } from '@/data/radgivarHalsningar'
 
 function Avatar({ id, stor = false }: { id: CoachId; stor?: boolean }) {
   const c = COACHES[id]
@@ -90,13 +92,21 @@ export function RadgivarTips({ pathname, index = 0 }: { pathname: string; index?
   // Beroendelistan är avsiktligt bara stabila värden. Ett tidigare utkast
   // hade hela kontextobjektet här och loopade sönder sidan; se radgivarKontext.ts.
   const tipsApi = useRadgivarTipsApi()
+  // Sedan 2026-10-09 hälsar rådgivaren överst på sidan (RadgivarHalsning).
+  // Ett infogat råd från samma person en bit längre ner blev då tredje gången
+  // rådgivaren talade på samma vy — hälsning, infogat råd, panel. Det
+  // infogade rådet står tillbaka när hälsningen visas, och följer också
+  // användarens val att stänga av rådgivarna (det gjorde det inte förut).
+  const radgivarePa = useSettingsStore((s) => s.showCoachWidget)
+  const tyst = !radgivarePa || (!!sidnyckel && sidnyckel in SIDHALSNINGAR)
   useLayoutEffect(() => {
+    if (tyst) return
     if (!rad || !tipsApi) return
     tipsApi.registrera(rad)
     return () => tipsApi.avregistrera(rad)
-  }, [rad, tipsApi])
+  }, [rad, tipsApi, tyst])
 
-  if (!coachId || !rad) return null
+  if (tyst || !coachId || !rad) return null
 
   const coach = COACHES_T[coachId]
   return (
@@ -138,9 +148,17 @@ export function RadgivarTips({ pathname, index = 0 }: { pathname: string; index?
 export default function RadgivarPanel({
   pathname,
   iKolumn = true,
+  halsningOvan = false,
 }: {
   pathname: string
   iKolumn?: boolean
+  /**
+   * Står rådgivarens hälsning (RadgivarHalsning) ovanför panelen? Då är
+   * kolumnen inte tom även om allt är hopfällt, och första rådgivaren har
+   * redan sagt sitt — panelen börjar stängd i stället för att lägga ett
+   * andra stycke text från samma person under det första. (2026-10-09)
+   */
+  halsningOvan?: boolean
 }) {
   const { t } = useTranslation()
   const sidnyckel = getPageKeyForPath(pathname)
@@ -149,7 +167,7 @@ export default function RadgivarPanel({
   const COACHES_T = useInnehall('coaches', COACHES, 'COACHES')
   const visadeRad = useVisadeTips()
   const forstaCoach = innehall?.coachIds?.[0] ?? null
-  const [oppenCoach, setOppenCoach] = useState<CoachId | null>(iKolumn ? forstaCoach : null)
+  const [oppenCoach, setOppenCoach] = useState<CoachId | null>(iKolumn && !halsningOvan ? forstaCoach : null)
   /** Vilken rådgivares övriga råd + FAQ som är utfällda. Nollställs vid sidbyte. */
   const [merOppet, setMerOppet] = useState<CoachId | null>(null)
 
@@ -178,7 +196,7 @@ export default function RadgivarPanel({
   const [senastePath, setSenastePath] = useState(pathname)
   if (pathname !== senastePath) {
     setSenastePath(pathname)
-    setOppenCoach(iKolumn ? forstaCoach : null)
+    setOppenCoach(iKolumn && !halsningOvan ? forstaCoach : null)
     setMerOppet(null)
   }
 
@@ -199,7 +217,7 @@ export default function RadgivarPanel({
         // I kolumnen med bara en rådgivare finns inget att växla mellan — då
         // står den öppen. Sist i flödet ska den däremot alltid gå att fälla
         // ihop, även om den är ensam, annars upprepar den det infogade rådet.
-        const kanFallas = innehall.coachIds.length > 1 || !iKolumn
+        const kanFallas = innehall.coachIds.length > 1 || !iKolumn || halsningOvan
         const utfalld = oppenCoach === id || !kanFallas
         const [forstaTips, ...flerTips] = kvarvarandeTips
         const harFaq = !!c.faqs && c.faqs.length > 0
@@ -218,15 +236,26 @@ export default function RadgivarPanel({
               aria-expanded={utfalld}
               className="w-full flex items-center gap-2.5 px-3.5 py-3 text-left hover:bg-stone-50 dark:hover:bg-stone-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--c-solid)]"
             >
-              <Avatar id={id} stor />
-              <span className="min-w-0 flex-1">
-                <span className="block text-[0.90625rem] font-semibold text-stone-900 dark:text-stone-100">
-                  {coach.name}
+              {/* Under hälsningen har rådgivaren redan presenterat sig — en
+                  andra rad med namn, roll och porträtt var samma person två
+                  gånger i rad. Raden blir en väg till resten av råden. */}
+              {halsningOvan && id === forstaCoach ? (
+                <span className="min-w-0 flex-1 text-[0.875rem] font-medium text-[var(--c-text)] dark:text-[var(--c-solid)]">
+                  {t('radgivare.moreFrom', { defaultValue: 'Fler råd från {{namn}}', namn: coach.name })}
                 </span>
-                <span className="block text-[0.8125rem] text-stone-500 dark:text-stone-400 truncate">
-                  {coach.role}
-                </span>
-              </span>
+              ) : (
+                <>
+                  <Avatar id={id} stor />
+                  <span className="min-w-0 flex-1">
+                    <span className="block text-[0.90625rem] font-semibold text-stone-900 dark:text-stone-100">
+                      {coach.name}
+                    </span>
+                    <span className="block text-[0.8125rem] text-stone-500 dark:text-stone-400 truncate">
+                      {coach.role}
+                    </span>
+                  </span>
+                </>
+              )}
               {kanFallas && (
                 <ChevronDown
                   aria-hidden="true"

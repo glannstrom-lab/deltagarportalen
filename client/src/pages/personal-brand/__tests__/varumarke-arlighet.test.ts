@@ -148,10 +148,11 @@ describe('Fokusläget river inte det ifyllda', () => {
     expect(sida).not.toContain("t('personalBrand.title'")
   })
 
-  it('ger varje flik ett eget rådgivarråd', () => {
-    // `index={0}` fast gav samma mening på alla fyra flikar.
-    expect(sida).not.toContain('<RadgivarTips pathname="/personal-brand" index={0} />')
-    expect(sida).toContain('RAD_INDEX[pathname]')
+  it('upprepar inte rådgivarens hälsning med ett infogat tips', () => {
+    // `index={0}` fast gav samma mening på alla fyra flikar (2026-08-21). Sedan
+    // 2026-10-09 hälsar rådgivaren överst på varje sida (RadgivarHalsning), och
+    // det infogade tipset renderade null — anropet är borttaget.
+    expect(sida).not.toContain('<RadgivarTips')
   })
 
   it('bär ingen permanent Ny!-badge', () => {

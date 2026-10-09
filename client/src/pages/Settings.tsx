@@ -977,7 +977,8 @@ function SettingsInner() {
                   )}>
                     {section.title}
                   </span>
-                  <span className="hidden lg:block text-sm text-stone-500 dark:text-stone-400 truncate">{section.description}</span>
+                  {/* Designpass 2026-10-09: beskrivningen stod här avhuggen ("Dina personup…")
+                      och upprepades i avsnittets rubrik. Den bor nu bara där. */}
                 </div>
                 <ChevronRight size={18} aria-hidden="true" className={cn(
                   "hidden lg:block flex-shrink-0 transition-colors",
@@ -1003,7 +1004,7 @@ function SettingsInner() {
 function AppearanceSettings() {
   const { t } = useTranslation()
   const { theme, setTheme, isDark, systemPreference } = useTheme()
-  const { showCoachWidget, toggleCoachWidget, grafikstil, setGrafikstil } = useSettingsStore()
+  const { showCoachWidget, toggleCoachWidget, grafikstil, setGrafikstil, radgivarRost, toggleRadgivarRost } = useSettingsStore()
 
   // Grafikstil (beslut Mikael 2026-09-10): två uppsättningar bilder på samma
   // platser. Mjuk är standard. Se stores/settingsStore.ts (Grafikstil).
@@ -1174,6 +1175,23 @@ function AppearanceSettings() {
             onChange={toggleCoachWidget}
           />
         </Card>
+        {/* Rösten (2026-10-09). Bara meningsfull när rådgivarna visas — med
+            dem avstängda finns ingen hälsning att läsa upp. */}
+        {showCoachWidget && (
+          <Card variant="flat" padding="sm" className="mt-3">
+            <Toggle
+              label={t('settings.coachVoice', 'Rådgivaren pratar')}
+              description={t(
+                'settings.coachVoiceDesc',
+                'När du kommer till en sida säger rådgivaren vad som är ett bra nästa steg — med röst. Stäng av om du vill ha det tyst. Texten och knappen står kvar.'
+              )}
+              role="switch"
+              aria-checked={radgivarRost}
+              checked={radgivarRost}
+              onChange={toggleRadgivarRost}
+            />
+          </Card>
+        )}
       </CardSection>
 
       {/* Info */}

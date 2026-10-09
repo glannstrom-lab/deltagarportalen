@@ -545,9 +545,11 @@ export default function PlanTab() {
           </Card>
         )}
 
-        <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
-          <h4 className="font-semibold text-gray-800 dark:text-gray-100 mb-4">{t('career.plan.whyCareerPlan')}</h4>
-          <ul className="space-y-3 text-sm text-gray-600 dark:text-gray-300">
+        {/* "Varför en karriärplan?" stod som ett eget kort under formuläret.
+            Bakom ett klick sedan 2026-10-09 — den som är här har redan valt. */}
+        <details className="rounded-2xl p-5 bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700">
+          <summary className="cursor-pointer font-semibold text-gray-800 dark:text-gray-100">{t('career.plan.whyCareerPlan')}</summary>
+          <ul className="mt-3 space-y-3 text-sm text-gray-600 dark:text-gray-300">
             <li className="flex items-start gap-2">
               <CheckCircle className="w-4 h-4 text-[var(--c-solid)] dark:text-[var(--c-text)] mt-0.5" />
               {t('career.plan.reason1')}
@@ -561,7 +563,7 @@ export default function PlanTab() {
               {t('career.plan.reason3')}
             </li>
           </ul>
-        </Card>
+        </details>
       </div>
     )
   }

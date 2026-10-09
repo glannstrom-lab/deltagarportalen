@@ -17,6 +17,7 @@ import { minVeckaApi, type ActivityPlan } from '@/services/aktivitetApi'
 import { downloadNarvaroIntygPDF, valbaraManader, type IntygInput } from '@/services/narvaroIntygPdf'
 import { manadOchAr } from '@/lib/datumsprak'
 import { regelverkNycklar, type PlanensRegelverk } from './planensRegelverk'
+import { LasMer } from '@/components/ui/LasMer'
 // RD29: hennes egna incheckningar och eget jobbsökande, som egen redovisning
 import {
   INTYG_HAR_EGEN_REDOVISNING,
@@ -125,14 +126,17 @@ export function NarvaroIntyg({ plan, regelverk = null }: Props) {
           {laddar ? t('minVecka.intyg.skapar', 'Skapar …') : t('minVecka.intyg.knapp', 'Ladda ner närvarointyg')}
         </Button>
       </div>
-      {INTYG_HAR_EGEN_REDOVISNING && (
-        <p className="text-xs text-stone-600 dark:text-stone-400">
-          {t('minVecka.intyg.egenRedovisning', 'Intyget visar också dina egna incheckningar och ditt jobbsökande i Jobin, som din egen redovisning.')}
+      {/* Designpass 2026-10-09: vad intyget innehåller — ett klick bort */}
+      <LasMer etikett={t('minVecka.intyg.lasMer', 'Vad står i intyget?')} className="mt-0">
+        {INTYG_HAR_EGEN_REDOVISNING && (
+          <p>
+            {t('minVecka.intyg.egenRedovisning', 'Intyget visar också dina egna incheckningar och ditt jobbsökande i Jobin, som din egen redovisning.')}
+          </p>
+        )}
+        <p>
+          {t('minVecka.intyg.forbehall', 'Bara pass som konsulenten markerat som närvarande räknas som närvaro. Pass utan markering står som "ej markerat".')}
         </p>
-      )}
-      <p className="text-xs text-stone-500 dark:text-stone-400">
-        {t('minVecka.intyg.forbehall', 'Bara pass som konsulenten markerat som närvarande räknas som närvaro. Pass utan markering står som "ej markerat".')}
-      </p>
+      </LasMer>
       {klart && <p role="status" className="text-sm text-emerald-700 dark:text-emerald-300">{klart}</p>}
       {fel && <p role="alert" className="text-sm text-red-700 dark:text-red-300">{fel}</p>}
     </Card>

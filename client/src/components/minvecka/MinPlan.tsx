@@ -23,6 +23,7 @@ import { Card } from '@/components/ui/Card'
 import { MapPin, Phone } from '@/components/ui/icons'
 import { minPraktikApi, type MinPraktik, type PraktikTyp } from '@/services/minPraktikApi'
 import type { PlanensRegelverk } from './planensRegelverk'
+import { LasMer } from '@/components/ui/LasMer'
 
 interface Props {
   regelverk: PlanensRegelverk | null
@@ -62,43 +63,47 @@ export function MinPlan({ regelverk, orgNamn }: Props) {
 
       {hos && <p className="text-stone-800 dark:text-stone-200">{hos}</p>}
 
-      {regelverk === 'leverantor' && (
-        <>
-          <p className="text-sm text-stone-700 dark:text-stone-300">
-            {t('minVecka.plan.leverantor.beslut', 'Det är Arbetsförmedlingen som har bestämt att du ska vara med i Rusta och matcha. Frågor om din ersättning ställer du till Arbetsförmedlingen.')}
-          </p>
-          <div>
-            <h3 className="text-sm font-semibold text-stone-800 dark:text-stone-200">
-              {t('minVecka.plan.rapport.rubrik', 'Aktivitetsrapporten')}
-            </h3>
-            <p className="text-sm text-stone-700 dark:text-stone-300">
-              {t('minVecka.plan.rapport.text', 'Du lämnar din aktivitetsrapport till Arbetsförmedlingen som vanligt, i början av varje månad för månaden innan. Din konsulent här kan hjälpa dig, men det är du som skickar in den.')}
-            </p>
-            <a href="/guider/aktivitetsrapport-guide/" className="text-sm underline underline-offset-2 text-[var(--c-text)]">
-              {t('minVecka.plan.rapport.lank', 'Så gör du med aktivitetsrapporten')}
-            </a>
-          </div>
-        </>
-      )}
-
-      {regelverk === 'kommun' && (
-        <p className="text-sm text-stone-700 dark:text-stone-300">
-          {t('minVecka.plan.kommun.beslut', 'Planen hör ihop med ditt försörjningsstöd. Det är socialnämnden i kommunen som beslutar om försörjningsstöd. Frågor om pengar ställer du till din handläggare där.')}
-        </p>
-      )}
-
-      <p className="text-sm text-stone-700 dark:text-stone-300">
-        {regelverk === 'leverantor'
-          ? t('minVecka.plan.raknas.leverantor', 'Det som räknas här är passen i din plan. Din konsulent markerar när du har varit där. Ditt eget jobbsökande skriver du själv i aktivitetsrapporten.')
-          : t('minVecka.plan.raknas.vanlig', 'Det som räknas här är passen i din plan. Din konsulent markerar när du har varit där.')}
-      </p>
-
       {praktik.isError && (
         <p className="text-sm text-stone-600 dark:text-stone-400">
           {t('minVecka.plan.praktik.fel', 'Din arbetsplats kunde inte hämtas just nu. Fråga din konsulent om du undrar något.')}
         </p>
       )}
       {praktik.data && <Praktikplats plats={praktik.data} />}
+
+      {/* Designpass 2026-10-09: vem hon är hos och var hon ska vara syns direkt;
+          vem som beslutat och vad som räknas ligger ett klick bort. */}
+      <LasMer etikett={t('minVecka.plan.lasMer', 'Om din plan')}>
+        {regelverk === 'leverantor' && (
+          <>
+            <p className="text-sm text-stone-700 dark:text-stone-300">
+              {t('minVecka.plan.leverantor.beslut', 'Det är Arbetsförmedlingen som har bestämt att du ska vara med i Rusta och matcha. Frågor om din ersättning ställer du till Arbetsförmedlingen.')}
+            </p>
+            <div>
+              <h3 className="text-sm font-semibold text-stone-800 dark:text-stone-200">
+                {t('minVecka.plan.rapport.rubrik', 'Aktivitetsrapporten')}
+              </h3>
+              <p className="text-sm text-stone-700 dark:text-stone-300">
+                {t('minVecka.plan.rapport.text', 'Du lämnar din aktivitetsrapport till Arbetsförmedlingen som vanligt, i början av varje månad för månaden innan. Din konsulent här kan hjälpa dig, men det är du som skickar in den.')}
+              </p>
+              <a href="/guider/aktivitetsrapport-guide/" className="text-sm underline underline-offset-2 text-[var(--c-text)]">
+                {t('minVecka.plan.rapport.lank', 'Så gör du med aktivitetsrapporten')}
+              </a>
+            </div>
+          </>
+        )}
+
+        {regelverk === 'kommun' && (
+          <p className="text-sm text-stone-700 dark:text-stone-300">
+            {t('minVecka.plan.kommun.beslut', 'Planen hör ihop med ditt försörjningsstöd. Det är socialnämnden i kommunen som beslutar om försörjningsstöd. Frågor om pengar ställer du till din handläggare där.')}
+          </p>
+        )}
+
+        <p className="text-sm text-stone-700 dark:text-stone-300">
+          {regelverk === 'leverantor'
+            ? t('minVecka.plan.raknas.leverantor', 'Det som räknas här är passen i din plan. Din konsulent markerar när du har varit där. Ditt eget jobbsökande skriver du själv i aktivitetsrapporten.')
+            : t('minVecka.plan.raknas.vanlig', 'Det som räknas här är passen i din plan. Din konsulent markerar när du har varit där.')}
+        </p>
+      </LasMer>
     </Card>
   )
 }

@@ -328,26 +328,24 @@ export default function PitchTab() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <Card className="bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40 border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50">
-        <div className="flex items-start gap-4">
-          <div className="w-12 h-12 bg-[var(--c-solid)] rounded-xl flex items-center justify-center shrink-0">
-            <Mic className="w-6 h-6 text-white dark:text-stone-900" aria-hidden="true" />
-          </div>
-          <div className="flex-1">
-            <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100">
-              {t('personalBrand.pitch.header.title', 'Din personliga pitch')}
-            </h2>
-            <p className="text-gray-600 dark:text-gray-300 mt-1">
-              {t('personalBrand.pitch.header.description', 'En kort presentation av dig själv, att ha när någon frågar. Ett halvt till en minut räcker för att någon ska vilja fråga mer.')}
-            </p>
-          </div>
-          <Button onClick={() => { resetForm(); setIsEditing(true); setSelectedPitch(null); }}>
-            <Plus className="w-4 h-4 mr-1" />
-            {t('personalBrand.pitch.newPitch', 'Ny pitch')}
-          </Button>
+      {/* Header — ett pastellkort med ikonplatta och ett stycke var en rubrik
+          för mycket ovanför tomtillståndet, som säger samma sak. Nu en
+          rubrikrad; stycket ligger på en rad under. (2026-10-09) */}
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div className="min-w-0">
+          <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100 flex items-center gap-2">
+            <Mic className="w-5 h-5 text-[var(--c-solid)]" aria-hidden="true" />
+            {t('personalBrand.pitch.header.title', 'Din personliga pitch')}
+          </h2>
+          <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
+            {t('personalBrand.pitch.header.short', 'En kort presentation av dig själv — ett halvt till en minut.')}
+          </p>
         </div>
-      </Card>
+        <Button onClick={() => { resetForm(); setIsEditing(true); setSelectedPitch(null); }}>
+          <Plus className="w-4 h-4 mr-1" aria-hidden="true" />
+          {t('personalBrand.pitch.newPitch', 'Ny pitch')}
+        </Button>
+      </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Pitch List */}
@@ -842,13 +840,13 @@ export default function PitchTab() {
         </div>
       </div>
 
-      {/* Tips */}
-      <Card className="bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50">
-        <h3 className="font-semibold text-[var(--c-text)] dark:text-white mb-3 flex items-center gap-2">
-          <Sparkles className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-solid)]" />
+      {/* Tips — bakom ett klick sedan 2026-10-09 */}
+      <details className="rounded-2xl p-5 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50">
+        <summary className="cursor-pointer font-semibold text-[var(--c-text)] dark:text-white">
+          <Sparkles className="inline w-5 h-5 mr-2 align-[-4px] text-[var(--c-text)] dark:text-[var(--c-solid)]" aria-hidden="true" />
           {t('personalBrand.pitch.tips.title', 'Tips för en kraftfull pitch')}
-        </h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        </summary>
+        <div className="mt-3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <div className="text-sm">
             <p className="font-medium text-[var(--c-text)] dark:text-[var(--c-text)]">
               {t('personalBrand.pitch.tips.specific.title', 'Var specifik')}
@@ -882,7 +880,7 @@ export default function PitchTab() {
             </p>
           </div>
         </div>
-      </Card>
+      </details>
     </div>
   )
 }

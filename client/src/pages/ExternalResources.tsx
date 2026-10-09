@@ -62,6 +62,12 @@ import { useInnehall } from '@/data/oversattningar'
 const ALLA = 'alla'
 
 /**
+ * Hur många ämnesrader "Alla" visar innan "Visa alla ämnen" (designpasset
+ * 2026-10-09). 35 hopfällda rader i följd var en vägg på 4 000 px.
+ */
+const AMNEN_FORST = 8
+
+/**
  * Ett kort i ett kategoriavsnitt.
  *
  * Beskrivningen låg tidigare i `truncate` — en enda rad. Beskrivningarna är i
@@ -125,7 +131,7 @@ function UtvaltKort({ resource, nyFlik }: { resource: ExternalResource; nyFlik: 
             </h3>
             <ExternalLink className="w-4 h-4 shrink-0 mt-0.5 text-stone-500" aria-hidden="true" />
           </div>
-          <p className="mt-1 text-sm text-stone-600 dark:text-stone-400 line-clamp-3">
+          <p className="mt-1 text-sm text-stone-600 dark:text-stone-400 line-clamp-2">
             {resource.description}
           </p>
         </div>
@@ -169,7 +175,7 @@ function Kategoriavsnitt({
           onClick={vidVaxling}
           aria-expanded={oppen}
           aria-controls={panelId}
-          className="w-full flex items-center justify-between gap-3 p-4 min-h-[56px] bg-white dark:bg-stone-900 hover:bg-stone-50 dark:hover:bg-stone-800 transition-colors text-left"
+          className="w-full flex items-center justify-between gap-3 px-4 py-3 min-h-[48px] bg-white dark:bg-stone-900 hover:bg-stone-50 dark:hover:bg-stone-800 transition-colors text-left"
         >
           <span className="flex items-center gap-3">
             <span className="font-semibold text-stone-900 dark:text-stone-100">
@@ -225,6 +231,7 @@ function ExternalResourcesInner() {
   const [sokning, setSokning] = useState('')
   const [aktivFlik, setAktivFlik] = useState<string>(ALLA)
   const [oppnaAvsnitt, setOppnaAvsnitt] = useState<Set<string>>(new Set())
+  const [visaAllaAmnen, setVisaAllaAmnen] = useState(false)
 
   const soker = sokning.trim().length > 0
   const nyFlik = t('externalResources.opensInNewTab', 'öppnas i ny flik')
@@ -265,6 +272,9 @@ function ExternalResourcesInner() {
   )
 
   const synligaKategorier = aktivaKategorier.filter((k) => perKategori[k]?.length)
+  // Bara "Alla" kortas av; en vald flik har redan sina avsnitt öppna.
+  const kortad = aktivFlik === ALLA && !visaAllaAmnen && synligaKategorier.length > AMNEN_FORST
+  const listadeKategorier = kortad ? synligaKategorier.slice(0, AMNEN_FORST) : synligaKategorier
 
   /**
    * Att välja en flik öppnar dess avsnitt.
@@ -409,7 +419,7 @@ function ExternalResourcesInner() {
                   'Ett urval vi gjort åt dig — öppna för alla och utan kostnad.'
                 )}
               </p>
-              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
+              <div className="grid gap-3 sm:grid-cols-2 2xl:grid-cols-3">
                 {utvalda.map((resource) => (
                   <UtvaltKort key={resource.id} resource={resource} nyFlik={nyFlik} />
                 ))}
@@ -420,7 +430,7 @@ function ExternalResourcesInner() {
           <div className="flex items-center gap-2 text-sm">
             <button
               type="button"
-              onClick={() => setOppnaAvsnitt(new Set(synligaKategorier))}
+              onClick={() => { setVisaAllaAmnen(true); setOppnaAvsnitt(new Set(synligaKategorier)) }}
               className="px-3 py-2 rounded-lg text-[var(--c-text)] font-medium hover:bg-[var(--c-bg)] transition-colors"
             >
               {t('externalResources.expandAll', 'Öppna alla avsnitt')}
@@ -434,8 +444,8 @@ function ExternalResourcesInner() {
             </button>
           </div>
 
-          <div className="space-y-4">
-            {synligaKategorier.map((kategori) => (
+          <div className="space-y-2">
+            {listadeKategorier.map((kategori) => (
               <Kategoriavsnitt
                 key={kategori}
                 kategori={kategori}
@@ -446,6 +456,21 @@ function ExternalResourcesInner() {
               />
             ))}
           </div>
+
+          {kortad && (
+            <div className="flex justify-center">
+              <button
+                type="button"
+                onClick={() => setVisaAllaAmnen(true)}
+                className="px-4 py-2 rounded-lg border border-[var(--c-accent)] text-[var(--c-text)] font-medium hover:bg-[var(--c-bg)] transition-colors"
+              >
+                {t('externalResources.showAllTopics', {
+                  count: synligaKategorier.length - AMNEN_FORST,
+                  defaultValue: 'Visa fler ämnen ({{count}} till)',
+                })}
+              </button>
+            </div>
+          )}
         </>
       )}
 

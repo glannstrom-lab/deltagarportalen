@@ -17,18 +17,27 @@ import {
   ChevronDown,
   ChevronUp,
   Users,
+  Laptop,
+  Stethoscope,
+  Calculator,
+  Palette,
+  Coffee,
+  Hammer,
+  Leaf,
 } from '@/components/ui/icons'
 
-// Group occupations by field
+// Group occupations by field. Namnen är svenska reservtexter — de visas via
+// t('interestGuide.explore.fields.<id>'). Nyckelorden matchas mot den
+// OÖVERSATTA yrkestexten och översätts aldrig.
 const fields = [
-  { id: 'tech', name: 'Teknik & IT', keywords: ['programmerar', 'IT', 'system', 'data', 'teknisk', 'ingenjör'] },
-  { id: 'healthcare', name: 'Vård & Omsorg', keywords: ['vård', 'sjuk', 'hälsa', 'patient', 'omsorg', 'social'] },
-  { id: 'education', name: 'Utbildning', keywords: ['lärare', 'undervisa', 'pedagogik', 'skola', 'förskola'] },
-  { id: 'business', name: 'Affär & Ekonomi', keywords: ['ekonom', 'försälj', 'marknad', 'chef', 'företag', 'affär'] },
-  { id: 'creative', name: 'Kreativt & Design', keywords: ['design', 'kreativ', 'konst', 'media', 'grafisk', 'film'] },
-  { id: 'service', name: 'Service & Handel', keywords: ['service', 'kund', 'butik', 'restaurang', 'hotell'] },
-  { id: 'construction', name: 'Bygg & Hantverk', keywords: ['bygg', 'snickare', 'elektriker', 'rör', 'målare', 'hantverk'] },
-  { id: 'nature', name: 'Natur & Miljö', keywords: ['miljö', 'natur', 'djur', 'skog', 'jordbruk', 'trädgård'] },
+  { id: 'tech', name: 'Teknik & IT', icon: Laptop, keywords: ['programmerar', 'IT', 'system', 'data', 'teknisk', 'ingenjör'] },
+  { id: 'healthcare', name: 'Vård & Omsorg', icon: Stethoscope, keywords: ['vård', 'sjuk', 'hälsa', 'patient', 'omsorg', 'social'] },
+  { id: 'education', name: 'Utbildning', icon: GraduationCap, keywords: ['lärare', 'undervisa', 'pedagogik', 'skola', 'förskola'] },
+  { id: 'business', name: 'Affär & Ekonomi', icon: Calculator, keywords: ['ekonom', 'försälj', 'marknad', 'chef', 'företag', 'affär'] },
+  { id: 'creative', name: 'Kreativt & Design', icon: Palette, keywords: ['design', 'kreativ', 'konst', 'media', 'grafisk', 'film'] },
+  { id: 'service', name: 'Service & Handel', icon: Coffee, keywords: ['service', 'kund', 'butik', 'restaurang', 'hotell'] },
+  { id: 'construction', name: 'Bygg & Hantverk', icon: Hammer, keywords: ['bygg', 'snickare', 'elektriker', 'rör', 'målare', 'hantverk'] },
+  { id: 'nature', name: 'Natur & Miljö', icon: Leaf, keywords: ['miljö', 'natur', 'djur', 'skog', 'jordbruk', 'trädgård'] },
 ]
 
 function getOccupationField(occupation: Occupation): string {
@@ -42,7 +51,7 @@ function getOccupationField(occupation: Occupation): string {
 }
 
 /** Hur många yrken som visas innan användaren ber om fler. */
-const SIDSTORLEK = 20
+const SIDSTORLEK = 12
 
 export default function ExploreTab() {
   const { t } = useTranslation()
@@ -129,9 +138,6 @@ export default function ExploreTab() {
         <h2 className="text-xl font-bold text-stone-800 dark:text-stone-100">
           {t('interestGuide.explore.title')}
         </h2>
-        <p className="text-stone-600 dark:text-stone-400 mt-1">
-          {t('interestGuide.explore.description')}
-        </p>
       </div>
 
       {/* Search */}
@@ -153,8 +159,8 @@ export default function ExploreTab() {
             onClick={() => setShowFilters(!showFilters)}
             className="gap-2"
           >
-            <Filter className="w-4 h-4" />
-            Filter
+            <Filter className="w-4 h-4" aria-hidden="true" />
+            {t('interestGuide.explore.filterButton', 'Filter')}
             {showFilters ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
           </Button>
         </div>
@@ -180,13 +186,15 @@ export default function ExploreTab() {
                   <button
                     key={field.id}
                     onClick={() => setSelectedField(field.id)}
-                    className={`px-3 py-1.5 text-sm rounded-lg transition-colors ${
+                    aria-pressed={selectedField === field.id}
+                    className={`px-3 py-1.5 text-sm rounded-lg transition-colors inline-flex items-center gap-1.5 ${
                       selectedField === field.id
                         ? 'bg-[var(--c-solid)] text-white'
                         : 'bg-stone-100 dark:bg-stone-700 text-gray-600 dark:text-gray-300 hover:bg-stone-200 dark:hover:bg-stone-600'
                     }`}
                   >
-                    {field.name}
+                    <field.icon className="w-4 h-4" aria-hidden="true" />
+                    {t(`interestGuide.explore.fields.${field.id}`, field.name)}
                   </button>
                 ))}
               </div>
@@ -204,7 +212,7 @@ export default function ExploreTab() {
                       : 'bg-stone-100 dark:bg-stone-700 text-gray-600 dark:text-gray-300 hover:bg-stone-200 dark:hover:bg-stone-600'
                   }`}
                 >
-                  Alla
+                  {t('common.all')}
                 </button>
                 <button
                   onClick={() => setFilterUni(true)}
@@ -214,8 +222,8 @@ export default function ExploreTab() {
                       : 'bg-stone-100 dark:bg-stone-700 text-gray-600 dark:text-gray-300 hover:bg-stone-200 dark:hover:bg-stone-600'
                   }`}
                 >
-                  <GraduationCap className="w-4 h-4" />
-                  Högskola
+                  <GraduationCap className="w-4 h-4" aria-hidden="true" />
+                  {t('interestGuide.explore.universityLevel')}
                 </button>
                 <button
                   onClick={() => setFilterUni(false)}
@@ -225,8 +233,8 @@ export default function ExploreTab() {
                       : 'bg-stone-100 dark:bg-stone-700 text-gray-600 dark:text-gray-300 hover:bg-stone-200 dark:hover:bg-stone-600'
                   }`}
                 >
-                  <Briefcase className="w-4 h-4" />
-                  Gymnasium/YH
+                  <Briefcase className="w-4 h-4" aria-hidden="true" />
+                  {t('interestGuide.occupations.upperSecondary', 'Gymnasium/YH')}
                 </button>
               </div>
             </div>
@@ -243,40 +251,40 @@ export default function ExploreTab() {
                       : 'bg-stone-100 dark:bg-stone-700 text-gray-600 dark:text-gray-300 hover:bg-stone-200 dark:hover:bg-stone-600'
                   }`}
                 >
-                  Alla
+                  {t('common.all')}
                 </button>
                 <button
                   onClick={() => setFilterPrognosis('growing')}
                   className={`px-3 py-1.5 text-sm rounded-lg transition-colors flex items-center gap-1 ${
                     filterPrognosis === 'growing'
-                      ? 'bg-green-600 dark:bg-green-700 text-white'
+                      ? 'bg-[var(--c-solid)] text-white'
                       : 'bg-stone-100 dark:bg-stone-700 text-gray-600 dark:text-gray-300 hover:bg-stone-200 dark:hover:bg-stone-600'
                   }`}
                 >
-                  <TrendingUp className="w-4 h-4" />
-                  Växande
+                  <TrendingUp className="w-4 h-4" aria-hidden="true" />
+                  {t('interestGuide.explore.prognosis.growing')}
                 </button>
                 <button
                   onClick={() => setFilterPrognosis('stable')}
                   className={`px-3 py-1.5 text-sm rounded-lg transition-colors flex items-center gap-1 ${
                     filterPrognosis === 'stable'
-                      ? 'bg-gray-600 dark:bg-gray-700 text-white'
+                      ? 'bg-[var(--c-solid)] text-white'
                       : 'bg-stone-100 dark:bg-stone-700 text-gray-600 dark:text-gray-300 hover:bg-stone-200 dark:hover:bg-stone-600'
                   }`}
                 >
-                  <Minus className="w-4 h-4" />
-                  Stabil
+                  <Minus className="w-4 h-4" aria-hidden="true" />
+                  {t('interestGuide.explore.prognosis.stable')}
                 </button>
                 <button
                   onClick={() => setFilterPrognosis('declining')}
                   className={`px-3 py-1.5 text-sm rounded-lg transition-colors flex items-center gap-1 ${
                     filterPrognosis === 'declining'
-                      ? 'bg-red-600 dark:bg-red-700 text-white'
+                      ? 'bg-[var(--c-solid)] text-white'
                       : 'bg-stone-100 dark:bg-stone-700 text-gray-600 dark:text-gray-300 hover:bg-stone-200 dark:hover:bg-stone-600'
                   }`}
                 >
-                  <TrendingDown className="w-4 h-4" />
-                  Krympande
+                  <TrendingDown className="w-4 h-4" aria-hidden="true" />
+                  {t('interestGuide.explore.prognosis.declining')}
                 </button>
               </div>
             </div>
@@ -327,6 +335,7 @@ export default function ExploreTab() {
                 onClick={() => setExpandedOccupation(
                   expandedOccupation === occupation.id ? null : occupation.id
                 )}
+                aria-expanded={expandedOccupation === occupation.id}
                 className="w-full p-4 flex items-center justify-between text-left"
               >
                 <div className="flex items-center gap-3">
@@ -340,7 +349,7 @@ export default function ExploreTab() {
                         {occupation.requiresUniversity ? (
                           <><GraduationCap className="w-3 h-3" /> {t('interestGuide.explore.universityLevel')}</>
                         ) : (
-                          <><Users className="w-3 h-3" /> Gymnasium/YH</>
+                          <><Users className="w-3 h-3" aria-hidden="true" /> {t('interestGuide.occupations.upperSecondary', 'Gymnasium/YH')}</>
                         )}
                       </span>
                       <span className="flex items-center gap-1">
@@ -378,7 +387,7 @@ export default function ExploreTab() {
                         type visades aldrig. (Granskning 2026-08-21.)
                       */}
                       <div>
-                        <p className="text-stone-600 dark:text-stone-400 mb-1">Utbildning</p>
+                        <p className="text-stone-600 dark:text-stone-400 mb-1">{t('interestGuide.jobCard.education', 'Utbildning')}</p>
                         <p className="font-medium text-gray-900 dark:text-gray-100">{occupation.education.name}</p>
                       </div>
                     </div>

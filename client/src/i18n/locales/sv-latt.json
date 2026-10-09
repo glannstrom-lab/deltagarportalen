@@ -23,7 +23,8 @@
       "vadRaknasJobbsok_other": "Här räknas bara pass som din konsulent har planerat. Att söka jobb själv räknas för sig. Planen säger {{count}} timmar i veckan.",
       "radAnvisat_other": "Du har {{planerade}} av {{mal}} timmar med pass den här veckan.",
       "radOver_one": "Du har {{planerade}} timme med pass den här veckan. Det är mer än målet. Målet är {{mal}}.",
-      "radOver_other": "Du har {{planerade}} timmar med pass den här veckan. Det är mer än målet. Målet är {{mal}}."
+      "radOver_other": "Du har {{planerade}} timmar med pass den här veckan. Det är mer än målet. Målet är {{mal}}.",
+      "lasMer": "Så räknas timmarna"
     },
     "nastaPass": "Nästa gång: {{titel}}, {{dag}} kl {{tid}}",
     "forraVeckan": "Veckan före",
@@ -57,7 +58,8 @@
       "fel": "Det gick inte just nu. Försök igen om en stund.",
       "textLeverantor": "Ett papper som visar dina pass i en månad och vad din konsulent har skrivit. Du kan visa det för din handläggare på Arbetsförmedlingen.",
       "textNeutral": "Ett papper som visar dina pass i en månad och vad din konsulent har skrivit.",
-      "egenRedovisning": "På intyget finns också det du själv har gjort. Dina incheckningar och ditt jobbsökande i Jobin."
+      "egenRedovisning": "På intyget finns också det du själv har gjort. Dina incheckningar och ditt jobbsökande i Jobin.",
+      "lasMer": "Vad står i intyget?"
     },
     "fraga": {
       "knapp": "Fråga om passet",
@@ -209,7 +211,8 @@
           "arbetsprovning": "Din arbetsprövning",
           "subventionerad_anstallning": "Ditt jobb med stöd"
         }
-      }
+      },
+      "lasMer": "Om din plan"
     }
   },
   "minVardagHub": {
@@ -428,7 +431,6 @@
     },
     "profileImage": {
       "title": "Foto",
-      "description": "Du kan lägga till ett foto av dig. Du måste inte.",
       "mustBeLoggedIn": "Du måste logga in för att lägga till ett foto.",
       "uploadFailed": "Det gick inte att lägga till fotot: ",
       "uploading": "Lägger till …"
@@ -502,10 +504,7 @@
     },
     "help": {
       "title": "Vill du ha hjälp?",
-      "description": "Se guiden igen. Den visar hur du gör ett bra CV.",
-      "showGuide": "Visa guiden igen",
-      "aiWriting": "Hjälp att skriva",
-      "aiWritingDesc": "Få hjälp att skriva texten om dig"
+      "showGuide": "Visa guiden igen"
     },
     "messages": {
       "imported": "Nu finns ditt CV här. Gå igenom stegen. Skriv det som saknas.",
@@ -537,14 +536,13 @@
     },
     "review": {
       "a4Note": "Så ser ditt CV ut på papper",
-      "actionsDesc": "Ditt CV är sparat. Du kan ladda ner det som PDF. Du kan också spara en kopia.",
       "actionsTitle": "Är du klar?",
       "checklistTitle": "Det här står i ditt CV",
-      "editHint": "Ser en del konstig ut? Gå tillbaka och ändra. Strecket visar var sida 2 börjar.",
+      "editHint": "Ser något konstigt ut? Gå tillbaka och ändra.",
       "exportWord": "Ladda ner Word",
       "missingHint": "Du måste inte fylla i allt. Du kan ladda ner ändå.",
       "pageBreak": "Här börjar sida 2",
-      "subtitle": "Här är ditt CV. Allt sparas av sig självt. Ladda ner när du är nöjd.",
+      "subtitle": "Allt sparas av sig själv.",
       "title": "Titta på ditt CV och spara",
       "wordError": "Det gick inte att göra en Word-fil",
       "wordSuccess": "Word-filen är nedladdad"
@@ -614,9 +612,7 @@
       "discoverStrengths": "Se vad du är bra på",
       "takeInterestGuide": "Gör intresseguiden. Då får du förslag på jobb."
     },
-    "onboarding": {
-      "inlineTip": "Här skriver du om dig själv. Fyll i det du orkar. Du kan göra det när du vill. Allt sparas."
-    },
+    "onboarding": {},
     "completion": {
       "fields": {
         "firstName": "Förnamn",
@@ -854,8 +850,7 @@
       "moodLatest": "Senast {{nar}}",
       "event": "Nästa sak i kalendern"
     },
-    "hubsHeading": "Allt i portalen",
-    "historyLead": "Det du har gjort i portalen, vecka för vecka."
+    "hubsHeading": "Allt i portalen"
   },
   "helpPage": {
     "intro": "Här finns svar på vanliga frågor. Du kan också fråga oss.",
@@ -989,7 +984,7 @@
     "title": "Min konsulent",
     "laslogg": {
       "title": "Vem har tittat på dina uppgifter",
-      "desc": "Här står det varje gång din konsulent tittar på din sida. Då vet du det själv.",
+      "desc": "Här ser du när din konsulent öppnar din sida.",
       "rad": "Din konsulent tittade på {{vad}} {{datum}} kl {{tid}}",
       "vad": {
         "sida": "din sida (hur man når dig, ditt CV, dina mål och anteckningar)",
@@ -1001,7 +996,9 @@
         "platser": "dina praktikplatser"
       },
       "tomt": "Ingen har tittat på dina uppgifter än. Det står här när din konsulent gör det.",
-      "fel": "Vi kunde inte visa listan just nu."
+      "fel": "Vi kunde inte visa listan just nu.",
+      "visaAlla": "Visa alla {{count}}",
+      "visaFarre": "Visa färre"
     },
     "subtitle": "Skriv och prata med {{name}}",
     "subtitleNoConsultant": "Du har ingen konsulent än",
@@ -1048,7 +1045,6 @@
       }
     },
     "sharedInfoTitle": "Det här ser din konsulent",
-    "sharedInfoDesc": "Här ser du vad din konsulent kan se. Och vad bara du ser.",
     "legend": {
       "shared": "Din konsulent kan se det här",
       "notShared": "Bara du kan se det här",
@@ -1110,7 +1106,8 @@
   },
   "common": {
     "tagInputInstructions": "Tryck på Enter för att lägga till. Använd pilarna för att välja ett förslag.",
-    "tagCounter": "{{count}} av {{max}}"
+    "tagCounter": "{{count}} av {{max}}",
+    "lasMer": "Läs mer"
   },
   "occupation": {
     "desiredJobsList": {
@@ -1194,12 +1191,12 @@
     "checkedNote": "Vi läste myndigheternas webbplatser {{date}}. Reglerna kan ändras. Titta alltid på myndighetens sida innan du bestämmer dig.",
     "opensInNewTab": "Öppnas i en ny flik",
     "validation": {
-      "description": "Har du en utbildning eller ett yrke från ett annat land? Då finns två frågor. Vad är din utbildning värd i Sverige? Och behöver du ett svenskt tillstånd för ditt yrke?",
       "uhr": {
         "title": "Få din utbildning bedömd",
         "body": "Universitets- och högskolerådet (UHR) tittar på utbildning från andra länder. De skriver ett papper om vad utbildningen är värd i Sverige. Det kostar inget. Du kan skicka med pappret när du söker jobb eller utbildning.",
         "link": "UHR — bedömning av utländsk utbildning",
-        "tip": "Har du inte kvar dina betyg? Ansök ändå. UHR skriver på sin sida vad du kan göra när papper saknas."
+        "tip": "Har du inte kvar dina betyg? Ansök ändå. UHR skriver på sin sida vad du kan göra när papper saknas.",
+        "lead": "UHR kan skriva vad din utbildning är värd i Sverige. Det kostar inget."
       },
       "regulated": {
         "title": "Behöver du legitimation för ditt yrke?",
@@ -1208,7 +1205,8 @@
         "teacher": "Skola och förskola: Skolverket ger legitimation för lärare och förskollärare.",
         "other": "Vet du inte om ditt yrke kräver legitimation? Börja med UHR. Fråga också Arbetsförmedlingen. De vet vilken myndighet som prövar vad.",
         "healthLink": "Socialstyrelsen — legitimation",
-        "teacherLink": "Skolverket — legitimation"
+        "teacherLink": "Skolverket — legitimation",
+        "lead": "Vill du jobba i vården eller skolan? Då behöver du ofta en svensk legitimation."
       },
       "permit": {
         "title": "Behöver du arbetstillstånd?",
@@ -1217,7 +1215,11 @@
         "noNumbers": "Vi skriver inga belopp och inga väntetider här. De ändras varje år. Ett gammalt tal kan göra att du gör fel. Migrationsverket har alltid det som gäller nu.",
         "linkPermit": "Migrationsverket — arbetstillstånd",
         "linkEu": "Migrationsverket — EU/EES-medborgare",
-        "linkException": "Migrationsverket — vem får arbeta utan tillstånd"
+        "linkException": "Migrationsverket — vem får arbeta utan tillstånd",
+        "euShort": "Du kommer från ett land i EU, EES eller Norden",
+        "euAnswer": "Du behöver inget tillstånd för att jobba.",
+        "thirdShort": "Du kommer från ett land utanför EU och EES",
+        "thirdAnswer": "Då behöver du oftast ett arbetstillstånd."
       },
       "next": {
         "title": "Vad gör du sedan?",
@@ -1227,7 +1229,6 @@
       }
     },
     "integration": {
-      "description": "Ordningen är viktig. Nästan allt börjar med att du blir folkbokförd. Kryssa i det du har gjort. Det sparas.",
       "yourProgress": "Så långt har du kommit",
       "emptyHint": "Börja med första steget när du orkar. Du behöver inte göra något i dag.",
       "progressCount": "{{done}} av {{total}} klara",
@@ -1236,7 +1237,8 @@
       "onlyThirdCountry": "För dig som inte kommer från EU/EES eller Norden",
       "firstNote": {
         "title": "Läs det här först",
-        "body": "Nästan allt annat kräver att du är folkbokförd och har personnummer. Det tar tid. Det kan ta flera veckor. Under tiden kan du inte få BankID. Många tjänster kräver BankID. Det är inte ditt fel. Så här fungerar systemet."
+        "body": "Nästan allt annat kräver att du är folkbokförd och har personnummer. Det tar tid. Det kan ta flera veckor. Under tiden kan du inte få BankID. Många tjänster kräver BankID. Det är inte ditt fel. Så här fungerar systemet.",
+        "lead": "Gör det här först: bli folkbokförd och få ett personnummer. Det mesta annat kräver det."
       },
       "categories": {
         "start": "Börja här",
@@ -1328,7 +1330,6 @@
     },
     "language": {
       "title": "Svenska",
-      "description": "Du behöver inte vänta med att söka jobb tills du kan bra svenska. Men svenska öppnar många dörrar. Här ser du hur du kan lära dig.",
       "levelsTitle": "Hur bra svenska behöver du?",
       "levelsBody": "Det beror på yrket. I många jobb bestämmer arbetsgivaren. Vardagssvenska räcker långt. I några yrken finns ett krav. För legitimation i vården vill Socialstyrelsen att du kan mycket bra svenska.",
       "sfiTitle": "Sfi har egna nivåer",
@@ -1389,7 +1390,6 @@
         }
       },
       "phrasesTitle": "Fraser att ha med sig",
-      "phrasesIntro": "De första är för när du söker jobb. De sista är för när du har fått jobb.",
       "listen": "Lyssna på {{phrase}}",
       "tipsTitle": "Det här brukar hjälpa",
       "tips": {
@@ -1398,7 +1398,10 @@
         "t3": "Ändra telefonen till svenska. Du läser den många gånger varje dag.",
         "t4": "Säg de tio fraserna högt före en intervju.",
         "t5": "Be någon rätta dig. De flesta gör det gärna om du frågar."
-      }
+      },
+      "levelsMore": "Om nivåerna: sfi och A1–C2",
+      "phrasesAll": "Visa alla {{count}} fraser",
+      "phrasesFewer": "Visa färre fraser"
     }
   }
 }

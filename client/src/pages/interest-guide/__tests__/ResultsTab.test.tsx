@@ -111,9 +111,11 @@ describe('ResultsTab', () => {
     expect(arg.text).not.toMatch(/deltagarportal/i)
   })
 
-  it('stängknappen på tipset har ett namn', async () => {
+  // "stängknappen på tipset har ett namn" stod här. Tipskortet ("Gör om testet
+  // senare …") togs bort i designpasset 2026-10-09, och med det knappen.
+  it('har bara en knapprad — ingen dubblett från ResultsView', async () => {
     getHistory.mockResolvedValue([historik[0]])
     render(<ResultsTab />)
-    expect(await screen.findByRole('button', { name: /stäng|close/i })).toBeInTheDocument()
+    expect(await screen.findAllByRole('button', { name: /dela resultat/i })).toHaveLength(1)
   })
 })

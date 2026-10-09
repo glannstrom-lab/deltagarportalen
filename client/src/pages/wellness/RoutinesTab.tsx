@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next'
 import { motion, Reorder, MotionConfig } from 'framer-motion'
 import {
   CalendarDays, Clock, Sun, Moon, Coffee, Briefcase,
-  Plus, Trash2, CheckCircle2, Play, Pause, Flame, GripVertical
+  Plus, Trash2, CheckCircle2, Play, Pause, GripVertical
 } from '@/components/ui/icons'
 import { Card, Button } from '@/components/ui'
 import { cn } from '@/lib/utils'
@@ -47,12 +47,6 @@ export default function RoutinesTab() {
   const [newRoutine, setNewRoutine] = useState({ title: '', time: '09:00' })
   const [activeTimer, setActiveTimer] = useState<string | null>(null)
   const [, setTimerSeconds] = useState(0)
-  const [routineStreaks] = useState<Record<string, number>>({
-    '1': 5,
-    '2': 8,
-    '3': 3,
-    '4': 12,
-  })
 
   const toggleRoutine = (id: string) => {
     setRoutines(prev => prev.map(r => 
@@ -94,47 +88,19 @@ export default function RoutinesTab() {
   return (
     <MotionConfig reducedMotion="user">
     <div className="space-y-6">
-      {/* Progress Overview with Streak */}
-      <motion.div
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="grid grid-cols-2 gap-4"
-      >
-        <Card className="p-6 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50">
-          <div className="flex items-start justify-between">
-            <div>
-              <p className="text-sm text-gray-600 dark:text-gray-300 mb-1">{t('wellness.routines.today')}</p>
-              <h3 className="text-3xl font-bold text-[var(--c-text)] dark:text-[var(--c-text)]">{completedToday}/{routines.length}</h3>
-              <p className="text-xs text-gray-600 dark:text-gray-300 mt-1">{t('wellness.routines.routinesCompleted')}</p>
-            </div>
-            <div className="text-right">
-              <p className="text-sm text-gray-600 dark:text-gray-300 mb-1">{t('wellness.routines.share')}</p>
-              <p className="text-2xl font-bold text-[var(--c-text)] dark:text-[var(--c-text)]">{completionPercentage}%</p>
-            </div>
-          </div>
-        </Card>
-
-        <Card className="p-6 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border-[var(--c-accent)]">
-          <div className="flex items-start gap-3">
-            <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ duration: 2, repeat: Infinity }}>
-              <Flame className="w-8 h-8 text-orange-600 dark:text-orange-400" />
-            </motion.div>
-            <div>
-              <p className="text-sm text-gray-600 dark:text-gray-300 mb-1">{t('wellness.routines.bestStreak')}</p>
-              <h3 className="text-3xl font-bold text-orange-600 dark:text-orange-400">12</h3>
-              <p className="text-xs text-gray-600 dark:text-gray-300 mt-1">{t('wellness.routines.streakDays')}</p>
-            </div>
-          </div>
-        </Card>
-      </motion.div>
-
-      {/* Progress bar */}
+      {/* Dagens läge — EN rad och en stapel (designpasset 2026-10-09).
+          Här stod tidigare två kort: "1/4 · Andel 25 %" (samma tal två gånger)
+          och "Bästa serie 12 dagar i rad" — ett hårdkodat tal som inte mätte
+          något, och en streak-räknare som DESIGN.md §1 förbjuder. Raderna
+          hade likaså påhittade serier (5/8/3/12). Lägg inte tillbaka dem. */}
       <div className="space-y-2">
         <div className="flex items-center justify-between">
-          <span className="text-sm font-medium text-gray-600 dark:text-gray-300">{t('wellness.routines.dailyProgress')}</span>
+          <span className="text-sm font-medium text-gray-700 dark:text-gray-200">
+            {t('wellness.routines.todayLine', '{{klara}} av {{totalt}} rutiner klara i dag', { klara: completedToday, totalt: routines.length })}
+          </span>
           <span className="text-sm text-gray-600 dark:text-gray-300">{completionPercentage}%</span>
         </div>
-        <div className="h-3 bg-stone-100 dark:bg-stone-700 rounded-full overflow-hidden">
+        <div className="h-3 bg-stone-100 dark:bg-stone-700 rounded-full overflow-hidden" aria-hidden="true">
           <motion.div
             initial={{ width: 0 }}
             animate={{ width: `${completionPercentage}%` }}
@@ -186,7 +152,6 @@ export default function RoutinesTab() {
           {routines.map((routine) => {
             const Icon = routine.icon
             const isTimerActive = activeTimer === routine.id
-            const streak = routineStreaks[routine.id] || 0
 
             return (
               <Reorder.Item
@@ -227,15 +192,6 @@ export default function RoutinesTab() {
                     <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300 mt-1">
                       <Clock className="w-3 h-3" />
                       {routine.time}
-                      {streak > 0 && (
-                        <>
-                          <span className="text-gray-300 dark:text-gray-500">•</span>
-                          <div className="flex items-center gap-1">
-                            <Flame className="w-3 h-3 text-orange-500 dark:text-orange-400" />
-                            <span className="text-orange-600 dark:text-orange-400 font-medium">{streak}</span>
-                          </div>
-                        </>
-                      )}
                     </div>
                   </div>
 
@@ -297,7 +253,6 @@ export default function RoutinesTab() {
       {/* Suggested Routines - Templates */}
       <Card className="p-6 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50">
         <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">{t('wellness.routines.suggestedRoutines')}</h3>
-        <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">{t('wellness.routines.suggestedIntro')}</p>
         <div className="space-y-2">
           {[
             { titleKey: 'wellness.routines.suggestions.morningStretch', time: '07:30', icon: Sun, descKey: 'wellness.routines.suggestions.morningStretchDesc' },
@@ -329,31 +284,8 @@ export default function RoutinesTab() {
         </div>
       </Card>
 
-      {/* Morning & Evening Routine Templates */}
-      <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
-        <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">{t('wellness.routines.templates.title')}</h3>
-        <div className="grid grid-cols-2 gap-3">
-          <motion.div
-            whileHover={{ scale: 1.02 }}
-            className="p-4 rounded-xl bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border-2 border-[var(--c-accent)] cursor-pointer hover:shadow-md transition-all"
-          >
-            <Sun className="w-6 h-6 text-orange-600 dark:text-orange-400 mb-2" />
-            <h4 className="font-semibold text-orange-900 dark:text-orange-200">{t('wellness.routines.templates.morning.title')}</h4>
-            <p className="text-xs text-orange-800 dark:text-orange-300 mt-1">{t('wellness.routines.templates.morning.description')}</p>
-            <p className="text-xs text-orange-700 dark:text-orange-400 mt-2">07:00 - 09:00</p>
-          </motion.div>
-
-          <motion.div
-            whileHover={{ scale: 1.02 }}
-            className="p-4 rounded-xl bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40 border-2 border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50 cursor-pointer hover:shadow-md transition-all"
-          >
-            <Moon className="w-6 h-6 text-[var(--c-text)] dark:text-[var(--c-text)] mb-2" />
-            <h4 className="font-semibold text-[var(--c-text)] dark:text-[var(--c-text)]">{t('wellness.routines.templates.evening.title')}</h4>
-            <p className="text-xs text-[var(--c-text)] dark:text-[var(--c-text)] mt-1">{t('wellness.routines.templates.evening.description')}</p>
-            <p className="text-xs text-[var(--c-text)] dark:text-[var(--c-text)] mt-2">20:00 - 21:30</p>
-          </motion.div>
-        </div>
-      </Card>
+      {/* "Rutinmallar" (morgon/kväll) är borttagna 2026-10-09: korten såg
+          klickbara ut (cursor-pointer, hover) men hade ingen onClick alls. */}
     </div>
     </MotionConfig>
   )

@@ -25,7 +25,6 @@ import {
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 import { EmptyState } from '@/components/ui/EmptyState'
-import { RadgivarTips } from '@/components/radgivare/RadgivarPanel'
 import type { SkillsAnalysis, FavoriteOccupation } from '@/services/careerApi'
 import type { Profiltackning } from './profilunderlag'
 import { forhandsvisning, kortDromjobb } from './dromjobb'
@@ -87,44 +86,70 @@ export function SkillsGapForm({
   }
 
   return (
-    <>
-      {/* Tidigare analyser */}
-      {previousAnalyses.length > 0 && (
-        <Card className="p-4 bg-stone-50 dark:bg-stone-800 border-stone-200 dark:border-stone-700">
-          <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
-            <h2 className="font-semibold text-stone-800 dark:text-stone-100 flex items-center gap-2">
-              <History className="w-4 h-4" aria-hidden="true" />
-              {t('skillsGapAnalysis.previousAnalyses')}
-            </h2>
-            <span className="text-sm text-stone-600 dark:text-stone-400">
-              {t('skillsGapAnalysis.savedCount', { antal: previousAnalyses.length })}
-            </span>
+    <div className="space-y-6">
+      {/*
+        Designpasset 2026-10-09 ("för texttungt"): drömjobbet — sidans enda
+        uppgift — står först, och underlaget har blivit en rad med CV-texten
+        bakom ett klick. Tidigare fyllde CV-texten en egen ruta överst och
+        rutan för yrket hade både underrubrik, etikett och tipsrad som sa
+        ungefär samma sak.
+      */}
+      {/* Drömjobbet */}
+      <Card className="p-4 sm:p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="w-10 h-10 rounded-full bg-[var(--c-solid)] flex items-center justify-center flex-shrink-0">
+            {/* Vit text/ikon på `--c-solid` faller till 2,0:1 i mörkt läge —
+                `.dark` sätter coaching-solid till en ljus rosa (#E8A4AE). */}
+            <Search className="w-5 h-5 text-white dark:text-stone-900" aria-hidden="true" />
           </div>
-          <ul className="space-y-2 list-none p-0 m-0">
-            {previousAnalyses.slice(0, 3).map(analysis => (
-              <li key={analysis.id}>
+          <h2 className="text-lg font-semibold text-stone-800 dark:text-stone-100">{t('skillsGapAnalysis.dreamJob.title')}</h2>
+        </div>
+
+        {favoriteOccupations.length > 0 && !dreamJob && (
+          <div className="mb-4">
+            <div className="flex items-center gap-2 text-sm text-[var(--c-text)] dark:text-stone-200 mb-2">
+              <Heart className="w-4 h-4" aria-hidden="true" />
+              {t('skillsGapAnalysis.favoriteOccupations')}
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {favoriteOccupations.slice(0, 5).map((fav) => (
                 <button
-                  onClick={() => onSelect(analysis)}
-                  className="w-full text-left p-3 rounded-lg bg-white dark:bg-stone-700 border border-stone-200 dark:border-stone-600 hover:border-[var(--c-accent)] transition-colors"
+                  key={fav.id}
+                  type="button"
+                  onClick={() => setDreamJob(fav.occupation_title)}
+                  className="px-3 py-1.5 text-sm bg-[var(--c-bg)] dark:bg-stone-700 rounded-full border border-[var(--c-accent)] text-[var(--c-text)] dark:text-stone-200 hover:border-[var(--c-solid)] dark:hover:bg-stone-600 transition-colors"
                 >
-                  <span className="block font-medium text-stone-800 dark:text-stone-100">
-                    {kortDromjobb(analysis.dream_job) || forhandsvisning(analysis.dream_job)}
-                  </span>
-                  <span className="block text-xs text-stone-600 dark:text-stone-400">
-                    {new Date(analysis.created_at).toLocaleDateString(dateLocale)}
-                    {' · '}
-                    {t('skillsGapAnalysis.historySkills', { antal: (analysis.skills_comparison || []).length })}
-                  </span>
+                  {fav.occupation_title}
                 </button>
-              </li>
-            ))}
-          </ul>
-        </Card>
-      )}
+              ))}
+            </div>
+          </div>
+        )}
+
+        <label
+          htmlFor="skillsgap-dreamjob"
+          className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1.5"
+        >
+          {t('skillsGapAnalysis.dreamJob.label')}
+        </label>
+        <textarea
+          id="skillsgap-dreamjob"
+          ref={dromjobbRef}
+          value={dreamJob}
+          onChange={(e) => setDreamJob(e.target.value)}
+          placeholder={t('skillsGapAnalysis.dreamJob.placeholder')}
+          rows={4}
+          aria-describedby="skillsgap-dreamjob-tips"
+          className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-[var(--c-solid)] focus:ring-2 focus:ring-[var(--c-accent)] dark:focus:ring-[var(--c-solid)] outline-none resize-y bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100"
+        />
+        <p id="skillsgap-dreamjob-tips" className="text-xs text-stone-600 dark:text-stone-400 mt-2">
+          {t('skillsGapAnalysis.dreamJob.tip')}
+        </p>
+      </Card>
 
       {/* Underlaget */}
-      <Card className="p-4 sm:p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
-        <div ref={underlagRef} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
+      <Card className="p-4 sm:px-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
+        <div ref={underlagRef} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div className="flex items-center gap-3 min-w-0">
             <div className="w-10 h-10 rounded-full bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40 flex items-center justify-center flex-shrink-0">
               <CheckCircle className="w-5 h-5 text-[var(--c-solid)]" aria-hidden="true" />
@@ -153,7 +178,7 @@ export function SkillsGapForm({
         {cvFel ? (
           /* Ett avbrott är inte tomhet. Den som har ett CV ska inte få
              beskedet att gå och skriva ett. */
-          <div className="flex flex-col sm:flex-row sm:items-center gap-3 p-4 rounded-lg bg-stone-50 dark:bg-stone-700" role="alert">
+          <div className="mt-4 flex flex-col sm:flex-row sm:items-center gap-3 p-4 rounded-lg bg-stone-50 dark:bg-stone-700" role="alert">
             <AlertCircle className="w-5 h-5 text-stone-600 dark:text-stone-300 flex-shrink-0" aria-hidden="true" />
             <p className="text-sm text-stone-800 dark:text-stone-100 flex-1">
               {t('skillsGapAnalysis.loadFailed')}
@@ -164,79 +189,27 @@ export function SkillsGapForm({
             </Button>
           </div>
         ) : underlagRacker ? (
-          <div className="bg-stone-50 dark:bg-stone-700/50 rounded-lg p-4 max-h-48 overflow-y-auto">
-            <pre className="text-sm text-stone-700 dark:text-stone-200 whitespace-pre-wrap font-sans">
-              {profileSummary}
-            </pre>
-          </div>
+          <details className="mt-3 sm:ml-[3.25rem]">
+            <summary className="cursor-pointer w-fit text-sm text-stone-600 dark:text-stone-400 hover:text-[var(--c-text)]">
+              {t('skillsGapAnalysis.showUnderlag', 'Visa texten vi jämför med')}
+            </summary>
+            <div className="mt-2 bg-stone-50 dark:bg-stone-700/50 rounded-lg p-4 max-h-48 overflow-y-auto">
+              <pre className="text-sm text-stone-700 dark:text-stone-200 whitespace-pre-wrap font-sans">
+                {profileSummary}
+              </pre>
+            </div>
+          </details>
         ) : (
-          <EmptyState
-            icon={FileText}
-            title={t('skillsGapAnalysis.needMoreInfoTitle')}
-            description={t('skillsGapAnalysis.needMoreInfoBody', { delar: saknasText })}
-            action={{ label: t('skillsGapAnalysis.goToCV'), onClick: () => { window.location.hash = '#/cv' } }}
-            compact
-          />
-        )}
-      </Card>
-
-      <RadgivarTips pathname="/skills-gap-analysis" index={0} />
-
-      {/* Drömjobbet */}
-      <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
-        <div className="flex items-center gap-3 mb-4">
-          <div className="w-10 h-10 rounded-full bg-[var(--c-solid)] flex items-center justify-center flex-shrink-0">
-            {/* Vit text/ikon på `--c-solid` faller till 2,0:1 i mörkt läge —
-                `.dark` sätter coaching-solid till en ljus rosa (#E8A4AE). */}
-            <Search className="w-5 h-5 text-white dark:text-stone-900" aria-hidden="true" />
-          </div>
-          <div>
-            <h2 className="font-semibold text-stone-800 dark:text-stone-100">{t('skillsGapAnalysis.dreamJob.title')}</h2>
-            <p className="text-sm text-stone-600 dark:text-stone-400">
-              {t('skillsGapAnalysis.dreamJobDescription')}
-            </p>
-          </div>
-        </div>
-
-        {favoriteOccupations.length > 0 && !dreamJob && (
-          <div className="mb-4 p-3 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/25 rounded-lg border border-[var(--c-accent)]">
-            <div className="flex items-center gap-2 text-sm text-[var(--c-text)] dark:text-stone-200 mb-2">
-              <Heart className="w-4 h-4" aria-hidden="true" />
-              {t('skillsGapAnalysis.favoriteOccupations')}
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {favoriteOccupations.slice(0, 5).map((fav) => (
-                <button
-                  key={fav.id}
-                  onClick={() => setDreamJob(fav.occupation_title)}
-                  className="px-3 py-1.5 text-sm bg-white dark:bg-stone-700 rounded-full border border-[var(--c-accent)] text-[var(--c-text)] dark:text-stone-200 hover:bg-[var(--c-bg)] dark:hover:bg-stone-600 transition-colors"
-                >
-                  {fav.occupation_title}
-                </button>
-              ))}
-            </div>
+          <div className="mt-4">
+            <EmptyState
+              icon={FileText}
+              title={t('skillsGapAnalysis.needMoreInfoTitle')}
+              description={t('skillsGapAnalysis.needMoreInfoBody', { delar: saknasText })}
+              action={{ label: t('skillsGapAnalysis.goToCV'), onClick: () => { window.location.hash = '#/cv' } }}
+              compact
+            />
           </div>
         )}
-
-        <label
-          htmlFor="skillsgap-dreamjob"
-          className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1.5"
-        >
-          {t('skillsGapAnalysis.dreamJob.label')}
-        </label>
-        <textarea
-          id="skillsgap-dreamjob"
-          ref={dromjobbRef}
-          value={dreamJob}
-          onChange={(e) => setDreamJob(e.target.value)}
-          placeholder={t('skillsGapAnalysis.dreamJob.placeholder')}
-          rows={6}
-          aria-describedby="skillsgap-dreamjob-tips"
-          className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-[var(--c-solid)] focus:ring-2 focus:ring-[var(--c-accent)] dark:focus:ring-[var(--c-solid)] outline-none resize-y bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100"
-        />
-        <p id="skillsgap-dreamjob-tips" className="text-xs text-stone-600 dark:text-stone-400 mt-2">
-          {t('skillsGapAnalysis.dreamJob.tip')}
-        </p>
       </Card>
 
       {/* Fel från analysen — olika fel kräver olika väg framåt */}
@@ -276,6 +249,41 @@ export function SkillsGapForm({
           </p>
         )}
       </div>
-    </>
+      {/* Tidigare analyser — flyttade under knappen 2026-10-09; den nya
+          analysen är sidans uppgift, historiken en genväg. */}
+      {previousAnalyses.length > 0 && (
+        <Card className="p-4 bg-stone-50 dark:bg-stone-800 border-stone-200 dark:border-stone-700">
+          <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
+            <h2 className="font-semibold text-stone-800 dark:text-stone-100 flex items-center gap-2">
+              <History className="w-4 h-4" aria-hidden="true" />
+              {t('skillsGapAnalysis.previousAnalyses')}
+            </h2>
+            <span className="text-sm text-stone-600 dark:text-stone-400">
+              {t('skillsGapAnalysis.savedCount', { antal: previousAnalyses.length })}
+            </span>
+          </div>
+          <ul className="space-y-2 list-none p-0 m-0">
+            {previousAnalyses.slice(0, 3).map(analysis => (
+              <li key={analysis.id}>
+                <button
+                  onClick={() => onSelect(analysis)}
+                  className="w-full text-left p-3 rounded-lg bg-white dark:bg-stone-700 border border-stone-200 dark:border-stone-600 hover:border-[var(--c-accent)] transition-colors"
+                >
+                  <span className="block font-medium text-stone-800 dark:text-stone-100">
+                    {kortDromjobb(analysis.dream_job) || forhandsvisning(analysis.dream_job)}
+                  </span>
+                  <span className="block text-xs text-stone-600 dark:text-stone-400">
+                    {new Date(analysis.created_at).toLocaleDateString(dateLocale)}
+                    {' · '}
+                    {t('skillsGapAnalysis.historySkills', { antal: (analysis.skills_comparison || []).length })}
+                  </span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        </Card>
+      )}
+
+    </div>
   )
 }

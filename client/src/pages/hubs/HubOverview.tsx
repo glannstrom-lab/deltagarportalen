@@ -188,8 +188,6 @@ function HubOverviewInner() {
           {t('hubOverview.seeHistory', 'Se allt du har gjort')}
           <span aria-hidden="true">→</span>
         </Link>
-        <span aria-hidden="true" className="hidden sm:inline">·</span>
-        <span>{t('hubOverview.historyLead', 'Din historik i portalen, vecka för vecka.')}</span>
       </p>
     </PageLayout>
   )

@@ -134,9 +134,13 @@ export function Delningsforslag({ className }: Props) {
             {t('delningsforslag.rubrik')}
           </h2>
         </div>
-        <p className="text-sm text-stone-500 dark:text-stone-400 mt-1">
-          {t('delningsforslag.beskrivning')}
-        </p>
+        {/* Designpass 2026-10-09: förklaringen behövs när det finns något att
+            svara på — inte varje gång sidan öppnas. */}
+        {vantande.length > 0 && (
+          <p className="text-sm text-stone-500 dark:text-stone-400 mt-1">
+            {t('delningsforslag.beskrivning')}
+          </p>
+        )}
       </div>
 
       <div className="p-4 space-y-4" aria-live="polite">

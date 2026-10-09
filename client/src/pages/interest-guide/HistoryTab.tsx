@@ -271,7 +271,7 @@ export default function HistoryTab() {
 
                   {/* Big Five Summary */}
                   <div className="mt-4 pt-4 border-t border-stone-100 dark:border-stone-700">
-                    <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Personlighetsdrag</h4>
+                    <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">{t('interestGuide.history.traits', 'Personlighetsdrag')}</h4>
                     <div className="space-y-2">
                       {Object.entries(entry.profile.bigFive).map(([key, value]) => (
                         <div key={key} className="flex items-center gap-3">
@@ -296,18 +296,18 @@ export default function HistoryTab() {
         ))}
       </div>
 
-      {/* Info Card */}
-      <div className="mt-8 bg-stone-50 dark:bg-stone-800 rounded-xl p-6 border border-stone-200 dark:border-stone-700">
-        <h3 className="font-medium text-gray-900 dark:text-gray-100 mb-2">Om din historik</h3>
-        <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
-          Dina intressen och personlighetsdrag kan förändras över tid baserat på
-          nya erfarenheter, utbildning och livssituationer. Vi rekommenderar att
-          göra om testet med jämna mellanrum för att se hur du utvecklas.
+      {/* Info Card — var en ruta med två stycken; nu bakom ett klick. (2026-10-09) */}
+      <details className="mt-6 text-sm">
+        <summary className="cursor-pointer w-fit font-medium text-[var(--c-text)] dark:text-stone-100 hover:underline">
+          {t('interestGuide.history.aboutTitle', 'Om din historik')}
+        </summary>
+        <p className="mt-2 text-gray-600 dark:text-gray-300">
+          {t('interestGuide.history.aboutBody', 'Dina intressen och personlighetsdrag kan förändras över tid baserat på nya erfarenheter, utbildning och livssituationer. Vi rekommenderar att göra om testet med jämna mellanrum för att se hur du utvecklas.')}
         </p>
-        <p className="text-sm text-gray-500 dark:text-gray-400">
-          Tips: Gör testet var 6:e månad eller efter större förändringar i ditt liv.
+        <p className="mt-2 text-gray-500 dark:text-gray-400">
+          {t('interestGuide.history.aboutTip', 'Tips: Gör testet var 6:e månad eller efter större förändringar i ditt liv.')}
         </p>
-      </div>
+      </details>
     </div>
   )
 }

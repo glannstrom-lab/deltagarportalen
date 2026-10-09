@@ -24,7 +24,6 @@ import { ApplicationsActivityReport } from '@/components/applications/Applicatio
 import { AddApplicationModal } from '@/components/applications/AddApplicationModal'
 import { ApplicationDetailModal } from '@/components/applications/ApplicationDetailModal'
 import type { Application } from '@/types/application.types'
-import { RadgivarTips } from '@/components/radgivare/RadgivarPanel'
 import { FokusVaxel } from '@/components/focus/shell/FokusVaxel'
 
 // Tab definitions with i18n keys
@@ -55,7 +54,6 @@ function PipelineWrapper({
         onViewApplication={onViewApplication}
         onEditApplication={onEditApplication}
       />
-      <RadgivarTips pathname="/applications" index={0} />
     </>
   )
 }

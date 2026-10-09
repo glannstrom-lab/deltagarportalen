@@ -40,7 +40,6 @@ import { PageLayout } from '@/components/layout/index'
 import { BookOpen, Search, ArrowRight, Bot, AlertCircle } from '@/components/ui/icons'
 import { useFocusMode } from '@/components/FocusModeProvider'
 import { FocusKnowledgeBaseWizard } from '@/components/focus/pages/FocusKnowledgeBaseWizard'
-import { RadgivarTips } from '@/components/radgivare/RadgivarPanel'
 import { FokusVaxel } from '@/components/focus/shell/FokusVaxel'
 import { ARTIKELKATEGORIER, kategoriNamn, kategoriBeskrivning } from '@/data/artikelkategorier'
 
@@ -182,7 +181,7 @@ function KnowledgeBaseLanding({ articles }: LandingProps) {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       {/* Sökrutan är sidans arbete och står därför först. */}
       <section>
         {/* Etikett och hjälptext ligger UTANFÖR flexraden. Låg de i `Input`
@@ -210,18 +209,21 @@ function KnowledgeBaseLanding({ articles }: LandingProps) {
           </div>
           {totalArticles > 0 && (
             <p id="kb-sok-hjalp" className="mt-1.5 text-sm text-stone-700 dark:text-stone-300">
-              {t('knowledgeBase.searchHint', {
+              {t('knowledgeBase.searchHintKort', {
                 count: totalArticles,
-                defaultValue: 'Söker i {{count}} artiklar — prova "personligt brev", "avslag" eller "lön".',
+                defaultValue: 'Söker i {{count}} artiklar.',
               })}
             </p>
           )}
         </form>
 
-        <div className="mt-4 flex flex-wrap items-center gap-2 text-sm">
-          <span className="text-stone-600 dark:text-stone-400 mr-1">
-            {t('knowledgeBase.shortcutsLabel', 'Prova något av det här:')}
-          </span>
+        {/* Genvägarna talar för sig själva — etiketten "Prova något av det här:"
+            är borttagen ur synen men finns kvar för skärmläsare. */}
+        <div
+          className="mt-3 flex flex-wrap items-center gap-2 text-sm"
+          role="group"
+          aria-label={t('knowledgeBase.shortcutsLabel', 'Prova något av det här:')}
+        >
           {GENVAGAR.map((q) => (
             <Link
               key={q}
@@ -234,15 +236,13 @@ function KnowledgeBaseLanding({ articles }: LandingProps) {
         </div>
       </section>
 
-      <RadgivarTips pathname="/knowledge-base" index={0} />
-
       {/* KATEGORIGRID */}
       <section>
-        <h2 className="text-xl md:text-2xl font-bold text-stone-900 dark:text-stone-50 tracking-tight mb-6">
+        <h2 className="text-xl font-bold text-stone-900 dark:text-stone-50 tracking-tight mb-4">
           {t('knowledgeBase.browseHeading', 'Vad vill du läsa om?')}
         </h2>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 2xl:grid-cols-3 gap-3">
           {ARTIKELKATEGORIER.map((cat) => {
             const Icon = cat.ikon
             const count = counts[cat.id] || 0
@@ -257,19 +257,26 @@ function KnowledgeBaseLanding({ articles }: LandingProps) {
                 to={`/knowledge-base?category=${cat.id}`}
                 // Utan avgränsare läste skärmläsaren "…effektivt.27 artiklar".
                 aria-label={`${namn} — ${count > 0 ? antalText : t('knowledgeBase.categoryEmpty', 'fylls på')}`}
-                className="group block bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 rounded-xl p-5 transition-all hover:-translate-y-0.5 hover:shadow-md hover:border-[var(--c-accent)]"
+                // Kompakt kort (designpasset 2026-10-09): ikon till vänster,
+                // namn och antal på en rad, beskrivningen kapad till en rad.
+                title={kategoriBeskrivning(t, cat.id)}
+                className="group flex items-center gap-3 bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 rounded-xl p-3.5 transition-all hover:shadow-md hover:border-[var(--c-accent)]"
               >
-                <div className="w-11 h-11 rounded-xl flex items-center justify-center mb-3.5 bg-[var(--c-bg)] text-[var(--c-text)] border border-[var(--c-accent)]/50">
-                  <Icon size={22} aria-hidden="true" />
+                <div className="w-10 h-10 shrink-0 rounded-xl flex items-center justify-center bg-[var(--c-bg)] text-[var(--c-text)] border border-[var(--c-accent)]/50">
+                  <Icon size={20} aria-hidden="true" />
                 </div>
-                <h3 className="font-semibold text-stone-900 dark:text-stone-50 mb-1 group-hover:text-[var(--c-text)] transition-colors">
-                  {namn}
-                </h3>
-                <p className="text-sm text-stone-600 dark:text-stone-300 mb-3 leading-snug">
-                  {kategoriBeskrivning(t, cat.id)}
-                </p>
-                <div className="text-xs font-medium text-stone-600 dark:text-stone-400">
-                  {count > 0 ? antalText : t('knowledgeBase.categoryEmpty', 'Fylls på')}
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-baseline justify-between gap-2">
+                    <h3 className="font-semibold text-stone-900 dark:text-stone-50 group-hover:text-[var(--c-text)] transition-colors truncate">
+                      {namn}
+                    </h3>
+                    <span className="text-xs font-medium text-stone-600 dark:text-stone-400 whitespace-nowrap">
+                      {count > 0 ? count : t('knowledgeBase.categoryEmpty', 'Fylls på')}
+                    </span>
+                  </div>
+                  <p className="text-sm text-stone-600 dark:text-stone-300 leading-snug line-clamp-1">
+                    {kategoriBeskrivning(t, cat.id)}
+                  </p>
                 </div>
               </Link>
             )
@@ -279,7 +286,7 @@ function KnowledgeBaseLanding({ articles }: LandingProps) {
 
       {/* CTA: AI-team */}
       <section>
-        <Card className="bg-[var(--c-bg)] border-[var(--c-accent)]/50 p-6 md:p-7">
+        <Card className="bg-[var(--c-bg)] border-[var(--c-accent)]/50 p-5">
           <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-6">
             <div className="flex-1">
               <h2 className="font-bold text-stone-900 dark:text-stone-50 mb-1 flex items-center gap-2">
@@ -287,10 +294,7 @@ function KnowledgeBaseLanding({ articles }: LandingProps) {
                 {t('knowledgeBase.aiTeamHeading', 'Hittar du inte svar?')}
               </h2>
               <p className="text-sm text-stone-700 dark:text-stone-300">
-                {t(
-                  'knowledgeBase.aiTeamBody',
-                  'AI-teamet kan svara på frågor som inte täcks i artiklarna. Fem inriktningar av samma AI.'
-                )}
+                {t('knowledgeBase.aiTeamBodyKort', 'Fråga AI-teamet om det som inte står i artiklarna.')}
               </p>
             </div>
             <Link

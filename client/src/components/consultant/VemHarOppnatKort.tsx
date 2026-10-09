@@ -18,6 +18,9 @@ import { Eye } from '@/components/ui/icons'
 import { Card } from '@/components/ui/Card'
 import { laslogg, type Visning, RESOURCE_TYPE_HELA_SIDAN } from '@/services/laslogg'
 
+/** Så många rader syns innan "Visa alla". */
+const SYNLIGA_RADER = 3
+
 type Lage =
   | { status: 'laddar' }
   | { status: 'fel' }
@@ -26,6 +29,7 @@ type Lage =
 export function VemHarOppnatKort() {
   const { t, i18n } = useTranslation()
   const [lage, setLage] = useState<Lage>({ status: 'laddar' })
+  const [visaAlla, setVisaAlla] = useState(false)
 
   useEffect(() => {
     let aktiv = true
@@ -56,7 +60,7 @@ export function VemHarOppnatKort() {
           </h2>
         </div>
         <p className="text-sm text-stone-500 dark:text-stone-400 mt-1">
-          {t('myConsultant.laslogg.desc', 'Varje gång din konsulent öppnar din sida loggas det här. Du ser det, ingen annan behöver berätta det.')}
+          {t('myConsultant.laslogg.desc', 'Varje gång din konsulent öppnar din sida syns det här.')}
         </p>
       </div>
       <div className="p-4" aria-live="polite">
@@ -74,13 +78,30 @@ export function VemHarOppnatKort() {
           </p>
         )}
         {lage.status === 'klart' && lage.rader.length > 0 && (
-          <ul className="space-y-2 text-sm text-stone-700 dark:text-stone-300">
-            {lage.rader.map((r) => (
-              <li key={r.id}>
-                {t('myConsultant.laslogg.rad', { defaultValue: 'Din konsulent öppnade {{vad}} {{datum}} kl {{tid}}', vad: vad(r.resource_type), datum: datum(r.created_at), tid: tid(r.created_at) })}
-              </li>
-            ))}
-          </ul>
+          <>
+            {/* Designpass 2026-10-09: de senaste tre syns, resten bakom ett klick.
+                Loggen kan vara 20 rader — en vägg som trängde undan allt annat. */}
+            <ul id="laslogg-lista" className="space-y-2 text-sm text-stone-700 dark:text-stone-300">
+              {(visaAlla ? lage.rader : lage.rader.slice(0, SYNLIGA_RADER)).map((r) => (
+                <li key={r.id}>
+                  {t('myConsultant.laslogg.rad', { defaultValue: 'Din konsulent öppnade {{vad}} {{datum}} kl {{tid}}', vad: vad(r.resource_type), datum: datum(r.created_at), tid: tid(r.created_at) })}
+                </li>
+              ))}
+            </ul>
+            {lage.rader.length > SYNLIGA_RADER && (
+              <button
+                type="button"
+                onClick={() => setVisaAlla((v) => !v)}
+                aria-expanded={visaAlla}
+                aria-controls="laslogg-lista"
+                className="mt-3 min-h-11 text-sm font-medium text-[var(--c-text)] underline underline-offset-2 hover:no-underline"
+              >
+                {visaAlla
+                  ? t('myConsultant.laslogg.visaFarre', 'Visa färre')
+                  : t('myConsultant.laslogg.visaAlla', { defaultValue: 'Visa alla {{count}}', count: lage.rader.length })}
+              </button>
+            )}
+          </>
         )}
       </div>
     </Card>

@@ -16,7 +16,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import {
-  Calculator, MapPin, Briefcase, TrendingUp, Info, Sparkles, Download,
+  ChevronDown, Calculator, MapPin, Briefcase, TrendingUp, Info, Sparkles, Download,
   Plus, X, BarChart3, ExternalLink,
 } from '@/components/ui/icons'
 import { Card, Button } from '@/components/ui'
@@ -36,6 +36,7 @@ import { useProfileStore } from '@/stores/profileStore'
 import { logger } from '@/lib/logger'
 import type { Loneval } from '../Salary'
 import { formatLocalDate } from '@/services/aktivitetSchema'
+import { LasMer } from '@/components/ui/LasMer'
 
 interface Props {
   val: Loneval
@@ -162,10 +163,7 @@ export default function SalaryCalculatorTab({ val, onValChange }: Props) {
   const kr = (n: number) => n.toLocaleString(sprak)
 
   return (
-    <div className="space-y-6">
-      <p className="text-sm text-stone-600 dark:text-stone-300">
-        {t('salary.calculator.description')}
-      </p>
+    <div className="space-y-5">
 
       {/* Formulär */}
       <Card className="bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
@@ -249,6 +247,12 @@ export default function SalaryCalculatorTab({ val, onValChange }: Props) {
           <Calculator className="w-4 h-4 mr-2" aria-hidden="true" />
           {t('salary.calculator.calculate')}
         </Button>
+        {/* Ärligheten före talen — men på en rad, inte ett stycke ovanför
+            formuläret (designpass 2026-10-09). Hela förklaringen står under
+            resultatet (estimateNotice). */}
+        <p className="text-xs text-stone-600 dark:text-stone-400 mt-3">
+          {t('salary.calculator.descriptionShort', 'Talen är grova uppskattningar, inte hämtad statistik.')}
+        </p>
       </Card>
 
       {/* Resultat */}
@@ -496,18 +500,15 @@ export default function SalaryCalculatorTab({ val, onValChange }: Props) {
         experienceYears={hittaErfarenhet(erfarenhet)?.arFran}
       />
 
-      {/* Riktiga källor */}
+      {/* Riktiga källor — länkarna synliga, förklaringen bakom ett klick */}
       <Card className="bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
         <div className="flex items-start gap-3">
           <Info className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-text)] shrink-0 mt-0.5" aria-hidden="true" />
-          <div>
-            <h3 className="font-semibold text-stone-900 dark:text-stone-100 mb-1">
+          <div className="min-w-0">
+            <h3 className="font-semibold text-stone-900 dark:text-stone-100 mb-2">
               {t('salary.calculator.sourcesTitle')}
             </h3>
-            <p className="text-sm text-stone-700 dark:text-stone-300 mb-3">
-              {t('salary.calculator.sourcesIntro')}
-            </p>
-            <ul className="space-y-2">
+            <ul className="flex flex-wrap gap-x-5 gap-y-2">
               {EXTERNA_LONEKALLOR.map((kalla) => (
                 <li key={kalla.nyckel}>
                   <a
@@ -520,30 +521,45 @@ export default function SalaryCalculatorTab({ val, onValChange }: Props) {
                     <ExternalLink className="w-3 h-3" aria-hidden="true" />
                     <span className="sr-only">{t('salary.calculator.opensInNewTab')}</span>
                   </a>
-                  <span className="text-sm text-stone-700 dark:text-stone-300"> — {t(`salary.data.sources.${kalla.nyckel}`, kalla.beskrivning)}</span>
                 </li>
               ))}
             </ul>
+            <LasMer>
+              <p>{t('salary.calculator.sourcesIntro')}</p>
+              <ul className="space-y-1">
+                {EXTERNA_LONEKALLOR.map((kalla) => (
+                  <li key={kalla.nyckel}>
+                    <span className="font-medium">{kalla.namn}</span>
+                    {' — '}{t(`salary.data.sources.${kalla.nyckel}`, kalla.beskrivning)}
+                  </li>
+                ))}
+              </ul>
+            </LasMer>
           </div>
         </div>
       </Card>
 
-      {/* Tips */}
+      {/* Tips — sällan första ärendet, så de ligger infällda */}
       <Card className="bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
-        <h3 className="font-semibold text-stone-900 dark:text-stone-100 mb-4">{t('salary.calculator.tipsTitle')}</h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {(['buildSkills', 'documentResults', 'timing', 'knowMarket'] as const).map((nyckel, i) => (
-            <div key={nyckel} className="flex items-start gap-3 p-3 bg-stone-50 dark:bg-stone-700 rounded-lg">
-              <div className="w-8 h-8 bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/30 rounded-lg flex items-center justify-center shrink-0">
-                <span className="text-[var(--c-text)] dark:text-[var(--c-text)] font-bold" aria-hidden="true">{i + 1}</span>
+        <details className="group">
+          <summary className="flex cursor-pointer list-none items-center justify-between gap-3 rounded min-h-[44px] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--c-solid)] [&::-webkit-details-marker]:hidden">
+            <h3 className="font-semibold text-stone-900 dark:text-stone-100">{t('salary.calculator.tipsTitle')}</h3>
+            <ChevronDown className="w-5 h-5 text-stone-500 transition-transform group-open:rotate-180" aria-hidden="true" />
+          </summary>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3">
+            {(['buildSkills', 'documentResults', 'timing', 'knowMarket'] as const).map((nyckel, i) => (
+              <div key={nyckel} className="flex items-start gap-3 p-3 bg-stone-50 dark:bg-stone-700 rounded-lg">
+                <div className="w-8 h-8 bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/30 rounded-lg flex items-center justify-center shrink-0">
+                  <span className="text-[var(--c-text)] dark:text-[var(--c-text)] font-bold" aria-hidden="true">{i + 1}</span>
+                </div>
+                <div>
+                  <p className="font-medium text-stone-800 dark:text-stone-100">{t(`salary.calculator.tips.${nyckel}`)}</p>
+                  <p className="text-sm text-stone-700 dark:text-stone-300">{t(`salary.calculator.tips.${nyckel}Desc`)}</p>
+                </div>
               </div>
-              <div>
-                <p className="font-medium text-stone-800 dark:text-stone-100">{t(`salary.calculator.tips.${nyckel}`)}</p>
-                <p className="text-sm text-stone-700 dark:text-stone-300">{t(`salary.calculator.tips.${nyckel}Desc`)}</p>
-              </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        </details>
       </Card>
     </div>
   )

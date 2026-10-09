@@ -12,7 +12,7 @@ import {
   ChevronLeft,
   Sparkles,
   Trophy,
-  Lock,
+  ChevronDown,
   Lightbulb,
   Cloud,
   AlertCircle
@@ -27,7 +27,6 @@ import { AIAssistant } from '@/components/ai'
 import { supabase } from '@/lib/supabase'
 import { Link, useSearchParams } from 'react-router-dom'
 import { PageLayout } from '@/components/layout/index'
-import { RadgivarTips } from '@/components/radgivare/RadgivarPanel'
 import { Dumbbell } from '@/components/ui/icons'
 import { useFocusMode } from '@/components/FocusModeProvider'
 import { ovningsLage } from '@/lib/ovningsLage'
@@ -60,6 +59,9 @@ const difficultyColors = {
 
 // Hur länge efter sista tangenttryckningen svaren skrivs till molnet.
 const SPARA_EFTER_MS = 800
+
+// Så många övningskort visas innan "Visa fler" (designpasset 2026-10-09).
+const SIDSTORLEK = 12
 
 interface ExerciseProgress {
   [exerciseId: string]: {
@@ -101,6 +103,8 @@ function ExercisesInner() {
   const [answers, setAnswers] = useState<ExerciseProgress>({})
   const [isCompleted, setIsCompleted] = useState(false)
   const [filter, setFilter] = useState<string>('alla')
+  const [antalVisade, setAntalVisade] = useState(SIDSTORLEK)
+  const [visaAmnen, setVisaAmnen] = useState(false)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   // i18n-NYCKEL, inte färdig text: översätts vid rendering så att ett fel följer
@@ -450,11 +454,27 @@ function ExercisesInner() {
   if (!selectedExercise) {
     const filtered = getFilteredExercises()
     const categories = getUniqueCategories()
+    const arKategori = filter !== 'alla' && filter !== 'påbörjade' && filter !== 'ej-påbörjade'
 
-    // EX1 (2026-09-29, Mikaels beslut): taket på 6 (DESIGN.md §8) jämförde mot
-    // 'all' medan filtret heter 'alla' och tändes därför aldrig. Chippet heter
-    // "Alla" och ska visa alla — taket och dess "För dig idag"-rubrik är borttagna.
-    const displayedExercises = filtered
+    // EX1 (2026-09-29, Mikaels beslut): "Alla" visar alla — men inte på en
+    // gång. 119 kort var 18 700 px sida (designpasset 2026-10-09); nu
+    // SIDSTORLEK åt gången och en knapp för resten. Inget döljs, bara senare.
+    const displayedExercises = filtered.slice(0, antalVisade)
+    const kvar = filtered.length - displayedExercises.length
+
+    const valjFilter = (f: string) => {
+      setFilter(f)
+      setAntalVisade(SIDSTORLEK)
+    }
+
+    const chipKlass = (aktiv: boolean) =>
+      `px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
+        aktiv
+          ? 'bg-[var(--c-solid)] text-white'
+          : 'bg-gray-100 dark:bg-stone-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-stone-600'
+      }`
+
+    const lage = ovningsLage(exercises.length, answers)
 
     return (
       <PageLayout
@@ -463,24 +483,25 @@ function ExercisesInner() {
         showTabs={false}
         className="sidbredd"
 >
-      <div className="space-y-6">
-        {/* Status indicators */}
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          {/* Cloud sync indicator */}
-          <div className="flex items-center gap-2 text-sm bg-white/60 dark:bg-stone-800/60 rounded-full px-3 py-1.5 border border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50">
-            <Cloud className={`w-4 h-4 ${saving ? 'text-amber-500 dark:text-amber-400 animate-pulse' : 'text-emerald-500 dark:text-emerald-400'}`} />
-            <span className={saving ? 'text-amber-600 dark:text-amber-400' : 'text-emerald-600 dark:text-emerald-400'}>
-              {saving ? t('exercises.saving') : t('exercises.cloudSynced')}
-            </span>
+      <div className="space-y-5">
+        {/* Status: syns bara när något händer. "Synkad med molnet" i vila var
+            en rad brus på en redan tung sida. */}
+        {(saving || error) && (
+          <div className="flex flex-wrap items-center gap-3" role="status" aria-live="polite">
+            {saving && (
+              <div className="flex items-center gap-2 text-sm text-amber-600 dark:text-amber-400">
+                <Cloud className="w-4 h-4 animate-pulse" aria-hidden="true" />
+                <span>{t('exercises.saving')}</span>
+              </div>
+            )}
+            {error && (
+              <div className="flex items-center gap-2 text-red-600 dark:text-red-400 text-sm bg-red-50 dark:bg-red-900/20 rounded-full px-3 py-1.5">
+                <AlertCircle className="w-4 h-4" aria-hidden="true" />
+                <span>{t(error)}</span>
+              </div>
+            )}
           </div>
-
-          {error && (
-            <div className="flex items-center gap-2 text-red-600 dark:text-red-400 text-sm bg-red-50 dark:bg-red-900/20 rounded-full px-3 py-1.5">
-              <AlertCircle className="w-4 h-4" />
-              <span>{t(error)}</span>
-            </div>
-          )}
-        </div>
+        )}
 
         {!user && (
           <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl p-4">
@@ -491,93 +512,62 @@ function ExercisesInner() {
           </div>
         )}
 
-        {/* PG9 (2026-09-12): fyra nollor som nyckeltal ("0 Påbörjade / 119 Ej påbörjade")
-            var det första en ny användare såg. Inget påbörjat = en invit; annars talen > 0. */}
-        {(() => {
-          const lage = ovningsLage(exercises.length, answers)
-          if (lage.lage === 'invit') {
-            return (
-              <Card className="p-4 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/20 border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50">
-                <p className="text-sm text-[var(--c-text)] dark:text-[var(--c-solid)]">
-                  {t('exercises.stats.invit', { antal: lage.totalt })}
-                </p>
-              </Card>
-            )
-          }
-          return (
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-              <Card className="p-4 text-center bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/20 border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50">
-                <p className="text-2xl font-bold text-[var(--c-text)] dark:text-[var(--c-solid)]">{lage.paborjade}</p>
-                <p className="text-sm text-[var(--c-text)] dark:text-[var(--c-solid)]">{t('exercises.stats.started')}</p>
-              </Card>
-              {lage.aktiva > 0 && (
-                <Card className="p-4 text-center bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/20 border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50">
-                  <p className="text-2xl font-bold text-[var(--c-text)] dark:text-[var(--c-solid)]">{lage.aktiva}</p>
-                  <p className="text-sm text-[var(--c-text)] dark:text-[var(--c-solid)]">{t('exercises.stats.active')}</p>
-                </Card>
-              )}
-              <Card className="p-4 text-center bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/20 border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50">
-                <p className="text-2xl font-bold text-[var(--c-text)] dark:text-[var(--c-solid)]">{lage.totalt}</p>
-                <p className="text-sm text-[var(--c-text)] dark:text-[var(--c-solid)]">{t('exercises.stats.totalExercises')}</p>
-              </Card>
-            </div>
-          )
-        })()}
+        {/* PG9 (2026-09-12): inga nollor som nyckeltal. Inget påbörjat = ingen
+            rad alls (rådgivaren hälsar redan överst); annars EN mening i
+            stället för tre talkort. */}
+        {lage.lage === 'rakning' && (
+          <p className="text-sm text-[var(--c-text)] dark:text-[var(--c-solid)]">
+            {t('exercises.stats.rad', 'Du har börjat på {{paborjade}} av {{totalt}} övningar.', { paborjade: lage.paborjade, totalt: lage.totalt })}
+          </p>
+        )}
 
-        <RadgivarTips pathname="/exercises" index={0} />
-
-        {/* Filter */}
-        <div className="flex flex-wrap gap-2 justify-center">
-          <button
-            onClick={() => setFilter('alla')}
-            className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-              filter === 'alla'
-                ? 'bg-[var(--c-solid)] text-white'
-                : 'bg-gray-100 dark:bg-stone-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-stone-600'
-            }`}
-          >
-            {t('exercises.filters.all')}
-          </button>
-          <button
-            onClick={() => setFilter('påbörjade')}
-            className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-              filter === 'påbörjade'
-                ? 'bg-[var(--c-solid)] text-white'
-                : 'bg-gray-100 dark:bg-stone-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-stone-600'
-            }`}
-          >
-            {t('exercises.filters.started')}
-          </button>
-          <button
-            onClick={() => setFilter('ej-påbörjade')}
-            className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-              filter === 'ej-påbörjade'
-                ? 'bg-[var(--c-solid)] text-white'
-                : 'bg-gray-100 dark:bg-stone-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-stone-600'
-            }`}
-          >
-            {t('exercises.filters.notStarted')}
-          </button>
-          {categories.map(cat => (
-            <button
-              key={cat}
-              onClick={() => setFilter(cat)}
-              aria-pressed={filter === cat}
-              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                filter === cat
-                  ? 'bg-[var(--c-solid)] text-white'
-                  : 'bg-gray-100 dark:bg-stone-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-stone-600'
-              }`}
-            >
-              {/* `cat` är den svenska nyckeln (den filtrerar) — texten går genom
-                  samma översättning som kortens kategori längre ned. */}
-              {t(`exercises.categories.${cat}`, cat)}
+        {/* Filter: tre lägen alltid synliga, ämnena bakom ett klick.
+            Fjorton knappar i rad var det första man såg. */}
+        <div className="space-y-3">
+          <div className="flex flex-wrap items-center gap-2">
+            <button onClick={() => valjFilter('alla')} aria-pressed={filter === 'alla'} className={chipKlass(filter === 'alla')}>
+              {t('exercises.filters.all')}
             </button>
-          ))}
+            <button onClick={() => valjFilter('påbörjade')} aria-pressed={filter === 'påbörjade'} className={chipKlass(filter === 'påbörjade')}>
+              {t('exercises.filters.started')}
+            </button>
+            <button onClick={() => valjFilter('ej-påbörjade')} aria-pressed={filter === 'ej-påbörjade'} className={chipKlass(filter === 'ej-påbörjade')}>
+              {t('exercises.filters.notStarted')}
+            </button>
+            <button
+              onClick={() => setVisaAmnen((v) => !v)}
+              aria-expanded={visaAmnen}
+              aria-controls="ovningar-amnen"
+              className={`${chipKlass(arKategori)} inline-flex items-center gap-1`}
+            >
+              {arKategori
+                ? t(`exercises.categories.${filter}`, filter)
+                : t('exercises.filters.topics', 'Välj ämne')}
+              <ChevronDown className={`w-4 h-4 transition-transform ${visaAmnen ? 'rotate-180' : ''}`} aria-hidden="true" />
+            </button>
+          </div>
+
+          {visaAmnen && (
+            <div id="ovningar-amnen" className="flex flex-wrap gap-2">
+              {categories.map(cat => (
+                <button
+                  key={cat}
+                  onClick={() => { valjFilter(cat); setVisaAmnen(false) }}
+                  aria-pressed={filter === cat}
+                  className={chipKlass(filter === cat)}
+                >
+                  {/* `cat` är den svenska nyckeln (den filtrerar) — texten går genom
+                      samma översättning som kortens kategori. */}
+                  {t(`exercises.categories.${cat}`, cat)}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
-        {/* Exercise Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* Exercise Cards Grid — lugnare kort: ikon och rubrik på en rad,
+            en rad beskrivning, svårighet och tid som en rad text. */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 2xl:grid-cols-3 gap-4">
           {displayedExercises.map((exercise) => {
             const Icon = exercise.icon
             const progress = getProgressForExercise(exercise.id)
@@ -586,63 +576,52 @@ function ExercisesInner() {
             return (
               <Card
                 key={exercise.id}
-                className={`p-6 cursor-pointer transition-all hover:shadow-lg hover:-translate-y-1 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700 ${
+                className={`p-4 cursor-pointer transition-all hover:shadow-md bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700 ${
                   isStarted ? 'border-l-4 border-l-emerald-500 dark:border-l-emerald-400' : ''
                 }`}
                 onClick={() => handleSelectExercise(exercise)}
               >
-                {/* Header */}
-                <div className="flex items-start justify-between mb-4">
-                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${categoryColors[exercise.category] || 'bg-gray-100 dark:bg-stone-700'}`}>
-                    <Icon className="w-6 h-6" />
+                <div className="flex items-start gap-3">
+                  <div className={`w-10 h-10 shrink-0 rounded-xl flex items-center justify-center ${categoryColors[exercise.category] || 'bg-gray-100 dark:bg-stone-700'}`}>
+                    <Icon className="w-5 h-5" aria-hidden="true" />
                   </div>
-                  {isStarted && (
-                    <div className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400">
-                      <Sparkles className="w-4 h-4" />
-                      <span className="text-xs font-medium">{progress}%</span>
+                  <div className="min-w-0 flex-1">
+                    <h3 className="font-semibold text-gray-800 dark:text-gray-100 line-clamp-2">
+                      {exercise.title}
+                    </h3>
+                    <p className="text-sm text-gray-600 dark:text-gray-300 mt-1 line-clamp-2">
+                      {exercise.description}
+                    </p>
+                    <div className="mt-2 flex items-center justify-between gap-2">
+                      <p className="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1 whitespace-nowrap">
+                        <span>{t(`exercises.difficulties.${exercise.difficulty}`, exercise.difficulty)}</span>
+                        <span aria-hidden="true">·</span>
+                        <Clock className="w-3 h-3" aria-hidden="true" />
+                        <span>{exercise.duration}</span>
+                      </p>
+                      {isStarted && (
+                        <div className="flex items-center gap-2">
+                          <div className="w-16 h-1.5 bg-gray-200 dark:bg-stone-600 rounded-full overflow-hidden" aria-hidden="true">
+                            <div className="h-full bg-emerald-500 dark:bg-emerald-400 rounded-full" style={{ width: `${progress}%` }} />
+                          </div>
+                          <span className="text-xs font-medium text-emerald-600 dark:text-emerald-400">{progress}%</span>
+                        </div>
+                      )}
                     </div>
-                  )}
-                </div>
-
-                {/* Content */}
-                <h3 className="font-semibold text-gray-800 dark:text-gray-100 mb-2 line-clamp-2">
-                  {exercise.title}
-                </h3>
-                <p className="text-sm text-gray-600 dark:text-gray-300 mb-4 line-clamp-2">
-                  {exercise.description}
-                </p>
-
-                {/* Tags */}
-                <div className="flex flex-wrap gap-2 mb-4">
-                  <span className={`text-xs px-2 py-1 rounded-full border ${difficultyColors[exercise.difficulty]}`}>
-                    {t(`exercises.difficulties.${exercise.difficulty}`, exercise.difficulty)}
-                  </span>
-                  <span className="text-xs px-2 py-1 rounded-full bg-gray-100 dark:bg-stone-700 text-gray-600 dark:text-gray-300 flex items-center gap-1">
-                    <Clock className="w-3 h-3" />
-                    {exercise.duration}
-                  </span>
-                </div>
-
-                {/* Category & Progress */}
-                <div className="flex items-center justify-between">
-                  <span className={`text-xs px-2 py-1 rounded-full ${categoryColors[exercise.category] || 'bg-gray-100 dark:bg-stone-700'}`}>
-                    {t(`exercises.categories.${exercise.category}`, exercise.category)}
-                  </span>
-                  {isStarted ? (
-                    <div className="w-16 h-2 bg-gray-200 dark:bg-stone-600 rounded-full overflow-hidden">
-                      <div
-                        className="h-full bg-emerald-500 dark:bg-emerald-400 rounded-full"
-                        style={{ width: `${progress}%` }}
-                      />
-                    </div>
-                  ) : (
-                    <Lock className="w-4 h-4 text-gray-300 dark:text-gray-500" />
-                  )}
+                  </div>
                 </div>
               </Card>
             )
           })}
         </div>
+
+        {kvar > 0 && (
+          <div className="flex justify-center">
+            <Button variant="outline" onClick={() => setAntalVisade((n) => n + SIDSTORLEK)}>
+              {t('exercises.showMore', 'Visa fler ({{kvar}} till)', { kvar })}
+            </Button>
+          </div>
+        )}
 
         {filtered.length === 0 && (
           <div className="text-center py-12">
@@ -826,7 +805,7 @@ function ExercisesInner() {
 
           <div className="bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 rounded-lg p-4">
             <p className="text-sm text-emerald-800 dark:text-emerald-300">
-              <strong>{t('exercises.tipLabel', 'Tips:')}</strong> {t('exercises.tipText', 'Ta dig tid att verkligen tänka igenom dina svar. Dina svar sparas automatiskt i molnet så du kan fortsätta från vilken enhet som helst.')}
+              {t('exercises.tipKort', 'Ta den tid du behöver. Svaren sparas medan du skriver.')}
             </p>
           </div>
         </div>

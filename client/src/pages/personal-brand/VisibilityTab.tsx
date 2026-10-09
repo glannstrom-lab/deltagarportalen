@@ -53,6 +53,9 @@ import {
 
 type Status = VisibilityProgressItem['status']
 
+/** Så många sätt som visas innan "Visa alla" (utan vald kategori). */
+const SATT_FORST = 5
+
 const STATUS_IKON: Record<Status, typeof Circle> = {
   not_started: Circle,
   in_progress: Play,
@@ -71,6 +74,7 @@ export default function VisibilityTab() {
   const [isLoading, setIsLoading] = useState(true)
   const [laddningsfel, setLaddningsfel] = useState(false)
   const [selectedCategory, setSelectedCategory] = useState<Synlighetskategori | null>(null)
+  const [visaAllaSatt, setVisaAllaSatt] = useState(false)
   const [ideIndex, setIdeIndex] = useState(0)
   const [veckoOffset, setVeckoOffset] = useState(0)
 
@@ -195,25 +199,23 @@ export default function VisibilityTab() {
 
   return (
     <div className="space-y-6">
-      <Card className="bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40 border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50">
-        <div className="flex flex-col sm:flex-row items-start gap-4">
-          <div className="w-12 h-12 bg-[var(--c-solid)] rounded-xl flex items-center justify-center shrink-0">
-            <Eye className="w-6 h-6 text-white dark:text-stone-900" aria-hidden="true" />
-          </div>
-          <div className="flex-1 min-w-0">
-            <h2 className="text-xl font-bold text-stone-800 dark:text-stone-100">
-              {t('personalBrand.visibility.title')}
-            </h2>
-            {/* Stod tidigare som "0/8" i `text-2xl font-bold` med etiketten
-                "strategier klara". */}
-            <p className="text-stone-700 dark:text-stone-300 mt-1">
-              {provade === 0
-                ? t('personalBrand.visibility.introEmpty', { antal: SYNLIGHETSSATT.length })
-                : t('personalBrand.visibility.introSome', { provade, antal: SYNLIGHETSSATT.length })}
-            </p>
-          </div>
-        </div>
-      </Card>
+      {/*
+        Designpasset 2026-10-09: rubrikkortet med ikonplatta och inledning
+        ("Här är 8 sätt att synas … du behöver inte göra alla") är en rubrikrad.
+        Inledningen står kvar som en rad — en invit när man inte provat något,
+        aldrig "0 av 8".
+      */}
+      <div>
+        <h2 className="text-xl font-bold text-stone-800 dark:text-stone-100 flex items-center gap-2">
+          <Eye className="w-5 h-5 text-[var(--c-solid)]" aria-hidden="true" />
+          {t('personalBrand.visibility.title')}
+        </h2>
+        <p className="text-sm text-stone-700 dark:text-stone-300 mt-1">
+          {provade === 0
+            ? t('personalBrand.visibility.introEmpty', { antal: SYNLIGHETSSATT.length })
+            : t('personalBrand.visibility.introSome', { provade, antal: SYNLIGHETSSATT.length })}
+        </p>
+      </div>
 
       {laddningsfel && (
         <Card className="bg-stone-50 dark:bg-stone-800 border-stone-200 dark:border-stone-700" role="alert">
@@ -229,6 +231,174 @@ export default function VisibilityTab() {
           </div>
         </Card>
       )}
+
+      {/* Kategorifilter */}
+      <div className="flex gap-2 flex-wrap" role="group" aria-label={t('personalBrand.visibility.filterAria')}>
+        <button
+          type="button"
+          onClick={() => setSelectedCategory(null)}
+          aria-pressed={selectedCategory === null}
+          className={cn(
+            'px-4 py-2 rounded-lg text-sm font-medium transition-all',
+            !selectedCategory
+              ? 'bg-[var(--c-solid)] text-white dark:text-stone-900'
+              : 'bg-stone-100 dark:bg-stone-700 text-stone-800 dark:text-stone-200 hover:bg-stone-200 dark:hover:bg-stone-600'
+          )}
+        >
+          {t('personalBrand.visibility.filterAll', { antal: SYNLIGHETSSATT.length })}
+        </button>
+        {SYNLIGHETSKATEGORIER.map((k) => {
+          const antal = SYNLIGHETSSATT.filter(s => s.category === k).length
+          const vald = selectedCategory === k
+          return (
+            <button
+              key={k}
+              type="button"
+              onClick={() => setSelectedCategory(vald ? null : k)}
+              aria-pressed={vald}
+              className={cn(
+                'px-4 py-2 rounded-lg text-sm font-medium transition-all',
+                // `dark:bg-[var(--c-text)] text-white` gav 1,51:1 här — den
+                // valda knappen var i praktiken oläslig i mörkt läge.
+                vald
+                  ? 'bg-[var(--c-solid)] text-white dark:text-stone-900'
+                  : 'bg-stone-100 dark:bg-stone-700 text-stone-800 dark:text-stone-200 hover:bg-stone-200 dark:hover:bg-stone-600'
+              )}
+            >
+              {t(`personalBrand.visibility.categories.${k}`)} ({antal})
+            </button>
+          )
+        })}
+      </div>
+
+      {/* Sätten */}
+      <Card className="bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
+        <h3 className="font-semibold text-stone-800 dark:text-stone-100 mb-1 flex items-center gap-2">
+          <TrendingUp className="w-5 h-5 text-[var(--c-solid)]" aria-hidden="true" />
+          {t('personalBrand.visibility.waysTitle', { antal: SYNLIGHETSSATT.length })}
+        </h3>
+        <p className="text-sm text-stone-700 dark:text-stone-300 mb-4">
+          {t('personalBrand.visibility.waysIntro')}
+        </p>
+
+        <ul className="space-y-3 list-none p-0 m-0">
+          {(visaAllaSatt || selectedCategory ? synligaSatt : synligaSatt.slice(0, SATT_FORST)).map((satt) => {
+            const status = statusFor(satt.id)
+            const StatusIkon = STATUS_IKON[status]
+            return (
+              <li
+                key={satt.id}
+                className={cn(
+                  'p-4 rounded-xl border transition-all',
+                  status === 'completed' && 'bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border-[var(--c-accent)]',
+                  status === 'in_progress' && 'bg-stone-50 dark:bg-stone-700 border-[var(--c-accent)]/60',
+                  // `opacity-50` sänkte kontrasten i allt inuti kortet till
+                  // 2,34:1 och var dessutom statusens enda bärare.
+                  status === 'skipped' && 'border-stone-200 dark:border-stone-600 bg-stone-50/50 dark:bg-stone-800',
+                  status === 'not_started' && 'border-stone-200 dark:border-stone-600'
+                )}
+              >
+                <div className="flex flex-col sm:flex-row items-start justify-between gap-3">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <h4 className="font-medium text-stone-800 dark:text-stone-100">
+                        {t(`personalBrand.visibility.ways.${satt.id}.title`)}
+                      </h4>
+                      {/* Statusen står nu i TEXT, inte bara i färg. */}
+                      {status !== 'not_started' && (
+                        <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-stone-100 dark:bg-stone-600 text-stone-800 dark:text-stone-100">
+                          <StatusIkon className="w-3 h-3" aria-hidden="true" />
+                          {t(`personalBrand.visibility.status.${status}`)}
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-sm text-stone-700 dark:text-stone-300 mt-1 line-clamp-2">
+                      {t(`personalBrand.visibility.ways.${satt.id}.description`)}
+                    </p>
+
+                    <div className="flex flex-wrap items-center gap-3 mt-3">
+                      <span className="px-2 py-1 rounded-full text-xs font-medium bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40 text-[var(--c-text)] dark:text-stone-100">
+                        {t(`personalBrand.visibility.energy.${satt.energi}`)}
+                      </span>
+                      <span className="text-xs text-stone-700 dark:text-stone-400 flex items-center gap-1">
+                        <Clock className="w-3 h-3" aria-hidden="true" />
+                        {t(`personalBrand.visibility.time.${satt.tid}`)}
+                      </span>
+                      {satt.lank && (
+                        <Link to={satt.lank} className="text-xs text-[var(--c-text)] dark:text-stone-200 underline">
+                          {t('personalBrand.visibility.helpHere')}
+                        </Link>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="flex gap-1 shrink-0">
+                    {status === 'not_started' && (
+                      <>
+                        <Button
+                          variant="ghost"
+                          onClick={() => andraStatus(satt.id, 'in_progress')}
+                          aria-label={t('personalBrand.visibility.startAria', { titel: t(`personalBrand.visibility.ways.${satt.id}.title`) })}
+                        >
+                          <Play className="w-4 h-4" aria-hidden="true" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          onClick={() => andraStatus(satt.id, 'skipped')}
+                          aria-label={t('personalBrand.visibility.skipAria', { titel: t(`personalBrand.visibility.ways.${satt.id}.title`) })}
+                        >
+                          <SkipForward className="w-4 h-4" aria-hidden="true" />
+                        </Button>
+                      </>
+                    )}
+                    {status === 'in_progress' && (
+                      <>
+                        <Button
+                          variant="ghost"
+                          onClick={() => andraStatus(satt.id, 'completed')}
+                          aria-label={t('personalBrand.visibility.doneAria', { titel: t(`personalBrand.visibility.ways.${satt.id}.title`) })}
+                        >
+                          <CheckCircle className="w-4 h-4" aria-hidden="true" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          onClick={() => andraStatus(satt.id, 'not_started')}
+                          aria-label={t('personalBrand.visibility.pauseAria', { titel: t(`personalBrand.visibility.ways.${satt.id}.title`) })}
+                        >
+                          <Pause className="w-4 h-4" aria-hidden="true" />
+                        </Button>
+                      </>
+                    )}
+                    {(status === 'completed' || status === 'skipped') && (
+                      <Button
+                        variant="ghost"
+                        onClick={() => andraStatus(satt.id, 'not_started')}
+                        aria-label={t('personalBrand.visibility.resetAria', { titel: t(`personalBrand.visibility.ways.${satt.id}.title`) })}
+                      >
+                        <RefreshCw className="w-4 h-4" aria-hidden="true" />
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              </li>
+            )
+          })}
+        </ul>
+        {/* Åtta kort i rad var sidans längsta block. Fem visas först;
+            väljer man en kategori visas alla i den. (2026-10-09) */}
+        {!selectedCategory && synligaSatt.length > SATT_FORST && (
+          <button
+            type="button"
+            onClick={() => setVisaAllaSatt((v) => !v)}
+            aria-expanded={visaAllaSatt}
+            className="mt-3 text-sm font-medium text-[var(--c-text)] dark:text-stone-200 underline underline-offset-2 hover:no-underline"
+          >
+            {visaAllaSatt
+              ? t('personalBrand.visibility.showFewer', 'Visa färre')
+              : t('personalBrand.visibility.showAll', 'Visa alla {{antal}}', { antal: synligaSatt.length })}
+          </button>
+        )}
+      </Card>
 
       {/* Idé för nästa inlägg */}
       <Card className="border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40">
@@ -398,166 +568,12 @@ export default function VisibilityTab() {
         </AnimatePresence>
       </Card>
 
-      {/* Kategorifilter */}
-      <div className="flex gap-2 flex-wrap" role="group" aria-label={t('personalBrand.visibility.filterAria')}>
-        <button
-          type="button"
-          onClick={() => setSelectedCategory(null)}
-          aria-pressed={selectedCategory === null}
-          className={cn(
-            'px-4 py-2 rounded-lg text-sm font-medium transition-all',
-            !selectedCategory
-              ? 'bg-[var(--c-solid)] text-white dark:text-stone-900'
-              : 'bg-stone-100 dark:bg-stone-700 text-stone-800 dark:text-stone-200 hover:bg-stone-200 dark:hover:bg-stone-600'
-          )}
-        >
-          {t('personalBrand.visibility.filterAll', { antal: SYNLIGHETSSATT.length })}
-        </button>
-        {SYNLIGHETSKATEGORIER.map((k) => {
-          const antal = SYNLIGHETSSATT.filter(s => s.category === k).length
-          const vald = selectedCategory === k
-          return (
-            <button
-              key={k}
-              type="button"
-              onClick={() => setSelectedCategory(vald ? null : k)}
-              aria-pressed={vald}
-              className={cn(
-                'px-4 py-2 rounded-lg text-sm font-medium transition-all',
-                // `dark:bg-[var(--c-text)] text-white` gav 1,51:1 här — den
-                // valda knappen var i praktiken oläslig i mörkt läge.
-                vald
-                  ? 'bg-[var(--c-solid)] text-white dark:text-stone-900'
-                  : 'bg-stone-100 dark:bg-stone-700 text-stone-800 dark:text-stone-200 hover:bg-stone-200 dark:hover:bg-stone-600'
-              )}
-            >
-              {t(`personalBrand.visibility.categories.${k}`)} ({antal})
-            </button>
-          )
-        })}
-      </div>
-
-      {/* Sätten */}
-      <Card className="bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
-        <h3 className="font-semibold text-stone-800 dark:text-stone-100 mb-1 flex items-center gap-2">
-          <TrendingUp className="w-5 h-5 text-[var(--c-solid)]" aria-hidden="true" />
-          {t('personalBrand.visibility.waysTitle', { antal: SYNLIGHETSSATT.length })}
-        </h3>
-        <p className="text-sm text-stone-700 dark:text-stone-300 mb-4">
-          {t('personalBrand.visibility.waysIntro')}
-        </p>
-
-        <ul className="space-y-3 list-none p-0 m-0">
-          {synligaSatt.map((satt) => {
-            const status = statusFor(satt.id)
-            const StatusIkon = STATUS_IKON[status]
-            return (
-              <li
-                key={satt.id}
-                className={cn(
-                  'p-4 rounded-xl border transition-all',
-                  status === 'completed' && 'bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border-[var(--c-accent)]',
-                  status === 'in_progress' && 'bg-stone-50 dark:bg-stone-700 border-[var(--c-accent)]/60',
-                  // `opacity-50` sänkte kontrasten i allt inuti kortet till
-                  // 2,34:1 och var dessutom statusens enda bärare.
-                  status === 'skipped' && 'border-stone-200 dark:border-stone-600 bg-stone-50/50 dark:bg-stone-800',
-                  status === 'not_started' && 'border-stone-200 dark:border-stone-600'
-                )}
-              >
-                <div className="flex flex-col sm:flex-row items-start justify-between gap-3">
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <h4 className="font-medium text-stone-800 dark:text-stone-100">
-                        {t(`personalBrand.visibility.ways.${satt.id}.title`)}
-                      </h4>
-                      {/* Statusen står nu i TEXT, inte bara i färg. */}
-                      {status !== 'not_started' && (
-                        <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-stone-100 dark:bg-stone-600 text-stone-800 dark:text-stone-100">
-                          <StatusIkon className="w-3 h-3" aria-hidden="true" />
-                          {t(`personalBrand.visibility.status.${status}`)}
-                        </span>
-                      )}
-                    </div>
-                    <p className="text-sm text-stone-700 dark:text-stone-300 mt-1">
-                      {t(`personalBrand.visibility.ways.${satt.id}.description`)}
-                    </p>
-
-                    <div className="flex flex-wrap items-center gap-3 mt-3">
-                      <span className="px-2 py-1 rounded-full text-xs font-medium bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40 text-[var(--c-text)] dark:text-stone-100">
-                        {t(`personalBrand.visibility.energy.${satt.energi}`)}
-                      </span>
-                      <span className="text-xs text-stone-700 dark:text-stone-400 flex items-center gap-1">
-                        <Clock className="w-3 h-3" aria-hidden="true" />
-                        {t(`personalBrand.visibility.time.${satt.tid}`)}
-                      </span>
-                      {satt.lank && (
-                        <Link to={satt.lank} className="text-xs text-[var(--c-text)] dark:text-stone-200 underline">
-                          {t('personalBrand.visibility.helpHere')}
-                        </Link>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="flex gap-1 shrink-0">
-                    {status === 'not_started' && (
-                      <>
-                        <Button
-                          variant="ghost"
-                          onClick={() => andraStatus(satt.id, 'in_progress')}
-                          aria-label={t('personalBrand.visibility.startAria', { titel: t(`personalBrand.visibility.ways.${satt.id}.title`) })}
-                        >
-                          <Play className="w-4 h-4" aria-hidden="true" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          onClick={() => andraStatus(satt.id, 'skipped')}
-                          aria-label={t('personalBrand.visibility.skipAria', { titel: t(`personalBrand.visibility.ways.${satt.id}.title`) })}
-                        >
-                          <SkipForward className="w-4 h-4" aria-hidden="true" />
-                        </Button>
-                      </>
-                    )}
-                    {status === 'in_progress' && (
-                      <>
-                        <Button
-                          variant="ghost"
-                          onClick={() => andraStatus(satt.id, 'completed')}
-                          aria-label={t('personalBrand.visibility.doneAria', { titel: t(`personalBrand.visibility.ways.${satt.id}.title`) })}
-                        >
-                          <CheckCircle className="w-4 h-4" aria-hidden="true" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          onClick={() => andraStatus(satt.id, 'not_started')}
-                          aria-label={t('personalBrand.visibility.pauseAria', { titel: t(`personalBrand.visibility.ways.${satt.id}.title`) })}
-                        >
-                          <Pause className="w-4 h-4" aria-hidden="true" />
-                        </Button>
-                      </>
-                    )}
-                    {(status === 'completed' || status === 'skipped') && (
-                      <Button
-                        variant="ghost"
-                        onClick={() => andraStatus(satt.id, 'not_started')}
-                        aria-label={t('personalBrand.visibility.resetAria', { titel: t(`personalBrand.visibility.ways.${satt.id}.title`) })}
-                      >
-                        <RefreshCw className="w-4 h-4" aria-hidden="true" />
-                      </Button>
-                    )}
-                  </div>
-                </div>
-              </li>
-            )
-          })}
-        </ul>
-      </Card>
-
       {/* Snabba saker på LinkedIn */}
-      <Card className="bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50">
-        <h3 className="font-semibold text-[var(--c-text)] dark:text-stone-100 mb-3">
+      <details className="rounded-2xl p-5 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50">
+        <summary className="cursor-pointer font-semibold text-[var(--c-text)] dark:text-stone-100">
           {t('personalBrand.visibility.quickTitle')}
-        </h3>
-        <ul className="space-y-2 list-none p-0 m-0">
+        </summary>
+        <ul className="mt-3 space-y-2 list-none p-0 m-0">
           {(['headline', 'openToWork', 'recommendations', 'creator'] as const).map((k) => (
             <li key={k} className="flex items-start gap-2">
               {/* Var fyra ifyllda gröna bockar bredvid saker användaren INTE
@@ -578,7 +594,7 @@ export default function VisibilityTab() {
         <Link to="/linkedin-optimizer" className="inline-flex items-center gap-1 text-sm mt-4 text-[var(--c-text)] dark:text-stone-200 underline">
           {t('personalBrand.visibility.openLinkedIn')}
         </Link>
-      </Card>
+      </details>
     </div>
   )
 }

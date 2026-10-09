@@ -35,6 +35,7 @@ import { integrationChecklistApi } from '@/services/cloudStorage'
 import { logger } from '@/lib/logger'
 import { cn } from '@/lib/utils'
 import { KONTROLLERAD } from '../International'
+import { LasMer } from '@/components/ui/LasMer'
 
 interface Punkt {
   id: string
@@ -200,10 +201,7 @@ export default function IntegrationTab() {
   const sprak = i18n.language?.startsWith('en') ? 'en-GB' : 'sv-SE'
 
   return (
-    <div className="space-y-6">
-      <p className="text-sm text-stone-700 dark:text-stone-300">
-        {t('international.integration.description')}
-      </p>
+    <div className="space-y-5">
 
       {/* Läs det här först — beroendena, överst i stället för längst ned */}
       <Card className="p-4 bg-[var(--c-bg)]/60 dark:bg-[var(--c-bg)]/20 border-[var(--c-accent)]/60">
@@ -214,8 +212,11 @@ export default function IntegrationTab() {
               {t('international.integration.firstNote.title')}
             </h2>
             <p className="text-sm text-stone-700 dark:text-stone-200">
-              {t('international.integration.firstNote.body')}
+              {t('international.integration.firstNote.lead', 'Nästan allt annat kräver att du först är folkbokförd och har ett personnummer.')}
             </p>
+            <LasMer>
+              <p>{t('international.integration.firstNote.body')}</p>
+            </LasMer>
           </div>
         </div>
       </Card>
@@ -275,12 +276,12 @@ export default function IntegrationTab() {
       )}
 
       {KATEGORIER.map((kategori) => (
-        <section key={kategori.nyckel} className="space-y-3">
+        <section key={kategori.nyckel} className="space-y-2">
           <h2 className="font-semibold text-stone-900 dark:text-stone-100">
             {t(`international.integration.categories.${kategori.nyckel}`)}
           </h2>
 
-          <ul className="space-y-3">
+          <ul className="space-y-2">
             {kategori.punkter.map((punkt) => {
               const bas = `international.integration.items.${punkt.id}`
               const titel = t(`${bas}.title`)
@@ -291,7 +292,7 @@ export default function IntegrationTab() {
               return (
                 <li key={punkt.id}>
                   <Card className="p-0 overflow-hidden bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
-                    <div className="flex items-start gap-2 p-4">
+                    <div className="flex items-start gap-2 px-4 py-2">
                       {/* Kryssrutan är en riktig kontroll, och bara den är
                           klickyta — tidigare togglade hela kortet, så ett
                           klick i brödtexten bockade av punkten av misstag. */}

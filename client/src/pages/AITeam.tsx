@@ -11,10 +11,9 @@ import { PersonalityDropdown } from '@/components/ai-team/PersonalityDropdown'
 import { QuickActions } from '@/components/ai-team/QuickActions'
 import { AgentChat, type AgentChatHandle } from '@/components/ai-team/AgentChat'
 import { ResponseModeSelector } from '@/components/ai-team/ResponseModeSelector'
-import { InlineTip } from '@/components/ui/InlineTip'
 import { useAITeamStore } from '@/stores/aiTeamStore'
 import { agentColorClasses } from '@/components/ai-team/types'
-import { Users, Lightbulb, Bot } from '@/components/ui/icons'
+import { Users, Lightbulb, Bot, ChevronDown } from '@/components/ui/icons'
 import { useSuggestedAgent } from '@/hooks/useSuggestedAgent'
 import { PageLayout } from '@/components/layout/PageLayout'
 import { useFocusMode } from '@/components/FocusModeProvider'
@@ -76,15 +75,8 @@ function AITeamInner() {
         {t('aiTeam.skipToChat', 'Hoppa till chatten')}
       </a>
 
-      {/* Onboarding via InlineTip — DESIGN.md §12 ersätter den tidigare
-          OnboardingModal. AI Team-sidan självförklarar (titel + agentkort)
-          så en kort inline-tip räcker. */}
-      <InlineTip storageKey="ai-team-intro" icon={Lightbulb} className="mb-4">
-        {t(
-          'aiTeam.intro',
-          'Här är ditt team. Välj vem du vill prata med — du kan ändra personlighet och svarslängd i sidopanelen när som helst.'
-        )}
-      </InlineTip>
+      {/* Introrutan (InlineTip "Här är ditt team…") är borttagen i
+          designpasset 2026-10-09: rådgivarhälsningen överst säger samma sak. */}
 
       {/* Suggested Agent Banner */}
       {suggestedAgent && suggestedAgent.agentId !== selectedAgent && (
@@ -171,24 +163,26 @@ function AITeamInner() {
             <QuickActions onActionClick={handleQuickAction} />
           </section>
 
-          {/* Tips Card */}
-          <section className={cn(
-            'rounded-xl border p-4',
+          {/* Tips — hopfällda (designpasset 2026-10-09). Sällan behövda,
+              och de stod tidigare som en fjärde ruta under snabbfunktionerna. */}
+          <details className={cn(
+            'group rounded-xl border p-4',
             colors.bgLight,
             'border-stone-200 dark:border-stone-700/50'
           )}>
-            <div className="flex items-center gap-2 mb-3">
+            <summary className="flex items-center gap-2 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
               <div className={cn(
                 'w-6 h-6 rounded-lg flex items-center justify-center',
                 'bg-white/50 dark:bg-stone-900/30'
               )}>
-                <Lightbulb className={cn('w-3.5 h-3.5', colors.text)} />
+                <Lightbulb className={cn('w-3.5 h-3.5', colors.text)} aria-hidden="true" />
               </div>
-              <h3 className={cn('text-sm font-semibold', colors.text)}>
+              <span className={cn('text-sm font-semibold flex-1', colors.text)}>
                 {t('aiTeam.tips.title')}
-              </h3>
-            </div>
-            <ul className="space-y-2 text-xs text-stone-600 dark:text-stone-400">
+              </span>
+              <ChevronDown className={cn('w-4 h-4 transition-transform group-open:rotate-180', colors.text)} aria-hidden="true" />
+            </summary>
+            <ul className="mt-3 space-y-2 text-xs text-stone-600 dark:text-stone-400">
               <li className="flex items-start gap-2">
                 <span className={cn('w-1 h-1 rounded-full mt-1.5 flex-shrink-0', colors.bg)} />
                 {t('aiTeam.tips.tip1')}
@@ -202,7 +196,7 @@ function AITeamInner() {
                 {t('aiTeam.tips.tip3')}
               </li>
             </ul>
-          </section>
+          </details>
         </div>
       </div>
     </PageLayout>

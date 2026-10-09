@@ -12,7 +12,6 @@ import { Building2 } from '@/components/ui/icons'
 import { useFocusMode } from '@/components/FocusModeProvider'
 import { PageFocusShell } from '@/components/focus/shell/PageFocusShell'
 import { FocusSpontaneousWizard } from '@/components/focus/pages/FocusSpontaneousWizard'
-import { RadgivarTips } from '@/components/radgivare/RadgivarPanel'
 
 // Tab components
 import SearchTab from './spontaneous/SearchTab'
@@ -65,7 +64,7 @@ export default function SpontaneousPage() {
       className="sidbredd"
     >
       <Routes>
-        <Route path="/" element={<><SearchTab /><RadgivarTips pathname="/spontanansökan" index={0} /></>} />
+        <Route path="/" element={<SearchTab />} />
         <Route path="/mina-foretag" element={<MyCompaniesTab />} />
         <Route path="/statistik" element={<StatsTab />} />
         <Route path="*" element={<Navigate to="/spontanansökan" replace />} />

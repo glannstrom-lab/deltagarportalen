@@ -35,6 +35,7 @@ import { ForklaraFranvaro } from '@/components/minvecka/ForklaraFranvaro'
 import { hamtaPlanensOrganisation, regelverkNycklar } from '@/components/minvecka/planensRegelverk'
 // RD25: "Din plan" — vem hon är hos, vem som beslutat, vad som räknas
 import { MinPlan } from '@/components/minvecka/MinPlan'
+import { LasMer } from '@/components/ui/LasMer'
 // NF1 (2026-09-24): passet till deltagarens egen kalender som .ics
 import { byggIcs, icsFilnamn, laddaNerIcs } from '@/lib/ics'
 import {
@@ -289,9 +290,21 @@ export default function MinVecka() {
                   count: anvisatMal,
                 })}
           </p>
-          {ampel !== 'inga_pass' && (
-            // RD12: vad som räknas står vid talet, inte i en bisats längre ner.
+          {nastaPass && (
             <p className="mt-1 text-sm text-stone-700 dark:text-stone-300">
+              {t('minVecka.nastaPass', {
+                defaultValue: 'Nästa: {{titel}}, {{dag}} kl {{tid}}',
+                titel: nastaPass.title,
+                dag: rubrikdatum(nastaPass.date),
+                tid: nastaPass.start_time,
+              })}
+            </p>
+          )}
+          {ampel !== 'inga_pass' && (
+            // Designpass 2026-10-09: talet och nästa pass syns; hur det räknas
+            // ligger ett klick bort. Texten är kvar i DOM:en (RD12/PG7 håller).
+            <LasMer etikett={t('minVecka.saldo.lasMer', 'Så räknas timmarna')}>
+            <p>
               {egetJobbsok > 0
                 ? t('minVecka.saldo.vadRaknasJobbsok', {
                     defaultValue: 'Här räknas bara pass som din konsulent har planerat. Eget jobbsökande räknas för sig: {{count}} timmar i veckan enligt planen.',
@@ -299,12 +312,9 @@ export default function MinVecka() {
                   })
                 : t('minVecka.saldo.vadRaknas', 'Här räknas bara pass som din konsulent har planerat.')}
             </p>
-          )}
-          {ampel !== 'inga_pass' && (
-            // PG7 (2026-09-12): "15 av 30" utan förklaring. Talen är planens
-            // eget mål (satt av konsulenten, lagens tak 40 h) och passens timmar —
-            // aldrig något framräknat som inte står i datan.
-            <div className="mt-3 text-sm text-stone-600 dark:text-stone-400 space-y-1">
+            {/* PG7 (2026-09-12): "15 av 30" utan förklaring. Talen är planens
+                eget mål (satt av konsulenten, lagens tak 40 h) och passens timmar —
+                aldrig något framräknat som inte står i datan. */}
               <p>
                 {t(nycklar.mal, { mal: anvisatMal })}
                 {plan.target_reason ? ` ${t('minVecka.forklaring.skal', { defaultValue: 'Skäl: {{skal}}.', skal: utanSlutpunkt(plan.target_reason) })}` : ''}
@@ -335,51 +345,8 @@ export default function MinVecka() {
                   </a>
                 </p>
               )}
-            </div>
+            </LasMer>
           )}
-          {nastaPass && (
-            <p className="mt-2 text-sm text-stone-600 dark:text-stone-400">
-              {t('minVecka.nastaPass', {
-                defaultValue: 'Nästa: {{titel}}, {{dag}} kl {{tid}}',
-                titel: nastaPass.title,
-                dag: rubrikdatum(nastaPass.date),
-                tid: nastaPass.start_time,
-              })}
-            </p>
-          )}
-        </Card>
-
-        <MinPlan regelverk={regelverk} orgNamn={orgNamn} />
-
-        {/* F5: deltagarens eget närvarointyg — kvitto till handläggaren, utan omväg via konsulenten */}
-        <NarvaroIntyg plan={plan} regelverk={regelverk} />
-
-        <Card className="p-5" aria-labelledby="jobbsok-rubrik">
-          <h2 id="jobbsok-rubrik" className="text-base font-semibold text-stone-800 dark:text-stone-200">
-            {t('minVecka.jobbsok.rubrik', 'Ditt jobbsökande den här veckan')}
-          </h2>
-          {jobbsokQuery.isLoading || (!jobbsokQuery.data && !jobbsokQuery.isError) ? (
-            <p className="mt-1 text-sm text-stone-500 dark:text-stone-400">…</p>
-          ) : jobbsokQuery.isError ? (
-            <p className="mt-1 text-sm text-stone-600 dark:text-stone-400">{t('minVecka.jobbsok.fel', 'Ditt jobbsökande kunde inte hämtas just nu.')}</p>
-          ) : !harNagot(jobbsokQuery.data) ? (
-            <p className="mt-1 text-sm text-stone-600 dark:text-stone-400">
-              {t('minVecka.jobbsok.tomt', 'Inget registrerat än den här veckan. Det syns här när du sparar ett jobb eller skickar en ansökan.')}
-            </p>
-          ) : (
-            <p className="mt-1 text-stone-900 dark:text-stone-100">
-              {[
-                jobbsokQuery.data.sparadeJobb > 0 && t('minVecka.jobbsok.sparade', { count: jobbsokQuery.data.sparadeJobb, defaultValue: '{{count}} jobb sparade' }),
-                jobbsokQuery.data.ansokningar > 0 && t('minVecka.jobbsok.ansokningar', { count: jobbsokQuery.data.ansokningar, defaultValue: '{{count}} ansökningar skickade' }),
-                jobbsokQuery.data.cvUppdaterad && t('minVecka.jobbsok.cv', 'CV uppdaterat'),
-                jobbsokQuery.data.brev > 0 && t('minVecka.jobbsok.brev', { count: jobbsokQuery.data.brev, defaultValue: '{{count}} personliga brev' }),
-                jobbsokQuery.data.intervjutraningar > 0 && t('minVecka.jobbsok.intervju', { count: jobbsokQuery.data.intervjutraningar, defaultValue: '{{count}} intervjuövningar' }),
-              ].filter(Boolean).join(' · ')}
-            </p>
-          )}
-          <p className="mt-2 text-xs text-stone-500 dark:text-stone-400">
-            {t('minVecka.jobbsok.egenRedovisning', 'Det här är din egen översikt. Din konsulent ser bara sparade jobb och ansökningar.')}
-          </p>
         </Card>
 
         <div className="flex items-center justify-between gap-2">
@@ -532,6 +499,41 @@ export default function MinVecka() {
             </section>
           ))
         )}
+
+        {/* Designpass 2026-10-09: veckan först — det hon gör i dag ligger inte
+            längre 1 500 px ner. Planen, jobbsökandet och intyget följer efter. */}
+        <MinPlan regelverk={regelverk} orgNamn={orgNamn} />
+
+        <Card className="p-5" aria-labelledby="jobbsok-rubrik">
+          <h2 id="jobbsok-rubrik" className="text-base font-semibold text-stone-800 dark:text-stone-200">
+            {t('minVecka.jobbsok.rubrik', 'Ditt jobbsökande den här veckan')}
+          </h2>
+          {jobbsokQuery.isLoading || (!jobbsokQuery.data && !jobbsokQuery.isError) ? (
+            <p className="mt-1 text-sm text-stone-500 dark:text-stone-400">…</p>
+          ) : jobbsokQuery.isError ? (
+            <p className="mt-1 text-sm text-stone-600 dark:text-stone-400">{t('minVecka.jobbsok.fel', 'Ditt jobbsökande kunde inte hämtas just nu.')}</p>
+          ) : !harNagot(jobbsokQuery.data) ? (
+            <p className="mt-1 text-sm text-stone-600 dark:text-stone-400">
+              {t('minVecka.jobbsok.tomt', 'Inget registrerat än den här veckan. Det syns här när du sparar ett jobb eller skickar en ansökan.')}
+            </p>
+          ) : (
+            <p className="mt-1 text-stone-900 dark:text-stone-100">
+              {[
+                jobbsokQuery.data.sparadeJobb > 0 && t('minVecka.jobbsok.sparade', { count: jobbsokQuery.data.sparadeJobb, defaultValue: '{{count}} jobb sparade' }),
+                jobbsokQuery.data.ansokningar > 0 && t('minVecka.jobbsok.ansokningar', { count: jobbsokQuery.data.ansokningar, defaultValue: '{{count}} ansökningar skickade' }),
+                jobbsokQuery.data.cvUppdaterad && t('minVecka.jobbsok.cv', 'CV uppdaterat'),
+                jobbsokQuery.data.brev > 0 && t('minVecka.jobbsok.brev', { count: jobbsokQuery.data.brev, defaultValue: '{{count}} personliga brev' }),
+                jobbsokQuery.data.intervjutraningar > 0 && t('minVecka.jobbsok.intervju', { count: jobbsokQuery.data.intervjutraningar, defaultValue: '{{count}} intervjuövningar' }),
+              ].filter(Boolean).join(' · ')}
+            </p>
+          )}
+          <p className="mt-2 text-xs text-stone-500 dark:text-stone-400">
+            {t('minVecka.jobbsok.egenRedovisning', 'Det här är din egen översikt. Din konsulent ser bara sparade jobb och ansökningar.')}
+          </p>
+        </Card>
+
+        {/* F5: deltagarens eget närvarointyg — kvitto till handläggaren, utan omväg via konsulenten */}
+        <NarvaroIntyg plan={plan} regelverk={regelverk} />
       </div>
     )
   }

@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next'
 import { motion, MotionConfig } from 'framer-motion'
 import {
   Brain, Clock, Target, RotateCcw, CheckCircle2, AlertCircle,
-  ChevronRight, Trophy, Sparkles, Flame, Star
+  ChevronRight, ChevronDown, Trophy, Sparkles, Star
 } from '@/components/ui/icons'
 import { Card, Button } from '@/components/ui'
 import { cn } from '@/lib/utils'
@@ -194,7 +194,6 @@ export default function CognitiveTab() {
   const { t } = useTranslation()
   const [activeExercise, setActiveExercise] = useState<string | null>(null)
   const [completedExercises, setCompletedExercises] = useState<string[]>([])
-  const [streak, setStreak] = useState(3)
   const [currentGameType, setCurrentGameType] = useState<'memory' | 'sequence' | null>(null)
 
   // Build translated exercises
@@ -231,7 +230,6 @@ export default function CognitiveTab() {
 
   const completeExercise = (id: string) => {
     setCompletedExercises(prev => [...new Set([...prev, id])])
-    setStreak(s => s + 1)
     setActiveExercise(null)
     setCurrentGameType(null)
   }
@@ -245,27 +243,9 @@ export default function CognitiveTab() {
   return (
     <MotionConfig reducedMotion="user">
     <div className="space-y-6">
-      {/* Streak Banner */}
-      <motion.div
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="bg-[var(--c-solid)] rounded-xl p-6 text-white shadow-lg"
-      >
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-sm opacity-90">{t('wellness.cognitive.streakBanner.title')}</p>
-            <h2 className="text-3xl font-bold mt-1">{t('wellness.cognitive.streakBanner.days', { count: streak })}</h2>
-            <p className="text-sm opacity-75 mt-1">{t('wellness.cognitive.streakBanner.subtitle')}</p>
-          </div>
-          <motion.div
-            animate={{ scale: [1, 1.2, 1] }}
-            transition={{ duration: 2, repeat: Infinity }}
-          >
-            <Flame className="w-12 h-12" />
-          </motion.div>
-        </div>
-      </motion.div>
-
+      {/* "Träningsserie 3 dagar" är borttagen 2026-10-09: talet startade på
+          en hårdkodad 3:a för alla, och en streak-räknare i hjälteposition är
+          precis det DESIGN.md §1 förbjuder. Lägg inte tillbaka den. */}
       {/* Progress Overview */}
       <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
         <div className="flex items-center justify-between mb-4">
@@ -273,13 +253,17 @@ export default function CognitiveTab() {
             <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">{t('wellness.cognitive.title')}</h3>
             <p className="text-gray-600 dark:text-gray-300">{t('wellness.cognitive.description')}</p>
           </div>
-          <div className="flex items-center gap-2 px-4 py-2 bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40 rounded-full">
-            <Star className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-text)]" />
-            <span className="font-bold text-[var(--c-text)] dark:text-[var(--c-text)]">{t('wellness.cognitive.completedCount', { count: completedExercises.length })}</span>
-          </div>
+          {/* Ingen "0 färdiga" — ett tomt läge är ingen nolla (PG9). */}
+          {completedExercises.length > 0 && (
+            <div className="flex items-center gap-2 px-4 py-2 bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40 rounded-full">
+              <Star className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-text)]" aria-hidden="true" />
+              <span className="font-bold text-[var(--c-text)] dark:text-[var(--c-text)]">{t('wellness.cognitive.completedCount', { count: completedExercises.length })}</span>
+            </div>
+          )}
         </div>
 
-        {/* Category progress */}
+        {/* Category progress — visas först när något är gjort, annars tre "0/2". */}
+        {completedExercises.length > 0 && (
         <div className="grid grid-cols-3 gap-4">
           {Object.entries(categoryConfig).map(([key, config]) => {
             const progress = getCategoryProgress(key)
@@ -306,6 +290,7 @@ export default function CognitiveTab() {
             )
           })}
         </div>
+        )}
       </Card>
 
       {/* Active Exercise with Interactive Games */}
@@ -430,11 +415,15 @@ export default function CognitiveTab() {
       </Card>
 
       {/* Tips */}
-      <Card className="p-6 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50">
-        <div className="flex items-start gap-4">
-          <AlertCircle className="w-6 h-6 text-[var(--c-text)] dark:text-[var(--c-text)] flex-shrink-0 mt-1" />
+      {/* Hopfällda tips (designpasset 2026-10-09) — sällan behövda. */}
+      <details className="group rounded-xl border p-4 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50">
+        <summary className="flex items-center gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+          <AlertCircle className="w-5 h-5 text-[var(--c-text)] flex-shrink-0" aria-hidden="true" />
+          <span className="font-semibold text-[var(--c-text)] flex-1">{t('wellness.cognitive.tips.title')}</span>
+          <ChevronDown className="w-4 h-4 text-[var(--c-text)] transition-transform group-open:rotate-180" aria-hidden="true" />
+        </summary>
+        <div className="mt-3 pl-8">
           <div>
-            <h4 className="font-semibold text-[var(--c-text)] dark:text-[var(--c-text)] mb-2">{t('wellness.cognitive.tips.title')}</h4>
             <ul className="space-y-2 text-sm text-[var(--c-text)] dark:text-[var(--c-text)]">
               <li>• {t('wellness.cognitive.tips.tip1')}</li>
               <li>• {t('wellness.cognitive.tips.tip2')}</li>
@@ -443,7 +432,7 @@ export default function CognitiveTab() {
             </ul>
           </div>
         </div>
-      </Card>
+      </details>
     </div>
     </MotionConfig>
   )

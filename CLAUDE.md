@@ -654,6 +654,19 @@ Sammanfattning av sanningarna i DESIGN.md — vid konflikt gäller DESIGN.md.
     i två lager: att dagboken är privat gäller både i UI och i RLS, och att personnummer
     maskeras är vaktat av B29-testet. Skriv inget du inte kan visa.
 
+  **Rådgivaren hälsar med röst (2026-10-09, beslut Mikael).** `RadgivarHalsning.tsx`
+  står överst på varje sida med rådgivare: en kort hälsning + nästa steg, uppläst
+  av förinspelade ElevenLabs-klipp i `public/radgivare/ljud/<nyckel>-<sv|en>.mp3`
+  (texterna i `data/radgivarHalsningar.ts`). Fyra regler:
+  - **Aldrig dynamisk TTS med användardata** — då blir ElevenLabs ett nytt
+    personuppgiftsbiträde. Ändras en text: spela in klippet på nytt.
+  - Startar en gång per sida och session, alltid med synlig paus (WCAG 1.4.2),
+    aldrig i lugnare läge. Av/på: `radgivarRost` ↔ `user_preferences.coach_voice`.
+  - Det infogade `RadgivarTips` står tillbaka där hälsningen finns.
+  - `radgivarHalsning.test.tsx` fäller om ett klipp eller en sidbild saknas.
+  Sidbilderna (`data/sidbilder.ts`) finns i båda grafikstilarna och visas i
+  hubbkorten, skenan och mobilrubriken — aldrig som hjälte.
+
   Under rådgivarna ligger **Lugnare läge** (`LugnarePanel.tsx`) — fokusläge och
   pauspåminnelse. Fokusläget nåddes tidigare bara via en textlös ikon i toppnaven.
 - **En sida = en hub-färg.** Alla pastell-element på en sida (KPI-kort, sektioner, ikon-tiles) använder samma hub-färg. Variation kommer från intensitet (50/200/700) och ikon — aldrig från olika hubars pasteller på samma sida. *Undantag: Översikt med 4 hubbar samtidigt.* Se DESIGN.md §4.

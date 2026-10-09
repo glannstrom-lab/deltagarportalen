@@ -16,12 +16,8 @@
  * · **`t('personalBrand.title')` slår upp en nyckel som inte finns** — i18n
  *   har `pageTitle`, inte `title` — så fokuslägets rubrik föll tillbaka på
  *   den svenska defaultsträngen även för engelska användare.
- *
- * Och en tredje sak: `RadgivarTips` låg utanför `<Routes>` med fast
- * `index={0}`, så alla fyra flikar visade samma mening från samma rådgivare.
- * Varje flik har nu sitt eget index, som `Career.tsx` och `InterestGuide.tsx`.
  */
-import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
+import { Routes, Route, Navigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { PageLayout } from '@/components/layout/index'
 import { Star, ClipboardCheck, FolderOpen, Eye, Mic } from '@/components/ui/icons'
@@ -29,7 +25,6 @@ import type { Tab } from '@/components/layout/PageTabs'
 import { useFocusMode } from '@/components/FocusModeProvider'
 import { PageFocusShell } from '@/components/focus/shell/PageFocusShell'
 import { FocusPersonalBrandWizard } from '@/components/focus/pages/FocusPersonalBrandWizard'
-import { RadgivarTips } from '@/components/radgivare/RadgivarPanel'
 
 // Tab components
 import BrandAuditTab from './personal-brand/BrandAuditTab'
@@ -37,18 +32,9 @@ import PitchTab from './personal-brand/PitchTab'
 import PortfolioTab from './personal-brand/PortfolioTab'
 import VisibilityTab from './personal-brand/VisibilityTab'
 
-/** Vilket råd fliken visar. Fast `index={0}` gav samma mening överallt. */
-const RAD_INDEX: Record<string, number> = {
-  '/personal-brand': 0,
-  '/personal-brand/pitch': 1,
-  '/personal-brand/portfolio': 2,
-  '/personal-brand/visibility': 3,
-}
-
 export default function PersonalBrandPage() {
   const { t } = useTranslation()
   const { isFocusMode, leaveWizard } = useFocusMode()
-  const { pathname } = useLocation()
 
   // `description` fanns på varje flik men står inte i `Tab`-typen och har
   // därför aldrig renderats — fyra i18n-nycklar utan läsare sedan de skrevs.
@@ -74,7 +60,6 @@ export default function PersonalBrandPage() {
           contentClassName="space-y-6 pb-20"
           domain="coaching"
         >
-          <RadgivarTips pathname="/personal-brand" index={RAD_INDEX[pathname] ?? 0} />
 
           <Routes>
             <Route path="/" element={<BrandAuditTab />} />

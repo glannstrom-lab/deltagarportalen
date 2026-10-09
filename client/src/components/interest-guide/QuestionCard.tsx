@@ -2,7 +2,7 @@
 import { useState, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { Question } from '@/services/interestGuideData'
-import { Pause, Save, RotateCcw } from '@/components/ui/icons'
+import { Pause } from '@/components/ui/icons'
 import { interestGuideApi } from '@/services/cloudStorage'
 import { useFocusTrap } from '@/hooks/useFocusTrap'
 
@@ -201,12 +201,12 @@ export function QuestionCard({
       <div className="text-center mb-8">
         <h3
           id={`question-${questionNumber}`}
-          className="text-lg sm:text-xl font-medium text-gray-900 leading-relaxed"
+          className="text-lg sm:text-xl font-medium text-gray-900 dark:text-stone-100 leading-relaxed"
         >
           {question.text}
         </h3>
         {question.subtext && (
-          <p className="text-sm text-gray-500 mt-2">{question.subtext}</p>
+          <p className="text-sm text-gray-500 dark:text-stone-400 mt-2">{question.subtext}</p>
         )}
       </div>
 
@@ -246,9 +246,9 @@ export function QuestionCard({
                   className={`
                     w-8 h-8 rounded-full border-4 transition-all duration-200 ease-out cursor-pointer
                     ${isCurrent
-                      ? 'bg-white border-indigo-600 scale-110 shadow-lg'
+                      ? 'bg-white border-[var(--c-solid)] scale-110 shadow-lg'
                       : isActive
-                        ? 'bg-white border-emerald-400 hover:scale-105'
+                        ? 'bg-white border-[var(--c-accent)] hover:scale-105'
                         : 'bg-white border-gray-300 hover:scale-105 hover:border-gray-400'
                     }
                   `}
@@ -331,79 +331,8 @@ export function QuestionCard({
   )
 }
 
-// ResumeModal - visas när användaren återvänder efter paus
-export function ResumeModal({
-  onResume,
-  onRestart,
-  questionIndex,
-  savedDate
-}: {
-  onResume: () => void
-  onRestart: () => void
-  questionIndex: number
-  savedDate: Date
-}) {
-  const { t } = useTranslation()
-  // "Nu" hämtas en gång per montering via useState-initieraren i stället för
-  // Date.now() direkt i render — useMemo räcker INTE för purity-regeln.
-  const [nu] = useState(() => Date.now())
-  const hoursSince = Math.round((nu - savedDate.getTime()) / (1000 * 60 * 60))
-
-  // Focus-trap. ResumeModal renders alltid när komponenten är mountad.
-  const modalRef = useFocusTrap<HTMLDivElement>(true, {
-    onEscape: onResume,
-    restoreFocus: true,
-    autoFocus: true,
-  })
-
-  return (
-    <div
-      ref={modalRef}
-      className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 backdrop-blur-sm"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="resume-dialog-title"
-      aria-describedby="resume-dialog-description"
-    >
-      <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 animate-in fade-in zoom-in-95">
-        <div className="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-4">
-          <RotateCcw className="w-8 h-8 text-indigo-600" aria-hidden="true" />
-        </div>
-
-        <h2 id="resume-dialog-title" className="text-xl font-bold text-gray-900 text-center mb-2">
-          Välkommen tillbaka!
-        </h2>
-
-        <p id="resume-dialog-description" className="text-gray-600 text-center mb-6">
-          {hoursSince < 1
-            ? 'Du var på fråga ' + (questionIndex + 1) + ' för en stund sedan.'
-            : `Du var på fråga ${questionIndex + 1} för ${hoursSince} timme${hoursSince > 1 ? 'r' : ''} sedan.`
-          }
-          <br />
-          <span className="text-sm">{t('interestGuide.question.resumeModal.takeYourTime')}</span>
-        </p>
-
-        <div className="space-y-3">
-          <button
-            type="button"
-            onClick={onResume}
-            className="w-full py-3 px-4 bg-indigo-600 text-white rounded-xl font-medium hover:bg-indigo-700 transition-colors flex items-center justify-center gap-2"
-          >
-            <Save className="w-4 h-4" aria-hidden="true" />
-            Fortsätt där jag slutade
-          </button>
-
-          <button
-            type="button"
-            onClick={onRestart}
-            className="w-full py-3 px-4 border border-gray-200 text-gray-600 rounded-xl font-medium hover:bg-gray-50 transition-colors"
-          >
-            Börja om från början
-          </button>
-        </div>
-      </div>
-    </div>
-  )
-}
+// ResumeModal låg här — en dialog som aldrig importerades någonstans, med
+// hårdkodad svenska och indigo på en rosa sida. Borttagen 2026-10-09; TestTab
+// har sin egen fortsätt/börja om-väg i IntroScreen.
 
 export default QuestionCard

@@ -13,10 +13,17 @@ import { Card, Button } from '@/components/ui'
 import { cn } from '@/lib/utils'
 
 // Contact definitions with i18n keys
+//
+// Rättat 2026-10-09: listan hade två Stockholmsnummer — "BUP" 08-123 150 00
+// och "Sjukvårdsupplysningen" 08-320 100 — som inte gick att belägga i någon
+// aktuell källa, och som ändå bara hade gällt i Stockholm. 1177 täcker
+// sjukvårdsrådgivningen i hela landet. Det som saknades var Självmordslinjen,
+// som portalen hänvisar till i både AI-policyn och rådgivarnas svar.
+// Ett nummer här ska vara belagt med källa och datum — ingen gissning.
 const emergencyContactDefs = [
   { nameKey: 'wellness.crisis.contacts.1177.name', number: '1177', descKey: 'wellness.crisis.contacts.1177.description', color: 'bg-blue-500' },
-  { nameKey: 'wellness.crisis.contacts.bup.name', number: '08-123 150 00', descKey: 'wellness.crisis.contacts.bup.description', color: 'bg-green-500' },
-  { nameKey: 'wellness.crisis.contacts.healthcare.name', number: '08-320 100', descKey: 'wellness.crisis.contacts.healthcare.description', color: 'bg-purple-500' },
+  // Mind Självmordslinjen, dygnet runt — mind.se, kontrollerat 2026-10-09.
+  { nameKey: 'wellness.crisis.contacts.mind.name', number: '90101', descKey: 'wellness.crisis.contacts.mind.description', color: 'bg-purple-500' },
   { nameKey: 'wellness.crisis.contacts.112.name', number: '112', descKey: 'wellness.crisis.contacts.112.description', color: 'bg-red-600' },
 ]
 
@@ -246,25 +253,40 @@ export default function CrisisTab() {
         </div>
       </motion.div>
 
-      {/* Quick Access Emergency Contacts */}
-      <div className="grid grid-cols-2 gap-3">
-        {emergencyContacts.slice(0, 4).map((contact, index) => (
-          <motion.a
-            key={index}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            href={`tel:${contact.number.replace(/\s/g, '')}`}
-            className={cn(
-              'p-4 rounded-xl text-white font-semibold text-center transition-all shadow-lg',
-              contact.color
-            )}
-          >
-            <Phone className="w-5 h-5 mx-auto mb-2" />
-            <p className="text-sm">{contact.name}</p>
-            <p className="text-lg">{contact.number}</p>
-          </motion.a>
-        ))}
-      </div>
+      {/* Akutkontakterna — direkt under bannern (designpasset 2026-10-09).
+          Här låg tidigare ett rutnät med fyra färgade rutor med EXAKT samma
+          nummer som den här listan längre ned; nu finns numren en gång, högt
+          upp. Inga nummer är borttagna. */}
+      <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
+        <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-2">
+          <Phone className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-text)]" />
+          {t('wellness.crisis.emergencyContacts')}
+        </h3>
+        <div className="space-y-3">
+          {emergencyContacts.map((contact, index) => (
+            <motion.a
+              key={index}
+              whileHover={{ x: 4 }}
+              href={`tel:${contact.number.replace(/\s/g, '')}`}
+              className="flex items-center gap-4 p-4 rounded-xl bg-white dark:bg-stone-700 border-2 border-stone-200 dark:border-stone-600 hover:border-[var(--c-accent)] dark:hover:border-[var(--c-solid)] hover:shadow-md transition-all"
+            >
+              <div className={cn(
+                'w-12 h-12 rounded-xl flex items-center justify-center text-white font-bold flex-shrink-0',
+                contact.color
+              )}>
+                <Phone className="w-5 h-5" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <h4 className="font-semibold text-gray-800 dark:text-gray-100">{contact.name}</h4>
+                <p className="text-lg font-bold text-[var(--c-text)] dark:text-[var(--c-text)]">{contact.number}</p>
+                <p className="text-sm text-gray-600 dark:text-gray-300">{contact.description}</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{contact.available}</p>
+              </div>
+              <ExternalLink className="w-4 h-4 text-gray-600 dark:text-gray-300 flex-shrink-0" />
+            </motion.a>
+          ))}
+        </div>
+      </Card>
 
       {/* Breathing Exercise */}
       <Card className="p-6 border-2 border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30">
@@ -324,38 +346,6 @@ export default function CrisisTab() {
             })}
           </div>
         )}
-      </Card>
-
-      {/* Emergency Contacts - Full Details */}
-      <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
-        <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-2">
-          <Phone className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-text)]" />
-          {t('wellness.crisis.emergencyContacts')}
-        </h3>
-        <div className="space-y-3">
-          {emergencyContacts.map((contact, index) => (
-            <motion.a
-              key={index}
-              whileHover={{ x: 4 }}
-              href={`tel:${contact.number.replace(/\s/g, '')}`}
-              className="flex items-center gap-4 p-4 rounded-xl bg-white dark:bg-stone-700 border-2 border-stone-200 dark:border-stone-600 hover:border-[var(--c-accent)] dark:hover:border-[var(--c-solid)] hover:shadow-md transition-all"
-            >
-              <div className={cn(
-                'w-12 h-12 rounded-xl flex items-center justify-center text-white font-bold flex-shrink-0',
-                contact.color
-              )}>
-                <Phone className="w-5 h-5" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <h4 className="font-semibold text-gray-800 dark:text-gray-100">{contact.name}</h4>
-                <p className="text-lg font-bold text-[var(--c-text)] dark:text-[var(--c-text)]">{contact.number}</p>
-                <p className="text-sm text-gray-600 dark:text-gray-300">{contact.description}</p>
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{contact.available}</p>
-              </div>
-              <ExternalLink className="w-4 h-4 text-gray-600 dark:text-gray-300 flex-shrink-0" />
-            </motion.a>
-          ))}
-        </div>
       </Card>
 
       {/*

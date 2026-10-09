@@ -84,6 +84,12 @@ interface SidRailProps {
   tabsEtikett?: string
   /** Renderas under allt annat — nyckeltal och knappar. */
   children?: React.ReactNode
+  /**
+   * Sidans scenbild (data/sidbilder.ts), ovanför rubriken. Dekorativ —
+   * rubriken bär betydelsen. 16:10 och inte högre: skenan är sticky, och en
+   * skena som blir högre än fönstret gömmer sina sista flikar. (2026-10-09)
+   */
+  bild?: string | null
 }
 
 /** Liten gruppetikett i skenan — gemener sedan N2 (2026-09-10), se Stig.tsx. */
@@ -147,6 +153,7 @@ export default function SidRail({
   slotRef,
   tabsEtikett,
   children,
+  bild,
 }: SidRailProps) {
   const location = useLocation()
   const [sok] = useSearchParams()
@@ -169,6 +176,15 @@ export default function SidRail({
   // haka i klassnamn som ändras.
   return (
     <div data-skena className="lg:sticky lg:top-0">
+      {bild && (
+        <img
+          src={bild}
+          alt=""
+          aria-hidden="true"
+          decoding="async"
+          className="mb-3 block w-full aspect-[16/10] rounded-lg object-cover bg-[var(--c-bg)]"
+        />
+      )}
       {title && (
         <div className="mb-3">
           <h1 className="text-[1.0625rem] font-semibold tracking-tight text-stone-900 dark:text-stone-100 m-0">

@@ -96,7 +96,6 @@ import { showToast } from '@/components/Toast'
 import { useFocusMode } from '@/components/FocusModeProvider'
 import { useFocusTrap } from '@/hooks/useFocusTrap'
 import { FocusResourcesWizard } from '@/components/focus/pages/FocusResourcesWizard'
-import { RadgivarTips } from '@/components/radgivare/RadgivarPanel'
 import { FokusVaxel } from '@/components/focus/shell/FokusVaxel'
 import { useProfileStore } from '@/stores/profileStore'
 import { APPLICATION_STATUS_CONFIG } from '@/types/application.types'
@@ -650,8 +649,6 @@ function ResourcesInner() {
           </div>
         </div>
       )}
-
-      <RadgivarTips pathname="/resources" index={0} />
 
       <div className="space-y-6">
         {/* ---------------------------------------------------------------- */}

@@ -11,7 +11,7 @@ import { cvApi } from '@/services/supabaseApi'
 import {
   Plus, Trash2, ChevronLeft, ChevronRight, Eye, X, Check,
   Sparkles, Briefcase, GraduationCap, Award,
-  Lightbulb, Loader2, AlertCircle, Folder, FileText, Save, Upload, ChevronDown
+  Loader2, AlertCircle, Folder, FileText, Save, Upload, ChevronDown
 } from '@/components/ui/icons'
 import { CVPreview } from '@/components/cv/CVPreview'
 import { AIWritingAssistant } from '@/components/cv/AIWritingAssistant'
@@ -27,7 +27,7 @@ import { useAuthStore } from '@/stores/authStore'
 import { cn } from '@/lib/utils'
 // Steg 4 (2026-08-17): rådgivaren bredvid förhandsvisningen, och ett
 // kontextuellt råd inne i formuläret — inte en ring i hörnet.
-import RadgivarPanel, { RadgivarTips } from '@/components/radgivare/RadgivarPanel'
+import RadgivarPanel from '@/components/radgivare/RadgivarPanel'
 import { cvLogger } from '@/lib/logger'
 import { spaltformFor, spaltformNyckel, STANDARDMALL, mallarAttVisa } from '@/data/cvMallar'
 import { useConfirmDialog } from '@/components/ui/ConfirmDialog'
@@ -1005,9 +1005,6 @@ export default function CVBuilder() {
           </div>
         )}
         <h3 className="font-semibold text-stone-800 dark:text-stone-200 mb-4">{t('cvBuilder.profileImage.title')}</h3>
-        <p className="text-sm text-stone-700 dark:text-stone-300 mb-4">
-          {t('cvBuilder.profileImage.description')}
-        </p>
         <CompactImageUpload
           value={data.profileImage}
           onChange={(url) => setData(prev => ({ ...prev, profileImage: url }))}
@@ -1241,7 +1238,7 @@ export default function CVBuilder() {
             {t('cvBuilder.review.title', 'Granska och spara ditt CV')}
           </h3>
           <p className="text-stone-600 dark:text-stone-400">
-            {t('cvBuilder.review.subtitle', 'Här är ditt CV. Allt sparas automatiskt — ladda ner när du är nöjd.')}
+            {t('cvBuilder.review.subtitle', 'Allt sparas automatiskt.')}
           </p>
         </div>
 
@@ -1308,18 +1305,15 @@ export default function CVBuilder() {
           </div>
 
           <p className="text-xs text-stone-500 dark:text-stone-400 mt-4 px-2 text-center">
-            {t('cvBuilder.review.editHint', 'Om en sektion bryts olämpligt — gå tillbaka och redigera. Den streckade linjen visar exakt var sida 2 börjar.')}
+            {t('cvBuilder.review.editHint', 'Bryts något olämpligt? Gå tillbaka och ändra.')}
           </p>
         </div>
 
         {/* Spara/exportera-actions */}
         <Card className="p-5">
-          <h4 className="font-semibold text-stone-900 dark:text-stone-100 mb-3">
+          <h4 className="font-semibold text-stone-900 dark:text-stone-100 mb-4">
             {t('cvBuilder.review.actionsTitle', 'Klar?')}
           </h4>
-          <p className="text-sm text-stone-600 dark:text-stone-400 mb-4">
-            {t('cvBuilder.review.actionsDesc', 'Ditt CV är sparat i molnet. Ladda ner som PDF eller skapa en versionssäkring att gå tillbaka till.')}
-          </p>
           <div className="flex flex-wrap gap-3">
             <PDFExportButton
               type="cv"
@@ -1640,8 +1634,6 @@ export default function CVBuilder() {
 
           <div className="min-h-[400px]">
             {renderContent()}
-            {/* Ett råd, där arbetet sker */}
-            <RadgivarTips pathname="/cv" index={step - 1} />
           </div>
 
           {/* Desktop Navigation */}
@@ -1755,10 +1747,7 @@ export default function CVBuilder() {
 
           {/* Help - Show onboarding again */}
           <div className="bg-white dark:bg-stone-800/50 rounded-xl border border-stone-200 dark:border-stone-700/50 p-5">
-            <h3 className="font-semibold text-stone-800 dark:text-stone-200 mb-2">{t('cvBuilder.help.title')}</h3>
-            <p className="text-sm text-stone-600 dark:text-stone-400 mb-3">
-              {t('cvBuilder.help.description')}
-            </p>
+            <h3 className="font-semibold text-stone-800 dark:text-stone-200 mb-3">{t('cvBuilder.help.title')}</h3>
             <button
               onClick={() => setShowOnboarding(true)}
               className="w-full px-4 py-2 text-sm font-medium text-[var(--c-text)] dark:text-[var(--c-text)] bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40 rounded-lg hover:bg-[var(--c-accent)]/40 dark:hover:bg-[var(--c-bg)]/50 transition-colors"
@@ -1776,21 +1765,9 @@ export default function CVBuilder() {
             />
           )}
 
-          {/* AI Tools */}
-          {step === 3 && (
-            <div className="bg-white dark:bg-stone-800/50 rounded-xl border border-stone-200 dark:border-stone-700/50 p-5">
-              <div className="flex items-center gap-2 mb-3">
-                <div className="w-8 h-8 bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/50 rounded-lg flex items-center justify-center">
-                  <Lightbulb className="w-4 h-4 text-[var(--c-text)] dark:text-[var(--c-text)]" />
-                </div>
-                <h3 className="font-semibold text-stone-800 dark:text-stone-200">{t('cvBuilder.help.aiWriting')}</h3>
-              </div>
-              <p className="text-sm text-stone-600 dark:text-stone-400 mb-3">
-                {t('cvBuilder.help.aiWritingDesc')}
-              </p>
-              <AIWritingAssistant content={data.summary || ''} onChange={(v) => setData(prev => ({ ...prev, summary: v }))} type="summary" cvData={data} />
-            </div>
-          )}
+          {/* Designpass 2026-10-09: här låg en andra AIWritingAssistant för
+              sammanfattningen på steg 3 — samma verktyg som redan ligger under
+              textfältet i steget. En kontroll, ett ställe. */}
 
           {/* Versions */}
           <div className="bg-white dark:bg-stone-800/50 rounded-xl border border-stone-200 dark:border-stone-700/50 p-5">

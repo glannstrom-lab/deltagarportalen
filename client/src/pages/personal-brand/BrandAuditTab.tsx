@@ -46,7 +46,7 @@ import { useState, useEffect, useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import {
-  ClipboardCheck, CheckCircle, Circle, Sparkles, Linkedin, FileText, Users,
+  ClipboardCheck, CheckCircle, Circle, Sparkles, Linkedin, FileText, Users, Lightbulb,
   Target, ChevronRight, RefreshCw, AlertCircle, Loader2
 } from '@/components/ui/icons'
 import { Card, Button } from '@/components/ui'
@@ -197,29 +197,24 @@ export default function BrandAuditTab() {
 
   return (
     <div className="space-y-6">
-      <Card className="bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40 border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50">
-        <div className="flex flex-col sm:flex-row items-start gap-4">
-          <div className="w-12 h-12 bg-[var(--c-solid)] rounded-xl flex items-center justify-center shrink-0">
-            {/* Vit på `--c-solid` mäter 2,03:1 i mörkt läge (.dark sätter
-                coaching-solid till ljusrosa #E8A4AE). */}
-            <ClipboardCheck className="w-6 h-6 text-white dark:text-stone-900" aria-hidden="true" />
-          </div>
-          <div className="flex-1 min-w-0">
-            <h2 className="text-xl font-bold text-stone-800 dark:text-stone-100">
-              {t('personalBrand.audit.title')}
-            </h2>
-            <p className="text-stone-700 dark:text-stone-300 mt-1">
-              {t('personalBrand.audit.intro', { antal: antalFragor() })}
-            </p>
-          </div>
-          {isSaving && (
-            <span className="text-xs text-stone-700 dark:text-stone-300 flex items-center gap-1 shrink-0">
-              <RefreshCw className="w-3 h-3 animate-spin" aria-hidden="true" />
-              {t('personalBrand.audit.saving')}
-            </span>
-          )}
-        </div>
-      </Card>
+      {/* Rubrikkortet hade en ikonplatta och ett stycke ("Kryssa i det du
+          redan gjort — resten är förslag, inte krav") som rådgivaren nu
+          säger överst på sidan. Kvar: rubriken och antalet frågor. (2026-10-09) */}
+      <div className="flex flex-wrap items-baseline justify-between gap-2">
+        <h2 className="text-xl font-bold text-stone-800 dark:text-stone-100 flex items-center gap-2">
+          <ClipboardCheck className="w-5 h-5 text-[var(--c-solid)] self-center" aria-hidden="true" />
+          {t('personalBrand.audit.title')}
+          <span className="text-sm font-normal text-stone-600 dark:text-stone-400">
+            {t('personalBrand.audit.questionCount', '{{antal}} frågor', { antal: antalFragor() })}
+          </span>
+        </h2>
+        {isSaving && (
+          <span className="text-xs text-stone-700 dark:text-stone-300 flex items-center gap-1 shrink-0">
+            <RefreshCw className="w-3 h-3 animate-spin" aria-hidden="true" />
+            {t('personalBrand.audit.saving')}
+          </span>
+        )}
+      </div>
 
       {laddningsfel && (
         <Card className="bg-stone-50 dark:bg-stone-800 border-stone-200 dark:border-stone-700" role="alert">
@@ -338,67 +333,78 @@ export default function BrandAuditTab() {
               )}
             </h3>
 
-            <ul className="space-y-3 list-none p-0 m-0">
+            <ul className="space-y-2 list-none p-0 m-0">
               {AUDIT_FRAGOR.filter(f => f.category === kategori).map((fraga) => {
                 const ikryssad = !!answers[fraga.id]
                 const tipsId = `tips-${fraga.id}`
+                const tipsOppet = !ikryssad && expandedTip === fraga.id
                 return (
                   <li key={fraga.id}>
-                    <button
-                      type="button"
-                      onClick={() => toggleAnswer(fraga.id)}
-                      aria-pressed={ikryssad}
-                      className={cn(
-                        'w-full flex items-center gap-3 p-3 rounded-xl border transition-all text-left',
-                        ikryssad
-                          ? 'bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border-[var(--c-accent)]'
-                          : 'bg-stone-50 dark:bg-stone-700 border-stone-200 dark:border-stone-600 hover:border-stone-300 dark:hover:border-stone-500'
-                      )}
-                    >
-                      {ikryssad
-                        ? <CheckCircle className="w-5 h-5 text-[var(--c-solid)] shrink-0" aria-hidden="true" />
-                        : <Circle className="w-5 h-5 text-stone-500 dark:text-stone-400 shrink-0" aria-hidden="true" />}
-                      <span className="flex-1 text-sm text-stone-800 dark:text-stone-100">
-                        {t(`personalBrand.audit.questions.${fraga.id}.question`)}
-                      </span>
-                    </button>
-
-                    {/* Åtgärdslänken låg INUTI knappen ovan — interaktivt
-                        element i interaktivt element. Nu på egen rad. */}
-                    <div className="ml-8 mt-1 flex flex-wrap items-center gap-3">
-                      {!ikryssad && fraga.actionLink && (
-                        <Link
-                          to={fraga.actionLink}
-                          className="text-xs px-2 py-1 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/50 text-[var(--c-text)] dark:text-stone-100 rounded-full hover:bg-[var(--c-accent)]/60 transition-colors"
-                        >
-                          {t(`personalBrand.audit.questions.${fraga.id}.action`)}
-                        </Link>
-                      )}
+                    {/*
+                      Designpasset 2026-10-09: under varje fråga låg en egen rad
+                      med åtgärdslänk och "Visa tips" — sexton extra rader, och
+                      sidan var 2 900 px. Tipsknappen sitter nu i frågans rad,
+                      och åtgärdslänken ligger i tipset (och i Förslag-kortet
+                      när man börjat kryssa).
+                    */}
+                    <div className="flex items-stretch gap-2">
+                      <button
+                        type="button"
+                        onClick={() => toggleAnswer(fraga.id)}
+                        aria-pressed={ikryssad}
+                        className={cn(
+                          'flex-1 min-w-0 flex items-center gap-3 p-3 rounded-xl border transition-all text-left',
+                          ikryssad
+                            ? 'bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border-[var(--c-accent)]'
+                            : 'bg-stone-50 dark:bg-stone-700 border-stone-200 dark:border-stone-600 hover:border-stone-300 dark:hover:border-stone-500'
+                        )}
+                      >
+                        {ikryssad
+                          ? <CheckCircle className="w-5 h-5 text-[var(--c-solid)] shrink-0" aria-hidden="true" />
+                          : <Circle className="w-5 h-5 text-stone-500 dark:text-stone-400 shrink-0" aria-hidden="true" />}
+                        <span className="flex-1 text-sm text-stone-800 dark:text-stone-100">
+                          {t(`personalBrand.audit.questions.${fraga.id}.question`)}
+                        </span>
+                      </button>
                       {!ikryssad && (
                         <button
                           type="button"
                           onClick={() => setExpandedTip(expandedTip === fraga.id ? null : fraga.id)}
-                          aria-expanded={expandedTip === fraga.id}
+                          aria-expanded={tipsOppet}
                           aria-controls={tipsId}
-                          className="text-xs text-stone-700 dark:text-stone-300 hover:text-[var(--c-text)] dark:hover:text-[var(--c-solid)] underline"
+                          aria-label={`${tipsOppet ? t('personalBrand.audit.hideTip') : t('personalBrand.audit.showTip')}: ${t(`personalBrand.audit.questions.${fraga.id}.question`)}`}
+                          title={tipsOppet ? t('personalBrand.audit.hideTip') : t('personalBrand.audit.showTip')}
+                          className={cn(
+                            'shrink-0 w-11 flex items-center justify-center rounded-xl border transition-colors',
+                            tipsOppet
+                              ? 'bg-[var(--c-bg)] border-[var(--c-accent)] text-[var(--c-text)] dark:text-stone-100'
+                              : 'border-stone-200 dark:border-stone-600 text-stone-600 dark:text-stone-300 hover:text-[var(--c-text)] hover:border-[var(--c-accent)]'
+                          )}
                         >
-                          {expandedTip === fraga.id
-                            ? t('personalBrand.audit.hideTip')
-                            : t('personalBrand.audit.showTip')}
+                          <Lightbulb className="w-4 h-4" aria-hidden="true" />
                         </button>
                       )}
                     </div>
 
-                    {!ikryssad && expandedTip === fraga.id && (
+                    {tipsOppet && (
                       <div
                         id={tipsId}
-                        className="ml-8 mt-2 p-3 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 rounded-lg border border-[var(--c-accent)]/40"
+                        className="ml-8 mt-2 p-3 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 rounded-lg border border-[var(--c-accent)]/40 space-y-2"
                       >
                         {/* `dark:text-[var(--c-text)]` stod här och mäter
                             1,55:1 i mörkt läge — i praktiken osynlig. */}
                         <p className="text-sm text-[var(--c-text)] dark:text-stone-100">
                           {t(`personalBrand.audit.questions.${fraga.id}.tip`)}
                         </p>
+                        {fraga.actionLink && (
+                          <Link
+                            to={fraga.actionLink}
+                            className="inline-flex items-center gap-1 text-sm font-medium text-[var(--c-text)] dark:text-stone-100 underline underline-offset-2 hover:no-underline"
+                          >
+                            {t(`personalBrand.audit.questions.${fraga.id}.action`)}
+                            <ChevronRight className="w-4 h-4" aria-hidden="true" />
+                          </Link>
+                        )}
                       </div>
                     )}
                   </li>

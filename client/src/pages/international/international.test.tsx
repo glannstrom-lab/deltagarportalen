@@ -183,6 +183,10 @@ describe('språkfliken', () => {
 
   it('märker de engelska raderna med lang, så talsyntesen inte läser dem som svenska', () => {
     const { container } = rendera(<LanguageTab />)
+    // Fraslistan visar fyra först (designpass 2026-10-09) — fäll ut alla.
+    const visaAlla = screen.getByRole('button', { name: /visa alla 10 fraser/i })
+    expect(visaAlla).toHaveAttribute('aria-expanded', 'false')
+    fireEvent.click(visaAlla)
     expect(container.querySelectorAll('p[lang="en"]').length).toBe(10)
     expect(container.querySelectorAll('p[lang="sv"]').length).toBe(10)
   })

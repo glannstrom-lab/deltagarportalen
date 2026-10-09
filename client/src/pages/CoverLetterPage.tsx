@@ -18,7 +18,6 @@ import { PageLayout } from '@/components/layout/PageLayout'
 import { useFocusMode } from '@/components/FocusModeProvider'
 import { PageFocusShell } from '@/components/focus/shell/PageFocusShell'
 import { FocusCoverLetter } from '@/components/focus/steps/FocusCoverLetter'
-import { RadgivarTips } from '@/components/radgivare/RadgivarPanel'
 
 export default function CoverLetterPage() {
   const { t } = useTranslation()
@@ -55,7 +54,7 @@ export default function CoverLetterPage() {
       className="sidbredd"
     >
       <Routes>
-        <Route path="/" element={<><CoverLetterWrite /><RadgivarTips pathname="/cover-letter" index={0} /></>} />
+        <Route path="/" element={<CoverLetterWrite />} />
         <Route path="/my-letters" element={<CoverLetterMyLetters />} />
         <Route path="*" element={<Navigate to="/cover-letter" replace />} />
       </Routes>

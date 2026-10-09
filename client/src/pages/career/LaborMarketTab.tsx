@@ -145,109 +145,108 @@ export default function LaborMarketTab() {
 
   const uppdaterad = formateraDatum(marketStats?.last_updated)
 
+  /*
+    Designpasset 2026-10-09 ("för texttungt"): kompetenserna grupperas per
+    yrkesområde. Varje chip bar tidigare sitt områdes namn och jobbantal, så
+    "Hälso- och sjukvård — 6 245 lediga jobb" stod tre gånger i rad. Nu står
+    området en gång som rubrik och kompetenserna under. Attribueringen är kvar.
+  */
+  const kompetensGrupper: { falt: string | null; antal: number | null; kompetenser: string[] }[] = []
+  for (const skill of trendingSkills.slice(0, VISA_ANTAL)) {
+    const falt = skill.occupation_field ?? null
+    const antal = typeof skill.occupation_field_job_count === 'number' ? skill.occupation_field_job_count : null
+    const grupp = kompetensGrupper.find((g) => g.falt === falt)
+    if (grupp) grupp.kompetenser.push(skill.skill)
+    else kompetensGrupper.push({ falt, antal, kompetenser: [skill.skill] })
+  }
+
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between gap-4">
-        <div>
-          <h2 className="text-xl font-bold text-stone-800 dark:text-stone-100">
-            {t('career.laborMarket.heading')}
-          </h2>
-          <p className="text-stone-600 dark:text-stone-400 text-sm">
-            {t('career.laborMarket.source')}
-          </p>
-        </div>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => fetchData()}
-          disabled={isRefreshing}
-          className="flex items-center gap-2 flex-shrink-0"
-        >
-          <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} aria-hidden="true" />
-          {isRefreshing ? t('career.laborMarket.loading') : t('career.laborMarket.refresh')}
-        </Button>
-      </div>
+      {/* Rubriken och källraden stod här ovanför siffran. Källan står i
+          foten och sidans rubrik i skenan — kvar som skärmläsarrubrik. */}
+      <h2 className="sr-only">{t('career.laborMarket.heading')}</h2>
 
       {/* Huvudsiffra med kontext (DESIGN.md §8 — en sak i centrum) */}
-      {marketStats && (
-        <Card className="p-6 sm:p-8 bg-[var(--c-bg)] border-[var(--c-accent)]">
-          <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6">
-            <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-white dark:bg-white/10 flex items-center justify-center flex-shrink-0">
-              <Briefcase className="w-7 h-7 sm:w-8 sm:h-8 text-[var(--c-text)]" aria-hidden="true" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className="text-3xl sm:text-4xl font-bold text-[var(--c-text)] tabular-nums leading-tight">
-                {marketStats.total_jobs.toLocaleString('sv-SE')}
+      <Card className="p-5 sm:p-6 bg-[var(--c-bg)] border-[var(--c-accent)]">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+          {marketStats ? (
+            <div className="flex items-center gap-4 flex-1 min-w-0">
+              <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-white dark:bg-white/10 flex items-center justify-center flex-shrink-0">
+                <Briefcase className="w-6 h-6 sm:w-7 sm:h-7 text-[var(--c-text)]" aria-hidden="true" />
               </div>
-              <p className="text-sm sm:text-base text-stone-700 dark:text-stone-300 mt-1">
-                {t('career.laborMarket.openJobs')}
-                {typeof marketStats.new_jobs_week === 'number' && (
-                  <>
-                    {' — '}
-                    {t('career.laborMarket.newThisWeek', {
-                      antal: marketStats.new_jobs_week.toLocaleString('sv-SE'),
-                    })}
-                  </>
-                )}
-              </p>
-            </div>
-          </div>
-        </Card>
-      )}
-
-      {/*
-        Branschradarn låg här (`<IndustryRadarSection defaultExpanded />`) och
-        är borttagen 2026-08-21. Den ritade **samma data en gång till**: samma
-        fem yrkesgrupper, samma fem kompetenser, samma totalsiffra, samma
-        regioner — hämtat ur samma `af-trends`-anrop. Att det inte syntes
-        berodde på att en AiConsentGate dolde hela sektionen för konton utan
-        AI-samtycke, trots att den inte gör ett enda AI-anrop.
-
-        Med grinden borta blev dubbleringen uppenbar, och tre saker till:
-        `getIndustriesForSkill` mappade "Patientvård" till "IT, Tjänster" ur
-        en handskriven tabell med `['IT','Tjänster']` som fallback; en badge
-        sa "Realtidsdata" om en 30-minuterscache; och rubriken
-        "Rekommendationer för dig" stod över tre generella meningar.
-
-        Komponenten och dess test är raderade — den hade ingen annan anropare.
-      */}
-      <div className="grid md:grid-cols-2 gap-6">
-        {/* Kompetenser — attribuerade till yrkesområdet de hämtats ur. */}
-        <Card className="p-5">
-          <h3 className="font-semibold text-stone-800 dark:text-stone-100 mb-4 flex items-center gap-2">
-            <Zap className="w-5 h-5 text-[var(--c-solid)]" aria-hidden="true" />
-            {t('career.laborMarket.skillsTitle')}
-          </h3>
-          {trendingSkills.length === 0 ? (
-            <p className="text-sm text-stone-600 dark:text-stone-400">
-              {t('career.laborMarket.skillsEmpty')}
-            </p>
-          ) : (
-            <ul className="flex flex-wrap gap-2">
-              {trendingSkills.slice(0, VISA_ANTAL).map((skill) => (
-                <li
-                  key={skill.skill}
-                  className="inline-flex flex-col px-3 py-1.5 rounded-2xl bg-[var(--c-bg)] border border-[var(--c-accent)] text-sm text-[var(--c-text)] font-medium"
-                >
-                  <span>{skill.skill}</span>
-                  {skill.occupation_field && typeof skill.occupation_field_job_count === 'number' && (
-                    <span className="text-xs font-normal text-stone-600 dark:text-stone-400">
-                      {t('career.laborMarket.skillsField', {
-                        field: skill.occupation_field,
-                        antal: skill.occupation_field_job_count.toLocaleString('sv-SE'),
+              <div className="min-w-0">
+                <div className="text-3xl sm:text-4xl font-bold text-[var(--c-text)] tabular-nums leading-tight">
+                  {marketStats.total_jobs.toLocaleString('sv-SE')}
+                </div>
+                <p className="text-sm sm:text-base text-stone-700 dark:text-stone-300 mt-0.5">
+                  {t('career.laborMarket.openJobs')}
+                  {typeof marketStats.new_jobs_week === 'number' && (
+                    <>
+                      {' — '}
+                      {t('career.laborMarket.newThisWeek', {
+                        antal: marketStats.new_jobs_week.toLocaleString('sv-SE'),
                       })}
-                    </span>
+                    </>
                   )}
+                </p>
+              </div>
+            </div>
+          ) : (
+            <div className="flex-1" />
+          )}
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => fetchData()}
+            disabled={isRefreshing}
+            className="flex items-center gap-2 flex-shrink-0 self-start sm:self-center"
+          >
+            <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} aria-hidden="true" />
+            {isRefreshing ? t('career.laborMarket.loading') : t('career.laborMarket.refresh')}
+          </Button>
+        </div>
+
+        {/* Regioner — DESIGN.md §8 top 3, inga delta-procent. Låg som ett eget
+            kort med tre stora rutor; nu en rad i huvudkortet. */}
+        {marketStats?.by_region && marketStats.by_region.length > 0 && (
+          <div className="mt-4 pt-4 border-t border-[var(--c-accent)]">
+            <h3 className="text-sm font-semibold text-stone-800 dark:text-stone-100 mb-2 flex items-center gap-2">
+              <MapPin className="w-4 h-4 text-[var(--c-solid)]" aria-hidden="true" />
+              {t('career.laborMarket.regionsTitle')}
+            </h3>
+            <ul className="flex flex-wrap gap-x-6 gap-y-1">
+              {marketStats.by_region.slice(0, 3).map((region) => (
+                <li key={region.region} className="text-sm text-stone-700 dark:text-stone-300">
+                  {/*
+                    Namnet renderas helt. `.replace(' län', '')` stod här och
+                    lämnade genitivformen utan huvudord: "Stockholms",
+                    "Västra Götalands". Verifierat i prod 2026-08-21.
+                  */}
+                  <span className="font-bold text-[var(--c-text)] tabular-nums">
+                    {region.job_count.toLocaleString('sv-SE')}
+                  </span>{' '}
+                  {region.region}
                 </li>
               ))}
             </ul>
-          )}
-        </Card>
+          </div>
+        )}
+      </Card>
 
+      {/* MK3 (2026-09-12): AF:s yrkesbarometer, utsikter per yrke i AF:s egna
+          ord. Flyttad upp 2026-10-09 — det är flikens enda verktyg, och det
+          stod sist under tre listor. */}
+      <UtsikterSektion />
+
+      {/*
+        Branschradarn låg här (`<IndustryRadarSection defaultExpanded />`) och
+        är borttagen 2026-08-21. Den ritade samma data en gång till ur samma
+        `af-trends`-anrop. Komponenten och dess test är raderade.
+      */}
+      <div className="grid md:grid-cols-2 gap-6">
         {/* Yrkesgrupper — antal annonser, inte antal sökningar. */}
         <Card className="p-5">
-          <h3 className="font-semibold text-stone-800 dark:text-stone-100 mb-4 flex items-center gap-2">
+          <h3 className="font-semibold text-stone-800 dark:text-stone-100 mb-3 flex items-center gap-2">
             <Briefcase className="w-5 h-5 text-[var(--c-solid)]" aria-hidden="true" />
             {t('career.laborMarket.occupationsTitle')}
           </h3>
@@ -256,15 +255,12 @@ export default function LaborMarketTab() {
               {t('career.laborMarket.occupationsEmpty')}
             </p>
           ) : (
-            <ul className="flex flex-wrap gap-2">
+            <ul className="divide-y divide-stone-100 dark:divide-stone-700">
               {popularOccupations.slice(0, VISA_ANTAL).map((occ) => (
-                <li
-                  key={occ.term}
-                  className="inline-flex flex-col px-3 py-1.5 rounded-2xl bg-[var(--c-bg)] border border-[var(--c-accent)] text-sm text-[var(--c-text)] font-medium"
-                >
-                  <span>{occ.term}</span>
+                <li key={occ.term} className="flex items-baseline justify-between gap-3 py-2 text-sm">
+                  <span className="text-stone-800 dark:text-stone-100">{occ.term}</span>
                   {typeof occ.count === 'number' && (
-                    <span className="text-xs font-normal text-stone-600 dark:text-stone-400 tabular-nums">
+                    <span className="text-stone-600 dark:text-stone-400 tabular-nums whitespace-nowrap">
                       {t('career.laborMarket.jobsUnit', {
                         antal: occ.count.toLocaleString('sv-SE'),
                       })}
@@ -275,43 +271,48 @@ export default function LaborMarketTab() {
             </ul>
           )}
         </Card>
+
+        {/* Kompetenser — attribuerade till yrkesområdet de hämtats ur. */}
+        <Card className="p-5">
+          <h3 className="font-semibold text-stone-800 dark:text-stone-100 mb-3 flex items-center gap-2">
+            <Zap className="w-5 h-5 text-[var(--c-solid)]" aria-hidden="true" />
+            {t('career.laborMarket.skillsTitle')}
+          </h3>
+          {kompetensGrupper.length === 0 ? (
+            <p className="text-sm text-stone-600 dark:text-stone-400">
+              {t('career.laborMarket.skillsEmpty')}
+            </p>
+          ) : (
+            <div className="space-y-3">
+              {kompetensGrupper.map((grupp) => (
+                <div key={grupp.falt ?? 'okant'}>
+                  {grupp.falt && grupp.antal !== null && (
+                    <p className="text-xs text-stone-600 dark:text-stone-400 mb-1.5">
+                      {t('career.laborMarket.skillsField', {
+                        field: grupp.falt,
+                        antal: grupp.antal.toLocaleString('sv-SE'),
+                      })}
+                    </p>
+                  )}
+                  <ul className="flex flex-wrap gap-2">
+                    {grupp.kompetenser.map((namn) => (
+                      <li
+                        key={namn}
+                        className="px-3 py-1 rounded-full bg-[var(--c-bg)] border border-[var(--c-accent)] text-sm text-[var(--c-text)] font-medium"
+                      >
+                        {namn}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          )}
+        </Card>
       </div>
 
-      {/* Regioner — DESIGN.md §8 top 3, inga delta-procent */}
-      {marketStats?.by_region && marketStats.by_region.length > 0 && (
-        <Card className="p-5">
-          <h3 className="font-semibold text-stone-800 dark:text-stone-100 mb-4 flex items-center gap-2">
-            <MapPin className="w-5 h-5 text-[var(--c-solid)]" aria-hidden="true" />
-            {t('career.laborMarket.regionsTitle')}
-          </h3>
-          <ul className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            {marketStats.by_region.slice(0, 3).map((region) => (
-              <li
-                key={region.region}
-                className="p-4 rounded-lg bg-[var(--c-bg)] border border-[var(--c-accent)]"
-              >
-                <div className="text-xl font-bold text-[var(--c-text)] tabular-nums">
-                  {region.job_count.toLocaleString('sv-SE')}
-                </div>
-                {/*
-                  Namnet renderas helt. `.replace(' län', '')` stod här och
-                  lämnade genitivformen utan huvudord: "Stockholms",
-                  "Västra Götalands". Verifierat i prod 2026-08-21.
-                */}
-                <div className="text-sm text-stone-700 dark:text-stone-300 mt-0.5">
-                  {region.region}
-                </div>
-              </li>
-            ))}
-          </ul>
-        </Card>
-      )}
-
-      {/* MK3 (2026-09-12): AF:s yrkesbarometer, utsikter per yrke i AF:s egna ord. */}
-      <UtsikterSektion />
-
       {/* Källa och datans ålder */}
-      <div className="text-center text-xs text-stone-600 dark:text-stone-400 py-4">
+      <div className="text-center text-xs text-stone-600 dark:text-stone-400 py-2">
         <p>
           {t('career.laborMarket.dataFrom')}{' '}
           <a
@@ -412,10 +413,17 @@ export function UtsikterSektion() {
 
   return (
     <Card className="p-5" aria-labelledby="prognos-rubrik">
-      <h3 id="prognos-rubrik" className="font-semibold text-stone-800 dark:text-stone-100 mb-1">
+      <h3 id="prognos-rubrik" className="text-lg font-semibold text-stone-800 dark:text-stone-100 mb-1">
         {t('career.prognos.heading')}
       </h3>
-      <p className="text-sm text-stone-600 dark:text-stone-400 mb-4">{t('career.prognos.intro')}</p>
+      {/* Introt stod som ett stycke på tre rader ovanför fältet. Nu bakom ett
+          klick — källan står ändå under varje svar. (2026-10-09) */}
+      <details className="mb-4 text-sm">
+        <summary className="cursor-pointer w-fit text-stone-600 dark:text-stone-400 hover:text-[var(--c-text)]">
+          {t('career.prognos.omBarometern', 'Vad bygger det på?')}
+        </summary>
+        <p className="mt-2 text-stone-600 dark:text-stone-400">{t('career.prognos.intro')}</p>
+      </details>
       <form onSubmit={(e) => void sok(e)} className="flex flex-col sm:flex-row gap-2 sm:items-end">
         <label className="flex-1 text-sm text-stone-700 dark:text-stone-300">
           {t('career.prognos.sokLabel')}

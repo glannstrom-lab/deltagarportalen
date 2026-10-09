@@ -137,7 +137,8 @@
     "optional": "valfritt",
     "required": "Obligatorisk",
     "copy": "Kopiera",
-    "tagCounter": "{{count}} av {{max}}"
+    "tagCounter": "{{count}} av {{max}}",
+    "lasMer": "Läs mer"
   },
   "pageTabs": {
     "cv": {
@@ -1591,7 +1592,6 @@
     "saved": "Sparad",
     "saveJob": "Spara jobb",
     "searchAndFilter": "Sök & Filtrera",
-    "clickToSearch": "Klicka för att söka jobb",
     "filtersActive": "{{count}} filter aktiva",
     "whatDoYouWantToWork": "Vad vill du jobba med?",
     "location": "Plats",
@@ -2280,14 +2280,14 @@
       "error": "Något gick fel vid sökningen. Försök igen.",
       "aiSearch": "AI-sökning",
       "orgNumber": "Org.nummer",
-      "aiDescription": "Beskriv vilka företag du söker, t.ex. \"IT-konsulter i Stockholm\" eller \"advokatbyråer som arbetar med arbetsrätt\"",
       "orgNumberDescription": "Ange ett organisationsnummer för att hämta information. Hitta org.nr på",
       "aiSearchLabel": "Beskriv företagen du söker",
       "orgSearchLabel": "Organisationsnummer",
       "aiPlaceholder": "T.ex. 'Reklambyråer i Göteborg med 10-50 anställda'",
       "enterOrgNumber": "Ange ett organisationsnummer",
       "searching": "Söker …",
-      "foundAnnouncement": "{{name}} hittades."
+      "foundAnnouncement": "{{name}} hittades.",
+      "aiDescriptionShort": "Skriv bransch, ort och gärna storlek."
     },
     "company": {
       "address": "Adress",
@@ -2744,7 +2744,6 @@
         "keys": "Lämna tillbaka nycklarna"
       },
       "heading": "Om du funderar på att flytta",
-      "intro": "Jämför städer, se vad hyran skulle ta av din lön, och håll ordning på vad som ska göras.",
       "fromProfile": "Enligt din profil bor du i",
       "loading": "Laddar…",
       "loadErrorTitle": "Kunde inte hämta dina flyttplaner",
@@ -2759,7 +2758,6 @@
       "planRegions_other": "{{count}} städer du tittar på",
       "planChecklist": "{{count}} av {{total}} punkter avbockade",
       "budgetTitle": "Vad skulle det kosta att bo där?",
-      "budgetIntro": "Fyll i vad du räknar med att tjäna, så visar vi hur stor del av lönen hyran skulle ta i varje stad.",
       "salaryLabel": "Månadslön före skatt (kr)",
       "salaryHelp": "Vet du inte? Se vad yrket brukar ge på lönesidan.",
       "salaryLink": "Öppna lönekompassen",
@@ -2797,7 +2795,6 @@
       "supportBody": "Prata med din handläggare först. Vad Arbetsförmedlingen kan hjälpa till med vid en flytt beror på din situation, och det är de som avgör — vi anger medvetet inga belopp eller villkor här, eftersom sådana uppgifter blir gamla utan att någon märker det.",
       "supportLink": "Arbetsförmedlingens stöd A–Ö",
       "checklistTitle": "Att göra inför flytten",
-      "checklistIntro": "Bocka av i din egen takt. Listan sparas.",
       "when": {
         "sixMonths": "Ett halvår innan",
         "threeMonths": "Några månader innan",
@@ -2815,7 +2812,11 @@
         "firstMonths": "Räkna med att de första månaderna kostar mer än vanligt: deposition, möbler, dubbla hyror."
       },
       "queueYears": "{{min}}–{{max}} år",
-      "amountSek": "{{belopp}} kr"
+      "amountSek": "{{belopp}} kr",
+      "aboutNumbers": "Hyror och kötider är grova uppskattningar — läs mer",
+      "checklistAll_one": "Visa alla {{count}}",
+      "checklistAll_other": "Visa alla {{count}}",
+      "checklistFewer": "Visa färre"
     },
     "networkTab": {
       "loading": "Laddar nätverksdata...",
@@ -2917,11 +2918,11 @@
       "kalla": "Enligt Arbetsförmedlingens yrkesbarometer, omgång {{omgang}}",
       "publicerad": "publicerad {{datum}}",
       "licens": "Öppna data, CC0",
-      "flerTraffar": "Flera yrken matchar — här är de {{antal}} första."
+      "flerTraffar": "Flera yrken matchar — här är de {{antal}} första.",
+      "omBarometern": "Vad bygger det på?"
     },
     "laborMarket": {
       "heading": "Svensk arbetsmarknad",
-      "source": "Siffror från Arbetsförmedlingens platsbank",
       "refresh": "Uppdatera",
       "loading": "Laddar marknadsdata…",
       "errorTitle": "Kunde inte hämta marknadsdata",
@@ -2929,7 +2930,7 @@
       "retry": "Försök igen",
       "openJobs": "lediga jobb just nu",
       "newThisWeek": "{{antal}} av dem kom in den senaste veckan",
-      "skillsTitle": "Kompetenser i de yrkesområden som har flest jobb",
+      "skillsTitle": "Kompetenser i de största yrkesområdena",
       "skillsEmpty": "Arbetsförmedlingen svarade utan yrkesområden den här gången.",
       "skillsField": "{{field}} — {{antal}} lediga jobb",
       "occupationsTitle": "Yrkesgrupper med flest lediga jobb",
@@ -2944,7 +2945,7 @@
     "title": "Min konsulent",
     "laslogg": {
       "title": "Vem har öppnat dina uppgifter",
-      "desc": "Varje gång din konsulent öppnar din sida loggas det här. Du ser det, ingen annan behöver berätta det.",
+      "desc": "Varje gång din konsulent öppnar din sida syns det här.",
       "rad": "Din konsulent öppnade {{vad}} {{datum}} kl {{tid}}",
       "vad": {
         "sida": "din sida (kontaktuppgifter, CV-status, mål och journal)",
@@ -2956,7 +2957,9 @@
         "platser": "dina praktikplatser"
       },
       "tomt": "Ingen har öppnat dina uppgifter än — det syns här när din konsulent gör det.",
-      "fel": "Vi kunde inte hämta loggen just nu."
+      "fel": "Vi kunde inte hämta loggen just nu.",
+      "visaAlla": "Visa alla {{count}}",
+      "visaFarre": "Visa färre"
     },
     "subtitle": "Kommunicera med {{name}}",
     "subtitleNoConsultant": "Ingen konsulent ännu",
@@ -3003,7 +3006,6 @@
       }
     },
     "sharedInfoTitle": "Det här ser din konsulent",
-    "sharedInfoDesc": "En översikt över vad som är synligt för din konsulent — och vad bara du ser.",
     "legend": {
       "shared": "Din konsulent kan se det här",
       "notShared": "Bara du kan se det här",
@@ -3067,8 +3069,6 @@
     "title": "Intresseguide",
     "discover": "Upptäck yrken som passar dig genom att besvara frågor om dina intressen och personlighet",
     "occupationsThatSuitYou": "Yrken som passar dig",
-    "basedOnYourProfile": "Baserat på din profil",
-    "occupationsDescription": "Vi har analyserat din profil och hittat yrken som matchar dina intressen, personlighet och förutsättningar.",
     "completeTestFirst": "Genomför testet först",
     "completeTestForSuggestions": "Du behöver genomföra intressetestet för att få personliga yrkesförslag.",
     "startTest": "Starta testet",
@@ -3084,7 +3084,12 @@
       "riasecTableAria": "RIASEC resultat i tabellform",
       "riasecTableCaption": "Dina RIASEC-resultat visar dina arbetsintressen på en skala 1-5",
       "riasecTableArea": "Intresseområde",
-      "riasecTableScore": "Poäng (1-5)"
+      "riasecTableScore": "Poäng (1-5)",
+      "levelHigh": "hög",
+      "levelMedium": "medel",
+      "levelLow": "låg",
+      "bigFiveValue": "{{namn}}: {{score}} procent, {{niva}} nivå",
+      "riasecTitle": "RIASEC Arbetsintressen"
     },
     "tabs": {
       "test": "Testet",
@@ -3143,7 +3148,6 @@
     },
     "explore": {
       "title": "Alla yrken",
-      "description": "Bläddra bland alla yrken i vår databas. Filtrera efter bransch, utbildningsnivå eller framtidsutsikter.",
       "searchPlaceholder": "Sök bland alla yrken...",
       "filters": {
         "field": "Bransch",
@@ -3162,7 +3166,18 @@
       "shownOfTotal": "Visar {{visade}} av {{totalt}}",
       "universityLevel": "Högskola",
       "length": "Längd",
-      "level": "Nivå"
+      "level": "Nivå",
+      "filterButton": "Filter",
+      "fields": {
+        "tech": "Teknik & IT",
+        "healthcare": "Vård & Omsorg",
+        "education": "Utbildning",
+        "business": "Affär & Ekonomi",
+        "creative": "Kreativt & Design",
+        "service": "Service & Handel",
+        "construction": "Bygg & Hantverk",
+        "nature": "Natur & Miljö"
+      }
     },
     "history": {
       "title": "Testresultat över tid",
@@ -3179,7 +3194,11 @@
       "previousResults": "Tidigare gånger du gjort testet",
       "noDate": "Datum saknas",
       "errorBody": "Vi kunde inte hämta dina tidigare resultat. Inget har ändrats — ladda om sidan och försök igen.",
-      "retry": "Försök igen"
+      "retry": "Försök igen",
+      "traits": "Personlighetsdrag",
+      "aboutTitle": "Om din historik",
+      "aboutBody": "Dina intressen och personlighetsdrag kan förändras över tid baserat på nya erfarenheter, utbildning och livssituationer. Vi rekommenderar att göra om testet med jämna mellanrum för att se hur du utvecklas.",
+      "aboutTip": "Tips: Gör testet var 6:e månad eller efter större förändringar i ditt liv."
     },
     "question": {
       "sliderLabel": "Svara på fråga {{number}}: {{text}}",
@@ -3205,33 +3224,22 @@
       "pauseContinue": "Fortsätt svara",
       "pauseConfirm": "Pausa och gå tillbaka",
       "pauseButton": "Pausa",
-      "resumeModal": {
-        "takeYourTime": "Det är okej att ta det i din takt."
-      }
+      "resumeModal": {}
     },
     "intro": {
-      "questionsLayout": "Så här är frågorna upplagda",
-      "whatYouGet": "Detta får du",
-      "get1": "En bild av vilka typer av arbete som lockar dig",
-      "get2": "Hur du beskriver dig själv på fem personlighetsdrag",
-      "get3": "Dina egna svar om vad som fungerar bra och mindre bra för dig i arbete",
       "get4": "Förslag bland {{count}} yrken, med anpassningar att prata vidare om",
       "sections": {
         "work": {
-          "name": "Arbetsintressen",
-          "description": "Vilka typer av arbete tilltalar dig?"
+          "name": "Arbetsintressen"
         },
         "personality": {
-          "name": "Personlighet",
-          "description": "Hur skulle du beskriva dig själv?"
+          "name": "Personlighet"
         },
         "interests": {
-          "name": "Intresseområden",
-          "description": "Vad tycker du är intressant?"
+          "name": "Intresseområden"
         },
         "conditions": {
-          "name": "Dina förutsättningar",
-          "description": "Hur upplever du det du orkar och klarar i arbete?"
+          "name": "Dina förutsättningar"
         }
       },
       "questionsCount_one": "{{count}} fråga",
@@ -3245,7 +3253,8 @@
       "continue": "Fortsätt där du slutade",
       "restart": "Börja om från början",
       "start": "Starta intresseguiden",
-      "footer": "Dina svar sparas medan du svarar, så du kan pausa och fortsätta när du vill."
+      "footer": "Dina svar sparas medan du svarar, så du kan pausa och fortsätta när du vill.",
+      "heading": "Fyra delar, i din egen takt"
     },
     "jobCard": {
       "careerPath": "Karriärväg:",
@@ -3273,7 +3282,6 @@
     "results": {
       "howToReadRiasec": "Så här läser du din RIASEC-profil",
       "understandTraits": "Förstå dina personlighetsdrag",
-      "whatResultSays": "Vad säger resultatet om dig?",
       "greenAreasHeading": "🟢 Gröna områden (4-5)",
       "greenAreasDesc": "Dina styrkor! Dessa områden ger dig fördelar på arbetsmarknaden.",
       "yellowRedAreasHeading": "🟡 Gul/Röda områden (1-3)",
@@ -3292,9 +3300,6 @@
       "unchanged": "Oförändrad",
       "doneHeading": "Du har hittat din riktning",
       "doneLead": "Här är vad dina svar säger om vilka yrken som kan passa dig.",
-      "riasecType": "Din RIASEC-typ",
-      "totalOccupations": "Totalt yrken",
-      "toExplore": "att utforska",
       "fromDate": "Från {{date}}",
       "testsTotal_one": "{{count}} test totalt",
       "testsTotal_other": "{{count}} tester totalt",
@@ -3305,26 +3310,45 @@
       "top5Heading": "Topp 5 yrkesmatchningar:",
       "top3Heading": "Dina topp 3 yrkesmatchningar",
       "seeAll": "Se alla",
-      "tipLabel": "Tips:",
-      "tipText": "Gör om testet senare om dina intressen ändras. Du kan då jämföra resultaten över tid för att se hur du utvecklas.",
       "nextStep": "Nästa steg",
       "createCvHeading": "Skapa ditt CV",
-      "createCvText": "Använd dina insikter från intresseguiden för att bygga ett professionellt CV",
       "download": "Ladda ner resultat",
       "share": "Dela resultat",
       "restart": "Gör om testet",
-      "linkCopied": "Länk kopierad till urklipp!",
       "rankPlace": "Nr {{place}} av {{total}} utifrån dina svar",
-      "rankPlaceShort": "Nr {{place}} utifrån dina svar",
-      "closestOccupation": "Yrket närmast dina svar",
-      "closestOccupationHint": "utifrån dina svar i testet"
+      "rankPlaceShort": "Nr {{place}} utifrån dina svar"
     },
     "occupations": {
       "growingShare": "av dem växer, enligt vår redaktionella bedömning",
       "sortMatch": "Sortera: Matchning",
       "sortName": "Sortera: Namn (A-Z)",
       "sortSalary": "Sortera: Lön (högst först)",
-      "salaryRange": "Lönespann"
+      "salaryRange": "Lönespann",
+      "errCalcProfile": "Kunde inte beräkna din profil. Försök göra om testet.",
+      "errNotCompleted": "Du har inte slutfört testet än. Gå till testet för att slutföra.",
+      "errLoad": "Kunde inte ladda resultaten. Försök igen senare.",
+      "errCalcMatches": "Kunde inte beräkna yrkesmatchningar: {{fel}}",
+      "unknownError": "Okänt fel",
+      "sortLabel": "Sortera yrkeslistan",
+      "educationFilter": "Utbildning:",
+      "university": "Högskola",
+      "upperSecondary": "Gymnasium/YH",
+      "showingOf": "Visar {{visade}} av {{totalt}} yrken",
+      "favorite": "Favorit",
+      "alreadyFavorite": "Redan favorit",
+      "addFavorite": "Lägg till som favorit",
+      "clearFavorites": "Rensa favoriterna",
+      "favoritesCount_one": "Du har {{count}} favorit",
+      "favoritesCount_other": "Du har {{count}} favoriter",
+      "declining": "Minskande",
+      "whyHere": "Varför hamnade det här?",
+      "partWeight": "{{poang}} % · väger {{andel}} %",
+      "codingNote": "Delpoängen kommer ur dina svar jämförda med hur vi kodat yrket. Kodningen är vår egen redaktionella bedömning — den kommer inte från SSYK, O*NET eller någon annan yrkesdatabas. Använd ordningen som en uppslagslista, inte som ett facit.",
+      "showAll_one": "Visa alla {{count}} yrken",
+      "showAll_other": "Visa alla {{count}} yrken",
+      "showFewer": "Visa färre",
+      "toExplore_one": "{{count}} yrke att utforska",
+      "toExplore_other": "{{count}} yrken att utforska"
     },
     "rv": {
       "riasec": {
@@ -3408,34 +3432,19 @@
       },
       "bigFiveMiddle": "Du svarade ganska mitt på skalan på de flesta frågorna. Det säger inte att du saknar de här dragen — bara att du inte lade dig i någon ytterkant den här gången.",
       "bigFiveSummary": "Du svarade att du {{traits}}. Det bygger på två frågor per drag, så se det som en öppning för ett samtal — inte som en personlighetsbedömning.",
-      "readyBadge": "Dina resultat är klara!",
-      "uniqueProfile": "Din unika profil",
-      "headerLead": "Baserat på dina svar har vi skapat en analys av dina intressen, personlighet och förutsättningar. Använd denna information för att utforska yrkesvägar som passar just dig.",
-      "top3Interests": "Dina topp 3 intressen",
-      "yourPersonality": "Din personlighet",
-      "yourStrengths": "Dina styrkor",
-      "shareResult": "Dela resultat",
-      "saveAsFile": "Spara som fil",
-      "redoGuide": "Gör om guiden",
       "exploreProfile": "Utforska din profil",
       "seeSuggestions": "Se yrkesförslag",
-      "riasecHeading": "RIASEC - Dina arbetsintressen",
-      "riasecSub": "Sex typer av arbetsmiljöer som matchar olika personligheter",
       "examples": "Exempel: {{examples}}",
-      "whatDoesResultMean": "Vad betyder ditt resultat?",
       "riasecMeaning": "De områden där du har högst poäng ({{areas}}) är de miljöer där du troligen trivs bäst. Ju högre poäng, desto starkare är ditt intresse för den miljön.",
       "bigFiveHeading": "Big Five - Din personlighetsprofil",
-      "bigFiveSub": "Fem grundläggande drag som beskriver hur du är som person",
       "bigFiveNoBetter": "Ingen profil är \"bättre\" än en annan - olika yrken kräver olika egenskaper. Det viktiga är att hitta ett yrke som passar just dig.",
       "icfHeading": "ICF - Dina funktionsförutsättningar",
-      "icfSub": "Förstå dina förutsättningar för arbete och vilka anpassningar som kan hjälpa",
       "icfAbout": "Om ICF och arbetsanpassningar",
       "icfTerm": "ICF (International Classification of Functioning)",
       "icfDesc": "är WHO:s ramverk för att beskriva hälsa och funktionsförmåga. Det fokuserar på vad du kan göra, inte på eventuella begränsningar.",
       "tipLabel": "Tips:",
       "icfTip": "Prata med en arbetskonsulent om vilka stöd och anpassningar som finns tillgängliga för det yrke du är intresserad av. Många arbetsgivare är positiva till anpassningar som gör att du kan prestera ditt bästa.",
       "icfRemember": "Dina förutsättningar är inte statiska - de kan förändras över tid och variera beroende på situation. Det viktiga är att hitta ett yrke där du kan använda dina styrkor och få stöd där det behövs. Med rätt anpassningar kan de flesta yrken fungera för de flesta människor.",
-      "matchesHeading": "Dina yrkesmatchningar",
       "matchesLead": "Här är yrken som ligger nära din profil, med det yrke som ligger närmast dina svar överst. Kom ihåg att detta är förslag - utforska de yrken som känns intressanta för dig!",
       "allOccupations": "Alla yrken",
       "requiresUniversity": "Kräver högskola",
@@ -3446,7 +3455,11 @@
       "property": "Egenskap",
       "placeRow": "Plats utifrån dina svar",
       "placeShort": "Nr {{place}} av {{total}}",
-      "prognosis": "Prognos"
+      "prognosis": "Prognos",
+      "sexVarldar": "Sex sorters arbete — så svarade du",
+      "avFem": "{{value}} av 5",
+      "viewLabel": "Visa",
+      "icfKraverSamtycke": "Den här delen visas bara om du samtycker till hälsodata — läs mer"
     },
     "rec": {
       "title": "Karriärrekommendationer",
@@ -3512,12 +3525,12 @@
     "checkedNote": "Uppgifterna kontrollerades mot myndigheternas webbplatser {{date}}. Reglerna ändras — kontrollera alltid hos myndigheten innan du fattar ett beslut.",
     "opensInNewTab": "Öppnas i en ny flik",
     "validation": {
-      "description": "Har du utbildning eller ett yrke från ett annat land finns det två frågor att reda ut: vad din utbildning motsvarar här, och om ditt yrke kräver ett svenskt tillstånd.",
       "uhr": {
         "title": "Få din utbildning bedömd",
         "body": "Universitets- och högskolerådet (UHR) bedömer utbildning från andra länder och skriver ett utlåtande om vad den motsvarar i Sverige. Det är kostnadsfritt, och utlåtandet kan du bifoga när du söker jobb eller utbildning. UHR bedömer gymnasieutbildning, yrkesutbildning efter gymnasiet och högskoleutbildning.",
         "link": "UHR — bedömning av utländsk utbildning",
-        "tip": "Har du inte kvar dina betyg? Ansök ändå — UHR beskriver på sin sida vad som går att göra när dokument saknas."
+        "tip": "Har du inte kvar dina betyg? Ansök ändå — UHR beskriver på sin sida vad som går att göra när dokument saknas.",
+        "lead": "UHR skriver gratis vad din utbildning motsvarar i Sverige."
       },
       "regulated": {
         "title": "Kräver ditt yrke legitimation?",
@@ -3526,7 +3539,8 @@
         "teacher": "Skola och förskola: Skolverket prövar lärar- och förskollärarlegitimation.",
         "other": "Är du osäker på om ditt yrke är reglerat — börja med UHR och fråga Arbetsförmedlingen. De vet vem som prövar vad.",
         "healthLink": "Socialstyrelsen — legitimation",
-        "teacherLink": "Skolverket — legitimation"
+        "teacherLink": "Skolverket — legitimation",
+        "lead": "Många yrken i vården och skolan kräver svensk legitimation."
       },
       "permit": {
         "title": "Behöver du arbetstillstånd?",
@@ -3535,7 +3549,11 @@
         "noNumbers": "Vi anger medvetet inga belopp eller handläggningstider här. De ändras varje år, och en gammal siffra på den här sidan kan kosta dig ett tillstånd. Migrationsverket har alltid det som gäller nu.",
         "linkPermit": "Migrationsverket — arbetstillstånd",
         "linkEu": "Migrationsverket — EU/EES-medborgare",
-        "linkException": "Migrationsverket — vem får arbeta utan tillstånd"
+        "linkException": "Migrationsverket — vem får arbeta utan tillstånd",
+        "euShort": "Medborgare i EU/EES eller Norden",
+        "euAnswer": "Du behöver inget tillstånd.",
+        "thirdShort": "Medborgare i ett land utanför EU/EES",
+        "thirdAnswer": "Oftast krävs arbetstillstånd."
       },
       "next": {
         "title": "Sedan då?",
@@ -3545,7 +3563,6 @@
       }
     },
     "integration": {
-      "description": "Ordningen spelar roll: det mesta hänger på att du först blir folkbokförd. Kryssa av det du gjort — det sparas.",
       "yourProgress": "Så här långt har du kommit",
       "emptyHint": "Börja med det första steget när du orkar. Inget måste göras i dag.",
       "progressCount": "{{done}} av {{total}} avklarade",
@@ -3554,7 +3571,8 @@
       "onlyThirdCountry": "Gäller dig som inte är EU/EES- eller nordisk medborgare",
       "firstNote": {
         "title": "Läs det här först",
-        "body": "Nästan allt annat kräver att du är folkbokförd och har ett personnummer. Det tar tid — räkna med flera veckor. Under tiden går det inte att skaffa BankID, och många tjänster kräver BankID. Det är inte du som gör fel; det är så systemet hänger ihop."
+        "body": "Nästan allt annat kräver att du är folkbokförd och har ett personnummer. Det tar tid — räkna med flera veckor. Under tiden går det inte att skaffa BankID, och många tjänster kräver BankID. Det är inte du som gör fel; det är så systemet hänger ihop.",
+        "lead": "Nästan allt annat kräver att du först är folkbokförd och har ett personnummer."
       },
       "categories": {
         "start": "Börja här",
@@ -3648,7 +3666,6 @@
     },
     "language": {
       "title": "Svenska",
-      "description": "Du behöver inte vänta tills svenskan sitter för att söka jobb. Men den öppnar dörrar, och här är vägarna dit.",
       "levelsTitle": "Hur bra svenska behöver du?",
       "levelsBody": "Det beror på yrket. I många jobb bestämmer arbetsgivaren, och en fungerande vardagssvenska räcker långt. I några yrken är kravet reglerat — för legitimation i vården ställer Socialstyrelsen krav på hög nivå i svenska.",
       "sfiTitle": "Sfi har en egen indelning",
@@ -3722,7 +3739,6 @@
         }
       },
       "phrasesTitle": "Fraser att ha med sig",
-      "phrasesIntro": "De första är till för när du söker jobb, de sista för när du har fått ett.",
       "listen": "Lyssna på {{phrase}}",
       "phrases": {
         "p1": {
@@ -3783,7 +3799,10 @@
         "t3": "Ställ in telefonen på svenska. Du läser den ändå hundra gånger om dagen.",
         "t4": "Öva de tio fraserna ovan högt innan du går på en intervju.",
         "t5": "Be någon rätta dig. De flesta gör det gärna om du frågar."
-      }
+      },
+      "levelsMore": "Om nivåerna: sfi och A1–C2",
+      "phrasesAll": "Visa alla {{count}} fraser",
+      "phrasesFewer": "Visa färre fraser"
     }
   },
   "personalBrand": {
@@ -3806,7 +3825,7 @@
     "pitch": {
       "header": {
         "title": "Din personliga pitch",
-        "description": "Skapa och öva på din hiss-pitch. En bra pitch tar 30-60 sekunder och lämnar ett starkt intryck."
+        "short": "En kort presentation av dig själv — ett halvt till en minut."
       },
       "newPitch": "Ny pitch",
       "yourPitches": "Dina pitchar",
@@ -3938,7 +3957,6 @@
     },
     "audit": {
       "title": "Så ser du ut utifrån",
-      "intro": "{{antal}} frågor om hur du syns för en arbetsgivare. Kryssa i det du redan gjort — resten är förslag, inte krav.",
       "loading": "Hämtar dina svar …",
       "loadFailed": "Vi kunde inte hämta dina svar just nu. Det betyder inte att de är borta.",
       "saving": "Sparar …",
@@ -4044,7 +4062,8 @@
           "tip": "Vet du vem du skriver för blir både texter och ansökningar lättare att formulera.",
           "action": ""
         }
-      }
+      },
+      "questionCount": "{{antal}} frågor"
     },
     "portfolio": {
       "title": "Dina arbetsprover",
@@ -4246,25 +4265,24 @@
           "body": "Om du tänker skriva regelbundet."
         }
       },
-      "openLinkedIn": "Öppna LinkedIn-hjälpen"
+      "openLinkedIn": "Öppna LinkedIn-hjälpen",
+      "showAll": "Visa alla {{antal}}",
+      "showFewer": "Visa färre"
     }
   },
   "exercises": {
     "title": "Övningar",
     "description": "Praktiska övningar för att utveckla dina jobbsökar-skills",
     "loadingAnswers": "Laddar dina svar...",
-    "cloudSynced": "Synkad med molnet",
     "saving": "Sparar...",
     "stats": {
-      "totalExercises": "Övningar totalt",
-      "started": "Påbörjade",
-      "active": "Aktiva",
-      "invit": "{{antal}} övningar att välja bland. Du har inte börjat någon än — välj en nedan som passar dig."
+      "rad": "Du har börjat på {{paborjade}} av {{totalt}} övningar."
     },
     "filters": {
       "all": "Alla övningar",
       "started": "Påbörjade",
-      "notStarted": "Ej påbörjade"
+      "notStarted": "Ej påbörjade",
+      "topics": "Välj ämne"
     },
     "noMatch": "Inga övningar matchar det valda filtret.",
     "answersSavedCloud": "Dina svar är sparade i molnet",
@@ -4315,14 +4333,14 @@
     "backToAll": "Tillbaka till alla övningar",
     "stepOf": "Steg {{current}} av {{total}}",
     "clearProgress": "Rensa mina svar",
-    "tipLabel": "Tips:",
-    "tipText": "Ta dig tid att verkligen tänka igenom dina svar. Dina svar sparas automatiskt i molnet så du kan fortsätta från vilken enhet som helst.",
     "previous": "Föregående",
     "finish": "Avsluta",
     "next": "Nästa",
     "aiCoach": "AI Coach",
     "aiCoachText": "Behöver du hjälp med denna övning? AI:n kan ge vägledning, exempel och följdfrågor.",
-    "seeAllArticles": "Se alla artiklar"
+    "seeAllArticles": "Se alla artiklar",
+    "showMore": "Visa fler ({{kvar}} till)",
+    "tipKort": "Ta den tid du behöver. Svaren sparas medan du skriver."
   },
   "diary": {
     "title": "Dagbok",
@@ -4737,13 +4755,9 @@
           "name": "Jourtelefon 1177",
           "description": "Sjukvårdsrådgivning dygnet runt"
         },
-        "bup": {
-          "name": "Barn- och ungdomspsykiatri (BUP)",
-          "description": "Akut hjälp för barn och unga"
-        },
-        "healthcare": {
-          "name": "Sjukvårdsupplysningen",
-          "description": "Råd och vägledning"
+        "mind": {
+          "name": "Mind Självmordslinjen",
+          "description": "Om du har tankar på att ta ditt liv. Dygnet runt, anonymt."
         }
       }
     },
@@ -4776,25 +4790,12 @@
         "lunchWalkDesc": "Frisk luft och rörelse",
         "weeklyReviewDesc": "Reflektera över dagen"
       },
-      "today": "Idag",
-      "routinesCompleted": "rutiner slutförda",
-      "share": "Andel",
-      "bestStreak": "Bästa serie",
-      "streakDays": "dagar i rad",
-      "dailyProgress": "Daglig framsteg",
       "timeLabel": "Tid",
-      "suggestedIntro": "Förslagade rutiner som kan hjälpa dig få en strukturerad dag:",
       "templates": {
-        "title": "Rutinmallar",
-        "morning": {
-          "title": "Morgon-rutin",
-          "description": "5 aktiviteter för bra start"
-        },
-        "evening": {
-          "title": "Kväll-rutin",
-          "description": "4 aktiviteter för bättre sömn"
-        }
-      }
+        "morning": {},
+        "evening": {}
+      },
+      "todayLine": "{{klara}} av {{totalt}} rutiner klara i dag"
     },
     "cognitive": {
       "title": "Kognitiv träning",
@@ -4853,11 +4854,7 @@
         "sequence": "Sekvens: {{sequence}}",
         "yourSequence": "Din sekvens: {{sequence}}"
       },
-      "streakBanner": {
-        "title": "Träningsserie",
-        "days": "{{count}} dagar",
-        "subtitle": "Fortsätt så här för att nå nya höjder!"
-      },
+      "streakBanner": {},
       "completedCount": "{{count}} färdiga",
       "gameTag": "Spel"
     },
@@ -4927,33 +4924,28 @@
       "action": "Försök igen"
     },
     "infoBanner": {
-      "description": "Utbildningarna hämtas från Arbetsförmedlingens tjänst JobEd Connect och omfattar yrkeshögskola, högskola och universitet, komvux, folkhögskola, arbetsmarknadsutbildning samt konst- och kulturutbildning. Portalen visar vad som finns och var — inte vad det kostar eller vad du är behörig till."
+      "description": "Utbildningarna hämtas från Arbetsförmedlingens tjänst JobEd Connect och omfattar yrkeshögskola, högskola och universitet, komvux, folkhögskola, arbetsmarknadsutbildning samt konst- och kulturutbildning. Portalen visar vad som finns och var — inte vad det kostar eller vad du är behörig till.",
+      "summary": "Var kommer utbildningarna ifrån?"
     },
     "quickSearch": {
       "title": "Vad är du nyfiken på?",
       "yh": {
-        "title": "Yrkeshögskola",
-        "description": "Praktiska utbildningar med hög anställningsgrad"
+        "title": "Yrkeshögskola"
       },
       "university": {
-        "title": "Högskola & Universitet",
-        "description": "Akademiska utbildningar och examina"
+        "title": "Högskola & Universitet"
       },
       "it": {
-        "title": "IT & Programmering",
-        "description": "Webbutveckling, data och teknik"
+        "title": "IT & Programmering"
       },
       "healthcare": {
-        "title": "Vård & Omsorg",
-        "description": "Sjukvård, äldreomsorg och socialt arbete"
+        "title": "Vård & Omsorg"
       },
       "business": {
-        "title": "Ekonomi & Affär",
-        "description": "Redovisning, marknadsföring och ledarskap"
+        "title": "Ekonomi & Affär"
       },
       "creative": {
-        "title": "Kreativa yrken",
-        "description": "Design, media och kommunikation"
+        "title": "Kreativa yrken"
       }
     },
     "links": {
@@ -4997,8 +4989,6 @@
     },
     "searchLabel": "Vad letar du efter?",
     "searchPlaceholderShort": "Sök i kunskapsbanken",
-    "searchHint_one": "Söker i 1 artikel — prova \"personligt brev\", \"avslag\" eller \"lön\".",
-    "searchHint_other": "Söker i {{count}} artiklar — prova \"personligt brev\", \"avslag\" eller \"lön\".",
     "searchButton": "Sök",
     "shortcutsLabel": "Prova något av det här:",
     "browseHeading": "Vad vill du läsa om?",
@@ -5011,7 +5001,6 @@
     "relatedExercises_one": "1 relaterad övning",
     "relatedExercises_other": "{{count}} relaterade övningar",
     "aiTeamHeading": "Hittar du inte svar?",
-    "aiTeamBody": "AI-teamet kan svara på frågor som inte täcks i artiklarna. Fem inriktningar av samma AI.",
     "aiTeamCta": "Öppna AI-teamet",
     "categories": {
       "getting-started": {
@@ -5068,7 +5057,6 @@
       },
       "other": "Övrigt"
     },
-    "searchHint": "Söker i {{count}} artiklar — prova \"personligt brev\", \"avslag\" eller \"lön\".",
     "categoryCount": "{{count}} artiklar",
     "relatedExercises": "{{count}} relaterade övningar",
     "difficultyBadge": {
@@ -5077,7 +5065,10 @@
     "readingProgress": {
       "ariaLabel": "Hur långt du läst i artikeln"
     },
-    "baraSvenskaKort": "Bara på svenska"
+    "baraSvenskaKort": "Bara på svenska",
+    "searchHintKort_one": "Söker i {{count}} artikel.",
+    "searchHintKort_other": "Söker i {{count}} artiklar.",
+    "aiTeamBodyKort": "Fråga AI-teamet om det som inte står i artiklarna."
   },
   "resources": {
     "title": "Dina sparade resurser",
@@ -5345,7 +5336,9 @@
         "title": "Stöd & Ersättningar",
         "description": "Rättigheter, ersättningar och hjälp"
       }
-    }
+    },
+    "showAllTopics_one": "Visa fler ämnen ({{count}} till)",
+    "showAllTopics_other": "Visa fler ämnen ({{count}} till)"
   },
   "settings": {
     "title": "Inställningar",
@@ -5553,6 +5546,8 @@
       "tipCombinedPermissions": "Allt du kan göra i varje roll finns kvar när du byter tillbaka"
     },
     "coachTipsTitle": "Coach-tips på varje sida",
+    "coachVoice": "Rådgivaren pratar",
+    "coachVoiceDesc": "När du kommer till en sida säger rådgivaren vad som är ett bra nästa steg — med röst. Stäng av om du vill ha det tyst. Texten och knappen står kvar.",
     "navEtikett": "Avsnitt i inställningarna"
   },
   "auth": {
@@ -7189,9 +7184,7 @@
       "noShareLinks": "Inga delningslänkar skapade än. Skapa en länk för att dela din profil med arbetsgivare.",
       "loadError": "Vi kunde inte hämta dina delningslänkar just nu. Det betyder inte att de är borta."
     },
-    "onboarding": {
-      "inlineTip": "Här samlar du det som beskriver dig. Fyll i det du orkar, när du vill. Allt sparas."
-    },
+    "onboarding": {},
     "history": {
       "previousValue": "Tidigare värde",
       "newValue": "Nytt värde",
@@ -7464,7 +7457,6 @@
       "placeholder": "Klistra in en jobbannons, eller skriv bara yrkets namn …\n\nExempel:\nUndersköterska",
       "tip": "En riktig jobbannons ger den mest träffsäkra jämförelsen — men yrkets namn räcker."
     },
-    "dreamJobDescription": "Skriv yrkets namn, eller klistra in en annons",
     "dreamJobLabel": "Yrke",
     "favoriteOccupations": "Dina sparade yrken:",
     "analyzeGap": "Visa vad som behövs",
@@ -7540,7 +7532,8 @@
       "skillsOverview": "KOMPETENSER",
       "educationSource": "Källa: Arbetsförmedlingens utbildningsdatabas.",
       "actionPlan": "NÄSTA STEG"
-    }
+    },
+    "showUnderlag": "Visa texten vi jämför med"
   },
   "cvBuilder": {
     "templates": {
@@ -7659,7 +7652,6 @@
     },
     "profileImage": {
       "title": "Profilbild",
-      "description": "Lägg till en professionell profilbild för att göra ditt CV mer personligt",
       "mustBeLoggedIn": "Du måste vara inloggad för att ladda upp bilder",
       "uploadFailed": "Uppladdning misslyckades: ",
       "uploading": "Laddar upp..."
@@ -7733,10 +7725,7 @@
     },
     "help": {
       "title": "Behöver du hjälp?",
-      "description": "Se guiden igen för tips om hur du skapar ett bra CV.",
-      "showGuide": "Visa guide igen",
-      "aiWriting": "AI-skrivhjälp",
-      "aiWritingDesc": "Få hjälp att förbättra din sammanfattning"
+      "showGuide": "Visa guide igen"
     },
     "messages": {
       "imported": "Ditt CV är inläst. Gå igenom stegen och fyll på med det som saknas.",
@@ -7768,14 +7757,13 @@
     },
     "review": {
       "a4Note": "Förhandsgranskning i A4-format",
-      "actionsDesc": "Ditt CV är sparat i molnet. Ladda ner som PDF eller skapa en versionssäkring att gå tillbaka till.",
       "actionsTitle": "Klar?",
       "checklistTitle": "Innehåll i ditt CV",
-      "editHint": "Om en sektion bryts olämpligt — gå tillbaka och redigera. Den streckade linjen visar exakt var sida 2 börjar.",
+      "editHint": "Bryts något olämpligt? Gå tillbaka och ändra.",
       "exportWord": "Ladda ner Word",
       "missingHint": "Ofyllda sektioner är inte krav — du kan ladda ner ändå.",
       "pageBreak": "Sida 2 börjar här",
-      "subtitle": "Här är ditt CV. Allt sparas automatiskt — ladda ner när du är nöjd.",
+      "subtitle": "Allt sparas automatiskt.",
       "title": "Granska och spara ditt CV",
       "wordError": "Kunde inte skapa Word-fil",
       "wordSuccess": "Word-fil nedladdad"
@@ -8363,7 +8351,6 @@
     "selectPersonality": "Välj personlighet",
     "clearChat": "Rensa chatt",
     "chatHistory": "Chatthistorik",
-    "intro": "Här är ditt team. Välj vem du vill prata med — du kan ändra personlighet och svarslängd i sidopanelen när som helst.",
     "aiBadge": "AI-coach",
     "chat": {
       "taskCreateErrorTitle": "Kunde inte skapa uppgiften",
@@ -8579,7 +8566,6 @@
       }
     },
     "calculator": {
-      "description": "Siffrorna här är grova uppskattningar för hela yrkesområden — inte hämtad statistik. Använd dem som en utgångspunkt, och hämta en riktig siffra innan du säger den högt i en förhandling.",
       "enterDetails": "Berätta lite om dig",
       "occupation": "Yrkesområde",
       "selectCategory": "Välj yrkesområde",
@@ -8636,10 +8622,10 @@
         "timingDesc": "Vid nytt jobb, i lönesamtalet eller när du fått nya arbetsuppgifter.",
         "knowMarket": "Ta reda på läget",
         "knowMarketDesc": "Vet du vad andra arbetsgivare betalar står du tryggare i samtalet."
-      }
+      },
+      "descriptionShort": "Talen är grova uppskattningar, inte hämtad statistik."
     },
     "negotiation": {
-      "description": "Så förbereder du samtalet om lön — steg för steg, och med plats att skriva ner det du kommer fram till.",
       "swedishMarket": "Så funkar det i Sverige",
       "swedishMarketDesc": "I många branscher finns kollektivavtal som sätter ramarna för lönen, och lönen ses ofta över en gång om året i ett lönesamtal. Är du med i ett fackförbund kan de ge dig underlag och följa med som stöd.",
       "stepsTitle": "Fem steg genom samtalet",
@@ -9424,8 +9410,7 @@
       "moodLatest": "Senast {{nar}}",
       "event": "Nästa i kalendern"
     },
-    "hubsHeading": "Allt i portalen",
-    "historyLead": "Din historik i portalen, vecka för vecka."
+    "hubsHeading": "Allt i portalen"
   },
   "hubOverviewHistory": {
     "title": "Aktivitet",
@@ -9594,7 +9579,8 @@
       "vadRaknasJobbsok_other": "Här räknas bara pass som din konsulent har planerat. Eget jobbsökande räknas för sig: {{count}} timmar i veckan enligt planen.",
       "radAnvisat_other": "Du har {{planerade}} av {{mal}} timmar i anvisade pass den här veckan.",
       "radOver_one": "Du har {{planerade}} timme i anvisade pass den här veckan, mer än målet på {{mal}}.",
-      "radOver_other": "Du har {{planerade}} timmar i anvisade pass den här veckan, mer än målet på {{mal}}."
+      "radOver_other": "Du har {{planerade}} timmar i anvisade pass den här veckan, mer än målet på {{mal}}.",
+      "lasMer": "Så räknas timmarna"
     },
     "nastaPass": "Nästa: {{titel}}, {{dag}} kl {{tid}}",
     "forraVeckan": "Förra veckan",
@@ -9628,7 +9614,8 @@
       "fel": "Intyget kunde inte skapas just nu. Försök igen om en stund.",
       "textLeverantor": "Ett intyg för en månad med dina pass och vad konsulenten markerat. Du kan visa det för din handläggare på Arbetsförmedlingen.",
       "textNeutral": "Ett intyg för en månad med dina pass och vad konsulenten markerat. Du kan visa det för den som behöver se din närvaro.",
-      "egenRedovisning": "Intyget visar också dina egna incheckningar och ditt jobbsökande i Jobin, som din egen redovisning."
+      "egenRedovisning": "Intyget visar också dina egna incheckningar och ditt jobbsökande i Jobin, som din egen redovisning.",
+      "lasMer": "Vad står i intyget?"
     },
     "fraga": {
       "knapp": "Fråga om passet",
@@ -9780,7 +9767,8 @@
           "arbetsprovning": "Din arbetsprövning",
           "subventionerad_anstallning": "Ditt jobb med stöd"
         }
-      }
+      },
+      "lasMer": "Om din plan"
     }
   },
   "minVardagHub": {
@@ -9890,9 +9878,7 @@
     }
   },
   "inlineTip": {
-    "aria": {
-      "close": "Stäng tips"
-    }
+    "aria": {}
   },
   "workflow": {
     "common": {
@@ -10076,7 +10062,17 @@
     "tipFrom": "Råd från {{namn}}",
     "showMore_one": "{{count}} råd till",
     "showMore_other": "{{count}} råd till",
-    "showLess": "Visa färre"
+    "showLess": "Visa färre",
+    "halsning": {
+      "label": "{{namn}} hälsar",
+      "listen": "Lyssna på {{namn}}",
+      "pause": "Pausa {{namn}}",
+      "close": "Fäll ihop",
+      "listenShort": "Lyssna",
+      "pauseShort": "Pausa",
+      "again": "Lyssna igen"
+    },
+    "moreFrom": "Fler råd från {{namn}}"
   },
   "network": {
     "description": "Bygg och underhåll ditt professionella kontaktnät",

@@ -5,6 +5,9 @@ import { motion } from 'framer-motion'
 import type { LucideIcon } from 'lucide-react'
 import { PageLayout } from '@/components/layout/PageLayout'
 import { HUB_ICON_SRC, TOOL_ICON_SRC } from '@/components/layout/hubIcons'
+import { useSettingsStore } from '@/stores/settingsStore'
+import { sidbildSrc } from '@/data/sidbilder'
+import { getPageKeyForPath } from '@/data/radgivarRutter'
 
 /**
  * HubPage — gemensam template för alla 4 hub-sidor.
@@ -96,6 +99,14 @@ export interface HubPageProps {
   firstName?: string | null
 }
 
+/** Hubbens egen scenbild (data/sidbilder.ts) — en liten bild i rubrikraden, inte en hjälte. */
+const HUBBNYCKEL: Record<HubDomain, string> = {
+  activity: 'jobbHub',
+  coaching: 'karriarHub',
+  info: 'resurserHub',
+  wellbeing: 'vardagHub',
+}
+
 const heroVariants = {
   hidden: { opacity: 0, y: 8 },
   visible: { opacity: 1, y: 0 },
@@ -121,6 +132,7 @@ export default function HubPage({
 }: HubPageProps) {
   const { t } = useTranslation()
   const trimmedFirstName = firstName?.trim() || null
+  const hubbild = sidbildSrc(HUBBNYCKEL[domain], useSettingsStore((s) => s.grafikstil))
 
   return (
     <PageLayout
@@ -146,6 +158,15 @@ export default function HubPage({
         kvar liten, som igenkänning av hubbfärgen.
       */}
       <div className="flex items-center gap-3">
+        {hubbild ? (
+          <img
+            src={hubbild}
+            alt=""
+            aria-hidden="true"
+            decoding="async"
+            className="hidden sm:block w-24 h-14 rounded-[10px] object-cover shrink-0 bg-[var(--c-bg)]"
+          />
+        ) : (
         <span
           aria-hidden="true"
           className="hidden sm:flex w-10 h-10 rounded-[10px] items-center justify-center shrink-0 bg-[var(--c-bg)] text-[var(--c-text)]"
@@ -156,6 +177,7 @@ export default function HubPage({
             <HubIcon className="w-5 h-5" strokeWidth={2} />
           )}
         </span>
+        )}
         <div className="min-w-0">
           <h1 className="text-[1.1875rem] font-semibold tracking-tight text-[var(--stone-900)] m-0 leading-tight">
             {trimmedFirstName && (
@@ -198,6 +220,11 @@ export default function HubPage({
 
 function FeatureCard({ feature }: { feature: HubFeature }) {
   const { icon: Icon, title, description, status, isActive, href } = feature
+  // Omslagsbilden (2026-10-09): hubben var en vägg av rubrik + två rader text
+  // gånger nio. Med en bild per plats känner man igen verktyget innan man
+  // läst något, och beskrivningen kan kortas till två rader.
+  const stil = useSettingsStore((s) => s.grafikstil)
+  const omslag = sidbildSrc(getPageKeyForPath(href), stil)
 
   return (
     <Link to={href} className="block no-underline">
@@ -215,10 +242,21 @@ function FeatureCard({ feature }: { feature: HubFeature }) {
       <motion.div
         whileHover={{ y: -1 }}
         transition={{ duration: 0.15 }}
-        className="bg-[var(--surface)] border border-[var(--stone-200)] rounded-xl px-3.5 py-3 hover:border-[var(--c-solid)] hover:shadow-sm transition-[border-color,box-shadow] h-full flex flex-col gap-1.5"
+        className="bg-[var(--surface)] border border-[var(--stone-200)] rounded-xl overflow-hidden hover:border-[var(--c-solid)] hover:shadow-sm transition-[border-color,box-shadow] h-full flex flex-col"
       >
+        {omslag && (
+          <img
+            src={omslag}
+            alt=""
+            aria-hidden="true"
+            loading="lazy"
+            decoding="async"
+            className="block w-full aspect-[16/9] object-cover bg-[var(--c-bg)]"
+          />
+        )}
+        <div className="px-3.5 py-3 flex flex-col gap-1.5 flex-1">
         <div className="flex items-start gap-2.5">
-          <span
+          {!omslag && <span
             aria-hidden="true"
             className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 bg-[var(--c-bg)] text-[var(--c-text)]"
           >
@@ -227,7 +265,7 @@ function FeatureCard({ feature }: { feature: HubFeature }) {
             ) : (
               <Icon className="w-4 h-4" strokeWidth={2} />
             )}
-          </span>
+          </span>}
           <span className="min-w-0 flex-1">
             <span className="block text-[0.875rem] font-semibold text-[var(--stone-900)] tracking-tight leading-tight">
               {title}
@@ -247,9 +285,10 @@ function FeatureCard({ feature }: { feature: HubFeature }) {
           </span>
         </div>
 
-        <p className="text-[0.78125rem] text-[var(--stone-600)] leading-snug m-0">
+        <p className="text-[0.78125rem] text-[var(--stone-600)] leading-snug m-0 line-clamp-2">
           {description}
         </p>
+        </div>
       </motion.div>
     </Link>
   )

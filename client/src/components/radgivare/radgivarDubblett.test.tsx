@@ -23,6 +23,12 @@ import { RadgivarTipsApiContext, VisadeTipsContext } from './radgivarKontext'
 import { radgivareForPath } from './radgivarData'
 import { COACHES } from '@/data/coaches'
 
+// Sedan 2026-10-09 står det infogade rådet tillbaka på sidor som har en
+// hälsning (RadgivarHalsning) — och i dag har alla sidor det. Mekanismen här
+// gäller fortfarande för en sida utan hälsning, så testet låtsas att det inte
+// finns några. Att rådet faktiskt tystnar prövas i radgivarHalsning.test.tsx.
+vi.mock('@/data/radgivarHalsningar', () => ({ SIDHALSNINGAR: {} }))
+
 afterEach(cleanup)
 
 /** Samma providerlogik som Layout.tsx, i miniatyr. */

@@ -7,7 +7,6 @@ import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { PageLayout } from '@/components/layout/index'
-import { RadgivarTips } from '@/components/radgivare/RadgivarPanel'
 import { JournalTab, MoodTab, GoalsTab, GratitudeTab } from '@/components/diary'
 import { WellnessConsentGate } from '@/components/consent/WellnessConsentGate'
 import { NotebookPen } from '@/components/ui/icons'
@@ -103,8 +102,6 @@ function DiaryInner() {
         {/* LS1 (2026-09-24): räknaren "N dagar i rad" och troférna är borttagna.
             DESIGN.md §1 förbjuder streak-räknare — en dagbok ska inte straffa
             den som hoppar över en dag. Lägg inte tillbaka dem. */}
-        <RadgivarTips pathname="/diary" index={0} />
-
         {/* Tab Content */}
         <div className="min-h-[400px]">
           {renderTabContent()}

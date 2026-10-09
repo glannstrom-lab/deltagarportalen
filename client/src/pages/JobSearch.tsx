@@ -39,7 +39,6 @@ import { InterviewPrepPanel, CommutePlannerPanel } from '@/components/ai';
 import { cn } from '@/lib/utils';
 import { kortDatum } from '@/lib/datumsprak';
 import { CreateApplicationModal } from '@/components/workflow';
-import { RadgivarTips } from '@/components/radgivare/RadgivarPanel';
 
 // Import tab components
 import { AlertsTab } from '@/components/jobs/AlertsTab';
@@ -561,6 +560,7 @@ function SearchTab() {
         {/* Header - Always visible, clickable to toggle */}
         <button
           onClick={() => setIsSearchExpanded(!isSearchExpanded)}
+          aria-expanded={isSearchExpanded}
           className="w-full flex items-center justify-between p-4 hover:bg-stone-50 dark:hover:bg-stone-700/50 transition-colors"
         >
           <div className="flex items-center gap-3">
@@ -569,11 +569,13 @@ function SearchTab() {
             </div>
             <div className="text-left">
               <h2 className="font-semibold text-stone-900 dark:text-stone-100">{t('jobSearch.searchAndFilter')}</h2>
-              <p className="text-sm text-stone-700 dark:text-stone-400">
-                {filters.query || activeFilterCount > 0
-                  ? `${filters.query ? `"${filters.query}"` : ''} ${activeFilterCount > 0 ? `• ${t('jobSearch.filtersActive', { count: activeFilterCount })}` : ''}`
-                  : t('jobSearch.clickToSearch')}
-              </p>
+              {/* "Klicka för att söka jobb" är borttaget (designpass 2026-10-09):
+                  raden visar bara något när det finns en sökning att visa. */}
+              {(filters.query || activeFilterCount > 0) && (
+                <p className="text-sm text-stone-700 dark:text-stone-400">
+                  {`${filters.query ? `"${filters.query}"` : ''} ${activeFilterCount > 0 ? `• ${t('jobSearch.filtersActive', { count: activeFilterCount })}` : ''}`}
+                </p>
+              )}
             </div>
           </div>
           <ChevronDown className={`w-5 h-5 text-stone-600 dark:text-stone-400 transition-transform duration-200 ${isSearchExpanded ? 'rotate-180' : ''}`} />
@@ -869,7 +871,6 @@ function SearchTab() {
         )}
       </div>
 
-      <RadgivarTips pathname="/job-search" index={0} />
 
       {/* Results */}
       <div>
@@ -951,7 +952,7 @@ function SearchTab() {
                         punkter utan text. Nu utelämnas stycket, och punkterna
                         sätts bara dit när texten faktiskt är avklippt. */}
                     {job.description?.text?.trim() && (
-                      <p className="text-stone-600 dark:text-stone-400 mt-3 line-clamp-2 text-sm hidden sm:block">
+                      <p className="text-stone-600 dark:text-stone-400 mt-3 line-clamp-2 text-sm max-sm:hidden">
                         {job.description.text.slice(0, 200)}
                         {job.description.text.length > 200 ? '…' : ''}
                       </p>

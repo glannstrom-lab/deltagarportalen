@@ -128,6 +128,10 @@ describe('Exercises — filterraden på engelska (drift 2026-09-22)', () => {
     try {
       render(<MemoryRouter><ConfirmDialogProvider><Exercises /></ConfirmDialogProvider></MemoryRouter>)
       await screen.findByText('Dina styrkor')
+      // Ämnena ligger bakom ett klick sedan designpasset 2026-10-09.
+      const amnesKnapp = screen.getAllByRole('button').find((b) => b.getAttribute('aria-controls') === 'ovningar-amnen')
+      expect(amnesKnapp).toBeDefined()
+      fireEvent.click(amnesKnapp!)
       const namn = (en as unknown as { exercises: { categories: Record<string, string> } }).exercises.categories['Självkännedom']
       const knapp = screen.getAllByRole('button', { name: namn }).find((b) => b.hasAttribute('aria-pressed'))
       expect(knapp).toBeDefined()

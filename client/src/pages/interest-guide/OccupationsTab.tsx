@@ -60,21 +60,21 @@ export default function OccupationsTab() {
             setProfile(calculatedProfile)
           } catch (calcErr) {
             console.error('OccupationsTab - Failed to calculate profile:', calcErr)
-            setError('Kunde inte beräkna din profil. Försök göra om testet.')
+            setError(t('interestGuide.occupations.errCalcProfile', 'Kunde inte beräkna din profil. Försök göra om testet.'))
           }
         } else if (data && !data.is_completed) {
-          setError('Du har inte slutfört testet än. Gå till testet för att slutföra.')
+          setError(t('interestGuide.occupations.errNotCompleted', 'Du har inte slutfört testet än. Gå till testet för att slutföra.'))
         }
       } catch (err) {
         console.error('OccupationsTab - Failed to load results:', err)
-        setError('Kunde inte ladda resultaten. Försök igen senare.')
+        setError(t('interestGuide.occupations.errLoad', 'Kunde inte ladda resultaten. Försök igen senare.'))
       } finally {
         setIsLoading(false)
       }
     }
 
     loadResults()
-  }, [])
+  }, [t])
 
   // Calculate job matches - useMemo must be called unconditionally
   const { allMatches, calculationError } = useMemo(() => {
@@ -102,10 +102,10 @@ export default function OccupationsTab() {
       console.error('OccupationsTab - Failed to calculate job matches:', err)
       return {
         allMatches: [] as JobMatch[],
-        calculationError: `Kunde inte beräkna yrkesmatchningar: ${err instanceof Error ? err.message : 'Okänt fel'}`
+        calculationError: t('interestGuide.occupations.errCalcMatches', 'Kunde inte beräkna yrkesmatchningar: {{fel}}', { fel: err instanceof Error ? err.message : t('interestGuide.occupations.unknownError', 'Okänt fel') })
       }
     }
-  }, [profile, filterUni, yrken])
+  }, [profile, filterUni, yrken, t])
 
   // Filter and sort matches - also unconditional
   const filteredMatches = useMemo(() => {
@@ -165,8 +165,8 @@ export default function OccupationsTab() {
           onClick={() => navigate('/interest-guide')}
           className="gap-2"
         >
-          <Sparkles className="w-4 h-4" />
-          Gör om testet
+          <Sparkles className="w-4 h-4" aria-hidden="true" />
+          {t('interestGuide.results.restart')}
         </Button>
       </div>
     )
@@ -190,66 +190,33 @@ export default function OccupationsTab() {
 
   return (
     <MotionConfig reducedMotion="user">
-    <div className="max-w-5xl mx-auto space-y-8 min-h-screen  p-4">
+    <div className="max-w-5xl mx-auto space-y-6 p-4">
       {error && (
         <InfoCard variant="error" className="mb-6">
           {error}
         </InfoCard>
       )}
 
-      {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="text-center"
-      >
-        <div className="inline-flex items-center gap-2 px-4 py-2 bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 rounded-full text-sm font-medium mb-4">
-          <Briefcase className="w-4 h-4" />
-          {t('interestGuide.basedOnYourProfile')}
-        </div>
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-3">
-          {t('interestGuide.occupationsThatSuitYou')}
-        </h1>
-        <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-          {t('interestGuide.occupationsDescription')}
-        </p>
-      </motion.div>
-
       {/*
-        Fyra KPI-kort i hjälteposition, i grönt, blått, lila och orange på en
-        rosa sida. Två av talen gick inte att belägga: "Utmärkta (90 %+)" stod
-        permanent på 0 och "Bra (70 %+)" på i stort sett 142. Kvar är de två
-        som betyder något, i hubbfärgen.
+        Designpasset 2026-10-09: rubriken var en andra <h1> med märke och ett
+        stycke, följd av två KPI-kort (antal yrken, antal växande). Nu en
+        rubrikrad med talen på en rad.
       */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1 }}
-        className="grid grid-cols-1 sm:grid-cols-2 gap-4"
-      >
-        <Card className="p-4 bg-[var(--c-bg)] border-[var(--c-accent)]">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-white/60 dark:bg-white/10 rounded-lg flex items-center justify-center">
-              <Briefcase className="w-5 h-5 text-[var(--c-solid)]" aria-hidden="true" />
-            </div>
-            <div>
-              <p className="text-2xl font-bold text-[var(--c-text)] tabular-nums">{allMatches.length}</p>
-              <p className="text-xs text-stone-700 dark:text-stone-300">yrken att utforska</p>
-            </div>
-          </div>
-        </Card>
-        <Card className="p-4 bg-[var(--c-bg)] border-[var(--c-accent)]">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-white/60 dark:bg-white/10 rounded-lg flex items-center justify-center">
-              <TrendingUp className="w-5 h-5 text-[var(--c-solid)]" aria-hidden="true" />
-            </div>
-            <div>
-              <p className="text-2xl font-bold text-[var(--c-text)] tabular-nums">{stats.growingJobs}</p>
-              <p className="text-xs text-stone-700 dark:text-stone-300">{t('interestGuide.occupations.growingShare')}</p>
-            </div>
-          </div>
-        </Card>
-      </motion.div>
+      <div>
+        <h2 className="text-xl font-bold text-stone-900 dark:text-stone-100">
+          {t('interestGuide.occupationsThatSuitYou')}
+        </h2>
+        <p className="mt-1 text-sm text-stone-600 dark:text-stone-400 flex flex-wrap items-center gap-x-4 gap-y-1">
+          <span className="inline-flex items-center gap-1.5">
+            <Briefcase className="w-4 h-4 text-[var(--c-solid)]" aria-hidden="true" />
+            {t('interestGuide.occupations.toExplore', '{{count}} yrken att utforska', { count: allMatches.length })}
+          </span>
+          <span className="inline-flex items-center gap-1.5">
+            <TrendingUp className="w-4 h-4 text-[var(--c-solid)]" aria-hidden="true" />
+            {stats.growingJobs} {t('interestGuide.occupations.growingShare')}
+          </span>
+        </p>
+      </div>
 
       {/* Search and Filters */}
       <motion.div
@@ -257,7 +224,7 @@ export default function OccupationsTab() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
       >
-        <Card className="p-6 space-y-4 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
+        <Card className="p-4 space-y-3 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
           <div className="flex flex-col lg:flex-row gap-4">
             {/* Search */}
             <div className="flex-1 relative">
@@ -268,17 +235,17 @@ export default function OccupationsTab() {
                 placeholder={t('common.search')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 bg-white dark:bg-stone-700 border border-stone-300 dark:border-stone-600 rounded-lg focus:ring-2 focus:ring-amber-500 dark:focus:ring-amber-400 focus:border-transparent text-gray-900 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500"
+                className="w-full pl-10 pr-4 py-2 bg-white dark:bg-stone-700 border border-stone-300 dark:border-stone-600 rounded-lg focus:ring-2 focus:ring-[var(--c-solid)] focus:border-transparent text-gray-900 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500"
               />
             </div>
 
             {/* Sort Dropdown */}
             <div className="relative">
               <select
-                aria-label="Sortera yrkeslistan"
+                aria-label={t('interestGuide.occupations.sortLabel', 'Sortera yrkeslistan')}
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as 'match' | 'name' | 'salary')}
-                className="px-4 py-2 bg-white dark:bg-stone-700 border border-stone-300 dark:border-stone-600 rounded-lg text-sm focus:ring-2 focus:ring-amber-500 dark:focus:ring-amber-400 appearance-none cursor-pointer text-gray-900 dark:text-gray-100"
+                className="px-4 py-2 bg-white dark:bg-stone-700 border border-stone-300 dark:border-stone-600 rounded-lg text-sm focus:ring-2 focus:ring-[var(--c-solid)] appearance-none cursor-pointer text-gray-900 dark:text-gray-100"
               >
                 <option value="match">{t('interestGuide.occupations.sortMatch')}</option>
                 <option value="name">{t('interestGuide.occupations.sortName')}</option>
@@ -290,7 +257,7 @@ export default function OccupationsTab() {
           {/* Education Filter */}
           <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-stone-200 dark:border-stone-700">
             <Filter className="w-4 h-4 text-gray-500 dark:text-gray-400" />
-            <span className="text-sm text-gray-600 dark:text-gray-300 font-medium">Utbildning:</span>
+            <span className="text-sm text-gray-600 dark:text-gray-300 font-medium">{t('interestGuide.occupations.educationFilter', 'Utbildning:')}</span>
             <div className="flex flex-wrap gap-2">
               <button
                 onClick={() => setFilterUni(null)}
@@ -312,8 +279,8 @@ export default function OccupationsTab() {
                     : 'bg-stone-100 dark:bg-stone-700 text-gray-600 dark:text-gray-300 hover:bg-stone-200 dark:hover:bg-stone-600'
                 )}
               >
-                <GraduationCap className="w-4 h-4" />
-                Högskola
+                <GraduationCap className="w-4 h-4" aria-hidden="true" />
+                {t('interestGuide.occupations.university', 'Högskola')}
               </button>
               <button
                 onClick={() => setFilterUni(false)}
@@ -324,8 +291,8 @@ export default function OccupationsTab() {
                     : 'bg-stone-100 dark:bg-stone-700 text-gray-600 dark:text-gray-300 hover:bg-stone-200 dark:hover:bg-stone-600'
                 )}
               >
-                <Briefcase className="w-4 h-4" />
-                Gym/YH
+                <Briefcase className="w-4 h-4" aria-hidden="true" />
+                {t('interestGuide.occupations.upperSecondary', 'Gymnasium/YH')}
               </button>
             </div>
           </div>
@@ -333,8 +300,7 @@ export default function OccupationsTab() {
           {/* Quick Stats */}
           {(searchQuery || filterUni !== null) && (
             <div className="text-sm text-gray-600 dark:text-gray-300 pt-2">
-              Visar <span className="font-semibold text-amber-600 dark:text-amber-400">{filteredMatches.length}</span> av{' '}
-              <span className="font-semibold">{allMatches.length}</span> yrken
+              {t('interestGuide.occupations.showingOf', 'Visar {{visade}} av {{totalt}} yrken', { visade: filteredMatches.length, totalt: allMatches.length })}
             </div>
           )}
         </Card>
@@ -414,18 +380,18 @@ export default function OccupationsTab() {
                       {/* Tags */}
                       <div className="flex flex-wrap gap-2">
                         {match.occupation.prognosis === 'growing' && (
-                          <span className="text-xs bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 px-2.5 py-1 rounded-full font-medium">
-                            Växande
+                          <span className="text-xs bg-[var(--c-bg)] text-[var(--c-text)] dark:text-stone-100 border border-[var(--c-accent)] px-2.5 py-1 rounded-full font-medium">
+                            {t('interestGuide.jobCard.prognosis.growing', 'Växande')}
                           </span>
                         )}
                         {match.occupation.education && (
-                          <span className="text-xs bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40 text-[var(--c-text)] dark:text-blue-300 px-2.5 py-1 rounded-full font-medium">
+                          <span className="text-xs bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40 text-[var(--c-text)] dark:text-stone-100 px-2.5 py-1 rounded-full font-medium">
                             {match.occupation.education.name}
                           </span>
                         )}
                         {favorites.includes(match.occupation.id) && (
-                          <span className="text-xs bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 px-2.5 py-1 rounded-full font-medium">
-                            Favorit
+                          <span className="text-xs bg-[var(--c-bg)] text-[var(--c-text)] dark:text-stone-100 px-2.5 py-1 rounded-full font-medium">
+                            {t('interestGuide.occupations.favorite', 'Favorit')}
                           </span>
                         )}
                       </div>
@@ -444,12 +410,14 @@ export default function OccupationsTab() {
                         className={cn(
                           'p-2 rounded-lg transition-colors',
                           favorites.includes(match.occupation.id)
-                            ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400'
-                            : 'bg-stone-100 dark:bg-stone-700 text-gray-400 dark:text-gray-500 hover:text-amber-600 dark:hover:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/20'
+                            ? 'bg-[var(--c-bg)] text-[var(--c-solid)]'
+                            : 'bg-stone-100 dark:bg-stone-700 text-stone-500 dark:text-stone-400 hover:text-[var(--c-solid)] hover:bg-[var(--c-bg)]'
                         )}
-                        title={favorites.includes(match.occupation.id) ? 'Redan favorit' : 'Lägg till som favorit'}
+                        title={favorites.includes(match.occupation.id) ? t('interestGuide.occupations.alreadyFavorite', 'Redan favorit') : t('interestGuide.occupations.addFavorite', 'Lägg till som favorit')}
+                        aria-label={`${favorites.includes(match.occupation.id) ? t('interestGuide.occupations.alreadyFavorite', 'Redan favorit') : t('interestGuide.occupations.addFavorite', 'Lägg till som favorit')}: ${match.occupation.name}`}
+                        aria-pressed={favorites.includes(match.occupation.id)}
                       >
-                        <Star className="w-5 h-5" fill="currentColor" />
+                        <Star className="w-5 h-5" fill="currentColor" aria-hidden="true" />
                       </button>
                     </div>
                   </div>
@@ -474,7 +442,7 @@ export default function OccupationsTab() {
                         <div className="flex justify-between items-center">
                           <span className="text-sm text-stone-600 dark:text-stone-400">{t('career.explore.demand')}:</span>
                           <span className="font-semibold text-gray-900 dark:text-gray-100">
-                            {match.occupation.prognosis === 'growing' ? 'Växande' : match.occupation.prognosis === 'stable' ? 'Stabil' : 'Minskande'}
+                            {match.occupation.prognosis === 'growing' ? t('interestGuide.jobCard.prognosis.growing', 'Växande') : match.occupation.prognosis === 'stable' ? t('interestGuide.jobCard.prognosis.stable', 'Stabil') : t('interestGuide.occupations.declining', 'Minskande')}
                           </span>
                         </div>
 
@@ -485,7 +453,7 @@ export default function OccupationsTab() {
                             rangordningen vilar på. */}
                         <div className="pt-3 border-t border-stone-100 dark:border-stone-700">
                           <h4 className="text-sm font-semibold text-stone-800 dark:text-stone-100 mb-2">
-                            Varför hamnade det här?
+                            {t('interestGuide.occupations.whyHere', 'Varför hamnade det här?')}
                           </h4>
                           <p className="text-sm text-stone-700 dark:text-stone-300 mb-3">
                             {match.forklaring.sammanfattning}
@@ -501,16 +469,13 @@ export default function OccupationsTab() {
                                   />
                                 </span>
                                 <span className="w-28 text-right text-stone-600 dark:text-stone-400 tabular-nums shrink-0">
-                                  {del.poang} % · väger {del.andel} %
+                                  {t('interestGuide.occupations.partWeight', '{{poang}} % · väger {{andel}} %', { poang: del.poang, andel: del.andel })}
                                 </span>
                               </li>
                             ))}
                           </ul>
                           <p className="mt-3 text-xs text-stone-600 dark:text-stone-400">
-                            Delpoängen kommer ur dina svar jämförda med hur vi kodat yrket.
-                            Kodningen är vår egen redaktionella bedömning — den kommer inte från
-                            SSYK, O*NET eller någon annan yrkesdatabas. Använd ordningen som en
-                            uppslagslista, inte som ett facit.
+                            {t('interestGuide.occupations.codingNote', 'Delpoängen kommer ur dina svar jämförda med hur vi kodat yrket. Kodningen är vår egen redaktionella bedömning — den kommer inte från SSYK, O*NET eller någon annan yrkesdatabas. Använd ordningen som en uppslagslista, inte som ett facit.')}
                           </p>
                         </div>
                       </motion.div>
@@ -537,7 +502,7 @@ export default function OccupationsTab() {
               onClick={() => setShowAll(true)}
               className="gap-2"
             >
-              Visa alla {filteredMatches.length} yrken
+              {t('interestGuide.occupations.showAll', 'Visa alla {{count}} yrken', { count: filteredMatches.length })}
               <ChevronDown className="w-4 h-4" />
             </Button>
           ) : (
@@ -546,7 +511,7 @@ export default function OccupationsTab() {
               onClick={() => setShowAll(false)}
               className="gap-2"
             >
-              Visa färre
+              {t('interestGuide.occupations.showFewer', 'Visa färre')}
               <ChevronDown className="w-4 h-4 rotate-180" />
             </Button>
           )}
@@ -563,18 +528,19 @@ export default function OccupationsTab() {
           <Card className="p-4 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border-[var(--c-accent)]">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Star className="w-5 h-5 text-amber-600 dark:text-amber-400 fill-current" />
+                <Star className="w-5 h-5 text-[var(--c-solid)] fill-current" aria-hidden="true" />
                 <span className="font-medium text-gray-900 dark:text-gray-100">
-                  Du har {favorites.length} favorit{favorites.length !== 1 ? 'er' : ''}
+                  {t('interestGuide.occupations.favoritesCount', { count: favorites.length, defaultValue_one: 'Du har {{count}} favorit', defaultValue_other: 'Du har {{count}} favoriter' })}
                 </span>
               </div>
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => setFavorites([])}
-                className="text-amber-700 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-900/30"
+                aria-label={t('interestGuide.occupations.clearFavorites', 'Rensa favoriterna')}
+                className="text-[var(--c-text)] dark:text-stone-100"
               >
-                <X className="w-4 h-4" />
+                <X className="w-4 h-4" aria-hidden="true" />
               </Button>
             </div>
           </Card>

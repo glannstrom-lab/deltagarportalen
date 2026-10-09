@@ -142,10 +142,7 @@ export default function NegotiationTab() {
   const harForberedelse = Object.values(forberedelse).some(v => v.trim().length > 0)
 
   return (
-    <div className="space-y-6">
-      <p className="text-sm text-stone-600 dark:text-stone-300">
-        {t('salary.negotiation.description')}
-      </p>
+    <div className="space-y-5">
 
       {/* Så funkar det i Sverige */}
       <Card className="bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/20 border-[var(--c-accent)]/60">

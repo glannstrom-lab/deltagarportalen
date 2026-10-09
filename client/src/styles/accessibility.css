@@ -636,22 +636,24 @@ legend {
   h3 { font-size: 1.5rem; }
   p, li, span, a { font-size: 1.125rem; }
 
-  /* Larger touch targets */
+  /* Större tryckytor — utan att skriva över komponenternas egen padding.
+     Fram till 2026-10-09 stod här `padding: 12px 16px` och `min-height:
+     48px` på VARJE a och button. Det gav länkar mitt i en mening luft som en
+     knapp, gjorde runda ikonknappar ovala och sköt "Telefonintervju"-kolumnen
+     på /applications utanför sin ruta. Höjden räcker: 44 px är WCAG 2.5.5. */
   button,
-  [role="button"],
-  a {
-    min-height: 48px;
-    min-width: 48px;
-    padding: 12px 16px;
+  [role="button"] {
+    min-height: 44px;
   }
 
-  /* Larger form inputs */
+  /* Större fält. Ingen padding-shorthand: den dödar Tailwinds pl-9/pl-10 så
+     att sökikonen hamnar ovanpå platshållartexten (samma fix som mobile.css). */
   input,
   textarea,
   select {
     min-height: 48px;
     font-size: 1.125rem;
-    padding: 12px;
+    padding-block: 12px;
   }
 }
 

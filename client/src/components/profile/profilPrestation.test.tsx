@@ -20,11 +20,12 @@ vi.mock('@/components/occupation/OccupationPicker', () => ({ OccupationPicker: (
 afterEach(cleanup)
 
 describe('Profilen utan prestationstal (RD16)', () => {
-  it('ingen välkomstmodal på profilsidan — ett stängbart tips i stället', () => {
+  // Designpass 2026-10-09: det stängbara tipset är också borta — rådgivarens
+  // hälsning överst (RadgivarHalsning) säger samma sak. Vakten gäller modalen.
+  it('ingen välkomstmodal på profilsidan', () => {
     const kallkod = readFileSync(join(__dirname, '../../pages/Profile.tsx'), 'utf8')
     const utanKommentarer = kallkod.replace(/\{\/\*[\s\S]*?\*\/\}/g, '').replace(/\/\/.*$/gm, '')
     expect(utanKommentarer).not.toMatch(/<OnboardingModal\b/)
-    expect(utanKommentarer).toMatch(/<InlineTip[^>]*storageKey="profil-intro"/)
   })
 
   it('en tom intresselista visar ingen räknare "0 av 5"', () => {

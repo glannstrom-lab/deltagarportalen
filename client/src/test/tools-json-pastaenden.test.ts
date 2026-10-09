@@ -190,13 +190,15 @@ describe('tools.json påstår inget koden inte håller', () => {
     expect(talFore(text, 'statusar')).toContain(antal)
   })
 
-  it('personligt varumärkes delantal stämmer med RAD_INDEX i PersonalBrand.tsx', () => {
-    const src = readFileSync(resolve(__dirname, '../pages/PersonalBrand.tsx'), 'utf8')
-    const deklaration = 'const RAD_INDEX: Record<string, number> = {'
+  it('personligt varumärkes delantal stämmer med flikarna i PersonalBrand.tsx', () => {
+    // Räknade tidigare RAD_INDEX (rådgivartipset per flik). Tipset togs bort
+    // 2026-10-09; flikdefinitionen är den riktiga källan till antalet delar.
+    const src = readFileSync(resolve(__dirname, '../pages/PersonalBrand.tsx'), 'utf8').replace(/\r\n/g, '\n')
+    const deklaration = 'const brandTabs: Tab[] = ['
     const start = src.indexOf(deklaration)
-    expect(start, 'RAD_INDEX hittades inte — har den bytt namn?').toBeGreaterThan(-1)
-    const slut = src.indexOf('\n}', start)
-    const antal = (src.slice(start, slut).match(/^\s*'\/personal-brand/gm) || []).length
+    expect(start, 'brandTabs hittades inte — har den bytt namn?').toBeGreaterThan(-1)
+    const slut = src.indexOf('\n  ]', start)
+    const antal = (src.slice(start, slut).match(/path: '\/personal-brand/g) || []).length
     // Positiv kontroll: en regex som slutat matcha hade gett 0, och 0 är inte
     // ett tal någon skriver "4 delar" om av misstag.
     expect(antal).toBeGreaterThan(1)

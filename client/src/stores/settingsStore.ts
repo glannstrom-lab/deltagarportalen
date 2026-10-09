@@ -47,6 +47,11 @@ interface SettingsState {
   showCoachWidget: boolean
   toggleCoachWidget: () => void
 
+  // Rådgivarens röst — läser upp hälsningen och nästa steg när man kommer
+  // till en sida (2026-10-09). Se components/radgivare/RadgivarHalsning.tsx.
+  radgivarRost: boolean
+  toggleRadgivarRost: () => void
+
   // Grafikstil — se typen Grafikstil
   grafikstil: Grafikstil
   setGrafikstil: (stil: Grafikstil) => void
@@ -109,6 +114,7 @@ interface ServerSettings {
   has_completed_onboarding: boolean
   show_coach_widget: boolean
   graphics_style: Grafikstil
+  coach_voice: boolean
 }
 
 export const useSettingsStore = create<SettingsState>()(
@@ -168,6 +174,15 @@ export const useSettingsStore = create<SettingsState>()(
         const newValue = !get().showCoachWidget
         set({ showCoachWidget: newValue })
         get()._saveToServer({ show_coach_widget: newValue })
+      },
+
+      // Rådgivarens röst — på som standard, sparas i molnet (kolumnen
+      // user_preferences.coach_voice, migration 20261009, körd samma dag).
+      radgivarRost: true,
+      toggleRadgivarRost: () => {
+        const newValue = !get().radgivarRost
+        set({ radgivarRost: newValue })
+        get()._saveToServer({ coach_voice: newValue })
       },
 
       // Grafikstil — mjuk som standard, sparas i molnet (kolumnen
@@ -248,7 +263,7 @@ export const useSettingsStore = create<SettingsState>()(
 
           const { data, error } = await supabase
             .from('user_preferences')
-            .select('calm_mode, focus_mode, email_notifications, push_notifications, weekly_summary, high_contrast, large_text, language, has_completed_onboarding, show_coach_widget, graphics_style, updated_at')
+            .select('calm_mode, focus_mode, email_notifications, push_notifications, weekly_summary, high_contrast, large_text, language, has_completed_onboarding, show_coach_widget, graphics_style, coach_voice, updated_at')
             .eq('user_id', user.id)
             .maybeSingle()
 
@@ -272,6 +287,9 @@ export const useSettingsStore = create<SettingsState>()(
             if (data.has_completed_onboarding !== null) updates.hasCompletedOnboarding = data.has_completed_onboarding
             if (data.show_coach_widget !== null && data.show_coach_widget !== undefined) {
               updates.showCoachWidget = data.show_coach_widget
+            }
+            if (typeof data.coach_voice === 'boolean') {
+              updates.radgivarRost = data.coach_voice
             }
             if (data.graphics_style === 'mjuk' || data.graphics_style === 'action') {
               updates.grafikstil = data.graphics_style
@@ -317,7 +335,8 @@ export const useSettingsStore = create<SettingsState>()(
               language: state.language,
               has_completed_onboarding: state.hasCompletedOnboarding,
               show_coach_widget: state.showCoachWidget,
-              graphics_style: state.grafikstil
+              graphics_style: state.grafikstil,
+              coach_voice: state.radgivarRost
             })
             set({ isLoading: false })
           }
@@ -343,6 +362,7 @@ export const useSettingsStore = create<SettingsState>()(
           hasCompletedOnboarding: state.hasCompletedOnboarding,
           showCoachWidget: state.showCoachWidget,
           grafikstil: state.grafikstil,
+          radgivarRost: state.radgivarRost,
           lastSynced: state.lastSynced
         })
       }

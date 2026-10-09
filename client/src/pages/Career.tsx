@@ -5,7 +5,7 @@
  * Note: Kompetens merged into standalone /skills-gap page
  */
 import { useEffect, useMemo } from 'react'
-import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
+import { Routes, Route, Navigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { PageLayout } from '@/components/layout/index'
 import { careerTabDefs } from '../data/careerTabs'
@@ -14,7 +14,6 @@ import { Target } from '@/components/ui/icons'
 import { useFocusMode } from '@/components/FocusModeProvider'
 import { PageFocusShell } from '@/components/focus/shell/PageFocusShell'
 import { FocusCareerWizard } from '@/components/focus/pages/FocusCareerWizard'
-import { RadgivarTips } from '@/components/radgivare/RadgivarPanel'
 
 // Tab components
 import LaborMarketTab from './career/LaborMarketTab'
@@ -26,12 +25,6 @@ import RelocationTab from './career/RelocationTab'
 export default function CareerPage() {
   const { t } = useTranslation()
   const { isFocusMode, leaveWizard } = useFocusMode()
-
-  const { pathname } = useLocation()
-  const flikIndex = Math.max(
-    0,
-    careerTabDefs.findIndex((tab) => tab.path === pathname)
-  )
 
   /**
    * Molnskrivningen behålls — `onboarding_progress` läses tillbaka av
@@ -99,14 +92,8 @@ export default function CareerPage() {
         className="space-y-6"
         domain="coaching"
       >
-        {/*
-          Tipset ligger utanför <Routes> och gav därför samma mening på alla
-          fem flikarna — index var hårdkodat till 0. Nu väljs ett tips per
-          flik. Dubblettskyddet i radgivarKontext.ts hindrar att kolumnen
-          upprepar just det råd som visas här.
-        */}
-        <RadgivarTips pathname={pathname} index={flikIndex} />
-
+        {/* Det infogade rådgivartipset låg här. Rådgivaren hälsar nu överst
+            på sidan (RadgivarHalsning), så tipset är borttaget 2026-10-09. */}
         <Routes>
           <Route path="/" element={<LaborMarketTab />} />
           <Route path="/adaptation" element={<AdaptationTab />} />
