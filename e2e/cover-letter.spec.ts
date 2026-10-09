@@ -56,9 +56,11 @@ test.describe('Personligt brev', () => {
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(/^personligt brev$/i)
   })
 
-  test('rådgivaren ger ett råd, inte en ring i hörnet', async ({ page }) => {
-    // DESIGN.md: rådgivarna ligger i en kolumn (complementary), ett råd infogat i arbetet
-    await expect(page.getByRole('complementary', { name: /råd från/i }).first()).toBeVisible()
+  test('rådgivaren hälsar och har en kolumn, inte en ring i hörnet', async ({ page }) => {
+    // Sedan 2026-10-09 hälsar rådgivaren överst (RadgivarHalsning) i stället för
+    // ett infogat "Råd från"-kort — det infogade rådet står tillbaka där
+    // hälsningen finns. Kolumnen med resten av råden står kvar.
+    await expect(page.getByTestId('radgivar-halsning')).toBeVisible()
     await expect(page.getByRole('complementary', { name: /råd för den här sidan/i })).toBeVisible()
   })
 
