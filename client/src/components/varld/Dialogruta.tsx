@@ -132,7 +132,7 @@ export function Dialogruta({ coachId, repliker, variant = 'kort', vidByte, class
       {/* Porträtt + namnrad överst; repliken under. På mobil tar repliken hela
           bredden — en spalt bredvid porträttet gav fyra ord per rad. */}
       <div className="grid grid-cols-[auto_minmax(0,1fr)] gap-x-3.5 sm:gap-x-4 gap-y-2">
-        <span className="relative shrink-0 sm:row-span-2">
+        <span className="relative shrink-0 self-start h-fit sm:row-span-2">
           <img
             src={coach.avatar}
             alt=""
