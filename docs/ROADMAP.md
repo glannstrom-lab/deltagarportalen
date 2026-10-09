@@ -1,6 +1,8 @@
 # Roadmap — Jobin (Deltagarportalen)
 
-> **Senast 2026-09-29/30:** tre roadmap-pass — se "Äldre kvar-listor genomgångna 2026-09-29", "Skarpt funktionstest" och "Rollspel 2026-09-28" nedan (✅-märkta med vad som verifierats). Öppna beslut: CVK1, SFT2, SFT4, CH4.
+> **Senast 2026-10-09:** spår JS — Jobin-staden, beslutat och under bygge (första avsnittet). Mikael upphävde de visuella reglerna för ombyggnaden.
+>
+> **Före det, 2026-09-29/30:** tre roadmap-pass — se "Äldre kvar-listor genomgångna 2026-09-29", "Skarpt funktionstest" och "Rollspel 2026-09-28" nedan (✅-märkta med vad som verifierats). Öppna beslut: CVK1, SFT2, SFT4, CH4.
 >
 > **Detta är projektets enda gällande plan.** Version **2026-09-22 kväll** (buggpasset: nio agenter med nya linser — UTC-datum, tysta fel, DB-lagret i prod; BP1–BP9 kräver Mikael, BP1 är en säkerhetslucka) ovanpå **2026-09-22** (städpasset: nio agenter, dödkod/buggar/skuld; ST1–ST4 kräver Mikael), byggd på version **2026-09-13** (tredje helhetsgenomgången —
 > sex roterade linser eftersom 560 filer ändrats sedan 7 september: KM-spårets domänlogik,
@@ -24,6 +26,35 @@
 **Så tas en punkt:** Premissgranska först — se `CLAUDE.md § Premissgranskning`. Läs koden, spåra konsumenter, kolla schemat mot `information_schema`, mät i stället för att lita på siffrorna här. Rapportera "premissen håller / håller inte" och föreslå bygg / omscopa / avskriv **innan** du bygger. Raderna nedan beskriver vad någon trodde när de skrevs — sex av dem visade sig ha fel premiss 2026-07-27.
 
 ---
+
+## Spår JS — Jobin-staden: portalen som en plats du rör dig i (beslut Mikael 2026-10-09)
+
+**Beslut:** "ja, jag gillar det här, gör en gedigen planering och bygg om hela hemsidan enhetligt efter detta, både desktop och mobil" — efter designförslaget "Översikt som en värld" (artifakt UFJZeBsrDb1sCyaQEu2ktE). Och direkt efter: **"nej, följ inte tidigare regler, du bygger så att det blir så bra och snyggt som möjligt."** Mikael vill att portalen känns som ett interaktivt spel, inte en platt hemsida.
+
+**Vad det upphäver:** de *visuella* reglerna — "ingen hero som tar plats" (2026-08-17), gradientförbudet (DESIGN.md §6), "en hubbfärg per sida", restriktiviteten med bilder. Målet är så bra och snyggt som möjligt.
+**Vad som står kvar** (handlar inte om utseende): inga påhittade värden om användaren (B31, laddar/fel/klart), WCAG 2.1 AA, rösten är förinspelade klipp utan personuppgifter, lugnare läge stänger av rörelse och ljud.
+
+**Kartan — hubb = plats:**
+
+| Hubb | Plats | Värd (rådgivare) | Föremål |
+|---|---|---|---|
+| Översikt | Staden (torget) | Andreas | karta |
+| Söka jobb | Stationen | Andreas | kuvert |
+| Karriär | Utsikten | Sara | kompass |
+| Resurser | Biblioteket | Daniel | bok |
+| Din vardag | Hemma | Linnea | kopp |
+
+**Punkterna, i byggordning:**
+
+- [x] **JS1 Grunden.** `data/varld.ts`: platser, scener per tid (morgon/kväll efter klockan) × grafikstil (mjuk/action), markörlägen, föremål. `hooks/useTidPaDygnet`. Bilder `stad-<tid>-<stil>`, `plats-<id>-<tid>-<stil>`, `foremal-<namn>`. Grind: varje kombination finns på disk.
+- [x] **JS2 Gemensamma delar** (`components/varld/`): `Dialogruta` (rådgivaren som spelkaraktär: porträtt, namn, text, knapp, "Visa något annat", Lyssna/Pausa), `Foremal`, `Platsskylt` (väg tillbaka till platsen), `Lyktstig`, `Platsscen` (scen med tid/stil, valfri parallax).
+- [x] **JS3 Dialogrutan överallt.** `RadgivarHalsning` behåller beteendet (en gång per sida och session, paus, lugnare läge, av/på) men ritas som `Dialogruta`.
+- [x] **JS4 Översikt = staden.** Stor scen med platsmarkörer (status ur summary, "!" där nästa steg finns), platsruta med genvägar, dialogrutan med nästa steg + alternativ, *I din ryggsäck*, *Din väg hittills* (lyktor — bara sådant som finns i datan), *Hela kartan*. Mobil: scenen som band, dialogen överlappar, platser 2×2.
+- [x] **JS5 Hubbarna = platserna.** Full platsscen överst med platsnamn, hubbnamn och värdens dialogruta i scenen. Funktionskorten blir "rum" med bild.
+- [x] **JS6 Verktygssidorna.** Platsens scen som band överst på sidan med platsskylt och sidans titel; skenan behåller flikarna.
+- [x] **JS7 Navigationen.** Föremålen som runda ikoner för platserna (toppraden, bottennavet, mobilmenyn). Etiketterna är oförändrade — platsnamnet står på skylten och i scenen.
+- [~] **JS8 Verifiering.** ✅ 2026-10-09: verify grön (4 699 tester), inloggad e2e 66/66 lokalt, skärmdumpar 1440/390 av alla 31 sidor. **Kvar:** mörkt läge inte sett i webbläsare; /profile och /cv har egen rubrik och fick inget platsband. verify, hela inloggade e2e, skärmdumpar 1440/390 av alla sidor, axe, mörkt läge, lugnare läge.
+
 
 ## Skarpt funktionstest 2026-09-28/29 — sex områden, varje skrivning mot databasen
 

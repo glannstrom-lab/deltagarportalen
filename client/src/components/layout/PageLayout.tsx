@@ -4,7 +4,7 @@
  * Supports semantic color domains from DESIGN.md
  */
 
-import { useState } from 'react'
+import { lazy, Suspense, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import { type Tab, type PageStat } from './PageTabs'
 // Steg 5 (2026-08-17): hjälten ersatt av en sidoskena. Se SidRail.tsx för
@@ -16,6 +16,18 @@ import { cn } from '@/lib/utils'
 import { getTabsForPath } from '@/data/pageTabs'
 import { useSidbild } from '@/data/sidbilder'
 import { getDomainForPath, type LegacyColorDomain } from '@/lib/domains'
+import { platsForDomain } from '@/data/varld'
+import { Platsband } from '@/components/varld/Platsband'
+import { useEgenHalsning } from '@/components/varld/halsningPlats'
+import { useSettingsStore } from '@/stores/settingsStore'
+
+const RadgivarHalsning = lazy(() => import('@/components/radgivare/RadgivarHalsning'))
+
+/**
+ * Ytor som inte är en plats i staden: konsulentens, administratörens och
+ * företagets vyer har en annan ton (DESIGN.md §2) och får inget platsband.
+ */
+const UTANFOR_STADEN = ['/consultant', '/konsulent', '/admin', '/foretag', '/arbetsgivare']
 
 type TabVariant = 'minimal' | 'pills' | 'floating' | 'underline' | 'glass'
 
@@ -107,6 +119,17 @@ export function PageLayout({
   const visaSkena =
     showHeader && (!!title || shouldShowTabs || !!actions || !!stats || !!sidoflikar)
 
+  /*
+   * Spår JS (2026-10-09): verktygssidorna får platsens scen som ett band överst,
+   * med rubriken i bandet och rådgivarens dialogruta precis under. Bandet
+   * ersätter skenans rubrik och mobilens rubrikrad — samma h1, ny plats.
+   */
+  const plats = platsForDomain(resolvedDomain)
+  const visaBand =
+    showHeader && !!title && !UTANFOR_STADEN.some((p) => location.pathname.startsWith(p))
+  const radgivarePa = useSettingsStore((s) => s.showCoachWidget)
+  useEgenHalsning(visaBand)
+
   return (
     <div className={cn(
       // Removed min-h-screen — Layout.tsx already provides the scrolling <main> container.
@@ -121,11 +144,24 @@ export function PageLayout({
 
           `actions` och `stats` låg i hjälten. De flyttar in i skenan under
           flikarna: de hör till sidan som helhet, inte till en enskild flik. */}
+      {visaBand && (
+        <div className="relative">
+          <Platsband plats={plats} titel={title} underrubrik={subtitle || description} />
+          {radgivarePa && (
+            <div className="relative z-10 -mt-6 sm:-mt-7 px-2 sm:px-6 max-w-[880px] empty:hidden" data-focus-chrome="radgivare">
+              <Suspense fallback={null}>
+                <RadgivarHalsning pathname={location.pathname} variant="flytande" />
+              </Suspense>
+            </div>
+          )}
+        </div>
+      )}
       <div className={cn(visaSkena && 'lg:grid lg:grid-cols-[186px_minmax(0,1fr)] lg:gap-6')}>
         {visaSkena && (
           <div className="hidden lg:block">
             <SidRail
               title={title}
+              visaRubrik={!visaBand}
               description={subtitle || description}
               tabs={shouldShowTabs ? tabs : undefined}
               sidoflikar={sidoflikar}
@@ -161,9 +197,9 @@ export function PageLayout({
               brytpunkt är inte en layoutdetalj — den är en funktion som
               saknas för den som bara har en telefon, vilket är många i den
               här målgruppen. */}
-          {visaSkena && (title || actions || (stats && stats.length > 0)) && (
+          {visaSkena && ((title && !visaBand) || actions || (stats && stats.length > 0)) && (
             <div className="lg:hidden mb-3">
-              {title && (
+              {title && !visaBand && (
                 <div className="flex items-center gap-3">
                   {sidbild && (
                     <img

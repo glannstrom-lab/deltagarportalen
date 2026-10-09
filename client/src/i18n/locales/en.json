@@ -9399,7 +9399,7 @@
       }
     },
     "pagar": {
-      "heading": "What is going on",
+      "heading": "In your backpack",
       "applications": "Your applications",
       "savedJobs_one": "saved job",
       "savedJobs_other": "saved jobs",
@@ -9418,7 +9418,7 @@
       "moodLatest": "Last {{nar}}",
       "event": "Next in the calendar"
     },
-    "hubsHeading": "Everything in the portal"
+    "hubsHeading": "The places in the town"
   },
   "hubOverviewHistory": {
     "title": "Activity",
@@ -10246,5 +10246,58 @@
     "lyssna": "Listen",
     "pausa": "Pause",
     "stoppa": "Stop reading aloud"
+  },
+  "varld": {
+    "plats": {
+      "stad": "The square",
+      "jobb": "The station",
+      "karriar": "The lookout",
+      "resurser": "The library",
+      "vardag": "Home"
+    },
+    "tillbakaTill": "Back to {{plats}}",
+    "dialog": {
+      "annat": "Show something else",
+      "forslag": "Suggestion {{nr}} of {{av}}"
+    },
+    "stad": {
+      "alt": "A small Swedish town with a station, a lookout tower, a library and a yellow house with a garden",
+      "platser": "Places in the town",
+      "markor": "{{plats}}, {{hubb}}",
+      "markorUppdrag": "{{plats}}, {{hubb}} — your next step is here",
+      "stil": "Picture style",
+      "mjuk": "Soft",
+      "action": "Action",
+      "gaTill": "Go to {{plats}}"
+    },
+    "ryggsack": {
+      "under": "What you are working on right now"
+    },
+    "lykta": {
+      "rubrik": "Your road so far",
+      "under": "Each thing you have done lights a lantern",
+      "underTom": "Your first lantern is waiting for you",
+      "narDuOrkar": "The next lantern to light — when you feel ready",
+      "cv": "You have a CV",
+      "ansokan": "You have started looking for jobs",
+      "brev": "You have written a cover letter",
+      "intervju": "You have practised an interview",
+      "mal": "You have written a career goal",
+      "analys": "You have compared your CV with a dream job",
+      "ai": "You have talked to the AI team",
+      "artikel": "You have finished reading a guide",
+      "dagbok": "You have written in the diary",
+      "maende": "You have noted how you feel",
+      "nasta": {
+        "cv": "Write your CV",
+        "ansokan": "Save a job you like",
+        "brev": "Write a cover letter",
+        "intervju": "Practise an interview",
+        "mal": "Write a career goal",
+        "analys": "Compare your CV with a dream job",
+        "ai": "Talk to the AI team",
+        "dagbok": "Write a few lines in the diary"
+      }
+    }
   }
 }

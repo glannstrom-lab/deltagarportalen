@@ -59,6 +59,8 @@ const RadgivarPanel = lazy(() => import('./radgivare/RadgivarPanel'))
 // Rådgivarens hälsning med röst (2026-10-09). Lazy av samma skäl som panelen:
 // den drar in coaches.ts och hälsningstexterna.
 const RadgivarHalsning = lazy(() => import('./radgivare/RadgivarHalsning'))
+import { HalsningPlatsContext } from './varld/halsningPlats'
+import { avkodaSokvag } from '@/lib/sokvag'
 // Fokusläget som fällbar panel under rådgivarna. Lazy av samma skäl som
 // panelen ovan: den syns bara på breda skärmar och behöver inte ligga i
 // entry-bundlen.
@@ -397,7 +399,16 @@ export default function Layout() {
   // är ingångar. En tom kolumn ser exakt ut som marginal, vilket är varför den
   // överlevde både omläggningen och genomgången efter den.
   const harRadgivare = harRadgivarinnehall(location.pathname)
-  const visaRadgivare = showBars && !radgivareAv && !sidanHarEgen && harRadgivare
+  /*
+   * Spår JS (2026-10-09): Översikt och de fyra hubbarna är platser i Jobin-
+   * staden. Där står rådgivaren i scenen, och scenen får hela bredden — ingen
+   * kolumn bredvid. Verktygssidorna behåller kolumnen.
+   */
+  const VARLDSSIDOR = ['/', '/oversikt', '/jobb', '/karriar', '/resurser', '/min-vardag']
+  const varldssida = VARLDSSIDOR.includes(avkodaSokvag(location.pathname).replace(/\/$/, '') || '/')
+  // Sätts av en sida som ritar hälsningen själv (platsbandet, staden, hubbens scen).
+  const [egenHalsning, setEgenHalsning] = useState(false)
+  const visaRadgivare = showBars && !radgivareAv && !sidanHarEgen && harRadgivare && !varldssida
   // 1280 px = Tailwinds `xl`, samma brytpunkt som griden nedan använder.
   // Hålls de två isär hamnar panelen i kolumnen men får flödets utgångsläge.
   const radgivarKolumn = useMediaQuery('(min-width: 1280px)')
@@ -406,7 +417,8 @@ export default function Layout() {
   // innehållet — sist i flödet hade gjort "nästa steg" till sidans sista rad.
   // CV-byggaren har egen panel men ingen egen hälsning, så den räknas med.
   const visaHalsning = showBars && !radgivareAv && harRadgivare
-  const halsningIKolumn = visaRadgivare && radgivarKolumn
+  // Hälsningen står alltid i flödet numera — i platsbandet eller överst.
+  const halsningIKolumn = false
 
   // Vilka råd står redan infogade i sidan? Kortet registrerar sitt råd,
   // kolumnen hoppar över det. Utan detta säger de två ytorna samma mening
@@ -540,14 +552,16 @@ export default function Layout() {
                 <VisadeTipsContext.Provider value={visadeRad}>
                   <div className={cn(visaRadgivare && 'xl:grid xl:grid-cols-[minmax(0,1fr)_300px] xl:gap-6')}>
                     <div className="min-w-0">
-                      {visaHalsning && !halsningIKolumn && (
+                      {visaHalsning && !egenHalsning && !varldssida && (
                         <div className="mb-4" data-focus-chrome="radgivare">
                           <Suspense fallback={null}>
                             <RadgivarHalsning pathname={location.pathname} iKolumn={false} />
                           </Suspense>
                         </div>
                       )}
-                      <Outlet />
+                      <HalsningPlatsContext.Provider value={setEgenHalsning}>
+                        <Outlet />
+                      </HalsningPlatsContext.Provider>
                     </div>
                     {visaRadgivare && (
                       <div className="mt-6 xl:mt-0 space-y-3" data-focus-chrome="radgivare">
@@ -560,7 +574,7 @@ export default function Layout() {
                           <RadgivarPanel
                             pathname={location.pathname}
                             iKolumn={radgivarKolumn}
-                            halsningOvan={halsningIKolumn}
+                            halsningOvan={visaHalsning}
                           />
                         </Suspense>
                         {/* Fokusläget under rådgivarna (2026-08-18, beslut
@@ -1023,7 +1037,7 @@ export function MobileMainMenu({ isOpen, onClose }: { isOpen: boolean; onClose: 
                   )}
                 >
                   {hubIkon && (
-                    <img src={hubIkon} alt="" aria-hidden="true" width={20} height={20} className="w-5 h-5 object-contain" />
+                    <img src={hubIkon} alt="" aria-hidden="true" width={28} height={28} className="w-7 h-7 rounded-full object-cover ring-1 ring-black/10" />
                   )}
                   <span>{t(group.labelKey, group.fallbackLabel)}</span>
                 </Link>

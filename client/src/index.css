@@ -17,6 +17,7 @@
 @import "./styles/tokens.css";
 @import "./styles/dashboard-grid.css";
 @import "./styles/accessibility.css";
+@import "./styles/varld.css";
 
 /* Tailwind v4: Enable class-based dark mode */
 @variant dark (&:where(.dark, .dark *));

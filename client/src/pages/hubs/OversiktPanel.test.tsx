@@ -253,35 +253,16 @@ describe('fritext spränger inte layouten', () => {
   })
 })
 
-describe('nivå 1 och 2 — nästa steg och det som är igång (2026-09-10)', () => {
+describe('det som är igång (2026-09-10)', () => {
   const dagar = (n: number) => new Date(Date.now() - n * 86_400_000).toISOString()
 
-  it('föreslår att följa upp en ansökan som väntat på svar i över en vecka, med ett alternativ', () => {
-    rendera({
-      jobsok: {
-        cv: { id: '1', updated_at: dagar(2) },
-        coverLetters: [],
-        interviewSessions: [],
-        applicationStats: {
-          total: 3, byStatus: {},
-          segments: [{ key: 'saved', count: 2 }, { key: 'awaiting', count: 1 }],
-          awaitingSince: dagar(9).slice(0, 10),
-        },
-        spontaneousCount: 0,
-      },
-    })
-    const kort = screen.getByTestId('nasta-steg')
-    expect(kort.textContent).toMatch(/inte svarat på din ansökan/i)
-    const knapp = screen.getByRole('link', { name: /följ upp ansökan$/i })
-    expect(knapp.getAttribute('href')).toBe('/applications')
-    // Alternativet: inga brev men ansökningar → "skriv ditt första personliga brev".
-    expect(screen.getByRole('link', { name: /skriv ditt första personliga brev/i })).toBeTruthy()
-  })
+  // Nästa steg är sedan 2026-10-09 rådgivarens replik i staden (spår JS) —
+  // de proven bor i components/radgivare/radgivarHalsning.test.tsx.
 
   it('ritar inget nästa steg och inget "igång" medan datan hämtas', () => {
     rendera(undefined, 'laddar')
-    expect(screen.queryByTestId('nasta-steg')).toBeNull()
     expect(screen.queryByTestId('pagar')).toBeNull()
+    expect(screen.queryByTestId('lyktstig')).toBeNull()
   })
 
   it('ritar inget "igång" för ett konto utan underlag — inviterna bor i hubbkorten', () => {
@@ -304,17 +285,6 @@ describe('nivå 1 och 2 — nästa steg och det som är igång (2026-09-10)', ()
     expect(sektion.querySelectorAll('a').length).toBe(1)
   })
 
-  it('ett nytt konto får "Börja med ditt CV" som första steg, inte en förebråelse', () => {
-    rendera({
-      jobsok: {
-        cv: null, coverLetters: [], interviewSessions: [],
-        applicationStats: { total: 0, byStatus: {}, segments: [], awaitingSince: null },
-        spontaneousCount: 0,
-      },
-    })
-    expect(screen.getByTestId('nasta-steg').textContent).toMatch(/Börja med ditt CV/)
-    expect(document.body.textContent).not.toMatch(/du måste|du borde|du har inte gjort|för länge sedan/i)
-  })
 })
 
 describe('negativ kontroll — testerna kan falla', () => {

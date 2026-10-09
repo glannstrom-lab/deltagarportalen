@@ -188,7 +188,7 @@ describe('ikoner och hubbfärg (spår N1, 2026-09-10)', () => {
     const { container } = rendera('/cv', HubNav)
     const ikoner = [...container.querySelectorAll('a img')]
     expect(ikoner.length).toBe(navHubs.length)
-    expect(ikoner.map((i) => i.getAttribute('src'))).toContain('/illustrations/icon-hub-jobb.webp')
+    expect(ikoner.map((i) => i.getAttribute('src'))).toContain('/illustrations/foremal-kuvert.webp')
   })
 
   it('den aktiva kategorin står på hubbens pastell, inaktiva ikoner är avfärgade', () => {

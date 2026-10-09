@@ -19,7 +19,16 @@ import type { TFunction } from 'i18next'
 import type { OversiktSummary } from '@/hooks/useOversiktHubSummary'
 import { datumSprak } from '@/lib/datumsprak'
 import { narText } from './oversiktTid'
-import { useOversiktBilder } from './oversiktBilder'
+import { Foremal } from '@/components/varld/Foremal'
+
+/** Föremålet i ryggsäcken för varje sak som pågår (spår JS). */
+const FOREMAL: Record<string, string> = {
+  applications: 'kuvert',
+  skills: 'kompass',
+  aiTeam: 'bok',
+  mood: 'kopp',
+  event: 'karta',
+}
 import type { PanelTillstand } from './OversiktPanel'
 
 interface Kort {
@@ -138,45 +147,53 @@ export default function Pagar({
   tillstand: PanelTillstand
 }) {
   const { t, i18n } = useTranslation()
-  const bilder = useOversiktBilder()
   if (tillstand !== 'klart' || !summary) return null
   const kort = byggPagar(summary, t, datumSprak(i18n.language))
   if (kort.length === 0) return null
 
   return (
-    <section aria-labelledby="pagar-rubrik" data-testid="pagar">
-      <h2
-        id="pagar-rubrik"
-        className="m-0 mb-2.5 flex items-center gap-2.5 text-[0.9375rem] font-semibold text-stone-600 dark:text-stone-400"
-      >
-        {/* Stiltest 2026-09-10: sneakers = "igång". Dekorativ. */}
-        <img src={bilder.sneakers} alt="" aria-hidden="true" loading="lazy" className="h-9 w-9 object-contain" />
-        {t('hubOverview.pagar.heading', 'Det som är igång')}
-      </h2>
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+    <section
+      aria-labelledby="pagar-rubrik"
+      data-testid="pagar"
+      className="rounded-[22px] bg-white dark:bg-stone-900 ring-1 ring-stone-200/80 dark:ring-stone-700 p-5 sm:p-6 shadow-[0_16px_36px_-24px_rgba(28,25,23,0.35)]"
+    >
+      <div className="flex items-center gap-3.5 mb-4">
+        <Foremal namn="ryggsack" storlek="md" />
+        <div>
+          <h2 id="pagar-rubrik" className="m-0 text-[1.25rem] font-bold tracking-tight text-stone-900 dark:text-stone-50">
+            {t('hubOverview.pagar.heading', 'I din ryggsäck')}
+          </h2>
+          <p className="m-0 text-[0.875rem] text-stone-500 dark:text-stone-400">
+            {t('varld.ryggsack.under', 'Det du har på gång just nu')}
+          </p>
+        </div>
+      </div>
+      <div className="grid gap-3">
         {kort.map((k) => (
           <Link
             key={k.id}
             to={k.till}
             data-domain={k.domain}
-            className="flex min-w-0 flex-col gap-1.5 rounded-xl border border-stone-200 dark:border-stone-700 border-l-[3px] border-l-[var(--c-solid)] bg-white dark:bg-stone-900 px-4 py-4 no-underline hover:border-stone-300 dark:hover:border-stone-600 hover:border-l-[var(--c-solid)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--c-solid)]"
+            className="group flex min-w-0 items-center gap-3.5 rounded-2xl bg-[var(--c-bg)] dark:bg-stone-800/70 p-3 no-underline transition-[transform,box-shadow] hover:-translate-y-0.5 hover:shadow-[0_12px_24px_-14px_rgba(28,25,23,0.5)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--c-solid)]"
           >
-            <span className="text-[0.9375rem] font-semibold text-stone-900 dark:text-stone-100">{k.rubrik}</span>
-            <span className="flex items-baseline gap-2 min-w-0">
-              <span
-                className={
-                  /^\d+$/.test(k.varde)
-                    ? 'text-[1.875rem] font-semibold leading-none tracking-tight tabular-nums text-stone-900 dark:text-stone-100'
-                    : 'text-[1.25rem] font-semibold leading-tight tracking-tight text-stone-900 dark:text-stone-100 truncate'
-                }
-              >
-                {k.varde}
+            <Foremal namn={FOREMAL[k.id] ?? 'karta'} storlek="lg" />
+            <span className="flex min-w-0 flex-1 flex-col gap-0.5">
+              <span className="text-[0.9375rem] font-semibold text-stone-900 dark:text-stone-100">{k.rubrik}</span>
+              <span className="flex items-baseline gap-1.5 min-w-0">
+                <span
+                  className={
+                    /^\d+$/.test(k.varde)
+                      ? 'text-[1.5rem] font-bold leading-none tracking-tight tabular-nums text-[var(--c-text)] dark:text-[var(--c-solid)]'
+                      : 'text-[1.0625rem] font-semibold leading-tight text-[var(--c-text)] dark:text-[var(--c-solid)] truncate'
+                  }
+                >
+                  {k.varde}
+                </span>
+                {k.enhet && <span className="text-[0.875rem] font-medium text-stone-600 dark:text-stone-300">{k.enhet}</span>}
               </span>
-              {k.enhet && (
-                <span className="text-[0.9375rem] font-medium text-stone-500 dark:text-stone-400">{k.enhet}</span>
-              )}
+              {k.rad && <span className="text-[0.8125rem] text-stone-600 dark:text-stone-400 truncate">{k.rad}</span>}
             </span>
-            {k.rad && <span className="text-[0.875rem] text-stone-600 dark:text-stone-300">{k.rad}</span>}
+            <span aria-hidden="true" className="shrink-0 text-stone-400 transition-transform group-hover:translate-x-0.5">→</span>
           </Link>
         ))}
       </div>

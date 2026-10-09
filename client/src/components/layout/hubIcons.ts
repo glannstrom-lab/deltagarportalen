@@ -11,12 +11,17 @@
  * inaktiva i stället för färgbyte, och källorna är 128 px så 16–22 px vid 2×
  * DPR har marginal. Utvärderas i drift (beslut Mikael).
  */
+/**
+ * Spår JS (2026-10-09): platsernas föremål i Jobin-staden — kartan (torget),
+ * kuvertet (Stationen), kompassen (Utsikten), boken (Biblioteket) och koppen
+ * (Hemma). Fotograferade ting på varm platta; ritas runda (object-cover).
+ */
 export const HUB_ICON_SRC: Record<string, string> = {
-  action: '/illustrations/icon-hub-oversikt.webp',
-  activity: '/illustrations/icon-hub-jobb.webp',
-  coaching: '/illustrations/icon-hub-karriar.webp',
-  info: '/illustrations/icon-hub-resurser.webp',
-  wellbeing: '/illustrations/icon-hub-vardag.webp',
+  action: '/illustrations/foremal-karta.webp',
+  activity: '/illustrations/foremal-kuvert.webp',
+  coaching: '/illustrations/foremal-kompass.webp',
+  info: '/illustrations/foremal-bok.webp',
+  wellbeing: '/illustrations/foremal-kopp.webp',
 }
 
 /**

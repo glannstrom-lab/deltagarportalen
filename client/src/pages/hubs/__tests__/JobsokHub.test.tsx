@@ -5,6 +5,10 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import JobsokHub from '../JobsokHub'
 
 const mockSummary = vi.fn()
+// Hubbens rådgivare (spår JS) har en egen knapp "Sök jobb" — den prövas i
+// radgivarHalsning.test.tsx, inte här.
+vi.mock('@/components/radgivare/RadgivarHalsning', () => ({ default: () => null }))
+
 vi.mock('@/hooks/useJobsokHubSummary', () => ({
   useJobsokHubSummary: () => mockSummary(),
   JOBSOK_HUB_KEY: (uid: string) => ['hub', 'jobsok', uid],

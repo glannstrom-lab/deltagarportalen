@@ -50,7 +50,7 @@ import { cn } from '@/lib/utils'
 import { avkodaSokvag } from '@/lib/sokvag'
 
 /** Rasterikon i navigationen: avfärgad och dämpad tills raden är aktiv eller hovras. */
-function NavIkon({ src, storlek, aktiv }: { src: string; storlek: number; aktiv: boolean }) {
+function NavIkon({ src, storlek, aktiv, rund = false }: { src: string; storlek: number; aktiv: boolean; rund?: boolean }) {
   return (
     <img
       src={src}
@@ -61,7 +61,8 @@ function NavIkon({ src, storlek, aktiv }: { src: string; storlek: number; aktiv:
       loading="eager"
       decoding="async"
       className={cn(
-        'shrink-0 object-contain transition-[filter,opacity]',
+        'shrink-0 transition-[filter,opacity,transform]',
+        rund ? 'object-cover rounded-full ring-1 ring-black/10 group-hover:scale-110' : 'object-contain',
         aktiv ? '' : 'grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100'
       )}
       style={{ width: storlek, height: storlek }}
@@ -301,7 +302,7 @@ export function HubNav({ variant = 'bar' }: { variant?: 'bar' | 'inline' } = {})
             )}
           >
             {HUB_ICON_SRC[hub.domain] && (
-              <NavIkon src={HUB_ICON_SRC[hub.domain]} storlek={18} aktiv={aktiv} />
+              <NavIkon src={HUB_ICON_SRC[hub.domain]} storlek={24} aktiv={aktiv} rund />
             )}
             {t(hub.labelKey, hub.fallbackLabel)}
           </Link>

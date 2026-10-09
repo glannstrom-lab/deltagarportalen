@@ -139,10 +139,10 @@ export function HubBottomNav() {
                     src={egenIkon}
                     alt=""
                     aria-hidden="true"
-                    width={22}
-                    height={22}
+                    width={28}
+                    height={28}
                     className={cn(
-                      'w-[22px] h-[22px] object-contain transition-[filter,opacity]',
+                      'w-7 h-7 rounded-full object-cover ring-1 ring-black/10 transition-[filter,opacity]',
                       isActive ? '' : 'grayscale opacity-60'
                     )}
                   />

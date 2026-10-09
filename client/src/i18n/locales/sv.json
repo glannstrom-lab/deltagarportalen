@@ -9399,7 +9399,7 @@
       }
     },
     "pagar": {
-      "heading": "Det som är igång",
+      "heading": "I din ryggsäck",
       "applications": "Dina ansökningar",
       "savedJobs_one": "sparat jobb",
       "savedJobs_other": "sparade jobb",
@@ -9418,7 +9418,7 @@
       "moodLatest": "Senast {{nar}}",
       "event": "Nästa i kalendern"
     },
-    "hubsHeading": "Allt i portalen"
+    "hubsHeading": "Platserna i staden"
   },
   "hubOverviewHistory": {
     "title": "Aktivitet",
@@ -10246,5 +10246,58 @@
     "lyssna": "Lyssna",
     "pausa": "Pausa",
     "stoppa": "Sluta läsa upp"
+  },
+  "varld": {
+    "plats": {
+      "stad": "Torget",
+      "jobb": "Stationen",
+      "karriar": "Utsikten",
+      "resurser": "Biblioteket",
+      "vardag": "Hemma"
+    },
+    "tillbakaTill": "Tillbaka till {{plats}}",
+    "dialog": {
+      "annat": "Visa något annat",
+      "forslag": "Förslag {{nr}} av {{av}}"
+    },
+    "stad": {
+      "alt": "En liten svensk stad med station, utsiktstorn, bibliotek och ett gult hus med trädgård",
+      "platser": "Platser i staden",
+      "markor": "{{plats}}, {{hubb}}",
+      "markorUppdrag": "{{plats}}, {{hubb}} — här finns ditt nästa steg",
+      "stil": "Grafikstil",
+      "mjuk": "Mjuk",
+      "action": "Action",
+      "gaTill": "Gå till {{plats}}"
+    },
+    "ryggsack": {
+      "under": "Det du har på gång just nu"
+    },
+    "lykta": {
+      "rubrik": "Din väg hittills",
+      "under": "Varje sak du har gjort tänder en lykta",
+      "underTom": "Din första lykta väntar på dig",
+      "narDuOrkar": "Nästa lykta att tända — när du orkar",
+      "cv": "Du har ett CV",
+      "ansokan": "Du har börjat söka jobb",
+      "brev": "Du har skrivit ett personligt brev",
+      "intervju": "Du har övat på en intervju",
+      "mal": "Du har skrivit ett karriärmål",
+      "analys": "Du har jämfört ditt CV med ett drömjobb",
+      "ai": "Du har pratat med AI-teamet",
+      "artikel": "Du har läst en guide klart",
+      "dagbok": "Du har skrivit i dagboken",
+      "maende": "Du har loggat hur du mår",
+      "nasta": {
+        "cv": "Skriv ditt CV",
+        "ansokan": "Spara ett jobb du gillar",
+        "brev": "Skriv ett personligt brev",
+        "intervju": "Öva på en intervju",
+        "mal": "Skriv ett karriärmål",
+        "analys": "Jämför ditt CV med ett drömjobb",
+        "ai": "Prata med AI-teamet",
+        "dagbok": "Skriv några rader i dagboken"
+      }
+    }
   }
 }

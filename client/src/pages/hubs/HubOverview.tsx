@@ -1,15 +1,10 @@
-import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { datumSprak } from '@/lib/datumsprak'
-import type { TFunction } from 'i18next'
-import { motion } from 'framer-motion'
 import {
   Briefcase,
   Heart,
   Compass,
   LayoutDashboard,
   BookOpen,
-  CalendarDays,
 } from 'lucide-react'
 import { PageLayout } from '@/components/layout/PageLayout'
 import { useOversiktHubSummary } from '@/hooks/useOversiktHubSummary'
@@ -17,7 +12,7 @@ import { useOnboardedHubsTracking } from '@/hooks/useOnboardedHubsTracking'
 import { useFocusMode } from '@/components/FocusModeProvider'
 import { FocusHubWizard } from '@/components/focus/pages/FocusHubWizard'
 import OversiktPanel, { type PanelTillstand } from './OversiktPanel'
-import { useOversiktBilder } from './oversiktBilder'
+import Stad from './Stad'
 import RollGenvag from './RollGenvag'
 import { FokusVaxel } from '@/components/focus/shell/FokusVaxel'
 
@@ -37,22 +32,6 @@ import { FokusVaxel } from '@/components/focus/shell/FokusVaxel'
  */
 
 const HUB_ID = 'oversikt' as const
-
-/**
- * Tidsanpassad hälsning enligt DESIGN.md §2.
- * 06–09 = "God morgon", 18–22 = "God kväll", övrigt = "Hej".
- */
-function timeOfDayGreeting(now: Date, t: TFunction): string {
-  const h = now.getHours()
-  if (h >= 6 && h < 10) return t('hubOverview.goodMorning', 'God morgon')
-  if (h >= 18 && h < 23) return t('hubOverview.goodEvening', 'God kväll')
-  return t('hubOverview.hello', 'Hej')
-}
-
-const heroVariants = {
-  hidden: { opacity: 0, y: 8 },
-  visible: { opacity: 1, y: 0 },
-}
 
 export default function HubOverview() {
   const { t } = useTranslation()
@@ -81,7 +60,7 @@ export default function HubOverview() {
 }
 
 function HubOverviewInner() {
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
   useOnboardedHubsTracking(HUB_ID)
   /**
    * `isLoading` och `isError` användes inte fram till 2026-08-18 — bara `data`
@@ -90,7 +69,6 @@ function HubOverviewInner() {
    * när det aldrig kom. Se PanelTillstand i OversiktPanel.tsx.
    */
   const { data: summary, isLoading, isError, refetch } = useOversiktHubSummary()
-  const bilder = useOversiktBilder()
   /**
    * `!summary` räknas som laddning, inte som "klart".
    *
@@ -105,9 +83,6 @@ function HubOverviewInner() {
   const tillstand: PanelTillstand = isError ? 'fel' : isLoading || !summary ? 'laddar' : 'klart'
 
   const firstName = summary?.profile?.full_name?.trim().split(/\s+/)[0] ?? null
-  const profileImageUrl = summary?.profile?.profile_image_url ?? null
-  const initials = firstName ? firstName[0].toUpperCase() : null
-  const today = new Date()
 
   return (
     <PageLayout
@@ -116,7 +91,7 @@ function HubOverviewInner() {
       domain="action"
       showHeader={false}
       showTabs={false}
-      contentClassName="space-y-6"
+      contentClassName="space-y-8"
     >
       {/* 0. Konsulent/admin: vägen till arbetsytan.
           Renderar null för vanliga deltagare. Ligger först eftersom den som
@@ -125,70 +100,14 @@ function HubOverviewInner() {
           som man måste veta finns. Se RollGenvag.tsx. */}
       <RollGenvag />
 
-      {/* 1. Hälsningen — komprimerad 2026-08-17 (steg 3).
-          Hjälten var ~250 px hög med illustration, datumdisc och frågan
-          "Vad vill du göra idag?". Frågan besvaras numera av nästa-steg-kortet
-          direkt under, så den upprepade sig. Personaliseringen är kvar —
-          DESIGN.md §1 punkt 4 säger att vi använder namnet där vi har det.
+      {/* 1. Staden (spår JS, 2026-10-09) — hälsningen, platserna och Andreas
+          med nästa steg. Ersätter hälsningsraden och nästa-steg-kortet, som
+          sa samma sak som rådgivaren två gånger. */}
+      <Stad summary={summary} tillstand={tillstand} fornamn={firstName} />
 
-          Datumet står som en mening i gemener ("torsdag 10 september"), inte i
-          versal monospace: det såg ut som terminalutdata, inte som en lugn
-          vän. På smala skärmar radbryts det under namnet i stället för att
-          trycka ihop rubriken till två rader. */}
-      <motion.section
-        initial="hidden"
-        animate="visible"
-        variants={heroVariants}
-        transition={{ duration: 0.25 }}
-        aria-labelledby="hero-greeting"
-        className="flex flex-wrap items-center gap-x-3 gap-y-1"
-      >
-        {profileImageUrl ? (
-          <img
-            src={profileImageUrl}
-            alt=""
-            className="w-10 h-10 rounded-full object-cover shrink-0"
-          />
-        ) : (
-          <span
-            aria-hidden="true"
-            className="w-10 h-10 rounded-full bg-[var(--c-bg)] text-[var(--c-text)] grid place-items-center text-[0.9375rem] font-semibold shrink-0"
-          >
-            {initials ?? '·'}
-          </span>
-        )}
-        <h1 id="hero-greeting" className="text-[1.5rem] sm:text-[1.75rem] font-semibold tracking-tight m-0">
-          {timeOfDayGreeting(today, t)}
-          {firstName ? ` ${firstName}` : ''}
-        </h1>
-        <span className="basis-full sm:basis-auto sm:ml-auto pl-[52px] sm:pl-0 text-[0.9375rem] text-stone-500 dark:text-stone-400">
-          {today.toLocaleDateString(datumSprak(i18n.language), { weekday: 'long', day: 'numeric', month: 'long' })}
-        </span>
-      </motion.section>
-
-      {/* 2. Innehållet i tre nivåer (2026-09-10): ett nästa steg, det som är
-          igång, och allt i portalen. Varje tal kommer ur useOversiktHubSummary
-          — inget är påhittat, och det som saknas visas som en invit, aldrig
-          som en nolla (ROADMAP B31). Se OversiktPanel.tsx. */}
+      {/* 2. Det som är igång, vägen hittills och platserna — varje tal ur
+          useOversiktHubSummary, inget påhittat (ROADMAP B31). */}
       <OversiktPanel summary={summary} tillstand={tillstand} vidForsokIgen={refetch} />
-
-      {/* 3. Väg in till hela historiken (G9, 2026-07-27).
-          `/oversikt/historik` var routad men olänkad — sidan gick bara att nå
-          via direktlänk. Medvetet lågmäld: en textlänk, ingen poängställning
-          och inget "0 av N" (DESIGN.md §1 — inga prestationsmätningar).
-          Vänsterställd sedan 2026-09-10; centrerad flöt den i tomrummet. */}
-      <p className="m-0 flex flex-wrap items-center gap-x-2 gap-y-1 text-[0.875rem] text-stone-500 dark:text-stone-400">
-        {/* Stiltest 2026-09-10: kikaren = överblick över det som gjorts. Dekorativ. */}
-        <img src={bilder.kikare} alt="" aria-hidden="true" loading="lazy" className="mr-1 h-11 w-11 object-contain" />
-        <Link
-          to="/oversikt/historik"
-          className="inline-flex items-center gap-1.5 font-medium text-[var(--c-text)] dark:text-[var(--c-solid)] no-underline hover:underline underline-offset-2"
-        >
-          <CalendarDays size={15} aria-hidden="true" />
-          {t('hubOverview.seeHistory', 'Se allt du har gjort')}
-          <span aria-hidden="true">→</span>
-        </Link>
-      </p>
     </PageLayout>
   )
 }

@@ -667,6 +667,21 @@ Sammanfattning av sanningarna i DESIGN.md — vid konflikt gäller DESIGN.md.
   Sidbilderna (`data/sidbilder.ts`) finns i båda grafikstilarna och visas i
   hubbkorten, skenan och mobilrubriken — aldrig som hjälte.
 
+  **Jobin-staden (spår JS, 2026-10-09, beslut Mikael: "bygg så bra och snyggt som
+  möjligt" — de visuella reglerna nedan är upphävda för den här ombyggnaden).**
+  Portalen är en liten stad: Översikt = torget (`pages/hubs/Stad.tsx`, stor scen med
+  platsmarkörer och "!" där nästa steg finns), Söka jobb = Stationen, Karriär =
+  Utsikten, Resurser = Biblioteket, Din vardag = Hemma (`data/varld.ts`). Hubbarna har
+  platsens scen överst med värdens dialogruta i bilden; verktygssidorna har ett
+  platsband (`components/varld/Platsband.tsx`, från `PageLayout`) med skylt tillbaka
+  till platsen. Rådgivarens hälsning ritas som `Dialogruta` överallt; den sida som
+  ritar den själv säger det med `useEgenHalsning()`, annars ritar Layout en till.
+  Scener finns per tid (morgon/kväll efter klockan) × grafikstil — bildgrinden i
+  `radgivarHalsning.test.tsx` fäller om en kombination saknas. Markörlägena i
+  `MARKORER` är mätta per bild: byts en stadsbild måste de mätas om. Spelkänslan
+  kommer från plats, föremål, karaktär och ljus — inga poäng, nivåer eller streaks,
+  och lyktorna ("Din väg hittills", `lyktor.ts`) tänds bara av sådant som finns i datan.
+
   Under rådgivarna ligger **Lugnare läge** (`LugnarePanel.tsx`) — fokusläge och
   pauspåminnelse. Fokusläget nåddes tidigare bara via en textlös ikon i toppnaven.
 - **En sida = en hub-färg.** Alla pastell-element på en sida (KPI-kort, sektioner, ikon-tiles) använder samma hub-färg. Variation kommer från intensitet (50/200/700) och ikon — aldrig från olika hubars pasteller på samma sida. *Undantag: Översikt med 4 hubbar samtidigt.* Se DESIGN.md §4.

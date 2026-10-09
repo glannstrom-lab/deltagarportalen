@@ -18,6 +18,7 @@ import path from 'node:path'
 import { useSettingsStore } from '@/stores/settingsStore'
 import { SIDHALSNINGAR, OVERSIKT_STEG, OVERSIKT_INGET, ljudFor } from '@/data/radgivarHalsningar'
 import { SIDBILDER } from '@/data/sidbilder'
+import { HUBBPLATSER, STILAR, TIDER, scenSrc, PLATSER, foremalSrc } from '@/data/varld'
 
 // ── En ljudattrapp som minns vad som hände ──────────────────────────────────
 
@@ -202,4 +203,75 @@ describe('filerna finns', () => {
     )
     expect(saknas).toEqual([])
   })
+
+  it('staden: varje scen finns i båda tiderna och båda grafikstilarna, och varje föremål finns', () => {
+    const filer = [
+      ...(['stad', ...HUBBPLATSER] as const).flatMap((p) =>
+        TIDER.flatMap((tid) => STILAR.map((stil) => scenSrc(p, tid, stil)))
+      ),
+      ...Object.values(PLATSER).map((p) => foremalSrc(p.foremal)),
+      ...['ryggsack', 'lykta'].map(foremalSrc),
+    ]
+    const saknas = filer.filter((f) => !fs.existsSync(path.join(PUBLIC, f)))
+    expect(saknas).toEqual([])
+  })
 })
+
+/**
+ * Spår JS (2026-10-09): Översiktens nästa steg är rådgivarens replik i staden.
+ * Proven flyttade hit från OversiktPanel.test.tsx när kortet försvann.
+ */
+describe('Översikt: nästa steg som replik', () => {
+  const dagar = (n: number) => new Date(Date.now() - n * 86_400_000).toISOString()
+  const jobsok = (over: Record<string, unknown>) => ({
+    cv: { id: '1', updated_at: dagar(2) },
+    coverLetters: [],
+    interviewSessions: [],
+    applicationStats: { total: 0, byStatus: {}, segments: [], awaitingSince: null },
+    spontaneousCount: 0,
+    ...over,
+  })
+
+  it('föreslår att följa upp en ansökan som väntat i över en vecka — och bläddrar till alternativet', () => {
+    oversikt.svar = {
+      data: {
+        profile: null,
+        jobsok: jobsok({
+          applicationStats: {
+            total: 3, byStatus: {},
+            segments: [{ key: 'saved', count: 2 }, { key: 'awaiting', count: 1 }],
+            awaitingSince: dagar(9).slice(0, 10),
+          },
+        }),
+      },
+      isLoading: false,
+      isError: false,
+    }
+    rendera('/oversikt')
+    const ruta = screen.getByTestId('radgivar-halsning')
+    expect(ruta.textContent).toMatch(/inte svarat på din ansökan/i)
+    // Det personliga står under repliken men läses inte upp.
+    expect(ruta.textContent).toMatch(/9 dagar/)
+    expect(screen.getByRole('link', { name: /följ upp ansökan/i }).getAttribute('href')).toBe('/applications')
+
+    const forstaKlipp = FakeAudio.senaste.length
+    fireEvent.click(screen.getByRole('button', { name: /visa något annat/i }))
+    expect(screen.getByRole('link', { name: /skriv brevet/i }).getAttribute('href')).toBe('/cover-letter')
+    // Den som bläddrar har valt själv — nästa replik startar inte av sig själv.
+    act(() => { vi.advanceTimersByTime(1000) })
+    const nya = FakeAudio.senaste.slice(forstaKlipp)
+    expect(nya.every((a) => a.play.mock.calls.length === 0)).toBe(true)
+  })
+
+  it('ett nytt konto får "Börja med ditt CV" — ingen förebråelse', () => {
+    oversikt.svar = {
+      data: { profile: null, jobsok: jobsok({ cv: null }) },
+      isLoading: false,
+      isError: false,
+    }
+    rendera('/oversikt')
+    expect(screen.getByTestId('radgivar-halsning').textContent).not.toMatch(/du måste|du borde|du har inte gjort|för länge sedan/i)
+    expect(screen.getByRole('link', { name: /cv/i })).toBeTruthy()
+  })
+})
+

@@ -1,13 +1,27 @@
 import { type ReactNode } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
 import type { LucideIcon } from 'lucide-react'
 import { PageLayout } from '@/components/layout/PageLayout'
-import { HUB_ICON_SRC, TOOL_ICON_SRC } from '@/components/layout/hubIcons'
+import { TOOL_ICON_SRC } from '@/components/layout/hubIcons'
 import { useSettingsStore } from '@/stores/settingsStore'
 import { sidbildSrc } from '@/data/sidbilder'
 import { getPageKeyForPath } from '@/data/radgivarRutter'
+import { cn } from '@/lib/utils'
+import { useMediaQuery } from '@/hooks/useMediaQuery'
+import { useVarld } from '@/hooks/useVarld'
+import { PLATSER, platsForDomain, scenSrc, scenFokus } from '@/data/varld'
+import { Foremal } from '@/components/varld/Foremal'
+import { Platsskylt } from '@/components/varld/Platsband'
+import { useEgenHalsning } from '@/components/varld/halsningPlats'
+import RadgivarHalsning from '@/components/radgivare/RadgivarHalsning'
+
+/** Skrim så att den vita rubriken alltid går att läsa (dekorativ scenbild). */
+const HUBB_SKRIM = {
+  backgroundImage:
+    'linear-gradient(90deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.25) 50%, rgba(0,0,0,0) 80%), linear-gradient(0deg, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0) 45%)',
+}
 
 /**
  * HubPage — gemensam template för alla 4 hub-sidor.
@@ -99,14 +113,6 @@ export interface HubPageProps {
   firstName?: string | null
 }
 
-/** Hubbens egen scenbild (data/sidbilder.ts) — en liten bild i rubrikraden, inte en hjälte. */
-const HUBBNYCKEL: Record<HubDomain, string> = {
-  activity: 'jobbHub',
-  coaching: 'karriarHub',
-  info: 'resurserHub',
-  wellbeing: 'vardagHub',
-}
-
 const heroVariants = {
   hidden: { opacity: 0, y: 8 },
   visible: { opacity: 1, y: 0 },
@@ -123,7 +129,7 @@ export default function HubPage({
   hubLabel: _hubLabel, // deprecated, ignoreras enligt DESIGN.md §3
   hubTitle,
   hubDescription,
-  hubIcon: HubIcon,
+  hubIcon: _hubIcon,
   domain,
   features,
   trackingChild,
@@ -132,7 +138,13 @@ export default function HubPage({
 }: HubPageProps) {
   const { t } = useTranslation()
   const trimmedFirstName = firstName?.trim() || null
-  const hubbild = sidbildSrc(HUBBNYCKEL[domain], useSettingsStore((s) => s.grafikstil))
+  const location = useLocation()
+  const plats = platsForDomain(domain)
+  const { tid, stil, lugnt } = useVarld()
+  const radgivarePa = useSettingsStore((s) => s.showCoachWidget)
+  // EN dialogruta i DOM:en — två hade gett två röster samtidigt.
+  const dator = useMediaQuery('(min-width: 1024px)')
+  useEgenHalsning()
 
   return (
     <PageLayout
@@ -157,40 +169,61 @@ export default function HubPage({
         (DESIGN.md §2) och en rubrik att hitta med skärmläsare. Ikonen står
         kvar liten, som igenkänning av hubbfärgen.
       */}
-      <div className="flex items-center gap-3">
-        {hubbild ? (
+      {/*
+        Spår JS (2026-10-09, beslut Mikael: "bygg så bra och snyggt som möjligt"):
+        hubben är en plats i Jobin-staden. Platsens scen står överst, med
+        platsens namn, hubbens rubrik och värdens dialogruta i bilden. Det
+        ersätter rubrikraden från 2026-08-17 ("ingen hero") — det beslutet är
+        uttryckligen upphävt för ombyggnaden.
+      */}
+      <section aria-labelledby="hubb-rubrik" className="relative">
+        <div className="relative overflow-hidden rounded-[22px] lg:rounded-[28px] h-[240px] sm:h-[320px] lg:h-[400px] bg-[var(--c-bg)] shadow-[0_30px_60px_-30px_rgba(28,25,23,0.6)]">
           <img
-            src={hubbild}
+            src={scenSrc(plats.id, tid, stil)}
             alt=""
             aria-hidden="true"
             decoding="async"
-            className="hidden sm:block w-24 h-14 rounded-[10px] object-cover shrink-0 bg-[var(--c-bg)]"
+            fetchPriority="high"
+            style={{ objectPosition: scenFokus(plats.id, tid, stil) }}
+            className={cn('absolute inset-0 h-full w-full object-cover', !lugnt && 'varld-scen')}
           />
-        ) : (
-        <span
-          aria-hidden="true"
-          className="hidden sm:flex w-10 h-10 rounded-[10px] items-center justify-center shrink-0 bg-[var(--c-bg)] text-[var(--c-text)]"
-        >
-          {HUB_ICON_SRC[domain] ? (
-            <img src={HUB_ICON_SRC[domain]} alt="" className="w-7 h-7 object-contain" />
-          ) : (
-            <HubIcon className="w-5 h-5" strokeWidth={2} />
+          <div aria-hidden="true" className="absolute inset-0" style={HUBB_SKRIM} />
+          <div className="relative flex flex-col items-start gap-2.5 p-4 sm:p-6 lg:p-8">
+            <Platsskylt plats={PLATSER.stad} />
+            <div className="mt-1 sm:mt-2">
+              <p className="m-0 flex items-center gap-2 text-[0.875rem] sm:text-[1rem] font-semibold text-white/90 [text-shadow:0_1px_8px_rgba(0,0,0,0.45)]">
+                <Foremal namn={plats.foremal} storlek="xs" className="rounded-full ring-2 ring-white/70" />
+                {t(plats.namnNyckel, plats.namnSv)}
+                {trimmedFirstName && (
+                  <span className="font-normal text-white/80">
+                    {' · '}
+                    {t('hubs.greeting', { defaultValue: 'Hej {{name}}', name: trimmedFirstName })}
+                  </span>
+                )}
+              </p>
+              <h1
+                id="hubb-rubrik"
+                className="m-0 mt-1 text-[1.875rem] sm:text-[2.5rem] lg:text-[3rem] font-bold tracking-tight leading-[1.05] text-white [text-shadow:0_2px_16px_rgba(0,0,0,0.4)]"
+              >
+                {hubTitle}
+              </h1>
+              <p className="m-0 mt-1.5 max-w-[48ch] text-[0.9375rem] sm:text-[1.0625rem] text-white/90 [text-shadow:0_1px_8px_rgba(0,0,0,0.45)]">
+                {hubDescription}
+              </p>
+            </div>
+          </div>
+          {radgivarePa && dator && (
+            <div className="absolute right-6 bottom-6 w-[min(520px,46%)] empty:hidden" data-focus-chrome="radgivare">
+              <RadgivarHalsning pathname={location.pathname} variant="flytande" />
+            </div>
           )}
-        </span>
-        )}
-        <div className="min-w-0">
-          <h1 className="text-[1.1875rem] font-semibold tracking-tight text-[var(--stone-900)] m-0 leading-tight">
-            {trimmedFirstName && (
-              <span className="font-normal text-[var(--stone-500)]">
-                {t('hubs.greeting', { defaultValue: 'Hej {{name}}', name: trimmedFirstName })}
-                {' · '}
-              </span>
-            )}
-            {hubTitle}
-          </h1>
-          <p className="m-0 text-[0.8125rem] text-[var(--stone-600)] leading-snug">{hubDescription}</p>
         </div>
-      </div>
+        {radgivarePa && !dator && (
+          <div className="relative z-10 -mt-10 px-2 sm:px-6 empty:hidden" data-focus-chrome="radgivare">
+            <RadgivarHalsning pathname={location.pathname} variant="flytande" />
+          </div>
+        )}
+      </section>
 
       {/*
         Funktionerna behöver ingen egen rubrik längre. Den sa "FUNKTIONER" över
@@ -202,7 +235,7 @@ export default function HubPage({
         variants={heroVariants}
         transition={{ duration: 0.3 }}
         aria-label={t('hubs.featuresHeading', 'Funktioner')}
-        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3"
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"
       >
         {features.map((f) => (
           <FeatureCard key={f.key} feature={f} />
@@ -242,7 +275,7 @@ function FeatureCard({ feature }: { feature: HubFeature }) {
       <motion.div
         whileHover={{ y: -1 }}
         transition={{ duration: 0.15 }}
-        className="bg-[var(--surface)] border border-[var(--stone-200)] rounded-xl overflow-hidden hover:border-[var(--c-solid)] hover:shadow-sm transition-[border-color,box-shadow] h-full flex flex-col"
+        className="group/rum bg-[var(--surface)] ring-1 ring-[var(--stone-200)] rounded-[20px] overflow-hidden hover:ring-2 hover:ring-[var(--c-solid)] hover:shadow-[0_20px_40px_-22px_rgba(28,25,23,0.55)] transition-[box-shadow] h-full flex flex-col"
       >
         {omslag && (
           <img
@@ -251,10 +284,10 @@ function FeatureCard({ feature }: { feature: HubFeature }) {
             aria-hidden="true"
             loading="lazy"
             decoding="async"
-            className="block w-full aspect-[16/9] object-cover bg-[var(--c-bg)]"
+            className="block w-full aspect-[16/9] object-cover bg-[var(--c-bg)] transition-transform duration-500 group-hover/rum:scale-[1.04]"
           />
         )}
-        <div className="px-3.5 py-3 flex flex-col gap-1.5 flex-1">
+        <div className="px-4 py-3.5 flex flex-col gap-1.5 flex-1">
         <div className="flex items-start gap-2.5">
           {!omslag && <span
             aria-hidden="true"
@@ -267,15 +300,15 @@ function FeatureCard({ feature }: { feature: HubFeature }) {
             )}
           </span>}
           <span className="min-w-0 flex-1">
-            <span className="block text-[0.875rem] font-semibold text-[var(--stone-900)] tracking-tight leading-tight">
+            <span className="block text-[1rem] font-bold text-[var(--stone-900)] tracking-tight leading-tight">
               {title}
             </span>
             {status && (
               <span
                 className={[
-                  'inline-block mt-1 text-[0.6875rem] max-w-full truncate',
+                  'inline-block mt-1 text-[0.75rem] max-w-full truncate',
                   isActive
-                    ? 'font-medium px-1.5 py-0.5 rounded bg-[var(--c-bg)] text-[var(--c-text)]'
+                    ? 'font-semibold px-2 py-0.5 rounded-full bg-[var(--c-bg)] text-[var(--c-text)]'
                     : 'text-[var(--stone-500)]',
                 ].join(' ')}
               >
@@ -285,7 +318,7 @@ function FeatureCard({ feature }: { feature: HubFeature }) {
           </span>
         </div>
 
-        <p className="text-[0.78125rem] text-[var(--stone-600)] leading-snug m-0 line-clamp-2">
+        <p className="text-[0.875rem] text-[var(--stone-600)] leading-snug m-0 line-clamp-2">
           {description}
         </p>
         </div>

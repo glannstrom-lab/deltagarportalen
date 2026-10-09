@@ -90,6 +90,11 @@ interface SidRailProps {
    * skena som blir högre än fönstret gömmer sina sista flikar. (2026-10-09)
    */
   bild?: string | null
+  /**
+   * False när platsbandet (spår JS) redan bär sidans h1. Titeln används då
+   * bara som namn på flikarnas nav-landmärke.
+   */
+  visaRubrik?: boolean
 }
 
 /** Liten gruppetikett i skenan — gemener sedan N2 (2026-09-10), se Stig.tsx. */
@@ -154,6 +159,7 @@ export default function SidRail({
   tabsEtikett,
   children,
   bild,
+  visaRubrik = true,
 }: SidRailProps) {
   const location = useLocation()
   const [sok] = useSearchParams()
@@ -185,7 +191,7 @@ export default function SidRail({
           className="mb-3 block w-full aspect-[16/10] rounded-lg object-cover bg-[var(--c-bg)]"
         />
       )}
-      {title && (
+      {title && visaRubrik && (
         <div className="mb-3">
           <h1 className="text-[1.0625rem] font-semibold tracking-tight text-stone-900 dark:text-stone-100 m-0">
             {title}
