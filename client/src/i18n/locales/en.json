@@ -4504,7 +4504,7 @@
       }
     },
     "journal": {
-      "saveNeedsConsent": "Your note was not saved. The diary is only saved if you have said yes to us storing information about how you feel. You do this under the Mood tab. Your text is still here.",
+      "saveNeedsConsent": "The note was not saved. We only save the diary if you said yes to us storing information about how you feel. Give your yes in the box at the top. Your text is still here.",
       "writeModal": {
         "title": "New diary entry",
         "titleLabel": "Entry title (optional)",
@@ -4543,6 +4543,10 @@
       "viewModal": {
         "mood": "Mood: {{mood}}/5",
         "edit": "Change"
+      },
+      "consent": {
+        "title": "We need your yes before you save",
+        "desc": "Your diary can be about how you feel. So we only save it if you say yes. You can always read and delete what you already wrote."
       }
     }
   },
@@ -4795,7 +4799,10 @@
         "morning": {},
         "evening": {}
       },
-      "todayLine": "{{klara}} of {{totalt}} routines done today"
+      "todayLine": "{{klara}} of {{totalt}} routines done today",
+      "markDone": "Done today: {{namn}}",
+      "remove": "Remove {{namn}}",
+      "savedOnDevice": "Saved on this device. The ticks start over every day."
     },
     "cognitive": {
       "title": "Cognitive training",
@@ -4867,7 +4874,8 @@
         "energy": "Energy levels",
         "sleep": "Sleep quality",
         "stress": "Stress",
-        "note": "The note you write in the log"
+        "note": "The note you write in the log",
+        "diary": "What you write in the diary"
       },
       "whyWeCollect": "Why we collect this",
       "whyDesc": "The data is used to give you personal insights about your wellbeing and to customise recommendations during your job search. We analyse trends to help you understand what affects your mood.",
@@ -4887,7 +4895,7 @@
       "manageInSettings": "Manage",
       "requiredDesc": "You need to give consent to use this feature",
       "requiredTitle": "Consent required",
-      "utanSamtycke": "The diary and the gratitude notes do not need consent."
+      "utanSamtycke": "The gratitude notes do not need consent."
     }
   },
   "education": {
@@ -8357,7 +8365,7 @@
       "taskCreateErrorMessage": "The task could not be saved to your calendar. Please try again.",
       "diarySaveErrorTitle": "Could not save to your diary",
       "diarySaveErrorMessage": "The answer could not be saved to your diary right now. Please try again in a moment.",
-      "diarySaveConsentMessage": "The diary is only saved if you have said yes to us storing information about how you feel. You do this in the diary, under the Mood tab."
+      "diarySaveConsentMessage": "The diary is only saved if you have said yes to us storing information about how you feel. You give your yes in the diary, in the box where you write."
     },
     "thinking": "Thinking...",
     "send": "Send",

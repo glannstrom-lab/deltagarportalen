@@ -1151,9 +1151,10 @@
       "fullDesc": "Du kan skriva hur du mår varje dag. Då behöver vi ditt ja. Det du skriver räknas som uppgifter om din hälsa.",
       "item": {
         "stress": "Stress",
-        "note": "Det du skriver till loggen"
+        "note": "Det du skriver till loggen",
+        "diary": "Det du skriver i dagboken"
       },
-      "utanSamtycke": "Dagboken och tacksamheten behöver inget ja."
+      "utanSamtycke": "Tacksamheten behöver inget ja."
     }
   },
   "diary": {

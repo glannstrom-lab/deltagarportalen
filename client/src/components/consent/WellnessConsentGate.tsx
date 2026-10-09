@@ -20,6 +20,9 @@ interface WellnessConsentGateProps {
   compact?: boolean
   /** Custom class for the container */
   className?: string
+  /** Kompakt läge: egen rubrik/text i stället för den generiska ("Samtycke krävs") */
+  rubrik?: string
+  beskrivning?: string
 }
 
 /**
@@ -30,6 +33,8 @@ export function WellnessConsentGate({
   children,
   compact = false,
   className,
+  rubrik,
+  beskrivning,
 }: WellnessConsentGateProps) {
   const { t } = useTranslation()
   const { profile, isLoading } = useAuthStore()
@@ -102,10 +107,10 @@ export function WellnessConsentGate({
           </div>
           <div className="flex-1 min-w-0">
             <h4 className="font-medium text-pink-900 dark:text-pink-100 text-sm">
-              {t('wellness.consent.requiredTitle')}
+              {rubrik ?? t('wellness.consent.requiredTitle')}
             </h4>
             <p className="text-xs text-pink-700 dark:text-pink-300 mt-1">
-              {t('wellness.consent.requiredDesc')}
+              {beskrivning ?? t('wellness.consent.requiredDesc')}
             </p>
             <div className="flex items-center gap-2 mt-3">
               <button
@@ -188,12 +193,16 @@ export function WellnessConsentGate({
                 <span className="w-1.5 h-1.5 rounded-full bg-pink-400 mt-1.5 flex-shrink-0" />
                 <span>{t('wellness.consent.item.note', 'Anteckningen du skriver till loggen')}</span>
               </li>
+              <li className="flex items-start gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-pink-400 mt-1.5 flex-shrink-0" />
+                <span>{t('wellness.consent.item.diary', 'Det du skriver i dagboken')}</span>
+              </li>
             </ul>
-            {/* RD21 (rollspelet 2026-09-27): listan tog med dagboken och tacksamheten,
-                som är öppna utan samtycke. Den här grinden omsluter bara måendeloggen
-                (mood_logs: humör, energi, sömn, stress, anteckning). */}
+            {/* RD21 (rollspelet 2026-09-27) sa att dagboken var öppen utan samtycke.
+                Rättat 2026-10-09: diary_entries kräver samma samtycke vid INSERT och
+                UPDATE (MV2, check_wellness_consent i RLS). Bara tacksamheten är öppen. */}
             <p className="mt-2 text-xs text-pink-700 dark:text-pink-300">
-              {t('wellness.consent.utanSamtycke', 'Dagboken och tacksamheten behöver inget samtycke.')}
+              {t('wellness.consent.utanSamtycke', 'Tacksamheten behöver inget samtycke.')}
             </p>
           </div>
 

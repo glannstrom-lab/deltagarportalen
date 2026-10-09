@@ -1,89 +1,109 @@
 /**
  * Routines Tab - Build sustainable daily routines
+ *
+ * 2026-10-09: fliken sparade ingenting — allt låg i useState och försvann vid
+ * omladdning, en av standardrutinerna stod förbockad som klar, och
+ * timerknappen räknade sekunder som aldrig visades. Nu sparas rutinerna i
+ * webbläsaren (per konto), bockarna gäller bara i dag och nollas nästa dag,
+ * och timerknappen är borttagen. Molnsparning kräver en ny tabell (migration
+ * mot prod = Mikaels ja) — tills dess säger sidan att listan sparas på den
+ * här enheten.
  */
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { motion, Reorder, MotionConfig } from 'framer-motion'
 import {
   CalendarDays, Clock, Sun, Moon, Coffee, Briefcase,
-  Plus, Trash2, CheckCircle2, Play, Pause, GripVertical
+  Plus, Trash2, CheckCircle2, GripVertical
 } from '@/components/ui/icons'
 import { Card, Button } from '@/components/ui'
 import { cn } from '@/lib/utils'
+import { useAuthStore } from '@/stores/authStore'
+import { formatLocalDate } from '@/services/aktivitetSchema'
+import {
+  type IkonId, type SparadRutin, type Sparat,
+  VARDAGAR, ALLA_DAGAR, lasRutiner, rutinNyckel, sparaRutiner,
+} from './rutinLagring'
 
-interface Routine {
-  id: string
-  title: string
-  time: string
-  icon: React.ElementType
-  completed: boolean
-  days: string[]
-}
+const IKONER: Record<IkonId, React.ElementType> = { sun: Sun, briefcase: Briefcase, coffee: Coffee, moon: Moon, calendar: CalendarDays }
 
-// Routine definitions with i18n keys
-const defaultRoutineDefs = [
-  { id: '1', titleKey: 'wellness.routines.defaultRoutines.morningWalk', time: '08:00', icon: Sun, completed: false, days: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'] },
-  { id: '2', titleKey: 'wellness.routines.defaultRoutines.jobSearch', time: '09:00', icon: Briefcase, completed: true, days: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'] },
-  { id: '3', titleKey: 'wellness.routines.defaultRoutines.coffeeBreak', time: '10:30', icon: Coffee, completed: false, days: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'] },
-  { id: '4', titleKey: 'wellness.routines.defaultRoutines.reflectDay', time: '19:00', icon: Moon, completed: false, days: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'] },
+const SUGGESTIONS = [
+  { titleKey: 'wellness.routines.suggestions.morningStretch', time: '07:30', icon: Sun, descKey: 'wellness.routines.suggestions.morningStretchDesc' },
+  { titleKey: 'wellness.routines.suggestions.lunchWalk', time: '12:00', icon: Coffee, descKey: 'wellness.routines.suggestions.lunchWalkDesc' },
+  { titleKey: 'wellness.routines.suggestions.weeklyReview', time: '18:00', icon: CalendarDays, descKey: 'wellness.routines.suggestions.weeklyReviewDesc' },
 ]
 
 const dayKeys = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'] as const
 
 export default function RoutinesTab() {
   const { t } = useTranslation()
+  const uid = useAuthStore((s) => s.profile?.id)
+  const nyckel = rutinNyckel(uid)
+  const idag = formatLocalDate(new Date())
 
   // Build translated days of week
   const daysOfWeek = useMemo(() => dayKeys.map(k => t(`wellness.routines.days.${k}`)), [t])
 
-  // Build translated default routines
-  const defaultRoutines = useMemo(() => defaultRoutineDefs.map(r => ({
-    ...r,
-    title: t(r.titleKey)
-  })), [t])
+  const [sparat, setSparat] = useState<Sparat>(() => lasRutiner(nyckel, idag))
+  const [lastNyckel, setLastNyckel] = useState(nyckel)
+  if (lastNyckel !== nyckel) {
+    // Profilen laddades efter första renderingen — läs rätt kontos lista.
+    setLastNyckel(nyckel)
+    setSparat(lasRutiner(nyckel, idag))
+  }
 
-  const [routines, setRoutines] = useState<Routine[]>(() => defaultRoutines)
+  useEffect(() => {
+    sparaRutiner(nyckel, sparat)
+  }, [nyckel, sparat])
+
+  const routines = sparat.rutiner.map((r) => ({
+    ...r,
+    title: r.title ?? t(r.titleKey ?? ''),
+    completed: sparat.klara.datum === idag && sparat.klara.ids.includes(r.id),
+  }))
+
   const [isAdding, setIsAdding] = useState(false)
   const [newRoutine, setNewRoutine] = useState({ title: '', time: '09:00' })
-  const [activeTimer, setActiveTimer] = useState<string | null>(null)
-  const [, setTimerSeconds] = useState(0)
 
   const toggleRoutine = (id: string) => {
-    setRoutines(prev => prev.map(r => 
-      r.id === id ? { ...r, completed: !r.completed } : r
-    ))
+    setSparat((prev) => {
+      const ids = prev.klara.datum === idag ? prev.klara.ids : []
+      return { ...prev, klara: { datum: idag, ids: ids.includes(id) ? ids.filter((x) => x !== id) : [...ids, id] } }
+    })
   }
 
   const addRoutine = () => {
     if (!newRoutine.title.trim()) return
-    const routine: Routine = {
+    const routine: SparadRutin = {
       id: Date.now().toString(),
-      title: newRoutine.title,
+      title: newRoutine.title.trim(),
       time: newRoutine.time,
-      icon: Briefcase,
-      completed: false,
-      days: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+      ikon: 'briefcase',
+      days: VARDAGAR,
     }
-    setRoutines(prev => [...prev, routine])
+    setSparat((prev) => ({ ...prev, rutiner: [...prev.rutiner, routine] }))
     setNewRoutine({ title: '', time: '09:00' })
     setIsAdding(false)
   }
 
   const deleteRoutine = (id: string) => {
-    setRoutines(prev => prev.filter(r => r.id !== id))
+    setSparat((prev) => ({
+      rutiner: prev.rutiner.filter((r) => r.id !== id),
+      klara: { ...prev.klara, ids: prev.klara.ids.filter((x) => x !== id) },
+    }))
   }
 
-  const startTimer = (id: string) => {
-    if (activeTimer === id) {
-      setActiveTimer(null)
-    } else {
-      setActiveTimer(id)
-      setTimerSeconds(0)
-    }
+  const sorteraOm = (ny: typeof routines) => {
+    setSparat((prev) => ({
+      ...prev,
+      rutiner: ny
+        .map((r) => prev.rutiner.find((p) => p.id === r.id))
+        .filter((r): r is SparadRutin => !!r),
+    }))
   }
 
   const completedToday = routines.filter(r => r.completed).length
-  const completionPercentage = Math.round((completedToday / routines.length) * 100)
+  const completionPercentage = routines.length ? Math.round((completedToday / routines.length) * 100) : 0
 
   return (
     <MotionConfig reducedMotion="user">
@@ -122,9 +142,9 @@ export default function RoutinesTab() {
                   : 'border-stone-200 dark:border-stone-600 bg-stone-50 dark:bg-stone-700'
               }`}>
                 <span className="text-sm font-medium text-gray-600 dark:text-gray-300">{day}</span>
-                <div className="mt-2 flex justify-center gap-0.5">
-                  {routines.filter(r => r.days.includes(['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'][index])).map(() => (
-                    <div className="w-1.5 h-1.5 rounded-full bg-[var(--c-solid)]/80 dark:bg-[var(--c-solid)]" />
+                <div className="mt-2 flex justify-center gap-0.5" aria-hidden="true">
+                  {routines.filter(r => r.days.includes(ALLA_DAGAR[index])).map((r) => (
+                    <div key={r.id} className="w-1.5 h-1.5 rounded-full bg-[var(--c-solid)]/80 dark:bg-[var(--c-solid)]" />
                   ))}
                 </div>
               </div>
@@ -133,12 +153,15 @@ export default function RoutinesTab() {
         </div>
       </Card>
 
-      {/* Routines List with Reordering and Streaks */}
+      {/* Routines List with Reordering */}
       <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
-        <div className="flex items-center justify-between mb-6">
-          <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">{t('wellness.routines.yourRoutines')}</h3>
+        <div className="flex items-center justify-between gap-3 mb-6">
+          <div>
+            <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">{t('wellness.routines.yourRoutines')}</h3>
+            <p className="text-xs text-gray-600 dark:text-gray-300">{t('wellness.routines.savedOnDevice', 'Sparas på den här enheten. Bockarna börjar om varje dag.')}</p>
+          </div>
           <Button variant="outline" size="sm" onClick={() => setIsAdding(true)}>
-            <Plus className="w-4 h-4 mr-1" />
+            <Plus className="w-4 h-4 mr-1" aria-hidden="true" />
             {t('wellness.routines.add')}
           </Button>
         </div>
@@ -146,12 +169,11 @@ export default function RoutinesTab() {
         <Reorder.Group
           axis="y"
           values={routines}
-          onReorder={setRoutines}
+          onReorder={sorteraOm}
           className="space-y-3"
         >
           {routines.map((routine) => {
-            const Icon = routine.icon
-            const isTimerActive = activeTimer === routine.id
+            const Icon = IKONER[routine.ikon]
 
             return (
               <Reorder.Item
@@ -167,22 +189,24 @@ export default function RoutinesTab() {
                       : 'bg-white dark:bg-stone-700 border-stone-200 dark:border-stone-600 hover:border-[var(--c-accent)] dark:hover:border-[var(--c-solid)]'
                   )}
                 >
-                  <GripVertical className="w-4 h-4 text-gray-500 dark:text-gray-400 flex-shrink-0" />
+                  <GripVertical className="w-4 h-4 text-gray-500 dark:text-gray-400 flex-shrink-0" aria-hidden="true" />
 
                   <motion.button
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
                     onClick={() => toggleRoutine(routine.id)}
+                    aria-pressed={routine.completed}
+                    aria-label={t('wellness.routines.markDone', 'Klar i dag: {{namn}}', { namn: routine.title })}
                     className={cn(
                       'w-8 h-8 rounded-xl flex items-center justify-center transition-colors flex-shrink-0',
                       routine.completed ? 'bg-[var(--c-solid)] dark:bg-[var(--c-solid)]' : 'bg-stone-100 dark:bg-stone-600 hover:bg-stone-200 dark:hover:bg-stone-500'
                     )}
                   >
-                    <CheckCircle2 className={cn('w-5 h-5', routine.completed ? 'text-white' : 'text-gray-600 dark:text-gray-300')} />
+                    <CheckCircle2 className={cn('w-5 h-5', routine.completed ? 'text-white' : 'text-gray-600 dark:text-gray-300')} aria-hidden="true" />
                   </motion.button>
 
                   <div className="w-8 h-8 rounded-lg bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40 flex items-center justify-center flex-shrink-0">
-                    <Icon className="w-4 h-4 text-[var(--c-text)] dark:text-[var(--c-text)]" />
+                    <Icon className="w-4 h-4 text-[var(--c-text)] dark:text-[var(--c-text)]" aria-hidden="true" />
                   </div>
 
                   <div className="flex-1 min-w-0">
@@ -190,31 +214,19 @@ export default function RoutinesTab() {
                       {routine.title}
                     </h4>
                     <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300 mt-1">
-                      <Clock className="w-3 h-3" />
+                      <Clock className="w-3 h-3" aria-hidden="true" />
                       {routine.time}
                     </div>
                   </div>
-
-                  {/* Timer button */}
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={() => startTimer(routine.id)}
-                    className={cn(
-                      'p-2 rounded-lg transition-colors flex-shrink-0',
-                      isTimerActive ? 'bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400' : 'bg-stone-100 dark:bg-stone-600 hover:bg-stone-200 dark:hover:bg-stone-500 text-gray-600 dark:text-gray-300'
-                    )}
-                  >
-                    {isTimerActive ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
-                  </motion.button>
 
                   <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={() => deleteRoutine(routine.id)}
+                    aria-label={t('wellness.routines.remove', 'Ta bort {{namn}}', { namn: routine.title })}
                     className="p-2 text-gray-600 dark:text-gray-300 hover:text-red-500 dark:hover:text-red-400 transition-colors flex-shrink-0"
                   >
-                    <Trash2 className="w-4 h-4" />
+                    <Trash2 className="w-4 h-4" aria-hidden="true" />
                   </motion.button>
                 </motion.div>
               </Reorder.Item>
@@ -254,30 +266,26 @@ export default function RoutinesTab() {
       <Card className="p-6 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50">
         <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">{t('wellness.routines.suggestedRoutines')}</h3>
         <div className="space-y-2">
-          {[
-            { titleKey: 'wellness.routines.suggestions.morningStretch', time: '07:30', icon: Sun, descKey: 'wellness.routines.suggestions.morningStretchDesc' },
-            { titleKey: 'wellness.routines.suggestions.lunchWalk', time: '12:00', icon: Coffee, descKey: 'wellness.routines.suggestions.lunchWalkDesc' },
-            { titleKey: 'wellness.routines.suggestions.weeklyReview', time: '18:00', icon: CalendarDays, descKey: 'wellness.routines.suggestions.weeklyReviewDesc' },
-          ].map((suggestion, index) => {
+          {SUGGESTIONS.map((suggestion) => {
             const title = t(suggestion.titleKey)
             const desc = t(suggestion.descKey)
             const Icon = suggestion.icon
             return (
               <motion.button
-                key={index}
+                key={suggestion.titleKey}
                 whileHover={{ x: 4 }}
                 onClick={() => {
-                  setNewRoutine({ title, time: suggestion.time.includes(':') ? suggestion.time : '09:00' })
+                  setNewRoutine({ title, time: suggestion.time })
                   setIsAdding(true)
                 }}
                 className="w-full flex items-center gap-3 p-4 rounded-xl border-2 border-dashed border-[var(--c-accent)] dark:border-[var(--c-solid)] hover:border-[var(--c-solid)]/60 dark:hover:border-[var(--c-solid)] hover:bg-white dark:hover:bg-stone-800 transition-all text-left"
               >
-                <Icon className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-text)] flex-shrink-0" />
+                <Icon className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-text)] flex-shrink-0" aria-hidden="true" />
                 <div className="flex-1 min-w-0">
                   <p className="font-medium text-gray-800 dark:text-gray-100">{title}</p>
                   <p className="text-xs text-gray-600 dark:text-gray-300">{suggestion.time} • {desc}</p>
                 </div>
-                <Plus className="w-4 h-4 text-[var(--c-text)] dark:text-[var(--c-text)] flex-shrink-0" />
+                <Plus className="w-4 h-4 text-[var(--c-text)] dark:text-[var(--c-text)] flex-shrink-0" aria-hidden="true" />
               </motion.button>
             )
           })}

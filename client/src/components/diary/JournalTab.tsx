@@ -14,6 +14,7 @@ import { cn } from '@/lib/utils'
 import { Card, Button, ErrorState } from '@/components/ui'
 // RD26: samma felmönster som övriga skrivvägar — texten kvar, Försök igen
 import { SkrivFel } from '@/components/ui/SkrivFel'
+import { WellnessConsentGate } from '@/components/consent/WellnessConsentGate'
 import { formatLocalDate } from '@/services/aktivitetSchema'
 
 const getMoodEmoji = (mood: number) => {
@@ -59,10 +60,10 @@ function WriteModal({ isOpen, onClose, onSave, initialPrompt, redigera = null }:
   const [content, setContent] = useState(
     redigera ? redigera.content : initialPrompt ? `${initialPrompt}\n\n` : ''
   )
-  // F6: ingen förvald mood — en ren jobbsökaranteckning kräver inte
-  // hälsosamtycke, och ett förvalt värde hade skickat ett mood-fält även
-  // när användaren aldrig rört reglaget (se check_wellness_consent-policyn
-  // på diary_entries).
+  // F6: ingen förvald mood — ett förvalt värde hade skickat ett mood-fält
+  // även när användaren aldrig rört reglaget. OBS: varje sparning kräver
+  // ändå hälsosamtycke (check_wellness_consent på diary_entries, MV2) —
+  // därför står samtyckesrutan överst i den här dialogen.
   const [mood, setMood] = useState<number | null>(redigera?.mood ?? null)
   const [tagInput, setTagInput] = useState('')
   const [tags, setTags] = useState<string[]>(redigera?.tags ?? [])
@@ -149,6 +150,17 @@ function WriteModal({ isOpen, onClose, onSave, initialPrompt, redigera = null }:
         </div>
 
         <div className="p-6 space-y-5">
+          {/* 2026-10-09: samtycket gick bara att ge under fliken Humör, så den som
+              började i dagboken skrev en text som databasen sedan nekade. Grinden
+              renderar ingenting när samtycket redan finns. */}
+          <WellnessConsentGate
+            compact
+            rubrik={t('diary.journal.consent.title', 'Ett ja behövs innan du sparar')}
+            beskrivning={t('diary.journal.consent.desc', 'Dagboken kan handla om hur du mår, så vi sparar den bara om du säger ja. Det du redan skrivit kan du alltid läsa och radera.')}
+          >
+            {null}
+          </WellnessConsentGate>
+
           {/* Title */}
           <input
             type="text"

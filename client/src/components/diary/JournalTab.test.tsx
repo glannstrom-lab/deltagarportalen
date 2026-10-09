@@ -7,6 +7,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { MemoryRouter } from 'react-router-dom'
 
 const mockToggleFavorite = vi.fn()
 const mockDeleteEntry = vi.fn()
@@ -181,5 +182,36 @@ describe('JournalTab — laddar / fel / klart', () => {
     await skrivOchSpara(user)
 
     expect(screen.queryByLabelText(/dina tankar|innehåll/i)).not.toBeInTheDocument()
+  })
+})
+
+/**
+ * 2026-10-09 — samtycket gick bara att ge under fliken Humör. Den som började
+ * i dagboken skrev en text som databasen sedan nekade. Nu står frågan överst
+ * i skrivrutan, och försvinner när samtycket finns.
+ *
+ * Mutation: ta bort <WellnessConsentGate> ur WriteModal → test 1 faller.
+ */
+describe('JournalTab — samtycket ges där man skriver', () => {
+  beforeEach(() => {
+    lage.isError = false
+    lage.entries = []
+  })
+
+  it('utan samtycke frågar skrivrutan om ett ja', async () => {
+    const { useAuthStore } = await import('@/stores/authStore')
+    useAuthStore.setState({ profile: { id: 'u1', wellness_consent_at: null } as never, isLoading: false })
+    render(<JournalTab />, { wrapper: MemoryRouter })
+    await userEvent.setup().click(screen.getByRole('button', { name: /använd/i }))
+    expect(screen.getByText('Ett ja behövs innan du sparar')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /ge samtycke/i })).toBeInTheDocument()
+  })
+
+  it('med samtycke syns ingen fråga', async () => {
+    const { useAuthStore } = await import('@/stores/authStore')
+    useAuthStore.setState({ profile: { id: 'u1', wellness_consent_at: '2026-10-01T10:00:00Z' } as never, isLoading: false })
+    render(<JournalTab />, { wrapper: MemoryRouter })
+    await userEvent.setup().click(screen.getByRole('button', { name: /använd/i }))
+    expect(screen.queryByText('Ett ja behövs innan du sparar')).toBeNull()
   })
 })

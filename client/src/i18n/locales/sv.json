@@ -4504,7 +4504,7 @@
       }
     },
     "journal": {
-      "saveNeedsConsent": "Anteckningen sparades inte. Dagboken sparas bara om du har sagt ja till att vi lagrar uppgifter om ditt mående. Det gör du under fliken Humör. Texten ligger kvar här.",
+      "saveNeedsConsent": "Anteckningen sparades inte. Dagboken sparas bara om du har sagt ja till att vi lagrar uppgifter om ditt mående. Ge ditt ja i rutan överst. Texten ligger kvar här.",
       "writeModal": {
         "title": "Ny dagboksanteckning",
         "titleLabel": "Titel på inlägget (valfritt)",
@@ -4543,6 +4543,10 @@
       "viewModal": {
         "mood": "Humör: {{mood}}/5",
         "edit": "Ändra"
+      },
+      "consent": {
+        "title": "Ett ja behövs innan du sparar",
+        "desc": "Dagboken kan handla om hur du mår, så vi sparar den bara om du säger ja. Det du redan skrivit kan du alltid läsa och radera."
       }
     }
   },
@@ -4795,7 +4799,10 @@
         "morning": {},
         "evening": {}
       },
-      "todayLine": "{{klara}} av {{totalt}} rutiner klara i dag"
+      "todayLine": "{{klara}} av {{totalt}} rutiner klara i dag",
+      "markDone": "Klar i dag: {{namn}}",
+      "remove": "Ta bort {{namn}}",
+      "savedOnDevice": "Sparas på den här enheten. Bockarna börjar om varje dag."
     },
     "cognitive": {
       "title": "Kognitiv träning",
@@ -4867,7 +4874,8 @@
         "energy": "Energinivåer",
         "sleep": "Sömnkvalitet",
         "stress": "Stress",
-        "note": "Anteckningen du skriver till loggen"
+        "note": "Anteckningen du skriver till loggen",
+        "diary": "Det du skriver i dagboken"
       },
       "whyWeCollect": "Varför vi samlar in detta",
       "whyDesc": "Datan används för att ge dig personliga insikter om ditt välmående och för att anpassa rekommendationer under din jobbsökning. Vi analyserar trender för att hjälpa dig förstå vad som påverkar ditt mående.",
@@ -4887,7 +4895,7 @@
       "manageInSettings": "Hantera",
       "requiredDesc": "Du måste ge samtycke för att kunna använda denna funktion",
       "requiredTitle": "Samtycke krävs",
-      "utanSamtycke": "Dagboken och tacksamheten behöver inget samtycke."
+      "utanSamtycke": "Tacksamheten behöver inget samtycke."
     }
   },
   "education": {
@@ -8357,7 +8365,7 @@
       "taskCreateErrorMessage": "Uppgiften kunde inte sparas i kalendern. Försök igen.",
       "diarySaveErrorTitle": "Kunde inte spara i dagboken",
       "diarySaveErrorMessage": "Svaret kunde inte sparas i dagboken just nu. Försök igen om en stund.",
-      "diarySaveConsentMessage": "Dagboken sparas bara om du har sagt ja till att vi lagrar uppgifter om ditt mående. Det gör du i dagboken under fliken Humör."
+      "diarySaveConsentMessage": "Dagboken sparas bara om du har sagt ja till att vi lagrar uppgifter om ditt mående. Ditt ja ger du i dagboken, i rutan där du skriver."
     },
     "thinking": "Tänker...",
     "send": "Skicka",

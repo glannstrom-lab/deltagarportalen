@@ -444,7 +444,10 @@ export function MessagesSection({
   }
 
   return (
-    <Card className="flex flex-col h-[500px]">
+    // 2026-10-09: den fasta höjden gällde även en tom lista, och tomtillståndet
+    // (bild + rubrik + text) klipptes mitt i meningen. Höjden behövs bara när
+    // det finns en tråd att rulla i.
+    <Card className={cn('flex flex-col', (loading || messages.length > 0) && 'h-[500px]')}>
       <div className="p-4 border-b border-stone-200 dark:border-stone-700">
         <div className="flex items-center gap-2">
           <MessageSquare className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-text)]" />
@@ -469,7 +472,7 @@ export function MessagesSection({
             <LoadingState />
           </div>
         ) : messages.length === 0 ? (
-          <div className="flex items-center justify-center h-full">
+          <div className="flex items-center justify-center">
             <EmptyState
               illustration="vardag"
               title={t('myConsultant.messages.noMessages')}
@@ -1127,7 +1130,12 @@ function MyConsultantInner() {
 
       {/* Main content grid */}
       {consultant && (
-        <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-6">
+        // 2026-10-09: rutnätet bröts på fönsterbredden (md:/2xl:), men mellan
+        // skenan och rådgivarkolumnen är innehållsytan bara ~500 px vid 1440 —
+        // tre kolumner där gav rubriker som bröts ord för ord. Containerfrågor
+        // mäter ytan kortet faktiskt får.
+        <div className="@container">
+        <div className="grid grid-cols-1 @3xl:grid-cols-2 @6xl:grid-cols-3 gap-6">
           {/* Left column - Consultant info */}
           <div className="space-y-6">
             <ConsultantCard consultant={consultant} nextMeeting={nextMeeting} />
@@ -1135,7 +1143,7 @@ function MyConsultantInner() {
           </div>
 
           {/* Middle column - Messages */}
-          <div className="lg:col-span-1">
+          <div>
             <MessagesSection
               messages={messages}
               consultant={consultant}
@@ -1149,6 +1157,7 @@ function MyConsultantInner() {
             <SharedInformationSection sharedInfo={sharedInfo} />
             <VemHarOppnatKort />
           </div>
+        </div>
         </div>
       )}
 
