@@ -130,7 +130,7 @@ export function ChipSelect({
 
       <div className="mt-1 min-h-[1rem]">
         {error && (
-          <p id={errorId} role="alert" className="text-xs text-red-500 dark:text-red-400">
+          <p id={errorId} role="alert" className="text-xs text-red-700 dark:text-red-400">
             {error}
           </p>
         )}

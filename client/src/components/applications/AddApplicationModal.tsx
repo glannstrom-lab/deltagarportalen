@@ -204,10 +204,10 @@ export function AddApplicationModal({
       aria-modal="true"
       aria-labelledby="add-application-title"
     >
-      <div ref={modalRef} className="bg-white rounded-t-2xl sm:rounded-2xl w-full sm:max-w-lg max-h-[95vh] sm:max-h-[90vh] overflow-hidden flex flex-col">
+      <div ref={modalRef} className="bg-white dark:bg-stone-900 rounded-t-2xl sm:rounded-2xl w-full sm:max-w-lg max-h-[95vh] sm:max-h-[90vh] overflow-hidden flex flex-col">
         {/* Header */}
-        <div className="sticky top-0 bg-white border-b border-stone-100 p-4 flex items-center justify-between">
-          <h2 id="add-application-title" className="text-lg font-semibold text-stone-900">
+        <div className="sticky top-0 bg-white dark:bg-stone-900 border-b border-stone-100 dark:border-stone-700 p-4 flex items-center justify-between">
+          <h2 id="add-application-title" className="text-lg font-semibold text-stone-900 dark:text-stone-100">
             {editApplication
               ? t('applications.form.editTitle', 'Redigera ansökan')
               : t('applications.form.addTitle', 'Lägg till ansökan')}
@@ -215,16 +215,16 @@ export function AddApplicationModal({
           <button
             onClick={onClose}
             aria-label={t('applications.common.close', 'Stäng')}
-            className="p-2 hover:bg-stone-100 rounded-full transition-colors"
+            className="p-2 hover:bg-stone-100 dark:hover:bg-stone-800 rounded-full transition-colors"
           >
-            <X className="w-5 h-5 text-stone-700" />
+            <X className="w-5 h-5 text-stone-700 dark:text-stone-300" aria-hidden="true" />
           </button>
         </div>
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-4 space-y-4">
           {error && (
-            <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm flex items-center gap-2">
+            <div className="p-3 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-lg text-red-700 dark:text-red-300 text-sm flex items-center gap-2">
               <AlertCircle className="w-4 h-4 flex-shrink-0" />
               {error}
             </div>
@@ -232,11 +232,11 @@ export function AddApplicationModal({
 
           {/* Company Name */}
           <div>
-            <label htmlFor="addapplicationmodal-f1" className="block text-sm font-medium text-stone-700 mb-1">
-              {t('applications.form.company', 'Företag')} <span className="text-red-500">*</span>
+            <label htmlFor="addapplicationmodal-f1" className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">
+              {t('applications.form.company', 'Företag')} <span className="text-red-700 dark:text-red-400">*</span>
             </label>
             <div className="relative">
-              <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-600" />
+              <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-600 dark:text-stone-400" aria-hidden="true" />
               <input
                 id="addapplicationmodal-f1"
                 type="text"
@@ -251,11 +251,11 @@ export function AddApplicationModal({
 
           {/* Job Title */}
           <div>
-            <label htmlFor="addapplicationmodal-f2" className="block text-sm font-medium text-stone-700 mb-1">
-              {t('applications.form.jobTitle', 'Tjänst')} <span className="text-red-500">*</span>
+            <label htmlFor="addapplicationmodal-f2" className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">
+              {t('applications.form.jobTitle', 'Tjänst')} <span className="text-red-700 dark:text-red-400">*</span>
             </label>
             <div className="relative">
-              <Briefcase className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-600" />
+              <Briefcase className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-600 dark:text-stone-400" aria-hidden="true" />
               <input
                 id="addapplicationmodal-f2"
                 type="text"
@@ -270,9 +270,9 @@ export function AddApplicationModal({
 
           {/* Location */}
           <div>
-            <label htmlFor="addapplicationmodal-f3" className="block text-sm font-medium text-stone-700 mb-1">{t('applications.form.location', 'Plats')}</label>
+            <label htmlFor="addapplicationmodal-f3" className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">{t('applications.form.location', 'Plats')}</label>
             <div className="relative">
-              <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-600" />
+              <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-600 dark:text-stone-400" aria-hidden="true" />
               <input
                 id="addapplicationmodal-f3"
                 type="text"
@@ -286,9 +286,9 @@ export function AddApplicationModal({
 
           {/* Job URL */}
           <div>
-            <label htmlFor="addapplicationmodal-f4" className="block text-sm font-medium text-stone-700 mb-1">{t('applications.form.jobUrl', 'Länk till annons')}</label>
+            <label htmlFor="addapplicationmodal-f4" className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">{t('applications.form.jobUrl', 'Länk till annons')}</label>
             <div className="relative">
-              <Link2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-600" />
+              <Link2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-600 dark:text-stone-400" aria-hidden="true" />
               <input
                 id="addapplicationmodal-f4"
                 type="url"
@@ -303,7 +303,7 @@ export function AddApplicationModal({
           {/* Source & Application Date */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label htmlFor="addapplicationmodal-f5" className="block text-sm font-medium text-stone-700 mb-1">{t('applications.form.source', 'Källa')}</label>
+              <label htmlFor="addapplicationmodal-f5" className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">{t('applications.form.source', 'Källa')}</label>
               <select
                 id="addapplicationmodal-f5"
                 value={formData.source}
@@ -316,9 +316,9 @@ export function AddApplicationModal({
               </select>
             </div>
             <div>
-              <label htmlFor="addapplicationmodal-f6" className="block text-sm font-medium text-stone-700 mb-1">{t('applications.form.applicationDate', 'Ansökningsdatum')}</label>
+              <label htmlFor="addapplicationmodal-f6" className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">{t('applications.form.applicationDate', 'Ansökningsdatum')}</label>
               <div className="relative">
-                <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-600" />
+                <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-600 dark:text-stone-400" aria-hidden="true" />
                 <input
                   id="addapplicationmodal-f6"
                   type="date"
@@ -357,7 +357,7 @@ export function AddApplicationModal({
           {/* Status & Priority */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label htmlFor="addapplicationmodal-f7" className="block text-sm font-medium text-stone-700 mb-1">{t('applications.form.status', 'Status')}</label>
+              <label htmlFor="addapplicationmodal-f7" className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">{t('applications.form.status', 'Status')}</label>
               <select
                 id="addapplicationmodal-f7"
                 value={formData.status}
@@ -372,7 +372,7 @@ export function AddApplicationModal({
               </select>
             </div>
             <div>
-              <label htmlFor="addapplicationmodal-f8" className="block text-sm font-medium text-stone-700 mb-1">{t('applications.form.priorityLabel', 'Prioritet')}</label>
+              <label htmlFor="addapplicationmodal-f8" className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">{t('applications.form.priorityLabel', 'Prioritet')}</label>
               <select
                 id="addapplicationmodal-f8"
                 value={formData.priority}
@@ -388,7 +388,7 @@ export function AddApplicationModal({
 
           {/* Notes */}
           <div>
-            <label htmlFor="addapplicationmodal-f9" className="block text-sm font-medium text-stone-700 mb-1">{t('applications.form.notes', 'Anteckningar')}</label>
+            <label htmlFor="addapplicationmodal-f9" className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">{t('applications.form.notes', 'Anteckningar')}</label>
             <textarea
               id="addapplicationmodal-f9"
               value={formData.notes}
@@ -401,7 +401,7 @@ export function AddApplicationModal({
         </form>
 
         {/* Footer */}
-        <div className="border-t border-stone-100 p-4 flex gap-3">
+        <div className="border-t border-stone-100 dark:border-stone-700 p-4 flex gap-3">
           <Button
             type="button"
             variant="outline"

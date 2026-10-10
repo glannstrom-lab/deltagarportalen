@@ -172,7 +172,7 @@ export function SalaryInsightsPanel({
               variant="ghost"
               size="sm"
               onClick={() => { setResult(null); setCitations([]) }}
-              className="text-white/80 hover:text-white hover:bg-white/10"
+              className="text-white/80 hover:text-white hover:bg-white/10 dark:text-white/80 dark:hover:text-white dark:hover:bg-white/10"
             >
               {t('salary.insights.newSearch')}
             </Button>

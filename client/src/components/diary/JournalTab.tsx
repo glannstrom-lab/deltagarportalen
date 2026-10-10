@@ -237,8 +237,8 @@ function WriteModal({ isOpen, onClose, onSave, initialPrompt, redigera = null }:
                 placeholder={t('diary.journal.writeModal.addTagPlaceholder')}
                 className="flex-1 px-3 py-2 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] text-sm"
               />
-              <Button variant="outline" size="sm" onClick={handleAddTag}>
-                <Plus className="w-4 h-4" />
+              <Button variant="outline" size="sm" onClick={handleAddTag} aria-label={t('diary.journal.writeModal.addTagLabel')}>
+                <Plus className="w-4 h-4" aria-hidden="true" />
               </Button>
             </div>
           </div>

@@ -463,7 +463,7 @@ export function ApplicationsPipeline({
                   )}
                 >
                   <Filter className="w-4 h-4" aria-hidden="true" />
-                  <span className="hidden sm:inline">
+                  <span className="sr-only sm:not-sr-only">
                     {priorityFilter
                       ? t(`applications.pipeline.priority${priorityFilter.charAt(0).toUpperCase()}${priorityFilter.slice(1)}`)
                       : t('applications.pipeline.filter', 'Filter')}
@@ -523,7 +523,7 @@ export function ApplicationsPipeline({
                   </button>
                 ))}
                 {staleApplications.length > 3 && (
-                  <span className="px-2 py-1 text-xs text-amber-600 dark:text-amber-400">
+                  <span className="px-2 py-1 text-xs text-amber-700 dark:text-amber-400">
                     {t('applications.stale.more', { count: staleApplications.length - 3 })}
                   </span>
                 )}

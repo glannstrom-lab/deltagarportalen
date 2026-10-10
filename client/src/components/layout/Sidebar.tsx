@@ -264,7 +264,7 @@ export function Sidebar({ onClose, isCollapsed = false, onToggleCollapse }: Side
           <div className="mt-4 pt-3 border-t border-stone-100 dark:border-stone-800">
             {!isCollapsed && (
               <div className="px-2 mb-1">
-                <span className="text-xs font-semibold text-amber-600 dark:text-amber-400 uppercase tracking-wide">
+                <span className="text-xs font-semibold text-amber-700 dark:text-amber-400 uppercase tracking-wide">
                   {t('sidebar.adminSection')}
                 </span>
               </div>

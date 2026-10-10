@@ -318,7 +318,7 @@ function GratitudeStats() {
       <Card className="p-4 text-center bg-amber-50 dark:bg-amber-900/20 border-amber-100 dark:border-amber-800">
         <Sun className="w-6 h-6 text-amber-600 mx-auto mb-2" />
         <p className="text-2xl font-bold text-amber-700">{streak}</p>
-        <p className="text-sm text-amber-600">{t('diary.gratitude.stats.streakLabel')}</p>
+        <p className="text-sm text-amber-700 dark:text-amber-400">{t('diary.gratitude.stats.streakLabel')}</p>
       </Card>
 
       <Card className="p-4 text-center">

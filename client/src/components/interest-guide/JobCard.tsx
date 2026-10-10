@@ -226,7 +226,7 @@ export function JobCard({
                 <CheckCircle2 className="w-4 h-4" />
                 {t('interestGuide.jobCard.adaptationsTitle', 'Anpassningar som kan hjälpa dig:')}
               </h4>
-              <p className="text-xs text-amber-600 mb-2">
+              <p className="text-xs text-amber-700 dark:text-amber-400 mb-2">
                 {t('interestGuide.jobCard.adaptationsLead', 'Baserat på dina svar kan följande anpassningar göra det lättare att arbeta inom detta yrke:')}
               </p>
               <ul className="text-sm text-amber-700 space-y-2">
@@ -237,7 +237,7 @@ export function JobCard({
                   </li>
                 ))}
               </ul>
-              <p className="text-xs text-amber-600 mt-3 italic">
+              <p className="text-xs text-amber-700 dark:text-amber-400 mt-3 italic">
                 {t('interestGuide.jobCard.adaptationsLaw', 'Enligt Arbetsmiljölagen har du rätt till rimliga arbetsanpassningar. Diskutera med en arbetskonsulent eller arbetsgivare.')}
               </p>
             </div>

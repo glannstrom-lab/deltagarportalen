@@ -429,7 +429,7 @@ function MoodStats() {
           {trend === 'down' && (
             <>
               <TrendingDown className="w-4 h-4 sm:w-5 sm:h-5 text-orange-500" />
-              <span className="text-sm text-orange-600 font-medium">{t('diary.moodTab.stats.trendDown')}</span>
+              <span className="text-sm text-orange-700 dark:text-orange-400 font-medium">{t('diary.moodTab.stats.trendDown')}</span>
             </>
           )}
           {trend === 'same' && (

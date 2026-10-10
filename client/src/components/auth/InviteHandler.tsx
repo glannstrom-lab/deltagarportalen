@@ -342,7 +342,7 @@ export const InviteHandler: React.FC = () => {
               />
             </div>
             {formData.confirmPassword && formData.password !== formData.confirmPassword && (
-              <p className="mt-1 text-xs text-red-500">{t('auth.invite.passwordMismatch')}</p>
+              <p className="mt-1 text-xs text-red-700 dark:text-red-400">{t('auth.invite.passwordMismatch')}</p>
             )}
           </div>
 

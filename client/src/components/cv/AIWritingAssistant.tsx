@@ -221,7 +221,7 @@ export function AIWritingAssistant({ content, onChange, type, cvData }: AIWritin
                   </div>
                 ))}
                 {weakWords.length > 3 && (
-                  <p className="text-xs text-amber-600 dark:text-amber-400">
+                  <p className="text-xs text-amber-700 dark:text-amber-400">
                     +{weakWords.length - 3} {t('cv.aiWriting.more')}...
                   </p>
                 )}

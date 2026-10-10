@@ -123,7 +123,7 @@ export function ProfileImageUpload({ currentImage, onImageChange, size = 'md', c
             <button
               type="button"
               onClick={handleRemove}
-              className="text-red-500 hover:text-red-600 dark:text-red-400 dark:hover:text-red-300 font-medium"
+              className="text-red-700 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 font-medium"
             >
               {t('common.remove')}
             </button>
@@ -140,7 +140,7 @@ export function ProfileImageUpload({ currentImage, onImageChange, size = 'md', c
       />
 
       {error && (
-        <p className="text-xs text-red-500 dark:text-red-400">{error}</p>
+        <p className="text-xs text-red-700 dark:text-red-400">{error}</p>
       )}
     </div>
   )

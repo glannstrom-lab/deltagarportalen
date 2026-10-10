@@ -138,7 +138,7 @@ function ContactFormModal({
           {arNy ? (
             <div>
               <label htmlFor="new-contact-application" className="block text-sm font-medium text-stone-700 mb-1">
-                {t('applications.contacts.application', 'Vilken ansökan gäller det?')} <span className="text-red-500">*</span>
+                {t('applications.contacts.application', 'Vilken ansökan gäller det?')} <span className="text-red-700 dark:text-red-400">*</span>
               </label>
               <select
                 id="new-contact-application"
@@ -163,7 +163,7 @@ function ContactFormModal({
 
           <div>
             <label htmlFor="edit-contact-name" className="block text-sm font-medium text-stone-700 mb-1">
-              {t('applications.contacts.name', 'Namn')} <span className="text-red-500">*</span>
+              {t('applications.contacts.name', 'Namn')} <span className="text-red-700 dark:text-red-400">*</span>
             </label>
             <input
               id="edit-contact-name"

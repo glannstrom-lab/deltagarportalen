@@ -15,12 +15,8 @@ const sectionIcons = {
   icf: Activity,
 }
 
-const sectionColors = {
-  riasec: 'bg-blue-500',
-  bigfive: 'bg-purple-500',
-  strong: 'bg-pink-500',
-  icf: 'bg-emerald-500',
-}
+// En färg per sida: den aktiva delen bär hubbens färg (var fyra pasteller,
+// och vit text på bg-blue-500 gav 3,8:1). Ikonen skiljer delarna åt.
 
 export function SectionDots({ 
   currentSection, 
@@ -39,17 +35,20 @@ export function SectionDots({
           <div key={section.id} className="flex items-center">
             <button
               onClick={() => onSectionClick(section.id)}
+              // Etiketten är dold på mobil för kommande delar — namnet måste ändå finnas.
+              aria-label={section.name}
+              aria-current={isCurrent ? 'step' : undefined}
               className={`
                 group relative flex items-center gap-2 px-3 py-2 rounded-xl transition-all duration-300
                 ${isCurrent 
-                  ? `${sectionColors[section.id]} text-white shadow-lg scale-105` 
+                  ? `bg-[var(--c-solid)] text-[var(--c-on-solid)] shadow-lg scale-105` 
                   : isCompleted
-                    ? 'bg-white text-gray-700 border border-gray-200 hover:border-gray-300 shadow-sm'
-                    : 'bg-white text-gray-400 border border-gray-100 hover:border-gray-200'
+                    ? 'bg-white dark:bg-stone-800 text-stone-700 dark:text-stone-200 border border-stone-200 dark:border-stone-600 hover:border-stone-300 shadow-sm'
+                    : 'bg-white dark:bg-stone-900 text-stone-500 dark:text-stone-400 border border-stone-200 dark:border-stone-700 hover:border-stone-300'
                 }
               `}
             >
-              <Icon className={`w-4 h-4 ${isCurrent ? 'text-white' : isCompleted ? 'text-gray-600' : 'text-gray-400'}`} />
+              <Icon className={`w-4 h-4 ${isCurrent ? 'text-[var(--c-on-solid)]' : ''}`} />
               <span className={`text-xs font-medium ${!isCurrent && !isCompleted && 'hidden sm:inline'}`}>
                 {section.name}
               </span>
@@ -66,7 +65,7 @@ export function SectionDots({
             
             {/* Connector line */}
             {index < sektioner.length - 1 && (
-              <div className={`w-4 sm:w-6 h-0.5 ${isCompleted ? 'bg-green-400' : 'bg-gray-200'}`} />
+              <div className={`w-4 sm:w-6 h-0.5 ${isCompleted ? 'bg-green-400' : 'bg-stone-200 dark:bg-stone-700'}`} />
             )}
           </div>
         )

@@ -259,7 +259,7 @@ export function CompanyCard({
                 {t('common.cancel')}
               </Button>
               {company.followup_date && (
-                <Button size="sm" variant="ghost" onClick={handleRemoveFollowup} className="text-red-600">
+                <Button size="sm" variant="ghost" onClick={handleRemoveFollowup} className="text-red-600 dark:text-red-400">
                   {t('spontaneous.followup.remove')}
                 </Button>
               )}

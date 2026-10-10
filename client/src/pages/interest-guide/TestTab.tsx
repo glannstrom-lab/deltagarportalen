@@ -396,7 +396,7 @@ export default function TestTab() {
             <button
               onClick={handleClearProgress}
               disabled={isSaving}
-              className="text-sm text-red-500 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 flex items-center gap-1 mx-auto disabled:opacity-50 transition-colors"
+              className="text-sm text-red-700 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 flex items-center gap-1 mx-auto disabled:opacity-50 transition-colors"
             >
               <Trash2 className="w-4 h-4" />
               {t('interestGuide.test.clearAndRestart')}
@@ -480,7 +480,7 @@ export default function TestTab() {
       <div className="mb-6">
         <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mb-2">
           <span>{t('interestGuide.test.yourProgress')}</span>
-          <span className="font-medium text-amber-600 dark:text-amber-400">{progress}%</span>
+          <span className="font-medium text-amber-700 dark:text-amber-400">{progress}%</span>
         </div>
         <div className="h-2 bg-stone-200 dark:bg-stone-700 rounded-full overflow-hidden">
           <div

@@ -1053,7 +1053,7 @@ ${t('interviewSimulator.download.tipsForImprovement')}:
           <div className="space-y-5">
             <div>
               <label htmlFor="roll-input" className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-2">
-                {t('interviewSimulator.roleLabel')} <span className="text-red-500">*</span>
+                {t('interviewSimulator.roleLabel')} <span className="text-red-700 dark:text-red-400">*</span>
               </label>
               <input
                 id="roll-input"

@@ -57,7 +57,7 @@ export const CompactSelect = forwardRef<HTMLSelectElement, CompactSelectProps>((
         className="block text-xs font-medium text-stone-600 dark:text-stone-400 mb-1"
       >
         {label}
-        {props.required && <span className="text-red-500 ml-0.5" aria-hidden="true">*</span>}
+        {props.required && <span className="text-red-700 dark:text-red-400 ml-0.5" aria-hidden="true">*</span>}
       </label>
 
       <select
@@ -93,7 +93,7 @@ export const CompactSelect = forwardRef<HTMLSelectElement, CompactSelectProps>((
 
       <div className="mt-1 min-h-[1.25rem]">
         {error && (
-          <p id={errorId} role="alert" className="text-xs text-red-500 dark:text-red-400">
+          <p id={errorId} role="alert" className="text-xs text-red-700 dark:text-red-400">
             {error}
           </p>
         )}

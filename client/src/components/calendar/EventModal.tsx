@@ -203,10 +203,12 @@ export function EventModal({ event, isOpen, onClose, onSave, onDelete, linkedJob
                     <button
                       key={type.value}
                       onClick={() => setFormData({ ...formData, type: type.value as CalendarEvent['type'] })}
+                      aria-pressed={formData.type === type.value}
+                      type="button"
                       className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                         formData.type === type.value
                           ? type.color
-                          : 'bg-stone-100 dark:bg-stone-700 text-stone-600 dark:text-stone-400 hover:bg-stone-200 dark:hover:bg-stone-600'
+                          : 'bg-stone-100 dark:bg-stone-700 text-stone-600 dark:text-stone-200 hover:bg-stone-200 dark:hover:bg-stone-600'
                       }`}
                     >
                       {type.label}

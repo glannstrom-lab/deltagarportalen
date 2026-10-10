@@ -309,7 +309,7 @@ export function DeleteAccountSection() {
                   variant="ghost"
                   size="sm"
                   onClick={() => setShowImmediateDialog(true)}
-                  className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                  className="text-red-600 hover:text-red-700 hover:bg-red-50 dark:text-red-400 dark:hover:text-red-300 dark:hover:bg-red-900/30"
                 >
                   {t('settings.deleteAccount.deleteNow')}
                 </Button>
@@ -395,7 +395,7 @@ export function DeleteAccountSection() {
                   variant="secondary"
                   size="sm"
                   onClick={() => setShowConfirmDialog(true)}
-                  className="mt-4 border-red-300 text-red-600 hover:bg-red-100 dark:border-red-800 dark:hover:bg-red-900/30"
+                  className="mt-4 border-red-300 text-red-600 hover:bg-red-100 dark:text-red-400 dark:border-red-800 dark:hover:bg-red-900/30"
                 >
                   <Trash2 className="w-4 h-4 mr-2" />
                   {t('settings.deleteAccount.requestButton')}

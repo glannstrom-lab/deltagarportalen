@@ -225,7 +225,7 @@ export function RoleSelector() {
                 </div>
 
                 {selectedRoles.length === 0 && (
-                  <p className="flex items-center gap-2 text-sm text-amber-600 mt-3">
+                  <p className="flex items-center gap-2 text-sm text-amber-700 dark:text-amber-400 mt-3">
                     <AlertCircle className="w-4 h-4" />
                     Minst en roll måste väljas
                   </p>

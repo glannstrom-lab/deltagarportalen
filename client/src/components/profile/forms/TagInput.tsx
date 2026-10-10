@@ -336,7 +336,7 @@ export function TagInput({
       <div className="flex justify-between items-center mt-2 min-h-[1.25rem]">
         <div className="flex-1">
           {error && (
-            <p id={errorId} role="alert" className="text-xs text-red-500 dark:text-red-400">
+            <p id={errorId} role="alert" className="text-xs text-red-700 dark:text-red-400">
               {error}
             </p>
           )}

@@ -89,7 +89,7 @@ function ContactForm({
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div>
           <label htmlFor="contact-name" className="block text-xs font-medium text-stone-700 mb-1 dark:text-stone-300">
-            {t('applications.contacts.name', 'Namn')} <span className="text-red-500">*</span>
+            {t('applications.contacts.name', 'Namn')} <span className="text-red-700 dark:text-red-400">*</span>
           </label>
           <input
             id="contact-name"
@@ -189,7 +189,7 @@ function ReminderForm({
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div>
           <label htmlFor="reminder-title" className="block text-xs font-medium text-stone-700 mb-1 dark:text-stone-300">
-            {t('applications.detail.reminderTitle', 'Titel')} <span className="text-red-500">*</span>
+            {t('applications.detail.reminderTitle', 'Titel')} <span className="text-red-700 dark:text-red-400">*</span>
           </label>
           <input
             id="reminder-title"
@@ -220,7 +220,7 @@ function ReminderForm({
         </div>
         <div>
           <label htmlFor="reminder-date" className="block text-xs font-medium text-stone-700 mb-1 dark:text-stone-300">
-            {t('applications.detail.reminderDate', 'Datum')} <span className="text-red-500">*</span>
+            {t('applications.detail.reminderDate', 'Datum')} <span className="text-red-700 dark:text-red-400">*</span>
           </label>
           <input
             id="reminder-date"
@@ -684,7 +684,7 @@ export function ApplicationDetailModal({
               />
 
               {documentsChanged && (
-                <p className="text-xs text-amber-600 flex items-center gap-1 dark:text-amber-400">
+                <p className="text-xs text-amber-700 flex items-center gap-1 dark:text-amber-400">
                   <span className="w-1.5 h-1.5 bg-amber-500 rounded-full" />
                   {t('applications.detail.unsavedChanges', 'Osparade ändringar')}
                 </p>

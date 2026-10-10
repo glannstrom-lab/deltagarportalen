@@ -770,14 +770,14 @@ function ExercisesInner() {
           <span className="text-gray-500 dark:text-gray-400">{t('exercises.stepOf', 'Steg {{current}} av {{total}}', { current: currentStep + 1, total: selectedExercise.steps.length })}</span>
           <div className="flex items-center gap-2">
             {saving && (
-              <span className="text-amber-600 dark:text-amber-400 flex items-center gap-1">
+              <span className="text-amber-700 dark:text-amber-400 flex items-center gap-1">
                 <Cloud className="w-4 h-4 animate-pulse" />
                 {t('exercises.saving')}
               </span>
             )}
             <button
               onClick={handleClearProgress}
-              className="text-red-500 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 text-sm"
+              className="text-red-700 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 text-sm"
             >
               {t('exercises.clearProgress', 'Rensa mina svar')}
             </button>

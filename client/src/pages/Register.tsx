@@ -543,7 +543,7 @@ export default function Register() {
                       <Link to="/terms" target="_blank" className="text-[var(--c-text)] dark:text-[var(--c-text)] hover:text-[var(--c-text)] dark:hover:text-[var(--c-text)] hover:underline">
                         {t('auth.consent.termsLink')}
                       </Link>
-                      {' '}<span className="text-red-500 dark:text-red-400">*</span>
+                      {' '}<span className="text-red-700 dark:text-red-400">*</span>
                     </label>
                   </div>
                   {touched.acceptTerms && errors.acceptTerms && (
@@ -568,7 +568,7 @@ export default function Register() {
                       <Link to="/privacy" target="_blank" className="text-[var(--c-text)] dark:text-[var(--c-text)] hover:text-[var(--c-text)] dark:hover:text-[var(--c-text)] hover:underline">
                         {t('auth.consent.privacyLink')}
                       </Link>
-                      {' '}<span className="text-red-500 dark:text-red-400">*</span>
+                      {' '}<span className="text-red-700 dark:text-red-400">*</span>
                     </label>
                   </div>
                   {touched.acceptPrivacy && errors.acceptPrivacy && (

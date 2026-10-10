@@ -51,7 +51,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         {label && (
           <label htmlFor={inputId} className={labelBase}>
             {label}
-            {props.required && <span className="text-red-500 ml-1" aria-hidden="true">*</span>}
+            {props.required && <span className="text-red-700 dark:text-red-400 ml-1" aria-hidden="true">*</span>}
           </label>
         )}
         <div className="relative">
@@ -177,7 +177,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
         {label && (
           <label htmlFor={textareaId} className={labelBase}>
             {label}
-            {props.required && <span className="text-red-500 ml-1" aria-hidden="true">*</span>}
+            {props.required && <span className="text-red-700 dark:text-red-400 ml-1" aria-hidden="true">*</span>}
           </label>
         )}
         <textarea
@@ -250,7 +250,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
         {label && (
           <label htmlFor={selectId} className={labelBase}>
             {label}
-            {props.required && <span className="text-red-500 ml-1" aria-hidden="true">*</span>}
+            {props.required && <span className="text-red-700 dark:text-red-400 ml-1" aria-hidden="true">*</span>}
           </label>
         )}
         <div className="relative">

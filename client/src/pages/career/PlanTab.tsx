@@ -596,7 +596,7 @@ export default function PlanTab() {
           <Button
             variant="ghost"
             size="sm"
-            className="text-red-600"
+            className="text-red-600 dark:text-red-400"
             onClick={deletePlan}
             aria-label={t('career.plan.deletePlanLabel')}
           >

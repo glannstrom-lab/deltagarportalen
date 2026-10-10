@@ -215,6 +215,7 @@ export const buttonVariants = {
   secondary: cn(
     'bg-white border border-stone-200 text-stone-700',
     'hover:bg-stone-50 hover:border-stone-300',
+    'dark:bg-stone-800 dark:border-stone-600 dark:text-stone-200 dark:hover:bg-stone-700',
     animations.press,
     radius.button,
     'font-medium transition-all duration-200',
@@ -233,6 +234,9 @@ export const buttonVariants = {
   ghost: cn(
     'bg-transparent text-stone-600',
     'hover:bg-stone-100 hover:text-stone-900',
+    // Mörkt läge saknades till 2026-10-10: stone-600 på mörk botten gav 2,1:1
+    // på varje Avbryt-knapp i dialogerna.
+    'dark:text-stone-300 dark:hover:bg-stone-800 dark:hover:text-stone-100',
     animations.press,
     radius.button,
     'font-medium transition-all duration-200',
@@ -240,8 +244,10 @@ export const buttonVariants = {
     'focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--c-solid)] focus-visible:ring-offset-2'
   ),
   danger: cn(
-    'bg-red-50 text-red-600 border border-red-200',
+    // red-700, inte 600: 600 på red-50 är 4,2:1 — under AA för vanlig text.
+    'bg-red-50 text-red-700 border border-red-200',
     'hover:bg-red-100 hover:border-red-300',
+    'dark:bg-red-900/30 dark:text-red-300 dark:border-red-800 dark:hover:bg-red-900/50',
     animations.press,
     radius.button,
     'font-medium transition-all duration-200',
@@ -251,7 +257,7 @@ export const buttonVariants = {
   icon: cn(
     'w-10 h-10 rounded-lg',
     'inline-flex items-center justify-center',
-    'text-stone-600 hover:bg-stone-100',
+    'text-stone-600 hover:bg-stone-100 dark:text-stone-300 dark:hover:bg-stone-800',
     animations.press,
     'transition-colors duration-200',
     'focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2'

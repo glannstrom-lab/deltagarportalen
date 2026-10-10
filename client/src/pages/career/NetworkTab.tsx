@@ -328,7 +328,7 @@ export default function NetworkTab() {
                   role="listitem"
                 >
                   <div className="w-8 h-8 rounded-full bg-amber-100 dark:bg-amber-800 flex items-center justify-center flex-shrink-0">
-                    <span className="text-xs font-bold text-amber-600 dark:text-amber-300">{contact.name.charAt(0)}</span>
+                    <span className="text-xs font-bold text-amber-700 dark:text-amber-300">{contact.name.charAt(0)}</span>
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="font-medium text-amber-900 dark:text-amber-100 truncate">{contact.name}</p>
@@ -673,7 +673,7 @@ export default function NetworkTab() {
                   >
                     {event.is_attending ? t('career.networkTab.attending') : t('career.networkTab.attend')}
                   </Button>
-                  <Button size="sm" variant="ghost" className="text-red-600" onClick={() => deleteEvent(event.id)}>
+                  <Button size="sm" variant="ghost" className="text-red-600 dark:text-red-400" onClick={() => deleteEvent(event.id)}>
                     <Trash2 className="w-4 h-4" />
                   </Button>
                 </div>

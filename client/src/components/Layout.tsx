@@ -1098,7 +1098,7 @@ export function MobileMainMenu({ isOpen, onClose }: { isOpen: boolean; onClose: 
         {/* Admin Section */}
         {isAdmin && (
           <div className="mt-2 pt-2 border-t border-stone-200 dark:border-stone-700/50">
-            <p className="px-3 py-1.5 text-[0.625rem] font-semibold text-amber-600 dark:text-amber-400 uppercase tracking-wider">
+            <p className="px-3 py-1.5 text-[0.625rem] font-semibold text-amber-700 dark:text-amber-400 uppercase tracking-wider">
               {t('sidebar.adminSection')}
             </p>
             <div className="space-y-0.5">

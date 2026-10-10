@@ -108,20 +108,20 @@ export function QuestionCard({
   const remaining = totalQuestions - questionNumber
 
   return (
-    <div className="bg-white rounded-2xl shadow-lg shadow-gray-200/50 border border-gray-100 p-6 sm:p-8 relative">
+    <div className="bg-white dark:bg-stone-800 rounded-2xl shadow-lg shadow-gray-200/50 dark:shadow-none border border-gray-100 dark:border-stone-700 p-6 sm:p-8 relative">
       {/* Paus-confirmation modal */}
       {showPauseConfirm && (
         <div
           ref={pauseDialogRef}
-          className="absolute inset-0 bg-white/95 backdrop-blur-sm rounded-2xl flex items-center justify-center z-10"
+          className="absolute inset-0 bg-white/95 dark:bg-stone-800/95 backdrop-blur-sm rounded-2xl flex items-center justify-center z-10"
           role="dialog"
           aria-modal="true"
           aria-labelledby="pause-dialog-title"
           aria-describedby="pause-dialog-description"
         >
           <div className="text-center p-6">
-            <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Pause className="w-8 h-8 text-amber-600" aria-hidden="true" />
+            <div className="w-16 h-16 bg-amber-100 dark:bg-amber-900/40 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Pause className="w-8 h-8 text-amber-700 dark:text-amber-400" aria-hidden="true" />
             </div>
             <h3 id="pause-dialog-title" className="text-lg font-semibold text-stone-900 dark:text-stone-100 mb-2">{t('interestGuide.question.pauseTitle')}</h3>
             <p id="pause-dialog-description" className="text-stone-700 dark:text-stone-300 mb-6 max-w-xs">
@@ -138,7 +138,7 @@ export function QuestionCard({
               <button
                 type="button"
                 onClick={confirmPause}
-                className="px-6 py-2 bg-amber-500 text-white rounded-lg hover:bg-amber-600 transition-colors"
+                className="px-6 py-2 bg-[var(--c-solid)] text-[var(--c-on-solid)] rounded-lg hover:brightness-95 transition-colors"
               >
                 {t('interestGuide.question.pauseConfirm')}
               </button>
@@ -171,7 +171,7 @@ export function QuestionCard({
 
         {/* Progress bar med uppmuntran */}
         <div className="relative">
-          <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+          <div className="h-2 bg-gray-100 dark:bg-stone-700 rounded-full overflow-hidden">
             <div 
               className="h-full bg-[var(--c-solid)] rounded-full transition-all duration-500"
               style={{ width: `${progress}%` }}
@@ -222,7 +222,7 @@ export function QuestionCard({
         {/* Slider track */}
         <div className="relative h-12 flex items-center">
           {/* Background track */}
-          <div className="absolute inset-x-0 h-3 bg-gray-200 rounded-full" aria-hidden="true"></div>
+          <div className="absolute inset-x-0 h-3 bg-gray-200 dark:bg-stone-600 rounded-full" aria-hidden="true"></div>
 
           {/* Active gradient track */}
           <div
@@ -246,10 +246,10 @@ export function QuestionCard({
                   className={`block
                     w-8 h-8 rounded-full border-4 transition-all duration-200 ease-out cursor-pointer
                     ${isCurrent
-                      ? 'bg-white border-[var(--c-solid)] scale-110 shadow-lg'
+                      ? 'bg-white dark:bg-stone-900 border-[var(--c-solid)] scale-110 shadow-lg'
                       : isActive
-                        ? 'bg-white border-[var(--c-accent)] hover:scale-105'
-                        : 'bg-white border-gray-300 hover:scale-105 hover:border-gray-400'
+                        ? 'bg-white dark:bg-stone-900 border-[var(--c-accent)] hover:scale-105'
+                        : 'bg-white dark:bg-stone-900 border-gray-300 dark:border-stone-500 hover:scale-105 hover:border-gray-400'
                     }
                   `}
                 />
@@ -288,7 +288,7 @@ export function QuestionCard({
               tabIndex={-1}
               className={`text-xs font-medium transition-colors ${
                 value === num
-                  ? num <= 2 ? 'text-red-500' : num === 3 ? 'text-yellow-500' : 'text-emerald-500'
+                  ? num <= 2 ? 'text-red-700 dark:text-red-400' : num === 3 ? 'text-yellow-700 dark:text-yellow-400' : 'text-emerald-700 dark:text-emerald-400'
                   : 'text-stone-600 dark:text-stone-400 hover:text-gray-600'
               }`}
             >
@@ -306,10 +306,10 @@ export function QuestionCard({
             transition-all duration-300
             ${isAnimating ? 'scale-105' : 'scale-100'}
             ${(value || 3) <= 2 
-              ? 'bg-red-50 text-red-700' 
+              ? 'bg-red-50 text-red-700 dark:bg-red-900/30 dark:text-red-300' 
               : (value || 3) === 3 
-                ? 'bg-yellow-50 text-yellow-700' 
-                : 'bg-emerald-50 text-emerald-700'
+                ? 'bg-yellow-50 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300' 
+                : 'bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300'
             }
           `}
         >

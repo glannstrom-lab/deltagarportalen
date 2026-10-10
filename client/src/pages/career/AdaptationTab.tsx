@@ -773,12 +773,12 @@ ${isEn ? 'Next Steps:' : 'Nästa steg:'}
         {/* Sparstatusen vaxlade tyst mellan tre lagen i en <div> utan roll. */}
         <div className="flex items-center gap-2 text-sm" role="status" aria-live="polite">
           {isSaving ? (
-            <span className="flex items-center gap-1 text-amber-600 dark:text-[var(--c-solid)]">
+            <span className="flex items-center gap-1 text-amber-700 dark:text-[var(--c-solid)]">
               <Loader2 className="w-4 h-4 animate-spin" />
               {isEn ? 'Saving...' : 'Sparar...'}
             </span>
           ) : hasUnsavedChanges ? (
-            <span className="flex items-center gap-1 text-amber-600 dark:text-[var(--c-solid)]">
+            <span className="flex items-center gap-1 text-amber-700 dark:text-[var(--c-solid)]">
               <CloudOff className="w-4 h-4" />
               {isEn ? 'Unsaved changes' : 'Osparade ändringar'}
             </span>
