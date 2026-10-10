@@ -9828,6 +9828,7 @@
     }
   },
   "notificationBell": {
+    "markAllRead": "Mark all as read",
     "paminnelse": {
       "karta": "Show {{plats}} on a map"
     },

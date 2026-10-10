@@ -198,7 +198,7 @@ export function EventModal({ event, isOpen, onClose, onSave, onDelete, linkedJob
               {/* Type */}
               <div>
                 <label className="text-sm font-medium text-stone-700 dark:text-stone-300">{t('calendar.modal.type')}</label>
-                <div className="grid grid-cols-3 gap-2 mt-1">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 mt-1">
                   {eventTypes.map((type) => (
                     <button
                       key={type.value}
@@ -215,9 +215,10 @@ export function EventModal({ event, isOpen, onClose, onSave, onDelete, linkedJob
                 </div>
               </div>
 
-              {/* Date & Time */}
-              <div className="grid grid-cols-3 gap-4">
-                <div>
+              {/* Datum och tid. På mobil står datumet på egen rad: i tre kolumner
+                  visades "2026-", "09:0" och "10:0" (mobilgenomgången 2026-10-10). */}
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
+                <div className="col-span-2 sm:col-span-1">
                   <label htmlFor="eventmodal-f2" className="text-sm font-medium text-stone-700 dark:text-stone-300">{t('calendar.modal.date')}</label>
                   <input
                     id="eventmodal-f2"

@@ -14,6 +14,7 @@ import {
   Loader2, AlertCircle, Folder, FileText, Save, Upload, ChevronDown
 } from '@/components/ui/icons'
 import { CVPreview } from '@/components/cv/CVPreview'
+import { SkaladA4 } from '@/components/cv/SkaladA4'
 import { AIWritingAssistant } from '@/components/cv/AIWritingAssistant'
 import { showToast } from '@/components/Toast'
 import { PDFExportButton } from '@/components/pdf/PDFExportButton'
@@ -1279,12 +1280,12 @@ export default function CVBuilder() {
             </span>
           </div>
 
-          {/* A4-pappers-yta. max-width = 210mm (=794px @ 96dpi) men skalbart
-              ned på mindre skärmar via max-w-full. Sidobrytning markerad med
-              en streckad linje var 297mm för att visa var ny sida börjar. */}
+          {/* A4-pappers-yta, alltid ritad i 210 mm och skalad ned till skärmen
+              (SkaladA4) — inte ombruten i telefonens bredd. Sidobrytning markerad
+              med en streckad linje vid 297 mm för att visa var ny sida börjar. */}
+          <SkaladA4 className="mx-auto shadow-2xl bg-white max-w-[210mm]">
           <div
-            className="bg-white shadow-2xl mx-auto relative"
-            style={{ maxWidth: '210mm', width: '100%' }}
+            className="bg-white relative"
             data-cv-dokument
           >
             {/* Sidbrytningsmarkör — visuell hint var nya sidan börjar.
@@ -1303,6 +1304,7 @@ export default function CVBuilder() {
 
             <CVPreview data={data} />
           </div>
+          </SkaladA4>
 
           <p className="text-xs text-stone-500 dark:text-stone-400 mt-4 px-2 text-center">
             {t('cvBuilder.review.editHint', 'Bryts något olämpligt? Gå tillbaka och ändra.')}

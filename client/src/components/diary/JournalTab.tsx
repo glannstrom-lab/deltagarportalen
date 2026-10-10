@@ -133,18 +133,18 @@ function WriteModal({ isOpen, onClose, onSave, initialPrompt, redigera = null }:
       <div className="fixed inset-0 bg-black/50" onClick={onClose} />
       <div className="relative bg-white dark:bg-stone-900 rounded-2xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
         <div className="sticky top-0 bg-white dark:bg-stone-900 border-b border-stone-100 p-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-[var(--c-accent)]/40 rounded-xl flex items-center justify-center">
+          <div className="flex min-w-0 items-center gap-3">
+            <div className="w-10 h-10 bg-[var(--c-accent)]/40 rounded-xl flex shrink-0 items-center justify-center">
               <BookHeart className="w-5 h-5 text-[var(--c-text)]" />
             </div>
-            <div>
+            <div className="min-w-0">
               <h2 className="text-lg font-bold text-stone-900 dark:text-stone-100">{redigera
                   ? t('diary.journal.writeModal.editTitle', 'Ändra ditt inlägg')
                   : t('diary.journal.writeModal.title')}</h2>
               <p className="text-sm text-stone-700 dark:text-stone-300">{wordCount} {t('diary.words')}</p>
             </div>
           </div>
-          <button onClick={onClose} className="p-2 hover:bg-stone-100 rounded-lg">
+          <button onClick={onClose} aria-label={t('common.close', 'Stäng')} className="shrink-0 p-2 hover:bg-stone-100 rounded-lg">
             <X className="w-5 h-5 text-stone-600 dark:text-stone-400" />
           </button>
         </div>

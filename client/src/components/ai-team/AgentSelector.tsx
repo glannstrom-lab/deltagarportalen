@@ -181,10 +181,13 @@ export function AgentSelector({ className }: AgentSelectorProps) {
               {t(agent.nameKey)}
             </span>
 
-            {/* Description - hidden on mobile */}
+            {/* Beskrivningen. Var tänkt `hidden sm:block`, men cn() (tailwind-merge)
+                räknar line-clamp-2 som en display-klass och strök `hidden` — den syntes
+                alltså på mobil, i 10 px. Den hjälper valet, så den står kvar, läsbar.
+                (2026-10-10) */}
             <span
               className={cn(
-                'hidden sm:block mt-1 text-[0.625rem] text-center line-clamp-2 leading-tight',
+                'mt-1 text-xs text-center line-clamp-2 leading-snug',
                 isSelected
                   ? 'text-stone-500 dark:text-stone-400'
                   : 'text-stone-400 dark:text-stone-500'

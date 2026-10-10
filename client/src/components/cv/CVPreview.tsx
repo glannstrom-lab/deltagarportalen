@@ -66,6 +66,12 @@ export function CVPreview({ data: rawData }: CVPreviewProps) {
         const aside = preview.querySelector<HTMLElement>(':scope > aside')
         const main = preview.querySelector<HTMLElement>(':scope > main')
         if (!main) return
+        // Nollställ först. main sträcks ut till preview:ns minhöjd, så utan det
+        // här mätte vi vår egen förra höjd: talet kunde bara växa. Ett CV som
+        // en gång mätts till tre sidor (t.ex. ombrutet i mobilbredd) stod sedan
+        // kvar på tre sidor med tom sidopanel (mobilgenomgången 2026-10-10).
+        preview.style.minHeight = ''
+        if (aside) aside.style.minHeight = ''
         // Räkna antal sidor som main:s content behöver, avrunda uppåt
         const pages = Math.max(1, Math.ceil(main.scrollHeight / PAGE_SAFE_PX))
         const fullHeight = pages * PAGE_SAFE_PX

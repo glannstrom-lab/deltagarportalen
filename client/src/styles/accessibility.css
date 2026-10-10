@@ -631,9 +631,10 @@ legend {
 .large-text {
   font-size: 18px;
 
-  h1 { font-size: 2rem; }
-  h2 { font-size: 1.75rem; }
-  h3 { font-size: 1.5rem; }
+  /* Inga fasta rubrikstorlekar (2026-10-10). h2 { 1.75rem } gjorde varje
+     h2 till 32 px — också dialogrubriker och korttitlar som ska vara små, så
+     "Ny dagboksanteckning" knuffade ut stängknappen på mobil. Roten är 18 px,
+     så rubrikerna växer ändå, i proportion till sin egen storlek. */
   p, li { font-size: 1.125rem; }
 
   /* Inte span och a (2026-10-10). De två är inline-element som ärver från

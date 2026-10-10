@@ -9828,6 +9828,7 @@
     }
   },
   "notificationBell": {
+    "markAllRead": "Markera alla som lästa",
     "paminnelse": {
       "karta": "Visa {{plats}} på karta"
     },

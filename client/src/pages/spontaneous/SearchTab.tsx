@@ -598,11 +598,11 @@ export default function SearchTab() {
   const alreadySaved = searchResult ? isCompanySaved(searchResult.orgNumber) : false
 
   return (
-    // Extra luft i botten på mobil: bottennavet och den flytande
-    // "Mina samlingar"-knappen ligger ovanpå sidan och täckte annars sista
-    // kortets kryssruta och knappar. FAB:en är en global komponent — det här
-    // löser överlappet mot innehållet, inte FAB:ens egen träffyta.
-    <div className="space-y-6 pb-28 lg:pb-6">
+    // Här stod pb-28 på mobil för att bottennavet och samlingsknappen täckte
+    // sista kortet. Layout reserverar numera navets höjd, rådgivarpanelerna
+    // följer efter fliken och samlingsknappen kliver undan över kontroller —
+    // kvar blev 126 px tomrum mitt på sidan (mobilgenomgången 2026-10-10).
+    <div className="space-y-6 pb-6">
       {/* Search Section */}
       <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
         <h2 className="text-lg font-semibold mb-4 flex items-center gap-2 text-stone-800 dark:text-stone-100">

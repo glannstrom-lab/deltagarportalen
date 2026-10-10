@@ -46,6 +46,17 @@ export function LanguageSwitcher() {
   const { i18n, t } = useTranslation()
   const [isOpen, setIsOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
+  const knappRef = useRef<HTMLButtonElement>(null)
+  // Menyn hänger i knappens högerkant och är 256 px bred. I mobilens sidhuvud
+  // sitter knappen mitt i raden, så menyn sköts ut över vänsterkanten ("råk",
+  // halva flaggorna — mobilgenomgången 2026-10-10). Får den inte plats läggs
+  // den i stället fast under knappen, med skärmens marginaler.
+  const [fastTopp, setFastTopp] = useState<number | null>(null)
+  const vaxla = () => {
+    const r = knappRef.current?.getBoundingClientRect()
+    setFastTopp(r && r.right - 256 < 8 ? r.bottom + 8 : null)
+    setIsOpen(!isOpen)
+  }
 
   const currentLanguage = languages.find((lang) => lang.code === aktivKod(i18n.language)) || languages[0]
 
@@ -82,7 +93,8 @@ export function LanguageSwitcher() {
   return (
     <div className="relative" ref={menuRef}>
       <button
-        onClick={() => setIsOpen(!isOpen)}
+        ref={knappRef}
+        onClick={vaxla}
         className={cn(
           'w-9 h-9 flex items-center justify-center rounded-full transition-colors',
           'text-stone-500 dark:text-stone-400',
@@ -102,6 +114,7 @@ export function LanguageSwitcher() {
         <>
           <div className="fixed inset-0 z-40" onClick={() => setIsOpen(false)} />
           <div
+            style={fastTopp !== null ? { position: 'fixed', top: fastTopp, left: 16, right: 16, width: 'auto', marginTop: 0 } : undefined}
             className="absolute right-0 top-full mt-2 w-64 max-w-[calc(100vw-2rem)] bg-white dark:bg-stone-800 rounded-2xl shadow-xl border border-stone-200/50 dark:border-stone-700 overflow-hidden z-50"
           >
             {/* Header */}

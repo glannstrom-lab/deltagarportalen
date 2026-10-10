@@ -393,17 +393,17 @@ export function NotificationBell({ className }: NotificationBellProps) {
             )}
           >
             {/* Header */}
-            <div className="flex items-center justify-between px-4 py-3 border-b border-stone-100 dark:border-stone-700">
-              <h2 className="font-semibold text-stone-800 dark:text-stone-100">
-                Notifikationer
+            <div className="flex items-center justify-between gap-3 px-4 py-3 border-b border-stone-100 dark:border-stone-700">
+              <h2 className="min-w-0 truncate font-semibold text-stone-800 dark:text-stone-100">
+                {t('notificationBell.aria.notifications', 'Notifikationer')}
               </h2>
-              <div className="flex items-center gap-2">
+              <div className="flex shrink-0 items-center gap-2">
                 {unreadCount > 0 && (
                   <button
                     onClick={markAllAsRead}
                     className="text-xs text-[var(--c-text)] dark:text-[var(--c-solid)] hover:text-[var(--c-text)] font-medium"
                   >
-                    Markera alla som lästa
+                    {t('notificationBell.markAllRead', 'Markera alla som lästa')}
                   </button>
                 )}
                 <button

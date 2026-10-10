@@ -355,11 +355,11 @@ function CalendarInner() {
         actions={
           <button
             onClick={handleCreateEvent}
-            aria-label={t('calendar.newEvent')}
             className="flex items-center gap-2 px-4 py-2 bg-[var(--c-solid)] text-white rounded-xl hover:brightness-[1.08] transition-all font-medium text-sm"
           >
             <Plus className="w-4 h-4" aria-hidden="true" />
-            <span className="hidden sm:inline">{t('calendar.newEvent')}</span>
+            {/* Texten syns även på mobil: ett ensamt + var sidans enda väg in och sa inget. */}
+            <span>{t('calendar.newEvent')}</span>
           </button>
         }
       >

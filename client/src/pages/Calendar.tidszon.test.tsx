@@ -76,11 +76,13 @@ describe('Kalendern strax efter midnatt', () => {
     expect(screen.queryByText('Möte igår')).not.toBeInTheDocument()
   })
 
-  it('knappen för ny händelse har ett namn även när texten är dold på mobil', async () => {
+  it('knappen för ny händelse har ett namn och en synlig text', async () => {
     render(<Calendar />)
     await screen.findByRole('tab', { name: /^(dag|day)$/i })
-    // Texten i knappen har `hidden sm:inline`; utan aria-label är knappen namnlös på mobil
-    const knappar = screen.getAllByRole('button').filter(b => b.getAttribute('aria-label'))
-    expect(knappar.some(b => /ny|new/i.test(b.getAttribute('aria-label') ?? ''))).toBe(true)
+    // Texten var `hidden sm:inline` till 2026-10-10 — på mobil syntes bara ett +.
+    // Nu står den synlig, och namnet kommer från texten själv.
+    const knapp = screen.getAllByRole('button', { name: /ny händelse|new event/i })[0]
+    const text = [...knapp.querySelectorAll('span')].find(s => /ny händelse|new event/i.test(s.textContent ?? ''))
+    expect(text?.className ?? '').not.toMatch(/(^|\s)hidden(\s|$)/)
   })
 })

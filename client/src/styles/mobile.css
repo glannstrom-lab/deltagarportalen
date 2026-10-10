@@ -716,13 +716,7 @@ html {
   font-size: 1.125rem;
 }
 
-.large-text h1 {
-  font-size: 1.75rem;
-}
-
-.large-text h2 {
-  font-size: 1.5rem;
-}
+/* Rubrikerna skalas med roten — se accessibility.css (2026-10-10). */
 
 /* Focus ring för touch */
 .mobile-device *:focus-visible {
