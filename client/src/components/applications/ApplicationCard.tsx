@@ -17,7 +17,6 @@
 
 import { useTranslation } from 'react-i18next'
 import { useState } from 'react'
-import type { KeyboardEvent } from 'react'
 import {
   Building2, MapPin, ExternalLink, MoreVertical,
   Clock, Calendar, AlertCircle, ChevronRight,
@@ -98,27 +97,25 @@ export function ApplicationCard({
   const kanOppnas = Boolean(onViewDetails)
   const oppnaKort = () => onViewDetails?.(application)
 
-  const interaktivaProps = kanOppnas
-    ? {
-        role: 'button' as const,
-        tabIndex: 0,
-        'aria-label': t('applications.card.openAria', 'Öppna ansökan: {{title}} hos {{company}}', {
-          title: jobTitle,
-          company: companyName
-        }),
-        onClick: oppnaKort,
-        onKeyDown: (e: KeyboardEvent<HTMLDivElement>) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault()
-            oppnaKort()
-          }
-        }
-      }
-    : {}
-
-  const fokusRing = kanOppnas
-    ? 'cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--c-solid)] focus-visible:ring-offset-2'
-    : ''
+  /*
+   * 2026-10-10 (axe nested-interactive): kortet var `role="button"` med
+   * statusmenyn och "fler åtgärder" inuti — en knapp i en knapp, som
+   * skärmläsare läser som en enda knapp och där de inre inte går att nå.
+   * Nu öppnas kortet av en riktig <button> som täcker kortet (absolute
+   * inset-0), och åtgärderna ligger ovanpå den (relative z-10). Klick var
+   * som helst på kortet öppnar det precis som förut.
+   */
+  const oppnaKnapp = kanOppnas ? (
+    <button
+      type="button"
+      onClick={oppnaKort}
+      aria-label={t('applications.card.openAria', 'Öppna ansökan: {{title}} hos {{company}}', {
+        title: jobTitle,
+        company: companyName
+      })}
+      className="absolute inset-0 z-0 rounded-[inherit] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--c-solid)] focus-visible:ring-offset-2"
+    />
+  ) : null
 
   // ── Åtgärderna: statusmeny + fler åtgärder ────────────────────────────
   // Delas av båda varianterna. Statusmenyn är det enda sättet att flytta en
@@ -133,7 +130,7 @@ export function ApplicationCard({
        onClick/onKeyDown från att också utlösas. */
     <div
       className={cn(
-        'flex items-center gap-1',
+        'relative z-10 flex items-center gap-1',
         !kompakt && 'opacity-100 sm:opacity-0 sm:group-hover:opacity-100 sm:group-focus-within:opacity-100 transition-opacity'
       )}
       onClick={(e) => e.stopPropagation()}
@@ -220,17 +217,16 @@ export function ApplicationCard({
     return (
       <div
         className={cn(
-          'bg-white rounded-lg border p-3 hover:shadow-md transition-all',
-          fokusRing,
+          'relative bg-white dark:bg-stone-900 dark:border-stone-700 rounded-lg border p-3 hover:shadow-md transition-all',
           isDragging && 'shadow-lg ring-2 ring-[var(--c-solid)] rotate-2',
           isStale && 'border-amber-300'
         )}
-        {...interaktivaProps}
       >
+        {oppnaKnapp}
         <div className="flex items-start justify-between gap-2">
           <div className="flex-1 min-w-0">
-            <h4 className="font-medium text-stone-900 text-sm line-clamp-1">{jobTitle}</h4>
-            <p className="text-xs text-stone-700 flex items-center gap-1 mt-0.5">
+            <h4 className="font-medium text-stone-900 dark:text-stone-100 text-sm line-clamp-1">{jobTitle}</h4>
+            <p className="text-xs text-stone-700 dark:text-stone-300 flex items-center gap-1 mt-0.5">
               <Building2 className="w-3 h-3 flex-shrink-0" aria-hidden="true" />
               <span className="truncate">{companyName}</span>
             </p>
@@ -241,7 +237,7 @@ export function ApplicationCard({
         </div>
 
         <div className="flex items-center justify-between gap-2 mt-2">
-          <span className="text-xs text-stone-600">
+          <span className="text-xs text-stone-600 dark:text-stone-400">
             {daysSinceUpdate === 0
               ? t('applications.common.today', 'Idag')
               : t('applications.card.daysShort', { count: daysSinceUpdate })}
@@ -260,13 +256,12 @@ export function ApplicationCard({
   return (
     <Card
       className={cn(
-        'p-4 hover:shadow-md transition-all group',
-        fokusRing,
+        'relative p-4 hover:shadow-md transition-all group',
         isDragging && 'shadow-lg ring-2 ring-[var(--c-solid)]',
-        isStale && 'border-amber-200 bg-amber-50/30'
+        isStale && 'border-amber-200 bg-amber-50/30 dark:border-amber-800 dark:bg-amber-950/20'
       )}
-      {...interaktivaProps}
     >
+      {oppnaKnapp}
       <div className="flex items-start gap-3">
         {/* Company icon/logo placeholder */}
         <div className={cn(
@@ -280,15 +275,15 @@ export function ApplicationCard({
           {/* Header */}
           <div className="flex items-start justify-between gap-2">
             <div>
-              <h3 className="font-semibold text-stone-900 line-clamp-1">{jobTitle}</h3>
-              <p className="text-sm text-stone-600">{companyName}</p>
+              <h3 className="font-semibold text-stone-900 dark:text-stone-100 line-clamp-1">{jobTitle}</h3>
+              <p className="text-sm text-stone-600 dark:text-stone-400">{companyName}</p>
             </div>
 
             {atgarder}
           </div>
 
           {/* Meta info */}
-          <div className="flex flex-wrap items-center gap-2 mt-2 text-xs text-stone-700">
+          <div className="flex flex-wrap items-center gap-2 mt-2 text-xs text-stone-700 dark:text-stone-300">
             {location && (
               <span className="flex items-center gap-1">
                 <MapPin className="w-3 h-3" aria-hidden="true" />
@@ -350,7 +345,7 @@ export function ApplicationCard({
 
           {/* Notes preview */}
           {application.notes && variant === 'expanded' && (
-            <p className="text-sm text-stone-700 mt-2 line-clamp-2 italic">
+            <p className="text-sm text-stone-700 dark:text-stone-300 mt-2 line-clamp-2 italic">
               "{application.notes}"
             </p>
           )}
@@ -359,14 +354,14 @@ export function ApplicationCard({
 
       {/* Footer with link */}
       {application.jobUrl && (
-        <div className="mt-3 pt-3 border-t border-stone-100 flex justify-end">
+        <div className="mt-3 pt-3 border-t border-stone-100 dark:border-stone-800 flex justify-end">
           <a
             href={application.jobUrl}
             target="_blank"
             rel="noopener noreferrer"
             onClick={(e) => e.stopPropagation()}
             onKeyDown={(e) => e.stopPropagation()}
-            className="flex items-center gap-1 text-xs text-sky-600 hover:text-sky-700 font-medium"
+            className="relative z-10 flex items-center gap-1 text-xs text-sky-600 hover:text-sky-700 font-medium"
           >
             <ExternalLink className="w-3 h-3" aria-hidden="true" />
             {t('applications.card.viewAd', 'Visa annons')}

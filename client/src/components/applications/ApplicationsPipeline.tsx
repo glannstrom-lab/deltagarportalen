@@ -54,7 +54,7 @@ function CollapsibleSection({
   const [open, setOpen] = useState(false)
 
   return (
-    <div className="border border-stone-200 rounded-xl bg-white">
+    <div className="border border-stone-200 dark:border-stone-700 rounded-xl bg-white dark:bg-stone-900">
       <button
         type="button"
         onClick={() => setOpen(!open)}
@@ -62,12 +62,12 @@ function CollapsibleSection({
         /* aria-controls får bara peka på ett id som finns i DOM:en — panelen
            renderas inte när sektionen är hopfälld. */
         aria-controls={open ? id : undefined}
-        className="w-full flex items-center justify-between p-3 text-left hover:bg-stone-50 rounded-xl transition-colors"
+        className="w-full flex items-center justify-between p-3 text-left hover:bg-stone-50 dark:hover:bg-stone-800 rounded-xl transition-colors"
       >
-        <span className="flex items-center gap-2 font-medium text-stone-800 text-sm">
+        <span className="flex items-center gap-2 font-medium text-stone-800 dark:text-stone-100 text-sm">
           <Icon className="w-4 h-4 text-stone-500" aria-hidden="true" />
           {title}
-          <span className="px-2 py-0.5 rounded-full text-xs bg-stone-100 text-stone-600">{count}</span>
+          <span className="px-2 py-0.5 rounded-full text-xs bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300">{count}</span>
         </span>
         <ChevronDown className={cn('w-4 h-4 text-stone-500 transition-transform', open && 'rotate-180')} aria-hidden="true" />
       </button>
@@ -148,11 +148,11 @@ function PipelineColumn({
       <div className={cn(
         "flex items-center justify-between p-3 rounded-t-xl border-t-4",
         config.borderColor,
-        "bg-white border border-b-0 border-stone-200"
+        "bg-white dark:bg-stone-900 border border-b-0 border-stone-200 dark:border-stone-700"
       )}>
         <div className="flex items-center gap-2">
           <Icon className={cn("w-4 h-4", config.color)} aria-hidden="true" />
-          <h3 className="font-semibold text-stone-900 text-sm">
+          <h3 className="font-semibold text-stone-900 dark:text-stone-100 text-sm">
             {t(`applications.status.${status}`, getStatusLabel(status))}
           </h3>
           <span className={cn(
@@ -189,7 +189,7 @@ function PipelineColumn({
           if (id) onDropApplication(id, status)
         }}
         className={cn(
-          "flex-1 bg-stone-50 border border-t-0 border-stone-200 rounded-b-xl p-2 space-y-2 min-h-[200px] max-h-[420px] overflow-y-auto transition-colors",
+          "flex-1 bg-stone-50 dark:bg-stone-950/40 border border-t-0 border-stone-200 dark:border-stone-700 rounded-b-xl p-2 space-y-2 min-h-[200px] max-h-[420px] overflow-y-auto transition-colors",
           isDropTarget && "bg-[var(--c-bg)] ring-2 ring-inset ring-[var(--c-solid)]"
         )}
       >
@@ -422,7 +422,7 @@ export function ApplicationsPipeline({
               {t('applications.pipeline.active', { count: antalAktiva })}
             </span>
             {summeringsdelar.length > 0 && (
-              <span className="text-sm text-stone-700 hidden sm:inline">
+              <span className="text-sm text-stone-700 dark:text-stone-300 hidden sm:inline">
                 {summeringsdelar.join(' • ')}
               </span>
             )}
@@ -445,7 +445,7 @@ export function ApplicationsPipeline({
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder={t('applications.pipeline.searchPlaceholder', 'Sök företag eller tjänst')}
                 aria-label={t('applications.pipeline.searchPlaceholder', 'Sök företag eller tjänst')}
-                className="w-40 sm:w-56 pl-9 pr-3 py-2 text-sm border border-stone-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]"
+                className="w-40 sm:w-56 pl-9 pr-3 py-2 text-sm border border-stone-200 dark:border-stone-700 rounded-lg bg-white dark:bg-stone-900 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]"
               />
             </div>
 
@@ -459,7 +459,7 @@ export function ApplicationsPipeline({
                     "flex items-center gap-2 px-3 py-2 rounded-lg border transition-colors text-sm",
                     priorityFilter
                       ? "border-[var(--c-accent)] bg-[var(--c-bg)] text-[var(--c-text)]"
-                      : "border-stone-200 hover:bg-stone-50 text-stone-600"
+                      : "border-stone-200 dark:border-stone-700 hover:bg-stone-50 dark:hover:bg-stone-800 text-stone-600 dark:text-stone-300"
                   )}
                 >
                   <Filter className="w-4 h-4" aria-hidden="true" />

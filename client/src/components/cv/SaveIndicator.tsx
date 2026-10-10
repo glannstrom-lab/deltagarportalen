@@ -23,7 +23,7 @@ export function SaveIndicator() {
   // Don't show anything if idle and no unsaved changes
   if (saveStatus === 'idle' && !hasUnsavedChanges && pendingCount === 0) {
     return (
-      <div role="status" aria-live="polite" className="flex items-center gap-2 text-sm text-stone-600">
+      <div role="status" aria-live="polite" className="flex items-center gap-2 text-sm text-stone-600 dark:text-stone-400">
         <Check className="w-4 h-4" aria-hidden="true" />
         <span>{t('cv.saveIndicator.allSaved', 'Allt sparat')}</span>
       </div>
@@ -32,7 +32,7 @@ export function SaveIndicator() {
   
   if (saveStatus === 'saving') {
     return (
-      <div role="status" aria-live="polite" className="flex items-center gap-2 text-sm text-amber-600">
+      <div role="status" aria-live="polite" className="flex items-center gap-2 text-sm text-amber-700 dark:text-amber-300">
         <Loader2 className="w-4 h-4 animate-spin" aria-hidden="true" />
         <span>{t('cv.saveIndicator.saving', 'Sparar...')}</span>
       </div>
@@ -67,7 +67,7 @@ export function SaveIndicator() {
   
   if (saveStatus === 'saved' && lastSavedAt) {
     return (
-      <div role="status" aria-live="polite" className="flex items-center gap-2 text-sm text-green-600">
+      <div role="status" aria-live="polite" className="flex items-center gap-2 text-sm text-green-700 dark:text-green-400">
         <Check className="w-4 h-4" aria-hidden="true" />
         <span>{t('cv.saveIndicator.savedAt', { defaultValue: 'Sparad {{time}}', time: formatTime(lastSavedAt) })}</span>
       </div>
@@ -76,7 +76,7 @@ export function SaveIndicator() {
   
   if (hasUnsavedChanges) {
     return (
-      <div role="status" aria-live="polite" className="flex items-center gap-2 text-sm text-amber-600">
+      <div role="status" aria-live="polite" className="flex items-center gap-2 text-sm text-amber-700 dark:text-amber-300">
         <div className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
         <span>{t('cv.saveIndicator.unsaved', 'Osparat')}</span>
       </div>

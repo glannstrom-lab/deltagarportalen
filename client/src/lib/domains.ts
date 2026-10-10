@@ -52,6 +52,8 @@ const ROUTE_DOMAIN_MAP: Array<[string, ColorDomain]> = [
   ['/calendar',              'wellbeing'],
   ['/exercises',             'wellbeing'],
   ['/my-consultant',         'wellbeing'],
+  // Profilen ligger i Min vardag-hubben (navigation.ts) och ska stå i Hemma i staden.
+  ['/profile',              'wellbeing'],
 
   // === INFO (Sky) — /resurser-hubben: kunskapsbank och stöd ===
   ['/help',                  'info'],
@@ -63,7 +65,7 @@ const ROUTE_DOMAIN_MAP: Array<[string, ColorDomain]> = [
   ['/ai-team',               'info'],
 
   // === ACTION (Mint/Turkos) — Översikt + system (åtkomst via topbar) ===
-  // /, /oversikt, /profile, /settings, /consultant, /admin
+  // /, /oversikt, /settings, /consultant, /admin
 ]
 
 /**

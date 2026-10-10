@@ -249,12 +249,17 @@ export default function SidRail({
                     className={stigRadKlasser(aktiv)}
                   >
                     <StigPrick lage={aktiv ? 'aktiv' : 'kvar'} />
-                    <span className="min-w-0 truncate">{p.etikett}</span>
-                    {p.markering && (
-                      <span className="ml-auto shrink-0 text-[0.625rem] font-medium px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300">
-                        {p.markering}
-                      </span>
-                    )}
+                    {/* Etikett och markering bryter till två rader i stället för att
+                        kapa etiketten till "Ö…" — med större text (demokontot,
+                        .large-text) rymdes inte båda på 186 px. */}
+                    <span className="min-w-0 flex-1 flex flex-wrap items-center gap-x-1.5 gap-y-0.5">
+                      <span className="min-w-0 truncate">{p.etikett}</span>
+                      {p.markering && (
+                        <span className="shrink-0 text-[0.625rem] font-medium px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300">
+                          {p.markering}
+                        </span>
+                      )}
+                    </span>
                   </button>
                 </li>
               )

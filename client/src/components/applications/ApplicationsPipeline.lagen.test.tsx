@@ -83,7 +83,7 @@ describe('ApplicationsPipeline — tre lägen', () => {
     // element filtreras inte bort. Därför getAll.
     const kort = screen.getAllByRole('button', { name: /Öppna ansökan: Butikssäljare hos Ica Maxi/i })
     expect(kort.length).toBeGreaterThan(0)
-    expect(kort[0].getAttribute('tabindex')).toBe('0')
+    expect(kort[0].tagName).toBe('BUTTON')
     expect(screen.getAllByRole('button', { name: /Flytta Butikssäljare till ett annat steg/i }).length).toBeGreaterThan(0)
   })
 })

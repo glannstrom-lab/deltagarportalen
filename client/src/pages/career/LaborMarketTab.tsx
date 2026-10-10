@@ -319,7 +319,7 @@ export default function LaborMarketTab() {
             href="https://arbetsformedlingen.se"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-[var(--c-text)] hover:underline"
+            className="text-[var(--c-text)] underline underline-offset-2"
           >
             Arbetsförmedlingen
           </a>

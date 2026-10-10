@@ -120,9 +120,9 @@ export function ProfileHeader() {
           {/* Name row */}
           <div className="flex items-start justify-between gap-3 mb-3">
             <div className="min-w-0">
-              <h1 className="text-xl sm:text-2xl font-bold text-stone-800 dark:text-stone-100 truncate">
+              <h2 className="text-xl sm:text-2xl font-bold text-stone-800 dark:text-stone-100 truncate">
                 {profile?.first_name || t('profile.header.welcome')} {profile?.last_name}
-              </h1>
+              </h2>
               <p className="text-sm text-stone-500 dark:text-stone-400 truncate">{profile?.email}</p>
             </div>
 

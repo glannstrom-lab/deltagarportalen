@@ -38,7 +38,7 @@ describe('ProfileHeader (PG14)', () => {
   it('visar nästa steg som en invit med namnet på det som saknas', () => {
     render(<ProfileHeader />)
     expect(screen.getByRole('button', { name: /Nästa: Telefon/ })).toBeInTheDocument()
-    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(/Dana Deltagare/)
+    expect(screen.getByRole('heading', { level: 2 })).toHaveTextContent(/Dana Deltagare/)
   })
 })
 

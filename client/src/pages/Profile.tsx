@@ -155,6 +155,9 @@ export default function Profile() {
 
   return (
     <PageLayout
+      // Spår JS: rubriken ger sidan platsbandet (Hemma) som alla andra
+      // verktygssidor. Namnet i ProfileHeader är därför h2, inte h1.
+      title={t('profile.title', 'Din profil')}
       className="sidbredd"
       showTabs={false}
       // `markering` ersätter den amber-prick `ProfileTabs` satte på fliken med

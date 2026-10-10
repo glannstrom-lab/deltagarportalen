@@ -3,6 +3,7 @@
 //
 // Kör:  NODE_PATH=node_modules node e2e/sidfoto-alla-sidor.cjs <utkatalog> [bredd]
 //       PLAYWRIGHT_BASE_URL=http://localhost:3000 för dev-servern (inloggningen går mot prod-Supabase)
+// FARGSCHEMA=dark fotograferar i mörkt läge (temat följer systemet som default).
 // Mäter också textmängden per sida (antal ord i <main>) så att "texttung"
 // blir ett tal och inte ett intryck.
 const { chromium } = require('playwright'); const fs = require('fs'); const path = require('path')
@@ -25,7 +26,7 @@ const ALLA = ['/oversikt', '/jobb', '/karriar', '/resurser', '/min-vardag', '/jo
 // rutten i stället för att lita på att alla minns MSYS_NO_PATHCONV=1.
 const SIDOR = env.SIDOR ? env.SIDOR.split(',').map((s) => s.replace(/^[A-Za-z]:\/.*?\/Git(?=\/)/, '')) : ALLA
 ;(async () => {
-  const b = await chromium.launch(); const ctx = await b.newContext({ viewport: { width: BREDD, height: 900 } }); const p = await ctx.newPage()
+  const b = await chromium.launch(); const ctx = await b.newContext({ viewport: { width: BREDD, height: 900 }, colorScheme: env.FARGSCHEMA === 'dark' ? 'dark' : 'light' }); const p = await ctx.newPage()
   await p.goto(`${BASE}/#/login`); await p.waitForTimeout(1500)
   await p.locator('input#email').fill(EMAIL); await p.locator('input#password').fill(PW)
   const cookies = p.getByRole('button', { name: /endast nödvändiga/i })
