@@ -958,14 +958,14 @@ function SearchTab() {
                       </p>
                     )}
 
-                    <div className="flex items-center gap-2 mt-3">
+                    <div className="flex flex-wrap items-center gap-2 mt-3">
                       <button
                         onClick={(e) => {
                           e.stopPropagation()
                           void vaxlaSparat(job)
                         }}
                         className={cn(
-                          "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors",
+                          "flex items-center gap-1.5 whitespace-nowrap px-3 py-1.5 rounded-lg text-sm font-medium transition-colors",
                           isSaved(job.id)
                             ? "bg-rose-50 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400 hover:bg-rose-100 dark:hover:bg-rose-900/50"
                             : "bg-stone-100 dark:bg-stone-700 text-stone-600 dark:text-stone-300 hover:bg-stone-200 dark:hover:bg-stone-600"
@@ -978,7 +978,7 @@ function SearchTab() {
                       <Link
                         to={buildCoverLetterUrl(job)}
                         onClick={(e) => e.stopPropagation()}
-                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40 text-[var(--c-text)] dark:text-[var(--c-text)] hover:bg-[var(--c-accent)]/40 dark:hover:bg-[var(--c-bg)]/50 transition-colors"
+                        className="flex items-center gap-1.5 whitespace-nowrap px-3 py-1.5 rounded-lg text-sm font-medium bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40 text-[var(--c-text)] dark:text-[var(--c-text)] hover:bg-[var(--c-accent)]/40 dark:hover:bg-[var(--c-bg)]/50 transition-colors"
                       >
                         <FileText size={16} />
                         {t('jobSearch.writeLetter')}
@@ -989,7 +989,7 @@ function SearchTab() {
                           e.stopPropagation()
                           setApplicationModalJob(job)
                         }}
-                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium bg-[var(--c-solid)] dark:bg-[var(--c-solid)] text-[var(--c-on-solid)] hover:brightness-110 dark:hover:bg-[var(--c-solid)] transition-colors"
+                        className="flex items-center gap-1.5 whitespace-nowrap px-3 py-1.5 rounded-lg text-sm font-medium bg-[var(--c-solid)] dark:bg-[var(--c-solid)] text-[var(--c-on-solid)] hover:brightness-110 dark:hover:bg-[var(--c-solid)] transition-colors"
                       >
                         <Send size={16} />
                         {t('jobSearch.apply')}

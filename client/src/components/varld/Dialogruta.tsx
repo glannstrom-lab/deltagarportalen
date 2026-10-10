@@ -161,10 +161,12 @@ export function Dialogruta({ coachId, repliker, variant = 'kort', vidByte, class
                 type="button"
                 onClick={vaxla}
                 aria-pressed={spelar}
-                className="shrink-0 inline-flex items-center gap-1.5 h-9 px-3.5 rounded-full bg-[var(--c-bg)] text-[var(--c-text)] text-[0.875rem] font-medium hover:brightness-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--c-solid)]"
+                className="shrink-0 inline-flex items-center justify-center gap-1.5 h-9 min-w-9 px-2.5 sm:px-3.5 rounded-full bg-[var(--c-bg)] text-[var(--c-text)] text-[0.875rem] font-medium hover:brightness-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--c-solid)]"
               >
                 {spelar ? <Pause className="w-4 h-4" aria-hidden="true" /> : <Volume2 className="w-4 h-4" aria-hidden="true" />}
-                {ljudEtikett}
+                {/* Bara ikonen på mobil: med texten fick namnraden ingen plats
+                    och rollen kapades till "Jobb…" (mobilgenomgången 2026-10-10). */}
+                <span className="sr-only sm:not-sr-only">{ljudEtikett}</span>
               </button>
             )}
             <button

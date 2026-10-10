@@ -4,6 +4,10 @@
  * Säger var i staden man är: platsens scen (samma tid och grafikstil som
  * Översikt), en skylt tillbaka till platsen och sidans rubrik. Rådgivarens
  * dialogruta står precis under, halvvägs ut över kanten.
+ *
+ * Höjden är ett golv, inte ett tak, och bandet håller luft i nederkant där
+ * rutan lägger sig: med större text eller en lång rubrik på mobil gled
+ * underrubriken annars in under rutan (mobilgenomgången 2026-10-10).
  */
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
@@ -52,7 +56,7 @@ export function Platsband({
 }) {
   const { tid, stil, lugnt } = useVarld()
   return (
-    <div className="relative overflow-hidden rounded-[24px] h-[170px] sm:h-[200px] lg:h-[230px] bg-stone-300 dark:bg-stone-800 shadow-[0_18px_40px_-24px_rgba(28,25,23,0.6)]">
+    <div className="relative overflow-hidden rounded-[24px] min-h-[170px] sm:min-h-[200px] lg:min-h-[230px] bg-stone-300 dark:bg-stone-800 shadow-[0_18px_40px_-24px_rgba(28,25,23,0.6)]">
       <img
         src={scenSrc(plats.id, tid, stil)}
         alt=""
@@ -63,7 +67,7 @@ export function Platsband({
       />
       {/* Läsbarheten får inte bero på vad bildgeneratorn råkade lägga där. */}
       <div aria-hidden="true" className="absolute inset-0" style={SKRIM} />
-      <div className="relative h-full flex flex-col items-start gap-2 sm:gap-3 p-4 sm:p-5 lg:p-6">
+      <div className="relative flex flex-col items-start gap-2 sm:gap-3 p-4 pb-9 sm:p-5 sm:pb-10 lg:p-6 lg:pb-10">
         <Platsskylt plats={plats} />
         {titel && (
           <div className="max-w-[60ch]">

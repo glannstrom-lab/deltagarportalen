@@ -933,7 +933,9 @@ function SettingsInner() {
         {/* RD17 (rollspelet 2026-09-27): på mobil nåddes avsnitten bara via en
             ☰-ikon i "Profil"-kortet, så Tillgänglighet (språk, större text) var
             svår att hitta. En navigering för alla bredder: två kolumner med
-            korta knappar på mobil, en lista med beskrivning på dator. */}
+            korta knappar på mobil, en lista med beskrivning på dator.
+            Under sm står ikonen ovanför texten: bredvid varandra fick
+            "Tillgänglighet" ~110 px och bröts mitt i ordet (2026-10-10). */}
         <nav
           aria-label={t('settings.navEtikett', 'Avsnitt i inställningarna')}
           className="lg:col-span-1 grid grid-cols-2 gap-2 lg:flex lg:flex-col"
@@ -948,7 +950,7 @@ function SettingsInner() {
                 onClick={() => setActiveSection(section.id)}
                 aria-current={isActive ? 'page' : undefined}
                 className={cn(
-                  "w-full flex items-center gap-2 lg:gap-3 p-3 lg:p-4 rounded-xl transition-all text-left relative",
+                  "w-full flex flex-col items-start sm:flex-row sm:items-center gap-2 lg:gap-3 p-3 lg:p-4 rounded-xl transition-all text-left relative",
                   "border border-stone-200 dark:border-stone-700 lg:border-transparent",
                   isActive
                     ? 'bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border-[var(--c-solid)] lg:border-transparent'

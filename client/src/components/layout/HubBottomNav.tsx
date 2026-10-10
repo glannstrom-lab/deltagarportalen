@@ -127,7 +127,7 @@ export function HubBottomNav() {
                 className={cn(
                   'flex flex-col items-center justify-center gap-0.5',
                   'min-h-[44px] min-w-[44px] py-2 px-1',
-                  'text-[0.625rem] font-medium',
+                  'text-xs font-medium',
                   'transition-colors',
                   isActive
                     ? 'bg-[var(--c-bg)] text-[var(--c-text)] font-semibold'

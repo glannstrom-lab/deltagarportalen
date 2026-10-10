@@ -30,6 +30,7 @@ import { FocusExitButton } from './components/focus/shell/FocusExitButton'
 // visuellt dold aria-live-region. Ligger utanför <Routes> så den täcker
 // samtliga rutter — även login/register/landning.
 import { RouteAnnouncer } from './components/layout/RouteAnnouncer'
+import { ScrollTillToppen } from './components/layout/ScrollTillToppen'
 import { KonsulentSamtyckeFraga } from '@/components/consultant/KonsulentSamtyckeFraga'
 import { saknadeGrundsamtycken } from '@/services/consentApi'
 
@@ -351,6 +352,7 @@ function App() {
   return (
     <>
       <RouteAnnouncer />
+      <ScrollTillToppen />
       {/* KS3: efterhandsfrågan om konsulentkopplingen. Ligger utanför <Routes> för
           att de 13 deltagare som kopplades utan samtycke ska mötas av den oavsett
           vilken sida de landar på — den renderar null för alla andra. */}

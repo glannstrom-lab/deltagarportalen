@@ -325,7 +325,6 @@ function ForetagSkal({ isMobile, showBars, pathname, org }: {
           </div>
         </div>
 
-        {isMobile && showBars && !arForetagslankAktiv(pathname, '/foretag') && <MobileBackButton />}
       </div>
       {/* DP1: samma steg som i deltagarskalet, utan AI-rutan — företaget har inga AI-funktioner. */}
       <SamtyckeSteg visaAiVal={false} />
@@ -368,11 +367,6 @@ export default function Layout() {
 
   // Visa TopBar och BottomBar på alla sidor förutom login/register
   const showBars = !['/login', '/register'].includes(location.pathname)
-
-  // Bestäm om vi ska visa tillbaka-knapp (DESIGN.md §9 — på alla undersidor
-  // UTOM hub-rotsidor där användaren använder HubBottomNav istället)
-  const HUB_ROOT_PATHS = ['/', '/oversikt', '/jobb', '/karriar', '/resurser', '/min-vardag']
-  const showBackButton = isMobile && !HUB_ROOT_PATHS.includes(location.pathname)
 
   // FAQ + Crisis Support moved into TopBar; BottomBar removed.
   // HubBottomNav renders on mobile (hub-nav är permanent sedan 2026-07-10, C3).
@@ -609,8 +603,7 @@ export default function Layout() {
           </div>
         </div>
 
-        {/* Tillbaka-knapp på mobil (alla sidor utom dashboard) */}
-        {showBackButton && <MobileBackButton />}
+        {/* Tillbaka-knappen på mobil sitter i MobileTopBar sedan 2026-10-10. */}
 
         {/* Hub bottom nav (mobile + flag on) — hub-level navigation only.
             FAQ + Crisis Support live in TopBar.
@@ -665,8 +658,7 @@ export function MobileTopBar() {
     onEscape: () => setIsProfileOpen(false),
   })
 
-  // På sidor som visar MobileBackButton (icke-hub-rot) måste loggan ge plats
-  // för den 44px floatande knappen i övre vänstra hörnet.
+  // På undersidor (icke-hub-rot) står tillbakaknappen först i sidhuvudet.
   const HUB_ROOT_PATHS = ['/', '/oversikt', '/jobb', '/karriar', '/resurser', '/min-vardag', '/foretag']
   const showsBackButton = !HUB_ROOT_PATHS.includes(location.pathname)
 
@@ -692,10 +684,11 @@ export function MobileTopBar() {
         data-mobil-sidhuvud=""
         className={cn(
           'sticky top-0 z-30 bg-white dark:bg-stone-900 border-b border-stone-200 dark:border-stone-700/50 py-2 safe-top',
-          showsBackButton ? 'pl-[56px] pr-2' : 'px-2'
+          showsBackButton ? 'pl-1 pr-2' : 'px-2'
         )}
       >
         <div className="flex items-center justify-between gap-1">
+          {showsBackButton && <MobileBackButton />}
           {/* Vänster: Logo. aria-label: bildens alt nådde inte fram som
               länknamn i drift (uppmätt tomt namn när tillbakaknappen syns). */}
           <Link
@@ -718,7 +711,7 @@ export function MobileTopBar() {
                 klipptes mitt i ordet på varje undersida. Symbolen räcker som
                 identitet; länken har namn via bildens alt. */}
             {!showsBackButton && (
-              <span className="truncate text-sm font-semibold text-stone-800 dark:text-stone-100">
+              <span className="truncate text-sm font-semibold text-stone-800 dark:text-stone-100 max-[379px]:hidden">
                 jobin<span className="text-[var(--c-text)] dark:text-[var(--c-solid)]">.se</span>
               </span>
             )}

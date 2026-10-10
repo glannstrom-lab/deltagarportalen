@@ -162,9 +162,15 @@ export const AgentChat = forwardRef<AgentChatHandle, AgentChatProps>(
       return () => clearTimeout(timeout)
     }, [user?.id, selectedAgent, messages])
 
-    // Scroll to bottom when new messages arrive or streaming updates
+    // Följ med nedåt när ett svar kommer — men bara efter att användaren själv
+    // skrivit något. scrollIntoView rullar varje scrollbar förälder, också
+    // fönstret: när sparade meddelanden laddades in vid sidbytet drog den hela
+    // sidan 1 500 px ned på mobil, förbi rubriken och agentvalet
+    // (mobilgenomgången 2026-10-10).
+    const harSkrivit = useRef(false)
     useEffect(() => {
-      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+      if (!harSkrivit.current) return
+      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
     }, [messages, streamingContent])
 
     // Cleanup abort controller on unmount to prevent state updates on unmounted component
@@ -194,6 +200,7 @@ export const AgentChat = forwardRef<AgentChatHandle, AgentChatProps>(
       // RD7: snabbfunktioner och fokusguiden anropar via ref — inte heller de
       // ska skicka något när organisationen sagt nej.
       if (orgSparr) return
+      harSkrivit.current = true
 
       // Set loading state immediately to prevent double-send
       setLoading(true)

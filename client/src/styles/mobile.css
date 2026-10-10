@@ -122,9 +122,13 @@ input[type="button"],
   font-size: 1.125rem;
 }
 
-.mobile-device p,
-.mobile-device span,
-.mobile-device a {
+/* Bara stycken (2026-10-10). Här stod också span och a — och eftersom den
+   här filen ligger utanför Tailwinds lager vann regeln över varje text-xs och
+   text-sm i hela portalen på mobil. Fristående etiketter (bottennavet, flikar,
+   rådgivarens roll, loggans ordbild) blev 16 px och kapades: "Din vardag" stod
+   som "Din varda" i bottennavet för alla mobilanvändare. Text inne i ett
+   stycke ärver ändå styckets storlek, så löptexten påverkas inte. */
+.mobile-device p {
   font-size: 1rem;
   line-height: 1.6;
 }

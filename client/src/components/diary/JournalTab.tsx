@@ -383,7 +383,9 @@ export function JournalTab() {
           skrivtips är varken varning eller fel. */}
       {prompt && (
         <Card className="p-5 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/20 border-[var(--c-accent)]">
-          <div className="flex items-start justify-between gap-4">
+          {/* Under sm står knapparna under texten: bredvid fick "Använd" inte
+              plats och kapades av kortets kant (mobilgenomgången 2026-10-10). */}
+          <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 sm:gap-4">
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-2">
                 <Sparkles className="w-5 h-5 text-[var(--c-solid)]" aria-hidden="true" />
@@ -391,7 +393,7 @@ export function JournalTab() {
               </div>
               <p className="text-stone-700 dark:text-stone-200 leading-relaxed">{prompt.prompt_text}</p>
             </div>
-            <div className="flex gap-2 shrink-0">
+            <div className="flex items-center gap-2 shrink-0">
               <button
                 onClick={() => getNewPrompt()}
                 disabled={promptLoading}

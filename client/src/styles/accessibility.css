@@ -634,7 +634,14 @@ legend {
   h1 { font-size: 2rem; }
   h2 { font-size: 1.75rem; }
   h3 { font-size: 1.5rem; }
-  p, li, span, a { font-size: 1.125rem; }
+  p, li { font-size: 1.125rem; }
+
+  /* Inte span och a (2026-10-10). De två är inline-element som ärver från
+     stycket de står i — men som fristående etiketter i navet, flikar och
+     rådgivarens namnrad har de en egen, liten storlek. En fast 1.125rem på
+     dem gjorde bottennavets text-[0.625rem] till 20 px: "Din vardag" kapades
+     till "Din varda", och rådgivarens roll till "Jobb…". Roten är redan 18 px,
+     så etiketterna växer ändå — i proportion i stället för till en enda storlek. */
 
   /* Större tryckytor — utan att skriva över komponenternas egen padding.
      Fram till 2026-10-09 stod här `padding: 12px 16px` och `min-height:

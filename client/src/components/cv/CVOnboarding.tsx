@@ -285,8 +285,11 @@ export function CVOnboarding({ onComplete, onSkip }: CVOnboardingProps) {
           </div>
         </div>
 
-        {/* Step indicators */}
-        <div className="flex justify-center gap-1.5 pb-4">
+        {/* Step indicators. Inte på mobil: mobile.css ger varje knapp 48 px, så
+            sju prickar blev 7 × 48 och sköt ut över rutans högerkant
+            (mobilgenomgången 2026-10-10). Huvudet säger redan "Steg 1 av 7"
+            och har en förloppslinje. */}
+        <div className="hidden sm:flex justify-center gap-1.5 pb-4">
           {ONBOARDING_STEPS.map((s, idx) => (
             <button
               key={idx}
