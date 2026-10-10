@@ -47,11 +47,11 @@ export function ImageUpload({
   // Validate file
   const validateFile = (file: File): string | null => {
     if (!acceptedTypes.includes(file.type)) {
-      return `Ogiltigt filformat. Tillåtna format: ${acceptedTypes.map(t => t.replace('image/', '.')).join(', ')}`
+      return t('profile.imageUpload.invalidFormat', { format: acceptedTypes.map(typ => typ.replace('image/', '.')).join(', ') })
     }
     
     if (file.size > maxSizeMB * 1024 * 1024) {
-      return `Filen är för stor. Max storlek: ${maxSizeMB}MB`
+      return t('profile.imageUpload.tooLarge', { mb: maxSizeMB })
     }
     
     return null
@@ -80,10 +80,10 @@ export function ImageUpload({
           onChange(uploadedUrl)
           setPreviewUrl(uploadedUrl)
         } else {
-          throw new Error('Uppladdning misslyckades')
+          throw new Error(t('profile.imageUpload.uploadFailed'))
         }
       } catch {
-        setError('Kunde inte ladda upp bilden. Försök igen.')
+        setError(t('profile.imageUpload.uploadFailedRetry'))
         setPreviewUrl(value || null)
       } finally {
         setIsUploading(false)
@@ -180,7 +180,7 @@ export function ImageUpload({
           'relative cursor-pointer transition-all duration-200 rounded-xl overflow-hidden',
           'border-2 border-dashed',
           isDragging && 'border-[var(--c-solid)] bg-[var(--c-bg)] scale-[1.02]',
-          !isDragging && !previewUrl && 'border-stone-300 hover:border-[var(--c-solid)]/60 hover:bg-stone-50',
+          !isDragging && !previewUrl && 'border-stone-300 dark:border-stone-600 hover:border-[var(--c-solid)]/60 hover:bg-stone-50 dark:hover:bg-stone-800',
           previewUrl && 'border-solid border-[var(--c-accent)]/60'
         )}
       >
@@ -212,10 +212,10 @@ export function ImageUpload({
                   e.stopPropagation()
                   handleClick()
                 }}
-                className="text-white bg-white/20 hover:bg-white/30 border-0"
+                className="text-white bg-white/20 hover:bg-white/30 border-0 dark:text-white dark:bg-white/20 dark:hover:bg-white/30"
               >
-                <Camera className="w-4 h-4 mr-1" />
-                Ändra
+                <Camera className="w-4 h-4 mr-1" aria-hidden="true" />
+                {t('profile.imageUpload.change')}
               </Button>
               <Button
                 type="button"
@@ -242,23 +242,25 @@ export function ImageUpload({
         ) : (
           /* Empty State */
           <div className="p-8 flex flex-col items-center justify-center text-center min-h-[200px]">
-            <div className="w-16 h-16 rounded-full bg-stone-100 flex items-center justify-center mb-4">
+            <div className="w-16 h-16 rounded-full bg-stone-100 dark:bg-stone-700 flex items-center justify-center mb-4">
               {isUploading ? (
                 <Loader2 className="w-8 h-8 text-[var(--c-text)] animate-spin" />
               ) : (
-                <User className="w-8 h-8 text-stone-600" />
+                <User className="w-8 h-8 text-stone-600 dark:text-stone-300" aria-hidden="true" />
               )}
             </div>
             
             <div className="space-y-1">
-              <p className="text-sm font-medium text-stone-700">
-                {isDragging ? 'Släpp bilden här' : 'Ladda upp profilbild'}
+              <p className="text-sm font-medium text-stone-700 dark:text-stone-200">
+                {isDragging ? t('profile.imageUpload.dropHere') : t('profile.imageUpload.uploadAria')}
               </p>
-              <p className="text-xs text-stone-700">
-                Klicka, dra och släpp, eller klistra in (Ctrl+V)
+              <p className="text-xs text-stone-700 dark:text-stone-300">
+                {/* Dra, släpp och Ctrl+V finns bara med mus och tangentbord. */}
+                <span className="hidden [@media(pointer:fine)]:inline">{t('profile.imageUpload.dragHint')}</span>
+                <span className="[@media(pointer:fine)]:hidden">{t('profile.imageUpload.tapHint')}</span>
               </p>
-              <p className="text-xs text-stone-600">
-                {acceptedTypes.map(t => t.replace('image/', '.').toUpperCase()).join(', ')} upp till {maxSizeMB}MB
+              <p className="text-xs text-stone-600 dark:text-stone-400">
+                {t('profile.imageUpload.typesUpTo', { format: acceptedTypes.map(typ => typ.replace('image/', '.').toUpperCase()).join(', '), mb: maxSizeMB })}
               </p>
             </div>
 
@@ -269,8 +271,8 @@ export function ImageUpload({
               className="mt-4"
               disabled={isUploading}
             >
-              <Upload className="w-4 h-4 mr-2" />
-              Välj bild
+              <Upload className="w-4 h-4 mr-2" aria-hidden="true" />
+              {t('profile.imageUpload.chooseImage')}
             </Button>
           </div>
         )}
@@ -286,8 +288,8 @@ export function ImageUpload({
 
       {/* Helper Text */}
       {previewUrl && !error && (
-        <p className="text-xs text-stone-700 text-center">
-          Rekommenderad storlek: 400x400px
+        <p className="text-xs text-stone-700 dark:text-stone-300 text-center">
+          {t('profile.imageUpload.recommendedSize')}
         </p>
       )}
     </div>
@@ -305,6 +307,7 @@ export function CompactImageUpload({
   maxSizeMB = DEFAULT_MAX_SIZE,
   acceptedTypes = DEFAULT_ACCEPTED_TYPES,
 }: ImageUploadProps) {
+  const { t } = useTranslation()
   const [isUploading, setIsUploading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [pasteMessage, setPasteMessage] = useState<string | null>(null)
@@ -314,10 +317,10 @@ export function CompactImageUpload({
 
   const validateFile = (file: File): string | null => {
     if (!acceptedTypes.includes(file.type)) {
-      return 'Ogiltigt filformat'
+      return t('profile.imageUpload.invalidFormatShort')
     }
     if (file.size > maxSizeMB * 1024 * 1024) {
-      return `Filen är för stor (max ${maxSizeMB}MB)`
+      return t('profile.imageUpload.tooLargeShort', { mb: maxSizeMB })
     }
     return null
   }
@@ -344,10 +347,10 @@ export function CompactImageUpload({
           setLocalPreview(null) // Clear local preview when upload completes
         } else {
           // Upload failed, keep local preview but show error
-          setError('Uppladdning misslyckades')
+          setError(t('profile.imageUpload.uploadFailed'))
         }
       } catch {
-        setError('Uppladdning misslyckades')
+        setError(t('profile.imageUpload.uploadFailed'))
       } finally {
         setIsUploading(false)
       }
@@ -373,7 +376,7 @@ export function CompactImageUpload({
       if (item.type.startsWith('image/')) {
         const file = item.getAsFile()
         if (file) {
-          setPasteMessage('Bild inklistrad!')
+          setPasteMessage(t('profile.imageUpload.pasted'))
           setTimeout(() => setPasteMessage(null), 2000)
           await handleFile(file)
           break
@@ -394,8 +397,8 @@ export function CompactImageUpload({
       {/* Avatar Preview */}
       <div className="relative">
         <div className={cn(
-          'w-20 h-20 rounded-full overflow-hidden bg-stone-100 flex items-center justify-center',
-          (value || localPreview) ? 'ring-2 ring-[var(--c-solid)] ring-offset-2' : 'border-2 border-dashed border-stone-300'
+          'w-20 h-20 rounded-full overflow-hidden bg-stone-100 dark:bg-stone-700 flex items-center justify-center',
+          (value || localPreview) ? 'ring-2 ring-[var(--c-solid)] ring-offset-2' : 'border-2 border-dashed border-stone-300 dark:border-stone-600'
         )}>
           {value || localPreview ? (
             <img
@@ -404,7 +407,7 @@ export function CompactImageUpload({
               className="w-full h-full object-cover"
             />
           ) : (
-            <User className="w-8 h-8 text-stone-600" />
+            <User className="w-8 h-8 text-stone-600 dark:text-stone-300" aria-hidden="true" />
           )}
         </div>
         
@@ -434,7 +437,7 @@ export function CompactImageUpload({
             disabled={isUploading}
           >
             <Camera className="w-4 h-4 mr-2" />
-            {(value || localPreview) ? 'Ändra bild' : 'Ladda upp'}
+            {(value || localPreview) ? t('profile.imageUpload.changeImage') : t('profile.imageUpload.upload')}
           </Button>
           
           {(value || localPreview) && (
@@ -464,11 +467,11 @@ export function CompactImageUpload({
           </p>
         )}
         
-        <p className="text-xs text-stone-700">
-          JPG, PNG eller WebP, max {maxSizeMB}MB
+        <p className="text-xs text-stone-700 dark:text-stone-300">
+          {t('profile.imageUpload.formatsMax', { mb: maxSizeMB })}
         </p>
-        <p className="text-xs text-stone-600">
-          Tips: Kopiera en bild och tryck Ctrl+V för att klistra in
+        <p className="hidden [@media(pointer:fine)]:block text-xs text-stone-600 dark:text-stone-400">
+          {t('profile.imageUpload.pasteTip')}
         </p>
       </div>
     </div>

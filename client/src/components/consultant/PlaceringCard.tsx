@@ -182,7 +182,7 @@ export function PlaceringCard({
               variant="ghost"
               leftIcon={<Trash2 size={13} />}
               onClick={onDelete}
-              className="text-rose-700 hover:bg-rose-50"
+              className="text-rose-700 hover:bg-rose-50 dark:text-rose-400 dark:hover:bg-rose-900/30"
             >
               Ta bort
             </Button>

@@ -15,7 +15,7 @@
  * skyddade sidan?", inte "fungerar konsulentvyn?".
  */
 /* eslint-disable @typescript-eslint/no-explicit-any -- vi.mock importOriginal + partiella tillståndsmockar */
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { describe, it, expect, vi, beforeEach, beforeAll } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
 import { MemoryRouter, useLocation } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
@@ -140,8 +140,17 @@ async function renderaVid(sokvag: string) {
 }
 
 async function vantaTillsPlatsInteAr(sokvag: string) {
-  await waitFor(() => expect(screen.getByTestId('plats').textContent).not.toBe(sokvag), { timeout: 15000 })
+  await waitFor(() => expect(screen.getByTestId('plats').textContent).not.toBe(sokvag), { timeout: 45000 })
 }
+
+// Förvärm appens modulträd en gång (2026-10-10). Varje test gör import(App) och
+// laddar sidorna lazy; när hela sviten kör parallellt tog den första
+// kompileringen över 15 s, och testerna föll på tidsgränsen utan att något var
+// fel — två gånger samma dag. Väntetiderna är generösa av samma skäl: ett
+// riktigt fel fäller fortfarande, bara senare.
+beforeAll(async () => {
+  await import('../../App')
+}, 120_000)
 
 describe('rollskyddet på /consultant och /admin (PrivateRoute)', () => {
   beforeEach(() => {
@@ -153,21 +162,21 @@ describe('rollskyddet på /consultant och /admin (PrivateRoute)', () => {
     await renderaVid('/consultant')
     await vantaTillsPlatsInteAr('/consultant')
     expect(screen.queryByText('VAKTPOST-KONSULENTVY')).not.toBeInTheDocument()
-  }, 20000)
+  }, 60000)
 
   it('en deltagare släpps inte in i adminpanelen', async () => {
     await renderaVid('/admin')
     await vantaTillsPlatsInteAr('/admin')
     expect(screen.queryByText('VAKTPOST-ADMINPANEL')).not.toBeInTheDocument()
-  }, 20000)
+  }, 60000)
 
   it('en konsulent når konsulentvyn — positiv kontroll, grinden stänger inte allt', async () => {
     aktivRoll = 'CONSULTANT'
     roller = ['CONSULTANT']
     await renderaVid('/consultant')
-    expect(await screen.findByText('VAKTPOST-KONSULENTVY', {}, { timeout: 15000 })).toBeInTheDocument()
+    expect(await screen.findByText('VAKTPOST-KONSULENTVY', {}, { timeout: 45000 })).toBeInTheDocument()
     expect(screen.getByTestId('plats').textContent).toBe('/consultant')
-  }, 20000)
+  }, 60000)
 
   it('en konsulent släpps inte in i adminpanelen', async () => {
     aktivRoll = 'CONSULTANT'
@@ -175,19 +184,19 @@ describe('rollskyddet på /consultant och /admin (PrivateRoute)', () => {
     await renderaVid('/admin')
     await vantaTillsPlatsInteAr('/admin')
     expect(screen.queryByText('VAKTPOST-ADMINPANEL')).not.toBeInTheDocument()
-  }, 20000)
+  }, 60000)
 
   it('en konsulent som växlat till deltagarläge når fortfarande konsulentvyn via roles[]', async () => {
     aktivRoll = 'USER'
     roller = ['USER', 'CONSULTANT']
     await renderaVid('/consultant')
-    expect(await screen.findByText('VAKTPOST-KONSULENTVY', {}, { timeout: 15000 })).toBeInTheDocument()
-  }, 20000)
+    expect(await screen.findByText('VAKTPOST-KONSULENTVY', {}, { timeout: 45000 })).toBeInTheDocument()
+  }, 60000)
 
   it('en superadmin når adminpanelen', async () => {
     aktivRoll = 'SUPERADMIN'
     roller = ['SUPERADMIN']
     await renderaVid('/admin')
-    expect(await screen.findByText('VAKTPOST-ADMINPANEL', {}, { timeout: 15000 })).toBeInTheDocument()
-  }, 20000)
+    expect(await screen.findByText('VAKTPOST-ADMINPANEL', {}, { timeout: 45000 })).toBeInTheDocument()
+  }, 60000)
 })

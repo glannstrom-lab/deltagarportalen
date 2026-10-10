@@ -13,7 +13,7 @@
  */
 
 /* eslint-disable @typescript-eslint/no-explicit-any -- vi.mock importOriginal + partial-state mocks */
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { describe, it, expect, vi, beforeEach, beforeAll } from 'vitest'
 import { render, waitFor } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
@@ -159,6 +159,15 @@ async function renderAppAt(path: string) {
   )
 }
 
+// Förvärm appens modulträd en gång (2026-10-10). Varje test gör import(App) och
+// laddar sidorna lazy; när hela sviten kör parallellt tog den första
+// kompileringen över 15 s, och testerna föll på tidsgränsen utan att något var
+// fel — två gånger samma dag. Väntetiderna är generösa av samma skäl: ett
+// riktigt fel fäller fortfarande, bara senare.
+beforeAll(async () => {
+  await import('../../App')
+}, 120_000)
+
 describe('Deep-link smoke test (NAV-04)', () => {
   beforeEach(() => {
     vi.clearAllMocks()
@@ -173,12 +182,12 @@ describe('Deep-link smoke test (NAV-04)', () => {
             expect(container.textContent ?? '').not.toBe('loading')
             expect(container.textContent ?? '').not.toBe('')
           },
-          { timeout: 15000 }
+          { timeout: 45000 }
         )
         const errorFallback = container.querySelector('[data-testid="route-error-fallback"]')
         expect(errorFallback).toBeNull()
       },
-      { timeout: 20000 }
+      { timeout: 60000 }
     )
 
     it.each(HUB_PATHS)(
@@ -190,13 +199,13 @@ describe('Deep-link smoke test (NAV-04)', () => {
             expect(container.textContent ?? '').not.toBe('loading')
             expect(container.textContent ?? '').not.toBe('')
           },
-          { timeout: 15000 }
+          { timeout: 45000 }
         )
         // Hub pages are placeholder pages — assert no error boundary fired
         const errorFallback = container.querySelector('[data-testid="route-error-fallback"]')
         expect(errorFallback).toBeNull()
       },
-      20000
+      60000
     )
   })
 

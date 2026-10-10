@@ -111,17 +111,17 @@ function NotificationItem({
   })
 
   return (
+    // Rubriken är knappen, och dess ::after täcker kortet så hela ytan går att
+    // trycka på. Fram till 2026-10-10 var kortet en <div role="button"> med en
+    // länk och två knappar inuti — nästlade kontroller som en skärmläsare inte
+    // kan skilja åt — och åtgärderna syntes bara vid muspekare, aldrig på mobil.
     <div
       className={cn(
-        'group relative flex items-start gap-3 p-3 rounded-xl transition-colors cursor-pointer',
+        'group relative flex items-start gap-3 p-3 rounded-xl transition-colors',
         notification.read
           ? 'hover:bg-stone-50 dark:hover:bg-stone-700/50'
           : 'bg-[var(--c-bg)]/50 dark:bg-[var(--c-bg)]/20 hover:bg-[var(--c-accent)]/40/50 dark:hover:bg-[var(--c-bg)]/40'
       )}
-      onClick={handleClick}
-      role="button"
-      tabIndex={0}
-      onKeyDown={(e) => e.key === 'Enter' && handleClick()}
     >
       {/* Icon */}
       <div className={cn('flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center', config.bgColor)}>
@@ -131,18 +131,29 @@ function NotificationItem({
       {/* Content */}
       <div className="flex-1 min-w-0">
         <div className="flex items-start justify-between gap-2">
-          <p
+          <button
+            type="button"
+            onClick={handleClick}
+            // Inline: mobile.css ger varje knapp 48 px och ligger utanför
+            // Tailwinds lager — en rubrikrad ska inte bli en knapphöjd hög.
+            style={{ minHeight: 0, minWidth: 0 }}
             className={cn(
-              'text-sm font-medium leading-snug',
+              'text-left text-sm font-medium leading-snug',
+              "after:absolute after:inset-0 after:rounded-xl after:content-['']",
+              'focus-visible:outline-none focus-visible:after:ring-2 focus-visible:after:ring-[var(--c-solid)]',
               notification.read
                 ? 'text-stone-700 dark:text-stone-300'
                 : 'text-stone-900 dark:text-stone-100'
             )}
           >
             {notification.title}
-          </p>
+          </button>
           {!notification.read && (
-            <span className="flex-shrink-0 w-2 h-2 mt-1.5 bg-[var(--c-solid)] rounded-full" aria-label={t('notificationBell.aria.unread', 'Oläst')} />
+            <>
+              {/* aria-label på en span utan roll läses inte upp (aria-prohibited-attr) */}
+              <span className="flex-shrink-0 w-2 h-2 mt-1.5 bg-[var(--c-solid)] rounded-full" aria-hidden="true" />
+              <span className="sr-only">{t('notificationBell.aria.unread', 'Oläst')}</span>
+            </>
           )}
         </div>
         <p className="text-xs text-stone-500 dark:text-stone-400 mt-0.5 line-clamp-2">
@@ -156,40 +167,41 @@ function NotificationItem({
             href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(notification.data.location)}`}
             target="_blank"
             rel="noopener noreferrer"
-            onClick={(e) => e.stopPropagation()}
-            className="inline-block mt-1 text-xs underline underline-offset-2 text-[var(--c-text)]"
+            className="relative z-10 inline-block mt-1 text-xs underline underline-offset-2 text-[var(--c-text)]"
           >
             {t('notificationBell.paminnelse.karta', 'Visa {{plats}} på karta', { plats: notification.data.location })}
           </a>
         )}
-        <p className="text-[0.625rem] text-stone-600 dark:text-stone-500 mt-1">
-          {timeAgo}
-        </p>
-      </div>
+        <div className="mt-1 flex items-center justify-between gap-2">
+          <p className="text-xs text-stone-600 dark:text-stone-400">
+            {timeAgo}
+          </p>
 
-      {/* Actions (show on hover) */}
-      <div
-        className="absolute right-2 top-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity"
-        onClick={(e) => e.stopPropagation()}
-      >
-        {!notification.read && (
-          <button
-            onClick={() => onMarkAsRead(notification.id)}
-            className="p-1.5 rounded-lg bg-white dark:bg-stone-700 shadow-sm hover:bg-stone-100 dark:hover:bg-stone-600 transition-colors"
-            title={t('notificationBell.aria.markAsRead', 'Markera som läst')}
-            aria-label={t('notificationBell.aria.markAsRead', 'Markera som läst')}
+          {/* Åtgärderna: alltid synliga på mobil (ingen muspekare att hålla över),
+              på större skärm vid hovring eller tangentbordsfokus. */}
+          <div
+            className="relative z-10 flex gap-1 transition-opacity sm:opacity-0 sm:group-hover:opacity-100 sm:group-focus-within:opacity-100"
           >
-            <Check className="w-3 h-3 text-green-600" />
-          </button>
-        )}
-        <button
-          onClick={() => onDelete(notification.id)}
-          className="p-1.5 rounded-lg bg-white dark:bg-stone-700 shadow-sm hover:bg-red-50 dark:hover:bg-red-900/30 transition-colors"
-          title={t('common.remove', 'Ta bort')}
-          aria-label={t('notificationBell.aria.deleteNotification', 'Ta bort notifikation')}
-        >
-          <Trash2 className="w-3 h-3 text-red-500" />
-        </button>
+            {!notification.read && (
+              <button
+                onClick={() => onMarkAsRead(notification.id)}
+                className="p-1.5 rounded-lg bg-white dark:bg-stone-700 shadow-sm hover:bg-stone-100 dark:hover:bg-stone-600 transition-colors"
+                title={t('notificationBell.aria.markAsRead', 'Markera som läst')}
+                aria-label={t('notificationBell.aria.markAsRead', 'Markera som läst')}
+              >
+                <Check className="w-4 h-4 text-green-700 dark:text-green-400" aria-hidden="true" />
+              </button>
+            )}
+            <button
+              onClick={() => onDelete(notification.id)}
+              className="p-1.5 rounded-lg bg-white dark:bg-stone-700 shadow-sm hover:bg-red-50 dark:hover:bg-red-900/30 transition-colors"
+              title={t('common.remove', 'Ta bort')}
+              aria-label={t('notificationBell.aria.deleteNotification', 'Ta bort notifikation')}
+            >
+              <Trash2 className="w-4 h-4 text-red-600 dark:text-red-400" aria-hidden="true" />
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   )
@@ -394,14 +406,16 @@ export function NotificationBell({ className }: NotificationBellProps) {
           >
             {/* Header */}
             <div className="flex items-center justify-between gap-3 px-4 py-3 border-b border-stone-100 dark:border-stone-700">
-              <h2 className="min-w-0 truncate font-semibold text-stone-800 dark:text-stone-100">
+              {/* Rubriken står hel; det är knapptexten som får bryta rad. Med
+                  truncate på rubriken stod det "Notifikati…" på 390 px. */}
+              <h2 className="shrink-0 font-semibold text-stone-800 dark:text-stone-100">
                 {t('notificationBell.aria.notifications', 'Notifikationer')}
               </h2>
-              <div className="flex shrink-0 items-center gap-2">
+              <div className="flex min-w-0 items-center gap-2">
                 {unreadCount > 0 && (
                   <button
                     onClick={markAllAsRead}
-                    className="text-xs text-[var(--c-text)] dark:text-[var(--c-solid)] hover:text-[var(--c-text)] font-medium"
+                    className="text-right leading-tight text-xs text-[var(--c-text)] dark:text-[var(--c-solid)] hover:text-[var(--c-text)] font-medium"
                   >
                     {t('notificationBell.markAllRead', 'Markera alla som lästa')}
                   </button>

@@ -13,7 +13,7 @@
  */
 
 /* eslint-disable @typescript-eslint/no-explicit-any -- vi.mock importOriginal + partial-state mocks */
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { describe, it, expect, vi, beforeEach, beforeAll } from 'vitest'
 import { render, waitFor } from '@testing-library/react'
 import { MemoryRouter, useLocation } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
@@ -111,6 +111,15 @@ const CTA_MAL = [
   ['/wellness', '/login?returnTo=%2Fwellness'],
 ] as const
 
+// Förvärm appens modulträd en gång (2026-10-10). Varje test gör import(App) och
+// laddar sidorna lazy; när hela sviten kör parallellt tog den första
+// kompileringen över 15 s, och testerna föll på tidsgränsen utan att något var
+// fel — två gånger samma dag. Väntetiderna är generösa av samma skäl: ett
+// riktigt fel fäller fortfarande, bara senare.
+beforeAll(async () => {
+  await import('../../App')
+}, 120_000)
+
 describe('K11: gäst som klickar en CTA på en publik sida', () => {
   beforeEach(() => {
     vi.clearAllMocks()
@@ -128,10 +137,10 @@ describe('K11: gäst som klickar en CTA på en publik sida', () => {
         () => {
           expect(getByTestId('location').textContent).toBe(forvantat)
         },
-        { timeout: 15000 }
+        { timeout: 45000 }
       )
     },
-    20000
+    60000
   )
 
   it('landningssidan visas fortfarande på /', async () => {
@@ -140,9 +149,9 @@ describe('K11: gäst som klickar en CTA på en publik sida', () => {
       () => {
         expect(getByTestId('location').textContent).toBe('/')
       },
-      { timeout: 15000 }
+      { timeout: 45000 }
     )
-  })
+  }, 60000)
 
   it('behåller frågesträngen så att sammanhanget överlever inloggningen', async () => {
     const { getByTestId } = await renderAppAt('/job-search?q=lager')
@@ -152,9 +161,9 @@ describe('K11: gäst som klickar en CTA på en publik sida', () => {
           '/login?returnTo=%2Fjob-search%3Fq%3Dlager'
         )
       },
-      { timeout: 15000 }
+      { timeout: 45000 }
     )
-  })
+  }, 60000)
 
   it('skickar konsulentvyn till inloggningen med returnTo', async () => {
     const { getByTestId } = await renderAppAt('/consultant')
@@ -162,7 +171,7 @@ describe('K11: gäst som klickar en CTA på en publik sida', () => {
       () => {
         expect(getByTestId('location').textContent).toBe('/login?returnTo=%2Fconsultant')
       },
-      { timeout: 15000 }
+      { timeout: 45000 }
     )
-  })
+  }, 60000)
 })

@@ -52,7 +52,7 @@ describe('ImageUpload', () => {
 
     // File size validation happens after upload in the handleFile function.
     // In jsdom, we can verify the component renders with the correct max size hint.
-    expect(screen.getByText(/1MB/)).toBeInTheDocument()
+    expect(screen.getByText(/1 MB/)).toBeInTheDocument()
   })
 
   it('calls onUpload when file is selected', async () => {
@@ -152,7 +152,7 @@ describe('CompactImageUpload', () => {
   it('displays file requirements', () => {
     render(<CompactImageUpload onChange={mockOnChange} maxSizeMB={2} />)
     
-    expect(screen.getByText(/JPG, PNG eller WebP, max 2MB/i)).toBeInTheDocument()
+    expect(screen.getByText(/JPG, PNG eller WebP, max 2 MB/i)).toBeInTheDocument()
   })
 })
 

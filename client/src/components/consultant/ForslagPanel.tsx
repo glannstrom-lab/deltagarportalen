@@ -129,7 +129,7 @@ export function ForslagPanel({ forslag, avstamningar = [], onTaBortUtkast, onOpp
                           variant="ghost"
                           leftIcon={<Trash2 size={13} />}
                           onClick={() => onTaBortUtkast(f)}
-                          className="text-rose-700 hover:bg-rose-50"
+                          className="text-rose-700 hover:bg-rose-50 dark:text-rose-400 dark:hover:bg-rose-900/30"
                         >
                           Ta bort utkast
                         </Button>

@@ -107,7 +107,6 @@ export function ChipSelect({
               type="button"
               role={multiple ? 'checkbox' : 'radio'}
               aria-checked={checked}
-              aria-pressed={checked}
               onClick={() => toggle(opt.value)}
               onKeyDown={(e) => handleKeyDown(e, opt.value)}
               disabled={disabled}
