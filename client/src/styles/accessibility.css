@@ -635,7 +635,14 @@ legend {
      h2 till 32 px — också dialogrubriker och korttitlar som ska vara små, så
      "Ny dagboksanteckning" knuffade ut stängknappen på mobil. Roten är 18 px,
      så rubrikerna växer ändå, i proportion till sin egen storlek. */
-  p, li { font-size: 1.125rem; }
+
+  /* Småtexten växer mest, och ordningen består (2026-10-10). Här stod
+     p, li { font-size: 1.125rem } — utanför Tailwinds lager slog den ut varje
+     storleksklass, så en text-xs-bildtext blev 20 px medan rubriken bredvid
+     (h3 text-sm) var 16. I stället höjs de två minsta stegen i skalan:
+     text-xs 12 → 14,6 px och text-sm 14 → 16,9 px, mot 16 → 18 px för resten. */
+  --text-xs: 0.8125rem;
+  --text-sm: 0.9375rem;
 
   /* Inte span och a (2026-10-10). De två är inline-element som ärver från
      stycket de står i — men som fristående etiketter i navet, flikar och

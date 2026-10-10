@@ -94,8 +94,11 @@ export const COACHES: Record<CoachId, Coach> = {
     name: 'Mona',
     role: 'Mental coach',
     tagline: 'Motivation, självkänsla och rutiner',
-    avatar: '/coaches/mentalcoach.webp',
-    avatarSm: '/coaches/mentalcoach-128.webp',
+    // Nytt filnamn när porträttet byttes (2026-10-10): bilder cachas ett år som
+    // immutable (vercel.json), så den som sett det gamla porträttet — en man —
+    // fick ha kvar det under samma adress. Byt namn varje gång en bild byts.
+    avatar: '/coaches/mona.webp',
+    avatarSm: '/coaches/mona-128.webp',
     accent: 'wellbeing',
   },
   digitalcoach: {

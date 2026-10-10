@@ -200,12 +200,14 @@ export interface ICFAdaptation {
 }
 
 // ===== SEKTIONER =====
+// Namnen visas för deltagaren (skylt, räknare, stegprickar). Fackorden RIASEC,
+// Big Five och ICF stod här till 2026-10-10 — samma namn som introt nu.
 
 export const sections: Section[] = [
-  { id: 'riasec', name: 'RIASEC', subtitle: 'Upptäck din arbetsstil', count: 6 },
-  { id: 'bigfive', name: 'Big Five', subtitle: 'Din personlighetsprofil', count: 10 },
+  { id: 'riasec', name: 'Arbetsintressen', subtitle: 'Upptäck din arbetsstil', count: 6 },
+  { id: 'bigfive', name: 'Personlighet', subtitle: 'Din personlighetsprofil', count: 10 },
   { id: 'strong', name: 'Intresseområden', subtitle: 'Vad intresserar dig?', count: 10 },
-  { id: 'icf', name: 'ICF - Funktionsförutsättningar', subtitle: 'Dina förutsättningar för arbete', count: 8 },
+  { id: 'icf', name: 'Dina förutsättningar', subtitle: 'Dina förutsättningar för arbete', count: 8 },
 ]
 
 // ===== FRÅGOR =====
