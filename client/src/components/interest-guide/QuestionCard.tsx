@@ -231,19 +231,19 @@ export function QuestionCard({
             aria-hidden="true"
           />
 
-          {/* Dots for each value (visual only, not keyboard accessible) */}
+          {/* Prickarna är bara bild: range-fältet ovanpå (z-20) tar alla tryck.
+              De var <button> fram till 2026-10-10, och den globala 48 px-regeln
+              för knappar (mobile.css) blåste upp dem till fem ihopklistrade
+              ringar som dolde spåret. */}
           <div className="absolute inset-x-0 flex justify-between px-1 z-10" aria-hidden="true">
             {[1, 2, 3, 4, 5].map((dotValue) => {
               const isActive = besvarad && value >= dotValue
               const isCurrent = value === dotValue
 
               return (
-                <button
+                <span
                   key={dotValue}
-                  type="button"
-                  onClick={() => onChange(dotValue)}
-                  tabIndex={-1}
-                  className={`
+                  className={`block
                     w-8 h-8 rounded-full border-4 transition-all duration-200 ease-out cursor-pointer
                     ${isCurrent
                       ? 'bg-white border-[var(--c-solid)] scale-110 shadow-lg'

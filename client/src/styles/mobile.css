@@ -108,29 +108,36 @@ input[type="button"],
   font-size: 16px; /* Förhindra iOS-zoom */
 }
 
-.mobile-device h1 {
-  font-size: 1.5rem;
-  line-height: 1.3;
-}
+/* Standardstorlekar, inte tvång (2026-10-10). Reglerna ligger i Tailwinds
+   baslager: ett element utan egen storleksklass får dem, men text-xs/text-sm
+   och rubrikernas egna klasser vinner. Utanför lagret slog de ut varje
+   storleksklass på mobil — en text-sm-mellanrubrik hamnade under ett stycke
+   som tvingats till 16 px, och korttitlar (h3 text-sm) blev 18 px. */
+@layer base {
+  .mobile-device h1 {
+    font-size: 1.5rem;
+    line-height: 1.3;
+  }
 
-.mobile-device h2 {
-  font-size: 1.25rem;
-  line-height: 1.3;
-}
+  .mobile-device h2 {
+    font-size: 1.25rem;
+    line-height: 1.3;
+  }
 
-.mobile-device h3 {
-  font-size: 1.125rem;
-}
+  .mobile-device h3 {
+    font-size: 1.125rem;
+  }
 
-/* Bara stycken (2026-10-10). Här stod också span och a — och eftersom den
-   här filen ligger utanför Tailwinds lager vann regeln över varje text-xs och
-   text-sm i hela portalen på mobil. Fristående etiketter (bottennavet, flikar,
-   rådgivarens roll, loggans ordbild) blev 16 px och kapades: "Din vardag" stod
-   som "Din varda" i bottennavet för alla mobilanvändare. Text inne i ett
-   stycke ärver ändå styckets storlek, så löptexten påverkas inte. */
-.mobile-device p {
-  font-size: 1rem;
-  line-height: 1.6;
+  /* Bara stycken (2026-10-10). Här stod också span och a — och eftersom den
+     här filen ligger utanför Tailwinds lager vann regeln över varje text-xs och
+     text-sm i hela portalen på mobil. Fristående etiketter (bottennavet, flikar,
+     rådgivarens roll, loggans ordbild) blev 16 px och kapades: "Din vardag" stod
+     som "Din varda" i bottennavet för alla mobilanvändare. Text inne i ett
+     stycke ärver ändå styckets storlek, så löptexten påverkas inte. */
+  .mobile-device p {
+    font-size: 1rem;
+    line-height: 1.6;
+  }
 }
 
 .mobile-device .text-mobile-lg {

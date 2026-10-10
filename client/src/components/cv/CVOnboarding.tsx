@@ -223,7 +223,7 @@ export function CVOnboarding({ onComplete, onSkip }: CVOnboardingProps) {
 
         {/* Content */}
         <div className="p-6">
-          <h2 id="cv-onboarding-title" className="text-2xl font-bold text-stone-800 dark:text-stone-100 mb-3">
+          <h2 id="cv-onboarding-title" className="text-xl sm:text-2xl font-bold text-stone-800 dark:text-stone-100 mb-3">
             {t(`cv.onboarding.steps.${step.id}.title`)}
           </h2>
           <p className="text-stone-600 dark:text-stone-400 mb-6 leading-relaxed">

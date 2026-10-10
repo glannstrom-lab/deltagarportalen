@@ -885,7 +885,7 @@ export default function CVBuilder() {
     return (
     <div className="space-y-8">
       <div className="text-center">
-        <h3 className="text-2xl font-bold text-stone-800 dark:text-stone-200 mb-2">{t('cvBuilder.templates.chooseTemplate')}</h3>
+        <h3 className="text-xl sm:text-2xl font-bold text-stone-800 dark:text-stone-200 mb-2">{t('cvBuilder.templates.chooseTemplate')}</h3>
         <p className="text-stone-700 dark:text-stone-300">{t('cvBuilder.templates.templateDescription')}</p>
       </div>
 
@@ -1255,7 +1255,7 @@ export default function CVBuilder() {
             aria-hidden="true"
             className="w-24 h-24 mx-auto mb-3 select-none"
           />
-          <h3 className="text-2xl font-bold text-stone-800 dark:text-stone-200 mb-2">
+          <h3 className="text-xl sm:text-2xl font-bold text-stone-800 dark:text-stone-200 mb-2">
             {t('cvBuilder.review.title', 'Granska och spara ditt CV')}
           </h3>
           <p className="text-stone-600 dark:text-stone-400">

@@ -3117,7 +3117,7 @@
       "previous": "Föregående",
       "seeMyResult": "Se mitt resultat",
       "nextQuestion": "Nästa fråga",
-      "questionInSection": "Fråga {{current}} av {{total}}",
+      "questionInSection": "{{current}} av {{total}} i den här delen",
       "cancelAndRestart": "Avbryt och börja om",
       "couldNotSaveResult": "Kunde inte spara resultatet",
       "couldNotClearProgress": "Kunde inte rensa sparad data",

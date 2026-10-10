@@ -3094,7 +3094,7 @@
       "previous": "Previous",
       "seeMyResult": "See my result",
       "nextQuestion": "Next question",
-      "questionInSection": "Question {{current}} of {{total}}",
+      "questionInSection": "{{current}} of {{total}} in this part",
       "cancelAndRestart": "Cancel and start over",
       "couldNotSaveResult": "Could not save result",
       "couldNotClearProgress": "Could not clear saved data",

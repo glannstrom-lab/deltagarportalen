@@ -527,12 +527,12 @@ export default function TestTab() {
       </div>
 
       {/* Navigation */}
-      <div className="flex items-center justify-center gap-4">
+      <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4">
         <Button
           variant="outline"
           onClick={handlePrevious}
           disabled={currentQuestionIndex === 0 || isSaving}
-          className="gap-2 px-6"
+          className="gap-2 px-4 sm:px-6 whitespace-nowrap"
         >
           <ArrowLeft className="w-4 h-4" />
           {t('interestGuide.test.previous')}
@@ -541,7 +541,7 @@ export default function TestTab() {
         <Button
           onClick={handleNext}
           disabled={!canProceed || isSaving}
-          className="gap-2 px-8 bg-[var(--c-solid)] hover:from-amber-600 hover:to-orange-600 dark:hover:from-amber-700 dark:hover:to-orange-700"
+          className="gap-2 px-5 sm:px-8 whitespace-nowrap bg-[var(--c-solid)] hover:from-amber-600 hover:to-orange-600 dark:hover:from-amber-700 dark:hover:to-orange-700"
           size="lg"
         >
           {isSaving ? (
