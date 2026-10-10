@@ -363,7 +363,7 @@ export function ExperienceEditor({ experiences, onChange }: ExperienceEditorProp
                         </div>
 
                         {/* Dates */}
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 min-[420px]:grid-cols-2 gap-4">
                           <div>
                             <label htmlFor={`exp-startDate-${exp.id}`} className="block text-sm font-medium text-stone-700 mb-1">
                               Startdatum *

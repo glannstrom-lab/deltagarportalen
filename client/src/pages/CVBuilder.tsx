@@ -2,7 +2,7 @@ import { createPortal } from 'react-dom'
 import { useSkenSlot } from '@/components/layout/skenSlot'
 import { StigLista, StigPrick, SkenEtikett } from '@/components/layout/Stig'
 import { stigRadKlasser } from '@/components/layout/stigKlasser'
-import { useState, useEffect, useRef, useId } from 'react'
+import { useState, useEffect, useRef, useId, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { TFunction } from 'i18next'
 import { useQueryClient } from '@tanstack/react-query'
@@ -30,7 +30,7 @@ import { cn } from '@/lib/utils'
 // kontextuellt råd inne i formuläret — inte en ring i hörnet.
 import RadgivarPanel from '@/components/radgivare/RadgivarPanel'
 import { cvLogger } from '@/lib/logger'
-import { spaltformFor, spaltformNyckel, STANDARDMALL, mallarAttVisa } from '@/data/cvMallar'
+import { spaltformFor, spaltformNyckel, STANDARDMALL, mallarAttVisa, normaliseraMallId } from '@/data/cvMallar'
 import { useConfirmDialog } from '@/components/ui/ConfirmDialog'
 import type { CVData, CVVersion } from '@/services/supabaseApi'
 
@@ -355,6 +355,26 @@ export default function CVBuilder() {
   const { t, i18n } = useTranslation()
   const queryClient = useQueryClient()
   const [step, setStep] = useState(1)
+
+  // Den fasta knappraden (mobil) ligger ovanför bottennavet. Platsen för den
+  // reserveras längst ned på HELA sidan (Layout läser --extra-nederkant), inte
+  // under CV-byggarens eget block: där räknades navet en gång till och
+  // rådgivarpanelerna som följer hamnade 160 px längre ned (2026-10-10).
+  const knappradObs = useRef<ResizeObserver | null>(null)
+  // Callback-ref: raden ritas först när sidan laddat klart, så en effekt vid
+  // montering hade sett en tom ref.
+  const knappradRef = useCallback((rad: HTMLDivElement | null) => {
+    const root = document.documentElement
+    knappradObs.current?.disconnect()
+    knappradObs.current = null
+    if (!rad) { root.style.removeProperty('--extra-nederkant'); return }
+    const mat = () => root.style.setProperty('--extra-nederkant', `${rad.offsetHeight}px`)
+    mat()
+    if (typeof ResizeObserver !== 'undefined') {
+      knappradObs.current = new ResizeObserver(mat)
+      knappradObs.current.observe(rad)
+    }
+  }, [])
   // Steg 4 (2026-08-17): förhandsvisning och rådgivare delar högerkolumn som
   // flikar — inte staplade. En tredje kolumn för rådgivaren hade gjort raden
   // obrukbar, och att stapla dem hade tryckt ner förhandsvisningen ur bild.
@@ -874,7 +894,7 @@ export default function CVBuilder() {
           På sm+ är det vanlig grid. */}
       <div id="cv-mallgalleri" className="flex overflow-x-auto snap-x snap-mandatory gap-4 -mx-4 px-4 pb-3 sm:grid sm:grid-cols-2 sm:overflow-visible sm:px-0 sm:mx-0 sm:gap-6 sm:pb-0 lg:grid-cols-3 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
         {synligaMallar.map((tpl) => {
-          const selected = data.template === tpl.id
+          const selected = normaliseraMallId(data.template) === tpl.id
           return (
             <button
               key={tpl.id}
@@ -972,7 +992,7 @@ export default function CVBuilder() {
             </div>
             <div>
               <p className="font-medium text-[var(--c-text)] dark:text-[var(--c-text)]">
-                {(() => { const vald = TEMPLATES.find(tpl => tpl.id === data.template); return vald ? t(`cvBuilder.templates.meta.${vald.id}.name`, vald.name) : '' })()} {t('cvBuilder.templates.isSelected')}
+                {(() => { const vald = TEMPLATES.find(tpl => tpl.id === normaliseraMallId(data.template)); return vald ? t(`cvBuilder.templates.meta.${vald.id}.name`, vald.name) : '' })()} {t('cvBuilder.templates.isSelected')}
               </p>
               <p className="text-sm text-[var(--c-text)] dark:text-[var(--c-text)] mt-1">
                 {t('cvBuilder.templates.selectedInfo')}
@@ -1148,13 +1168,13 @@ export default function CVBuilder() {
                     value={lang.language}
                     onChange={(e) => update(data.languages, lang.id, 'languages', 'language', e.target.value)}
                     placeholder={t('cvBuilder.placeholders.language')}
-                    className="flex-1 px-3 py-2 border border-stone-200 dark:border-stone-700 rounded-lg text-sm bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100"
+                    className="min-w-0 flex-1 px-3 py-2 border border-stone-200 dark:border-stone-700 rounded-lg text-sm bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100"
                     aria-label={t('cvBuilder.sections.languages')}
                   />
                   <select
                     value={lang.level}
                     onChange={(e) => update(data.languages, lang.id, 'languages', 'level', e.target.value)}
-                    className="px-3 py-2 border border-stone-200 dark:border-stone-700 rounded-lg text-sm w-32 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100"
+                    className="shrink-0 px-3 py-2 border border-stone-200 dark:border-stone-700 rounded-lg text-sm w-32 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100"
                     aria-label={`${t('cvBuilder.fields.languageLevel')}: ${langName}`}
                     aria-labelledby={langInputId}
                   >
@@ -1187,7 +1207,7 @@ export default function CVBuilder() {
           <div className="space-y-2">
             {data.certificates!.map((cert) => (
               <div key={cert.id} className="flex items-center gap-3">
-                <input type="text" id={`cv-cert-${cert.id}`} aria-label={t('cvBuilder.sections.certificates')} value={cert.name} onChange={(e) => update(data.certificates, cert.id, 'certificates', 'name', e.target.value)} placeholder={t('cvBuilder.sections.certificates')} className="flex-1 px-3 py-2 border border-stone-200 dark:border-stone-700 rounded-lg text-sm bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100" />
+                <input type="text" id={`cv-cert-${cert.id}`} aria-label={t('cvBuilder.sections.certificates')} value={cert.name} onChange={(e) => update(data.certificates, cert.id, 'certificates', 'name', e.target.value)} placeholder={t('cvBuilder.sections.certificates')} className="min-w-0 flex-1 px-3 py-2 border border-stone-200 dark:border-stone-700 rounded-lg text-sm bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100" />
                 <button aria-label={`${t('common.remove')}: ${cert.name}`} onClick={() => remove(data.certificates, cert.id, 'certificates')} className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg"><Trash2 className="w-4 h-4" /></button>
               </div>
             ))}
@@ -1204,8 +1224,8 @@ export default function CVBuilder() {
           <div className="space-y-2">
             {data.links!.map((link) => (
               <div key={link.id} className="flex items-center gap-3">
-                <input type="text" id={`cv-link-label-${link.id}`} aria-label={t('cvBuilder.sections.links')} value={link.label} onChange={(e) => update(data.links, link.id, 'links', 'label', e.target.value)} placeholder={t('cvBuilder.sections.links')} className="w-1/3 px-3 py-2 border border-stone-200 dark:border-stone-700 rounded-lg text-sm bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100" />
-                <input type="url" id={`cv-link-url-${link.id}`} aria-label="Webbadress" value={link.url} onChange={(e) => update(data.links, link.id, 'links', 'url', e.target.value)} placeholder="https://..." className="flex-1 px-3 py-2 border border-stone-200 dark:border-stone-700 rounded-lg text-sm bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100" />
+                <input type="text" id={`cv-link-label-${link.id}`} aria-label={t('cvBuilder.sections.links')} value={link.label} onChange={(e) => update(data.links, link.id, 'links', 'label', e.target.value)} placeholder={t('cvBuilder.sections.links')} className="min-w-0 w-1/3 px-3 py-2 border border-stone-200 dark:border-stone-700 rounded-lg text-sm bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100" />
+                <input type="url" id={`cv-link-url-${link.id}`} aria-label="Webbadress" value={link.url} onChange={(e) => update(data.links, link.id, 'links', 'url', e.target.value)} placeholder="https://..." className="min-w-0 flex-1 px-3 py-2 border border-stone-200 dark:border-stone-700 rounded-lg text-sm bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100" />
                 <button aria-label={`${t('common.remove')}: ${link.label || link.url}`} onClick={() => remove(data.links, link.id, 'links')} className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg"><Trash2 className="w-4 h-4" /></button>
               </div>
             ))}
@@ -1408,12 +1428,7 @@ export default function CVBuilder() {
   }
 
   return (
-    <div
-      className="sidbredd"
-      /* UX16: plats för den fixerade knappraden PLUS mobilnavet under den.
-         På desktop (lg) finns ingen rad och --bottom-nav-h är 0. */
-      style={{ paddingBottom: 'calc(var(--bottom-nav-h, 0px) + 5rem)' }}
-    >
+    <div className="sidbredd">
       {/* Cross-tab konflikt-varning. Visas när en annan flik sparat efter
           oss — då skulle våra ändringar skriva över deras vid nästa save.
           Klick på "Ladda om" hämtar in den nya versionen. */}
@@ -1848,6 +1863,7 @@ export default function CVBuilder() {
           cookiebannern fick i UX10. Variabeln sätts bara när navet är monterat,
           så på sidor utan nav hamnar raden längst ned precis som förut. */}
       <div
+        ref={knappradRef}
         style={{ bottom: 'var(--bottom-nav-h, 0px)' }}
         className="lg:hidden fixed left-0 right-0 z-40 bg-white dark:bg-stone-900 border-t border-stone-200 dark:border-stone-700 px-4 py-3 flex items-center justify-between gap-3 safe-area-pb"
       >

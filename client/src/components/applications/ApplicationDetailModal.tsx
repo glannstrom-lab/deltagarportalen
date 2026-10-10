@@ -553,7 +553,9 @@ export function ApplicationDetailModal({
 
         {/* Tabs */}
         <div className="border-b border-stone-100 px-4 dark:border-stone-700">
-          <div className="flex gap-4" role="tablist">
+          {/* Rullar i sidled på mobil i stället för att trycka ihop flikarna
+              till "DokumentHistorik" (mobilgenomgången 2026-10-10). */}
+          <div className="flex gap-4 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" role="tablist">
             {[
               { id: 'overview' as const, label: t('applications.detail.tabs.overview', 'Översikt') },
               { id: 'documents' as const, label: t('applications.detail.tabs.documents', 'Dokument'), badge: documentsChanged ? t('applications.detail.changedBadge', 'Ändrad') : undefined },
@@ -567,7 +569,7 @@ export function ApplicationDetailModal({
                 role="tab"
                 aria-selected={activeTab === tab.id}
                 className={cn(
-                  "py-3 px-1 text-sm font-medium border-b-2 transition-colors",
+                  "shrink-0 whitespace-nowrap py-3 px-1 text-sm font-medium border-b-2 transition-colors",
                   activeTab === tab.id
                     ? "border-[var(--c-solid)] text-[var(--c-text)]"
                     : "border-transparent text-stone-700 hover:text-stone-700 dark:text-stone-300 dark:hover:text-stone-200"

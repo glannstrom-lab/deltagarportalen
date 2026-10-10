@@ -150,10 +150,12 @@ export function AIAssistant() {
       {/* Floating AI Button */}
       <motion.button
         onClick={() => setIsOpen(true)}
+        aria-label={t('ai.assistant.title')}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         className={cn(
-          "fixed bottom-24 right-6 z-40 flex items-center gap-2 px-4 py-3 rounded-full shadow-lg",
+          // Ovanför samlingsknappen på mobil (den står på navets höjd + 8 px).
+          "fixed bottom-[calc(var(--bottom-nav-h,0px)+4.5rem)] sm:bottom-24 right-4 sm:right-6 z-40 flex items-center gap-2 px-4 py-3 rounded-full shadow-lg",
           "bg-[var(--c-solid)] text-white font-medium",
           "hover:shadow-xl transition-shadow"
         )}

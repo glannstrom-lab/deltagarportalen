@@ -145,7 +145,10 @@ input[type="button"],
    3. INPUT-FÄLT FÖR MOBIL (iOS-zoom fix)
    ============================================ */
 
-.mobile-device input,
+/* Inte kryssrutor och radioknappar (2026-10-10): padding-block och
+   min-height 48px gav dem en ram som ritades ovanpå etiketten ("Jag jobbar
+   här fortfarande" i CV-byggaren). De har en egen storlek längre ned. */
+.mobile-device input:not([type="checkbox"]):not([type="radio"]),
 .mobile-device textarea,
 .mobile-device select {
   font-size: 16px; /* Förhindra zoom på iOS */

@@ -220,7 +220,7 @@ export function SkillsEditor({ skills, onChange }: SkillsEditorProps) {
                   onDragEnd={handleDragEnd}
                   role="listitem"
                   className={`
-                    flex items-center gap-3 p-3 bg-white border border-stone-200 rounded-lg
+                    flex flex-wrap sm:flex-nowrap items-center gap-x-3 gap-y-1 p-3 bg-white border border-stone-200 rounded-lg
                     hover:border-[var(--c-solid)]/40 transition-colors
                     ${draggedId === skill.id ? 'opacity-50' : ''}
                   `}
@@ -245,7 +245,7 @@ export function SkillsEditor({ skills, onChange }: SkillsEditorProps) {
                     </button>
                   </div>
 
-                  <span className="flex-1 font-medium text-stone-700">{skill.name}</span>
+                  <span className="min-w-0 flex-1 font-medium text-stone-700">{skill.name}</span>
 
                   {/* Star rating with ARIA */}
                   <div
@@ -257,7 +257,9 @@ export function SkillsEditor({ skills, onChange }: SkillsEditorProps) {
                     aria-valuetext={`${skill.level} av 5 stjärnor`}
                     tabIndex={0}
                     onKeyDown={(e) => handleStarKeyDown(e, skill.id, skill.level)}
-                    className="flex items-center gap-1 focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] focus:ring-offset-2 rounded p-1"
+                    // Egen rad på mobil: varje stjärna är en knapp och får 48 px där,
+                    // så fem stycken sköt ut över kortets kant bredvid namnet (2026-10-10).
+                    className="max-sm:order-last max-sm:basis-full flex items-center gap-1 focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] focus:ring-offset-2 rounded p-1"
                   >
                     {[1, 2, 3, 4, 5].map((star) => (
                       <button

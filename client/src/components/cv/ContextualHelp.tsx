@@ -127,8 +127,14 @@ export function ContextualHelp({ context, data }: ContextualHelpProps) {
       // Context-specific logic
       // UT2: tidslucks-tipset kräver en faktisk lucka i användarens datum
       if (context === 'experience' && tip.id === 'ex-3' && !harTidslucka(data)) return false
-      if (context === 'summary' && data && typeof data === 'object' && 'length' in data) {
-        const length = (data.length as number) || 0
+      // CVBuilder skickar sammanfattningen som en sträng (ev. med HTML från
+      // redigeraren). Villkoret krävde tidigare ett objekt, så en sträng
+      // filtrerade aldrig bort något — "För kort" och "Bra längd!" stod sida
+      // vid sida om samma text (2026-10-10).
+      if (context === 'summary') {
+        const length = typeof data === 'string'
+          ? data.replace(/<[^>]*>/g, '').trim().length
+          : (data && typeof data === 'object' && 'length' in data ? (data.length as number) || 0 : 0)
         if (tip.id === 'su-2' && length >= 100) return false
         if (tip.id === 'su-3' && length < 100) return false
       }

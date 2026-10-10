@@ -250,9 +250,15 @@ export default function CrisisSupport({ variant = 'fixed' }: CrisisSupportProps)
                         <div className="p-3 rounded-xl bg-rose-500 text-white">
                           <Phone size={20} aria-hidden="true" />
                         </div>
-                        <div className="flex-1">
-                          <div className="font-semibold text-rose-900">
-                            {t(resource.nameKey)}
+                        {/* Öppettiden står vid namnet, inte i en egen kolumn: på mobil
+                            tryckte den ihop beskrivningen och bröts själv till
+                            "Dygnet / runt". rose-500 på vitt var 3,7:1 → rose-700. */}
+                        <div className="min-w-0 flex-1">
+                          <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                            <span className="font-semibold text-rose-900">{t(resource.nameKey)}</span>
+                            <span className="text-xs text-rose-700 font-medium bg-white px-2 py-0.5 rounded whitespace-nowrap">
+                              {t(resource.hoursKey)}
+                            </span>
                           </div>
                           <div className="text-2xl font-bold text-rose-700">
                             {resource.phone}
@@ -260,9 +266,6 @@ export default function CrisisSupport({ variant = 'fixed' }: CrisisSupportProps)
                           <div className="text-sm text-rose-600 mt-1">
                             {t(resource.descriptionKey)}
                           </div>
-                        </div>
-                        <div className="text-xs text-rose-500 font-medium bg-white px-2 py-1 rounded">
-                          {t(resource.hoursKey)}
                         </div>
                       </a>
                     ))}

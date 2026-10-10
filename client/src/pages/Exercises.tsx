@@ -837,10 +837,10 @@ function ExercisesInner() {
                   frågan men öppnade i praktiken samma generella AI-panel som
                   resten av appen. Tar bort de döda propsen här utan att
                   bygga om funktionen — kontextuell AI-hjälp per övningsfråga
-                  finns inte och kräver ett produktbeslut om den ska byggas. */}
-              <div className="flex justify-end">
-                <AIAssistant />
-              </div>
+                  finns inte och kräver ett produktbeslut om den ska byggas.
+                  2026-10-10: knappen ritades en gång per fråga — alla som
+                  `position: fixed` på samma ställe, fem staplade knappar utan
+                  namn på mobil. Den enda kvar står i AI-coach-kortet nedan. */}
             </div>
           ))}
         </div>

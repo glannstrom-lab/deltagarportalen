@@ -522,7 +522,9 @@ export default function Layout() {
                   duger inte: ett `position: fixed`-element renderas där vid
                   dokumentets slut, inte vid vyportens.
                 */
-                showHubBottomNav && 'pb-[calc(5rem+env(safe-area-inset-bottom))]'
+                // --extra-nederkant: en sida med egen fast rad ovanför navet
+                // (CV-byggarens knapprad) lägger dit radens höjd, se CVBuilder.
+                showHubBottomNav && 'pb-[calc(5rem+env(safe-area-inset-bottom)+var(--extra-nederkant,0px))]'
               )}
               tabIndex={-1}
             >
@@ -803,10 +805,12 @@ export function MobileTopBar() {
         aria-modal="true"
         aria-label={t('nav.profile')}
         className={cn(
-          'fixed top-0 left-0 bottom-0 bg-white dark:bg-stone-900 z-50 shadow-xl',
+          // Från höger, där profilknappen sitter — som menyn. Panelen kom
+          // tidigare in från motsatt kant (2026-10-10).
+          'fixed top-0 right-0 bottom-0 bg-white dark:bg-stone-900 z-50 shadow-xl',
           'transform transition-transform duration-300 ease-out',
           'w-[260px] max-w-[80vw]',
-          isProfileOpen ? 'translate-x-0' : '-translate-x-full'
+          isProfileOpen ? 'translate-x-0' : 'translate-x-full'
         )}
       >
         {/* Profil header */}
