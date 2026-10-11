@@ -37,6 +37,7 @@ import {
   type Omfattning,
 } from '@/services/franvaroApi'
 import { konsulentMeddelandeApi } from '@/services/konsulentMeddelandeApi'
+import type { PlanensRegelverk } from './planensRegelverk'
 
 /**
  * Ett konsulentmöte (RD4). `tid` = HH:MM lokal tid. `datum` (YYYY-MM-DD) behövs
@@ -90,6 +91,11 @@ interface Props {
   onAvbryt?: () => void
   /** Testkrok: "nu" för att avgöra om passet är kommande. */
   nu?: Date
+  /**
+   * KSL21: planens regelverk. Hos en Rusta och matcha-leverantör avgör
+   * Arbetsförmedlingen om skälet godtas — inte konsulenten. Okänt: texten som förut.
+   */
+  regelverk?: PlanensRegelverk | null
 }
 
 interface Val {
@@ -109,6 +115,7 @@ export function FranvaroAnmalan({
   startaOppen = false,
   onAvbryt,
   nu,
+  regelverk = null,
 }: Props) {
   const { t, i18n } = useTranslation()
   const gruppId = useId()
@@ -407,7 +414,9 @@ export function FranvaroAnmalan({
         </div>
         <p className="m-0 flex gap-2 text-[0.9375rem] leading-[1.45] text-j-blak-2">
           <KvarterIkon namn="klart" size={20} ton="gran" className="mt-px shrink-0" />
-          {t('minVecka.franvaro.bedomning', 'Det är din konsulent som avgör om skälet är giltigt. Anmäl hellre en gång för mycket än en gång för lite.')}
+          {regelverk === 'leverantor'
+            ? t('minVecka.franvaro.bedomningLeverantor', 'Din konsulent skriver ner det du anmäler. Det är Arbetsförmedlingen som avgör om skälet godtas. Anmäl hellre en gång för mycket än en gång för lite.')
+            : t('minVecka.franvaro.bedomning', 'Det är din konsulent som avgör om skälet är giltigt. Anmäl hellre en gång för mycket än en gång för lite.')}
         </p>
       </div>
     </form>

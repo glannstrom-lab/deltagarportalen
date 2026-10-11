@@ -27,7 +27,7 @@ import { NastaSteg, type NastaStegHandling } from '@/components/ui/NastaSteg'
 import { PersonRad } from '@/components/ui/PersonRad'
 import { NarvaroVal } from '@/components/ui/NarvaroVal'
 import { Button } from '@/components/ui/Button'
-import { NARVARO_STANDARDVAL } from '@/components/ui/kvarterStatus'
+import { narvaroValFor, type Regelverk } from '@/components/consultant/franvaroFakta'
 import { gruppLank } from '@/lib/gruppnarvaro'
 import {
   passMening,
@@ -55,6 +55,11 @@ interface Props {
   /** Öppnar mötesdialogen på deltagaren; `fysiskt` förväljer ett fysiskt möte (RR26). */
   onBokaMote?: (participantId: string, fysiskt: boolean) => void
   onLoggaKontakt?: (participantId: string) => Promise<void>
+  /**
+   * KSL21: konsulentens regelverk. Leverantör: frånvaron registreras som fakta
+   * (anmäld / inte anmäld), aldrig som giltig eller ogiltig. Utan: kommunens val.
+   */
+  regelverk?: Regelverk | null
 }
 
 type Kor = (fn: () => Promise<void>) => Promise<void>
@@ -105,6 +110,7 @@ function useAtgarder(props: Props) {
         attendance,
         note: pass.attendance_note ?? null,
         sickCertificateReceived: attendance === 'sick_certified' ? !!pass.sick_certificate_received : false,
+        ...(props.regelverk === 'leverantor' ? { regelverk: props.regelverk } : {}),
         ...extra,
       }))
     }
@@ -121,10 +127,21 @@ function useAtgarder(props: Props) {
           },
         }
       case 'forklaring':
+        // KSL21, leverantör: förklaringen ändrar inte vad som hände. Konsulenten
+        // kvitterar den — passet står kvar som det var markerat.
+        if (props.regelverk === 'leverantor') {
+          return { kontroll: 'val', primar: { etikett: 'Jag har läst förklaringen', onClick: markera(pass?.attendance ?? 'absent_invalid') } }
+        }
         return pass?.attendance === 'absent_invalid'
           ? { kontroll: 'val', primar: { etikett: 'Godta, ändra till giltig', onClick: markera('absent_valid') }, sekundar: { etikett: 'Behåll ogiltig', onClick: markera('absent_invalid') } }
           : { kontroll: 'val', primar: { etikett: 'Behåll giltig', onClick: markera('absent_valid') } }
       case 'anmald_franvaro':
+        if (props.regelverk === 'leverantor') {
+          // Anmäld i förväg är ett faktum. Arbetsförmedlingen avgör om skälet godtas.
+          return pass?.absence_reason === 'sick'
+            ? { kontroll: 'val', primar: { etikett: 'Sjuk', onClick: markera('sick_certified') }, sekundar: { etikett: 'Frånvarande, anmäld i förväg', onClick: markera('absent_valid') } }
+            : { kontroll: 'val', primar: { etikett: 'Frånvarande, anmäld i förväg', onClick: markera('absent_valid') } }
+        }
         return { kontroll: 'val', primar: { etikett: 'Giltig frånvaro', onClick: markera('absent_valid') }, sekundar: { etikett: 'Ogiltig frånvaro', onClick: markera('absent_invalid') } }
       case 'sjuk_utan_intyg':
         return { kontroll: null, primar: { etikett: 'Intyget har kommit', onClick: markera('sick_certified', { sickCertificateReceived: true }) } }
@@ -159,15 +176,19 @@ function useAtgarder(props: Props) {
 }
 
 /** Rubriken i nästa steg, per sort. Namnet bär meningen. */
-function nastaRubrik(punkt: MinDagPunkt, namn: string): { rubrik: string; text?: string; tid?: string } {
+function nastaRubrik(punkt: MinDagPunkt, namn: string, regelverk?: Regelverk | null): { rubrik: string; text?: string; tid?: string } {
   const f = fornamn(namn)
   switch (punkt.typ) {
     case 'franvaro_utan_anteckning':
       return { rubrik: `Skriv en rad om ${genitiv(f)} frånvaro`, text: `${namn} ${forstaLiten(punkt.lage)}. En rad räcker, den följer med till underlaget.` }
     case 'forklaring':
-      return { rubrik: `Ta ställning till ${genitiv(f)} förklaring`, text: punkt.detalj }
+      return regelverk === 'leverantor'
+        ? { rubrik: `Läs ${genitiv(f)} förklaring`, text: punkt.detalj }
+        : { rubrik: `Ta ställning till ${genitiv(f)} förklaring`, text: punkt.detalj }
     case 'anmald_franvaro':
-      return { rubrik: `Bedöm ${genitiv(f)} anmälda frånvaro`, text: `${punkt.lage}. ${punkt.detalj ?? ''}`.trim() }
+      return regelverk === 'leverantor'
+        ? { rubrik: `Registrera ${genitiv(f)} anmälda frånvaro`, text: `${punkt.lage}. ${punkt.detalj ?? ''}`.trim() }
+        : { rubrik: `Bedöm ${genitiv(f)} anmälda frånvaro`, text: `${punkt.lage}. ${punkt.detalj ?? ''}`.trim() }
     case 'sjuk_utan_intyg':
       return { rubrik: `Har sjukintyget från ${f} kommit?`, text: `${punkt.lage}. ${punkt.detalj ?? ''}`.trim() }
     case 'kvittera':
@@ -205,6 +226,7 @@ function Kontroll({
   setAnteckning,
   sparar,
   onMarkera,
+  regelverk,
   kor,
   visaKnappar,
 }: {
@@ -215,6 +237,7 @@ function Kontroll({
   setAnteckning: (s: string) => void
   sparar: boolean
   onMarkera?: Props['onMarkera']
+  regelverk?: Regelverk | null
   kor: Kor
   /** Raden ritar sina egna knappar; nästa steg har dem i NastaSteg. */
   visaKnappar: boolean
@@ -253,7 +276,7 @@ function Kontroll({
       {atgard.kontroll === 'narvaro' && pass && (
         <NarvaroVal
           etikett={`Närvaro för ${namn}, ${pass.title}`}
-          alternativ={NARVARO_STANDARDVAL}
+          alternativ={narvaroValFor(regelverk, pass)}
           varde={pass.attendance}
           disabled={sparar || !onMarkera}
           onChange={(v) => {
@@ -262,6 +285,7 @@ function Kontroll({
               attendance: v as Attendance,
               note: pass.attendance_note ?? null,
               sickCertificateReceived: v === 'sick_certified' ? !!pass.sick_certificate_received : false,
+              ...(regelverk === 'leverantor' ? { regelverk } : {}),
             }))
           }}
         />
@@ -308,6 +332,7 @@ function Underpunkt({ punkt, namn, props, forsta }: { punkt: MinDagPunkt; namn: 
           setAnteckning={setAnteckning}
           sparar={sparar}
           onMarkera={props.onMarkera}
+          regelverk={props.regelverk}
           kor={kor}
           visaKnappar
         />
@@ -330,7 +355,7 @@ function Rad({ person, props }: { person: MinDagPerson; props: Props }) {
   const { sparar, fel, kor } = useKor()
   const namn = props.namnFor(person.participantId)
   const [forsta, ...resten] = person.punkter
-  const sammanfattning = radSammanfattning(person)
+  const sammanfattning = radSammanfattning(person, props.regelverk === 'leverantor')
   const atgard = useAtgarder(props)(forsta, kor, '')
   const fallsUt = !!atgard.kontroll || resten.length > 0
   const etikett = atgard.kontroll === 'anteckning' ? 'Skriv raden'
@@ -383,7 +408,7 @@ function NastaPunkt({ punkt, props }: { punkt: MinDagPunkt; props: Props }) {
   const [anteckning, setAnteckning] = useState('')
   const atgard = useAtgarder(props)(punkt, kor, anteckning)
   const namn = props.namnFor(punkt.participantId)
-  const { rubrik, text, tid } = nastaRubrik(punkt, namn)
+  const { rubrik, text, tid } = nastaRubrik(punkt, namn, props.regelverk)
   return (
     <div data-testid="mindag-nasta-steg" data-typ={punkt.typ}>
       <NastaSteg
@@ -402,6 +427,7 @@ function NastaPunkt({ punkt, props }: { punkt: MinDagPunkt; props: Props }) {
             setAnteckning={setAnteckning}
             sparar={sparar}
             onMarkera={props.onMarkera}
+            regelverk={props.regelverk}
             kor={kor}
             visaKnappar={false}
           />

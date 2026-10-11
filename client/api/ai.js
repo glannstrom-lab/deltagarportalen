@@ -22,6 +22,21 @@ const { medFelrapport } = require('./_utils/sentry.js');
 // modellen behöver bytas i drift); den gäller då alla vägar samtidigt.
 const LOCKED_MODEL = 'openai/gpt-oss-120b';
 
+/**
+ * KSL25 (beslut Mikael 2026-10-11): OpenRouter får bara skicka anropen till
+ * leverantörer som varken sparar eller tränar på datan. gpt-oss-120b har 24 leverantörer
+ * (mätt 2026-10-11), så urvalet räcker. Läggs bara här — Perplexity (edge-funktionerna)
+ * har en enda leverantör och är redan avstängd för organisationer.
+ */
+const OPENROUTER_PROVIDER = {
+  // EU först (beslut Mikael 2026-10-11): Amazon Bedrock i Irland. Reserv tillåts, så AI
+  // slutar aldrig fungera om Bedrock är nere — reserven följer data_collection: 'deny'.
+  order: ['amazon-bedrock/eu-west-1'],
+  allow_fallbacks: true,
+  data_collection: 'deny',
+};
+
+
 /** Enda källan till modellnamnet i den här filen. Lägg aldrig till en till. */
 function resolveModel() {
   return process.env.AI_MODEL || LOCKED_MODEL;
@@ -707,7 +722,7 @@ function getCorsHeaders(requestOrigin) {
  * tillkom 2026-08-19: när `content` är tomt är de enda sättet att se om
  * budgeten tog slut under modellens tänkande eller om något annat hände.
  *
- * @typedef {{ choices?: Array<{ message?: { content?: string }, finish_reason?: string }>, usage?: { total_tokens?: number, completion_tokens?: number, completion_tokens_details?: { reasoning_tokens?: number } } }} OpenRouterSvar
+ * @typedef {{ provider?: string, choices?: Array<{ message?: { content?: string }, finish_reason?: string }>, usage?: { total_tokens?: number, completion_tokens?: number, completion_tokens_details?: { reasoning_tokens?: number } } }} OpenRouterSvar
  */
 
 // ============================================
@@ -1184,6 +1199,7 @@ const hanterare = async (req, res) => {
           body: JSON.stringify({
             // Låst modell — se resolveModel() i toppen av filen.
             model: resolveModel(),
+            provider: OPENROUTER_PROVIDER,
             messages: [
               { role: 'system', content: prompt.system },
               { role: 'user', content: prompt.user }
@@ -1334,6 +1350,7 @@ const hanterare = async (req, res) => {
             // därmed köra en annan modell än låsningen. Nu samma väg som allt
             // annat — se resolveModel().
             model: resolveModel(),
+            provider: OPENROUTER_PROVIDER,
             messages: [
               { role: 'system', content: 'Du genererar korta, relevanta följdfrågor baserat på en konversation. Svara ENDAST med en JSON-array med exakt 3 korta frågor (max 8 ord var). Exempel: ["Hur skriver jag ett bra CV?", "Vilka jobb passar mig?", "Tips för intervjuer?"]' },
               { role: 'user', content: `Användaren frågade: "${data?.meddelande}"\n\nAssistenten svarade: "${fullResponse.substring(0, 500)}"\n\nGenerera 3 naturliga följdfrågor på svenska:` }
@@ -1386,6 +1403,7 @@ const hanterare = async (req, res) => {
       body: JSON.stringify({
         // Låst modell — se resolveModel() i toppen av filen.
         model: resolveModel(),
+        provider: OPENROUTER_PROVIDER,
         messages: [
           { role: 'system', content: prompt.system },
           { role: 'user', content: prompt.user }
@@ -1419,6 +1437,8 @@ const hanterare = async (req, res) => {
     }
 
     const aiData = /** @type {OpenRouterSvar} */ (await aiResponse.json());
+    // Vilken leverantör som svarade — för att mäta hur ofta EU-vägen används (inga användardata i loggen).
+    console.info('[ai] leverantör:', aiData.provider ?? 'okänd', 'funktion:', fn);
     // DR5 (2026-08-17): `content` bär tre olika former beroende på väg, och
     // inferensen från raden nedan (string) stämde bara på den första:
     //   1. rå text från modellen (de flesta funktioner)

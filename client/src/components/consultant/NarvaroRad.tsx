@@ -14,26 +14,36 @@
  *     anteckning och intyg syns — markAttendance skriver om anteckningen, och
  *     en anteckning ska aldrig försvinna i förbifarten.
  *
- * Valen (`alternativ`) kommer från kundtypen; standard är NARVARO_STANDARDVAL.
+ * Valen kommer från planens regelverk (KSL21, franvaroFakta.ts): kommunen har
+ * Här / Giltig / Ogiltig / Sjuk; en Rusta och matcha-leverantör har Närvarande /
+ * Frånvarande / Sjuk, och registrerar om frånvaron var anmäld i förväg — fakta,
+ * ingen giltighetsbedömning. `alternativ` skriver över båda (tester).
  * Konsulentvyn är svensk med flit (DESIGN.md §2).
  */
 import { useId, useState } from 'react'
 import { StatusChip } from '@/components/ui/StatusChip'
+import { Checkbox } from '@/components/ui/Input'
 import { KvarterIkon } from '@/components/ui/icons/kvarter/KvarterIkon'
 import { NarvaroVal } from '@/components/ui/NarvaroVal'
 import { MerMeny } from '@/components/ui/MerMeny'
 import { Button } from '@/components/ui/Button'
-import { franNarvarovarde, initialerAv, KVARTER_FOKUS, NARVARO_STANDARDVAL, type NarvaroAlternativ } from '@/components/ui/kvarterStatus'
+import { franNarvarovarde, initialerAv, KVARTER_FOKUS, type NarvaroAlternativ } from '@/components/ui/kvarterStatus'
 import { cn } from '@/lib/utils'
 import { aktivitetsplanApi } from '@/services/aktivitetApi'
 import type { Attendance } from '@/services/aktivitetSchema'
 import { NARVARO_ETIKETT, type PassIdag } from '@/lib/dagensPass'
 import { narvaroForslag, omarkeratLage } from '@/lib/gruppnarvaro'
+import { ANMALD_HJALP, arFranvaro, arLeverantor, narvaroOrd, narvaroValFor, statusOrd, type Regelverk } from './franvaroFakta'
 
 export interface NarvaroRadProps {
   pass: PassIdag
   namn: string
+  /** Planens regelverk (KSL21). Utan: kommunens val, som förut. */
+  regelverk?: Regelverk | null
+  /** Skriver över regelverkets val. */
   alternativ?: readonly NarvaroAlternativ[]
+  /** Leverantör: ändra "anmäld i förväg" på en frånvaro (sparas direkt). */
+  onAnmald?: (anmald: boolean) => void
   /** Sparar just nu. */
   sparar: boolean
   /** Markerat på den här skärmen — då får det ändras och ångras här. */
@@ -49,14 +59,16 @@ export interface NarvaroRadProps {
   passText?: string
 }
 
-function etikettFor(varde: Attendance, alternativ: readonly NarvaroAlternativ[]): string {
-  return alternativ.find((a) => a.varde === varde)?.etikett ?? NARVARO_ETIKETT[varde]
+function etikettFor(varde: Attendance, alternativ: readonly NarvaroAlternativ[], regelverk: Regelverk | null | undefined): string {
+  return alternativ.find((a) => a.varde === varde)?.etikett ?? narvaroOrd(varde, regelverk, NARVARO_ETIKETT)
 }
 
 export function NarvaroRad({
   pass: p,
   namn,
-  alternativ = NARVARO_STANDARDVAL,
+  regelverk,
+  alternativ: egnaVal,
+  onAnmald,
   sparar,
   markeradHar,
   onValj,
@@ -65,8 +77,10 @@ export function NarvaroRad({
   onOppna,
   passText,
 }: NarvaroRadProps) {
-  const forslag = narvaroForslag(p)
+  const forslag = narvaroForslag(p, regelverk)
   const status = franNarvarovarde(p.attendance)
+  const leverantor = arLeverantor(regelverk)
+  const alternativ = egnaVal ?? narvaroValFor(regelverk, p)
   const kanAndras = p.attendance === null || markeradHar
 
   const lage = p.attendance === null
@@ -79,7 +93,7 @@ export function NarvaroRad({
   if (passText) detaljer.push(passText)
   if (p.attendance !== null && !markeradHar) detaljer.push('Ändras på deltagarsidan, där anteckningen syns')
 
-  const statusText = p.attendance === 'external' ? 'Annan aktivitet' : undefined
+  const statusText = p.attendance === 'external' ? 'Annan aktivitet' : statusOrd(status, regelverk)
 
   // Egen rad i stället för PersonRad: på mobil står radiogruppen i full bredd under
   // namnet och "Mer" uppe till höger — fyra val och en menyknapp får inte plats bredvid
@@ -114,7 +128,7 @@ export function NarvaroRad({
         ) : forslag ? (
           <span className="inline-flex items-center gap-1 text-[0.8125rem] leading-5 font-semibold text-[var(--j-glod)]">
             <KvarterIkon namn="nasta" size={15} ton="glod" />
-            Förslag: {etikettFor(forslag.varde, alternativ)} · inte sparat än
+            Förslag: {etikettFor(forslag.varde, alternativ, regelverk)} · inte sparat än
           </span>
         ) : null}
         {detaljer.length > 0 && <span className="text-[0.8125rem] leading-5 text-[var(--j-blak-3)]">{detaljer.join(' · ')}</span>}
@@ -150,7 +164,21 @@ export function NarvaroRad({
         ) : null}
       </div>
 
-      {markeradHar && p.attendance === 'absent_invalid' ? (
+      {markeradHar && !utkast && leverantor && arFranvaro(p.attendance) ? (
+        <div className="col-span-3 sm:col-span-4 sm:pl-[54px] grid gap-3">
+          {onAnmald && (
+            <Checkbox
+              id={`anmald-${p.id}`}
+              label="Anmäld i förväg"
+              description={ANMALD_HJALP}
+              checked={p.attendance === 'absent_valid'}
+              disabled={sparar}
+              onChange={(e) => onAnmald(e.target.checked)}
+            />
+          )}
+          <OgiltigRad pass={p} namn={namn} leverantor />
+        </div>
+      ) : markeradHar && !leverantor && p.attendance === 'absent_invalid' ? (
         <div className="col-span-3 sm:col-span-4">
           <OgiltigRad pass={p} namn={namn} />
         </div>
@@ -159,8 +187,11 @@ export function NarvaroRad({
   )
 }
 
-/** "Vad hände?" — en rad som följer med till underlaget. */
-function OgiltigRad({ pass, namn }: { pass: PassIdag; namn: string }) {
+/**
+ * "Vad hände?" — en rad som följer med till underlaget. Hos leverantören är det
+ * orsaken till frånvaron (anmäld eller inte) som följer med till avvikelsen.
+ */
+function OgiltigRad({ pass, namn, leverantor = false }: { pass: PassIdag; namn: string; leverantor?: boolean }) {
   const id = useId()
   const [text, setText] = useState('')
   const [lage, setLage] = useState<'tom' | 'sparar' | 'sparad' | 'fel'>('tom')
@@ -178,9 +209,11 @@ function OgiltigRad({ pass, namn }: { pass: PassIdag; namn: string }) {
   }
 
   return (
-    <div className="sm:pl-[54px] grid gap-2">
+    <div className={cn('grid gap-2', !leverantor && 'sm:pl-[54px]')}>
       <label htmlFor={id} className="text-[0.9375rem] text-[var(--j-blak-2)]">
-        Vad hände med {fornamn}? En rad räcker, den följer med till underlaget.
+        {leverantor
+          ? `Orsak: vad hände med ${fornamn}? En rad räcker, den följer med till avvikelsen.`
+          : `Vad hände med ${fornamn}? En rad räcker, den följer med till underlaget.`}
       </label>
       <div className="flex flex-col sm:flex-row gap-2">
         <input

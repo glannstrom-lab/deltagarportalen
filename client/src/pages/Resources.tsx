@@ -273,7 +273,13 @@ function ResourcesInner() {
   const [loading, setLoading] = useState(true)
   /** Källor vars hämtning föll. Tom lista = allt kom fram. */
   const [trasigaKallor, setTrasigaKallor] = useState<Kalla[]>([])
-  const [previewModal, setPreviewModal] = useState<{ type: string; data: CVData | CoverLetter | SavedJob } | null>(null)
+  /**
+   * `versionId` följer med när rutan visar en sparad CV-version. Utan den
+   * exporterade rutans PDF-knapp dagens CV (servern hämtar då `cvs`-raden)
+   * under versionens filnamn — samma fel som rättades på korten 2026-08-22,
+   * men kvar här till 2026-10-11.
+   */
+  const [previewModal, setPreviewModal] = useState<{ type: string; data: CVData | CoverLetter | SavedJob; versionId?: string } | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
   /** Text som läses upp efter en åtgärd (radering, sökning, filbygge). */
   const [besked, setBesked] = useState('')
@@ -698,7 +704,7 @@ function ResourcesInner() {
                           </p>
                         </div>
                         <button
-                          onClick={() => setPreviewModal({ type: 'cv', data: versionData as CVData })}
+                          onClick={() => setPreviewModal({ type: 'cv', data: versionData as CVData, versionId: version.id })}
                           className="p-1.5 text-stone-500 dark:text-stone-400 hover:text-[var(--c-text)] hover:bg-[var(--c-bg)] dark:hover:bg-stone-700 rounded-lg transition-colors"
                           aria-label={t('resources.previewNamed', { titel: version.name })}
                         >
@@ -1296,6 +1302,7 @@ function ResourcesInner() {
                         <PDFExportButton
                           type="cv"
                           data={cv}
+                          versionId={previewModal.versionId}
                           filename={cvFilnamn(cv)}
                           variant="primary"
                           size="sm"

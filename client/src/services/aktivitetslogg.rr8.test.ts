@@ -39,6 +39,6 @@ describe('periodiskaFalt', () => {
     expect(falt.moten).toBe('1 möte (varav 1 fysiskt): 10/9 fysiskt')
   })
   it('avvikelser med datum, pass och utfall', () => {
-    expect(falt.avvikelser).toBe('15/9 Gruppträff: ogiltig frånvaro')
+    expect(falt.avvikelser).toBe('15/9 Gruppträff: frånvarande, inte anmäld i förväg')
   })
 })

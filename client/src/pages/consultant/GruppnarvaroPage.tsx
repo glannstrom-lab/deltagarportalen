@@ -26,7 +26,7 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { useQueryClient } from '@tanstack/react-query'
 import { Button } from '@/components/ui/Button'
 import { KvarterIkon } from '@/components/ui/icons/kvarter/KvarterIkon'
-import { KVARTER_FOKUS, NARVARO_STANDARDVAL, type NarvaroAlternativ } from '@/components/ui/kvarterStatus'
+import { KVARTER_FOKUS, type NarvaroAlternativ } from '@/components/ui/kvarterStatus'
 import { LoadingState, ErrorState } from '@/components/ui/LoadingState'
 import { formatLocalDate, parseLocalDate, type Attendance } from '@/services/aktivitetSchema'
 import { hamtaDagensPass, type PassIdag } from '@/lib/dagensPass'
@@ -42,6 +42,7 @@ import { fetchCachedConsultantParticipants } from './consultantParticipantsQuery
 import { langtDatum } from '@/components/consultant/aktivitetEtiketter'
 import { NarvaroRad } from '@/components/consultant/NarvaroRad'
 import { useNarvaroMarkering } from '@/components/consultant/useNarvaroMarkering'
+import { useRegelverkForPlan } from '@/components/consultant/useRegelverk'
 import { cn } from '@/lib/utils'
 
 type Lage = { status: 'laddar' } | { status: 'fel'; fel: string } | { status: 'klart' }
@@ -55,11 +56,14 @@ function datumMedVeckodag(datum: string): string {
 const antalDeltagare = (g: PassGrupp) => new Set(g.pass.map((p) => p.participant_id)).size
 
 export interface GruppnarvaroPageProps {
-  /** Kundtypens närvaroval. Standard: Här / Giltig / Ogiltig / Sjuk. */
+  /** Skriver över närvarovalen (tester). Standard: planens regelverk avgör (KSL21). */
   alternativ?: readonly NarvaroAlternativ[]
 }
 
-export function GruppnarvaroPage({ alternativ = NARVARO_STANDARDVAL }: GruppnarvaroPageProps = {}) {
+export function GruppnarvaroPage({ alternativ }: GruppnarvaroPageProps = {}) {
+  // KSL21: planens regelverk avgör valen per deltagare (kommun: giltig/ogiltig, leverantör: fakta).
+  const regelverkForPlan = useRegelverkForPlan()
+  const regelverkForPass = (p: PassIdag) => regelverkForPlan?.(p.plan_org_id) ?? null
   const queryClient = useQueryClient()
   const navigate = useNavigate()
   const [params, setParams] = useSearchParams()
@@ -120,11 +124,12 @@ export function GruppnarvaroPage({ alternativ = NARVARO_STANDARDVAL }: Gruppnarv
   const markering = useNarvaroMarkering({
     namnFor,
     onSparat: (id, attendance) => setPass((prev) => prev.map((x) => (x.id === id ? { ...x, attendance } : x))),
+    regelverkFor: regelverkForPlan ? regelverkForPass : undefined,
   })
 
   const forslagen = grupp
     ? grupp.pass.flatMap((p) => {
-        const f = narvaroForslag(p)
+        const f = narvaroForslag(p, regelverkForPass(p))
         return f ? [{ pass: p, varde: f.varde }] : []
       })
     : []
@@ -199,7 +204,7 @@ export function GruppnarvaroPage({ alternativ = NARVARO_STANDARDVAL }: Gruppnarv
                 {grupper.map((g) => {
                   const antal = g.pass.length
                   const klara = g.pass.filter((p) => p.attendance !== null).length
-                  const forslag = g.pass.filter((p) => narvaroForslag(p)).length
+                  const forslag = g.pass.filter((p) => narvaroForslag(p, regelverkForPass(p))).length
                   return (
                     <li key={g.nyckel} className="border-b border-[var(--j-linje)] last:border-b-0">
                       <Link
@@ -284,6 +289,8 @@ export function GruppnarvaroPage({ alternativ = NARVARO_STANDARDVAL }: Gruppnarv
                   pass={p}
                   namn={namnFor(p.participant_id)}
                   alternativ={alternativ}
+                  regelverk={regelverkForPass(p)}
+                  onAnmald={(anmald) => void markering.andraAnmald(p, anmald)}
                   sparar={markering.sparar.has(p.id)}
                   markeradHar={markering.markeradeHar.has(p.id)}
                   onValj={(v) => markering.valj(p, v)}

@@ -164,6 +164,12 @@ export interface AttendanceInput {
   attendance: Attendance | null
   note?: string | null
   sickCertificateReceived?: boolean
+  /**
+   * KSL21: planens regelverk. Hos en Rusta och matcha-leverantör betyder
+   * `absent_invalid` "frånvarande, inte anmäld" — notisen till deltagaren säger
+   * fakta, inte "utan giltigt skäl". Utelämnat: kommunens text, som förut.
+   */
+  regelverk?: 'kommun' | 'leverantor' | null
 }
 
 export interface SessionInput {
@@ -560,9 +566,32 @@ export const aktivitetsplanApi = {
     if (error) throw error
     const markerad = mapSession(data as Record<string, unknown>)
     if (input.attendance === 'absent_invalid' && fore?.attendance !== 'absent_invalid') {
-      await notisBonus('ogiltig frånvaro', () => notisOgiltigFranvaro(markerad))
+      await notisBonus('ogiltig frånvaro', () => notisOgiltigFranvaro(markerad, input.regelverk))
     }
     return markerad
+  },
+
+  /**
+   * KSL21: leverantörens "anmäld i förväg" — byter BARA mellan `absent_valid`
+   * (anmäld) och `absent_invalid` (inte anmäld). Anteckning, intyg och vem som
+   * markerade lämnas orörda: deltagaren kan ha ringt, och det är ett faktum om
+   * frånvaron, inte en ny markering. Bara på pass som redan är frånvaro.
+   * Notisen går som vid markAttendance: när passet BLIR "inte anmäld".
+   */
+  async sattFranvaroAnmald(sessionId: string, anmald: boolean, regelverk?: 'kommun' | 'leverantor' | null): Promise<ActivitySession> {
+    await requireUser()
+    const attendance: Attendance = anmald ? 'absent_valid' : 'absent_invalid'
+    const { data, error } = await supabase
+      .from('activity_sessions')
+      .update({ attendance })
+      .eq('id', sessionId)
+      .in('attendance', ['absent_valid', 'absent_invalid'])
+      .select('*')
+      .single()
+    if (error) throw error
+    const andrad = mapSession(data as Record<string, unknown>)
+    if (!anmald) await notisBonus('ogiltig frånvaro', () => notisOgiltigFranvaro(andrad, regelverk))
+    return andrad
   },
 
   /**

@@ -10,6 +10,10 @@
  * frånvaro utan orsak — det är den raden handläggaren och Arbetsförmedlingen
  * frågar efter. RK4: text som inte är sparad sparas när panelen stängs; går
  * det inte stannar panelen öppen med felet och texten.
+ *
+ * KSL21: hos en Rusta och matcha-leverantör är valen Närvarande / Frånvarande /
+ * Sjuk, och frånvaron får "Anmäld i förväg" som fakta — aldrig giltig/ogiltig
+ * (franvaroFakta.ts). Kommunens val är oförändrade.
  */
 import { useState } from 'react'
 import { Loader2, MapPin } from '@/components/ui/icons'
@@ -18,7 +22,7 @@ import { Textarea, Checkbox } from '@/components/ui/Input'
 import { NarvaroVal } from '@/components/ui/NarvaroVal'
 import { MerMeny, type MerMenyVal } from '@/components/ui/MerMeny'
 import { StatusChip } from '@/components/ui/StatusChip'
-import { NARVARO_STANDARDVAL, franNarvarovarde } from '@/components/ui/kvarterStatus'
+import { franNarvarovarde } from '@/components/ui/kvarterStatus'
 import { useConfirmDialog } from '@/components/ui/ConfirmDialog'
 import { notifications } from '@/lib/toast'
 import { aktivitetsplanApi, type ActivitySession } from '@/services/aktivitetApi'
@@ -27,6 +31,7 @@ import { vantarPaKvittens } from '@/services/egenrapport'
 import { franvaroAv, type FranvaroOrsak } from '@/services/franvaroApi'
 import { PLAN_PASS_KOLUMNER_FINNS, arFysisktPass, arLeverantorsledd, fysiskHarledd } from '@/services/planMarkning'
 import { AndraPassDialog } from '../AndraPassDialog'
+import { ANMALD_HJALP, arFranvaro, narvaroValFor, type Regelverk } from '../franvaroFakta'
 import {
   AKTIVITETSTYP_ETIKETT,
   INTYG_HJALP,
@@ -43,9 +48,11 @@ const FRANVARO_ORSAK_ETIKETT: Record<FranvaroOrsak, string> = {
   other: 'annat skäl',
 }
 
-export function PassRad({ session, allaPass, visaMarkning, onChanged, onRemoved, onSerieAndrad }: {
+export function PassRad({ session, allaPass, visaMarkning, regelverk = null, onChanged, onRemoved, onSerieAndrad }: {
   session: ActivitySession
   allaPass: readonly ActivitySession[]
+  /** KSL21: planens regelverk. Utan: kommunens val, som förut. */
+  regelverk?: Regelverk | null
   /** RR27-märkningen gäller Rusta och matcha-avtalets logg — inte kommunens plan (slipningen 2026-10-11). */
   visaMarkning: boolean
   onChanged: (s: ActivitySession) => void
@@ -57,7 +64,8 @@ export function PassRad({ session, allaPass, visaMarkning, onChanged, onRemoved,
   const [andra, setAndra] = useState(false)
   const [anteckning, setAnteckning] = useState(session.attendance_note ?? '')
   const [intyg, setIntyg] = useState(session.sick_certificate_received)
-  const [sparar, setSparar] = useState<Attendance | 'nollstall' | 'anteckning' | null>(null)
+  const [sparar, setSparar] = useState<Attendance | 'nollstall' | 'anteckning' | 'anmald' | null>(null)
+  const leverantor = regelverk === 'leverantor'
   const [anteckningFel, setAnteckningFel] = useState<string | null>(null)
   const egetJobbsok = session.activity_type === 'jobsearch_own'
   // RK15: egenrapporterat och omarkerat — väntar på konsulentens kvittens.
@@ -97,11 +105,13 @@ export function PassRad({ session, allaPass, visaMarkning, onChanged, onRemoved,
         attendance,
         note: anteckning,
         sickCertificateReceived: attendance === 'sick_certified' ? medIntyg : false,
+        ...(regelverk === 'leverantor' ? { regelverk } : {}),
       })
       onChanged(uppdaterad)
       setAnteckningFel(null)
       // Ogiltig frånvaro utan orsak, eller sjuk (intyget): raden fälls ut. Annars stängs den.
-      if (attendance === 'sick_certified' || (attendance === 'absent_invalid' && !anteckning.trim())) setOppen(true)
+      // Leverantör: varje frånvaro fälls ut — orsaken och "anmäld i förväg" hör till avvikelsen.
+      if (attendance === 'sick_certified' || (attendance === 'absent_invalid' && !anteckning.trim()) || (leverantor && arFranvaro(attendance))) setOppen(true)
       else setOppen(false)
     } catch (err) {
       notifications.error(err instanceof Error ? err.message : 'Närvaron kunde inte sparas')
@@ -114,6 +124,18 @@ export function PassRad({ session, allaPass, visaMarkning, onChanged, onRemoved,
   const vaxlaIntyg = (varde: boolean) => {
     setIntyg(varde)
     if (session.attendance === 'sick_certified') void markera('sick_certified', varde)
+  }
+
+  // KSL21, leverantör: anmäld i förväg är fakta. Byter bara frånvarons värde — anteckningen står kvar.
+  const vaxlaAnmald = async (anmald: boolean) => {
+    setSparar('anmald')
+    try {
+      onChanged(await aktivitetsplanApi.sattFranvaroAnmald(session.id, anmald, regelverk))
+    } catch (err) {
+      notifications.error(err instanceof Error ? err.message : 'Uppgiften om anmälan kunde inte sparas')
+    } finally {
+      setSparar(null)
+    }
   }
 
   const taBort = async () => {
@@ -196,7 +218,7 @@ export function PassRad({ session, allaPass, visaMarkning, onChanged, onRemoved,
           )}
           <NarvaroVal
             etikett={`Närvaro för ${session.title} ${dag}`}
-            alternativ={NARVARO_STANDARDVAL}
+            alternativ={narvaroValFor(regelverk, session)}
             varde={franNarvarovarde(session.attendance) ? session.attendance : null}
             onChange={(v) => void markera(v as Attendance)}
             disabled={sparar !== null}
@@ -235,7 +257,21 @@ export function PassRad({ session, allaPass, visaMarkning, onChanged, onRemoved,
 
       {oppen && (
         <div id={panelId} className="mt-3 rounded-[var(--j-r-m)] bg-[var(--j-sankt)] p-4 space-y-3">
-          {session.attendance === 'absent_invalid' && (
+          {leverantor && arFranvaro(session.attendance) ? (
+            <>
+              <Checkbox
+                id={`anmald-${session.id}`}
+                label="Anmäld i förväg"
+                description={ANMALD_HJALP}
+                checked={session.attendance === 'absent_valid'}
+                disabled={sparar !== null}
+                onChange={(e) => void vaxlaAnmald(e.target.checked)}
+              />
+              <p className="m-0 text-sm font-semibold text-[var(--j-blak)]">
+                Orsak: vad hände? En rad räcker, den följer med till avvikelsen.
+              </p>
+            </>
+          ) : session.attendance === 'absent_invalid' && (
             <p className="m-0 text-sm font-semibold text-[var(--j-blak)]">
               Vad hände? En rad räcker, den följer med till underlaget.
             </p>

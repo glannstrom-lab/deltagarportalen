@@ -70,3 +70,12 @@ export const AMPEL_TEXT: Record<Ampel, { text: string; status: Status }> = {
   // GG3: veckan kan fortfarande nå målet, men inget är bekräftat än. Neutral ton.
   ej_markerad: { text: 'Närvaron inte markerad än', status: 'planerat' },
 }
+
+/**
+ * KSL21: ampelns ord för planens regelverk. Hos en leverantör är `absent_invalid`
+ * frånvaro som inte anmäldes i förväg — fakta, inte "ogiltig".
+ */
+export function ampelText(ampel: Ampel, leverantor: boolean): { text: string; status: Status } {
+  if (leverantor && ampel === 'ogiltig_franvaro') return { text: 'Frånvaro utan anmälan i veckan', status: 'ogiltig' }
+  return AMPEL_TEXT[ampel]
+}

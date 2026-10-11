@@ -37,8 +37,8 @@ export default function Consultant() {
     // Papper och Bläck, och --c-* pekar på Gran i stället för hubbfärgen (tokens.css).
     <div data-ton="kontor" className="bg-j-papper text-j-blak">
       <PageLayout
-        title={t('consultant.title', 'Konsultportal')}
-        subtitle={t('consultant.subtitle', 'Hantera och följ upp dina deltagare')}
+        title={t('consultant.title', 'Arbetsyta')}
+        subtitle={t('consultant.subtitle', 'Dina deltagare och din dag')}
         tabs={consultantTabs}
         tabVariant="glass"
         domain="info"

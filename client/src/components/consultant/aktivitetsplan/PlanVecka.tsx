@@ -15,8 +15,9 @@ import { VECKODAG_LANG, kortDatum, veckoRubrik } from '../aktivitetEtiketter'
 import { PassRad } from './PassRad'
 import { VeckoSummering } from './VeckoSummering'
 import { helgpass, veckansDagar } from './veckodagar'
+import { STATUS_ORD_LEVERANTOR, type Regelverk } from '../franvaroFakta'
 
-export function PlanVecka({ plan, sessions, vecka, onVecka, participantId, participantName, arLeverantor, onLaggTill, onChanged, onLadda, onSerieAndrad }: {
+export function PlanVecka({ plan, sessions, vecka, onVecka, participantId, participantName, arLeverantor, regelverk = null, onLaggTill, onChanged, onLadda, onSerieAndrad }: {
   plan: ActivityPlan
   sessions: readonly ActivitySession[]
   /** Måndag i veckan som visas. */
@@ -25,6 +26,8 @@ export function PlanVecka({ plan, sessions, vecka, onVecka, participantId, parti
   participantId: string
   participantName: string
   arLeverantor: boolean
+  /** KSL21: planens regelverk (null medan medlemskapen laddar — då kommunens val, som förut). */
+  regelverk?: Regelverk | null
   onLaggTill: () => void
   onChanged: (s: ActivitySession) => void
   onLadda: () => void
@@ -59,7 +62,13 @@ export function PlanVecka({ plan, sessions, vecka, onVecka, participantId, parti
         </div>
       </header>
 
-      <Veckoremsa storlek="stor" rubrik={`Veckan för ${participantName}`} dagar={veckansDagar(sessions, vecka, idag)} idag={idag} />
+      <Veckoremsa
+        storlek="stor"
+        rubrik={`Veckan för ${participantName}`}
+        dagar={veckansDagar(sessions, vecka, idag)}
+        idag={idag}
+        statusOrd={regelverk === 'leverantor' ? STATUS_ORD_LEVERANTOR : undefined}
+      />
       {helg > 0 && (
         <p className="m-0 -mt-2 text-sm text-[var(--j-blak-3)]">
           {helg === 1 ? 'Ett pass ligger på helgen' : `${helg} pass ligger på helgen`} — det står i listan nedan.
@@ -86,6 +95,7 @@ export function PlanVecka({ plan, sessions, vecka, onVecka, participantId, parti
                     session={s}
                     allaPass={sessions}
                     visaMarkning={arLeverantor}
+                    regelverk={regelverk}
                     onChanged={onChanged}
                     onRemoved={onLadda}
                     onSerieAndrad={onSerieAndrad}

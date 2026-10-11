@@ -15,6 +15,8 @@ export type PassIdag = Pick<
   absence_note?: string | null
   /** Hämtas sedan 2026-10-11 så att gruppnärvaron kan hoppa över eget jobbsökande. */
   activity_type?: ActivitySession['activity_type']
+  /** KSL21: planens organisation — avgör om frånvaron visas som fakta (leverantör) eller giltig/ogiltig (kommun). */
+  plan_org_id?: string | null
 }
 
 const ORSAK: Record<string, string> = {
@@ -38,9 +40,23 @@ export const NARVARO_ETIKETT: Record<Attendance, string> = {
   external: 'Annan aktivitet',
 }
 
+/** KSL21: leverantörens ord — fakta, aldrig giltig/ogiltig (samma som components/consultant/franvaroFakta.ts). */
+export const NARVARO_ETIKETT_LEVERANTOR: Record<Attendance, string> = {
+  present: 'Närvarande',
+  absent_valid: 'Frånvarande, anmäld i förväg',
+  absent_invalid: 'Frånvarande, inte anmäld',
+  sick_certified: 'Sjuk',
+  external: 'Annan aktivitet',
+}
+
 /** Status för ett pass i dag, härledd ur datan — aldrig gissad. */
-export function passStatus(p: PassIdag, nu: Date = new Date()): { text: string; ton: 'ok' | 'varning' | 'neutral' | 'info' } {
-  if (p.attendance) return { text: NARVARO_ETIKETT[p.attendance] ?? p.attendance, ton: p.attendance === 'present' ? 'ok' : 'neutral' }
+export function passStatus(
+  p: PassIdag,
+  nu: Date = new Date(),
+  regelverk?: 'kommun' | 'leverantor' | null,
+): { text: string; ton: 'ok' | 'varning' | 'neutral' | 'info' } {
+  const ord = regelverk === 'leverantor' ? NARVARO_ETIKETT_LEVERANTOR : NARVARO_ETIKETT
+  if (p.attendance) return { text: ord[p.attendance] ?? p.attendance, ton: p.attendance === 'present' ? 'ok' : 'neutral' }
   if (p.absence_reason) {
     const orsak = ORSAK[p.absence_reason] ?? p.absence_reason
     return { text: `Anmäld frånvaro: ${orsak}${p.absence_note ? ` — „${p.absence_note}”` : ''}`, ton: 'info' }
@@ -82,10 +98,11 @@ export async function hamtaDagensPass(datum: string = idagISO()): Promise<PassId
 
   const { data: planer, error: planFel } = await supabase
     .from('activity_plans')
-    .select('id')
+    .select('id, org_id')
     .eq('consultant_id', user.id)
   if (planFel) throw planFel
-  const planIds = (planer ?? []).map((p: { id: string }) => p.id)
+  const planOrg = new Map((planer ?? []).map((p: { id: string; org_id: string | null }) => [p.id, p.org_id ?? null]))
+  const planIds = [...planOrg.keys()]
   if (planIds.length === 0) return []
 
   const { data, error } = await supabase
@@ -95,6 +112,6 @@ export async function hamtaDagensPass(datum: string = idagISO()): Promise<PassId
     .in('plan_id', planIds)
     .order('start_time', { ascending: true })
   if (error) throw error
-  return (data ?? []) as PassIdag[]
+  return ((data ?? []) as PassIdag[]).map((p) => ({ ...p, plan_org_id: planOrg.get(p.plan_id) ?? null }))
 }
 

@@ -202,9 +202,10 @@ export interface RapportFalt {
 }
 
 const MOTE_TYP_TEXT: Record<MoteIPeriod['meeting_type'], string> = { physical: 'fysiskt', video: 'video', phone: 'telefon' }
+// KSL21: avtalsloggen går till Arbetsförmedlingen — fakta, aldrig giltig/ogiltig.
 const AVVIKELSE_TEXT: Record<string, string> = {
-  absent_invalid: 'ogiltig frånvaro',
-  absent_valid: 'giltig frånvaro',
+  absent_invalid: 'frånvarande, inte anmäld i förväg',
+  absent_valid: 'frånvarande, anmäld i förväg',
   sick_certified: 'sjuk',
 }
 

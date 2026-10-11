@@ -347,6 +347,7 @@ export default function MinVecka() {
               motenSammaDag={(dennaVeckansMoten.data ?? []).map((m) => ({ id: m.id, tid: motesStart(m), datum: motesDatum(m) }))}
               passSammaDag={(dennaVeckanQuery.data ?? []).filter((x) => x.date === franvaroPass.date)}
               datumText={rubrikdatum(franvaroPass.date)}
+              regelverk={regelverk}
               onSaved={(uppd) => {
                 uppdateraPass([uppd])
                 setStatus(t('minVecka.franvaro.status', 'Din konsulent har fått besked.'))
@@ -405,6 +406,13 @@ export default function MinVecka() {
             className="gap-1 [&>li]:min-w-0 [&>li]:px-0.5 [&>li]:hyphens-auto [&>li]:[overflow-wrap:anywhere]"
             dagar={remsa}
             idag={dagens}
+            // KSL21: hos en Rusta och matcha-leverantör är frånvaron fakta, inte giltig/ogiltig.
+            statusOrd={regelverk === 'leverantor'
+              ? {
+                  giltig: t('minVecka.remsa.franvaroAnmald', 'Frånvaro, anmäld i förväg'),
+                  ogiltig: t('minVecka.remsa.franvaro', 'Frånvaro'),
+                }
+              : undefined}
             rubrik={t('minVecka.remsa.rubrik', 'Dina dagar, måndag till fredag')}
           />
           {!visarDennaVecka && (
@@ -544,6 +552,7 @@ export default function MinVecka() {
                         // RD27: veckans alla möten med datum — en anmälan av flera dagar frågar om dem också
                         motenSammaDag={veckansMoten}
                         passSammaDag={sessions.filter((x) => x.date === post.pass.date)}
+                        regelverk={regelverk}
                         onCheckin={handleCheckin}
                         onKalender={handleKalender}
                         onUppdaterat={(uppd) => {

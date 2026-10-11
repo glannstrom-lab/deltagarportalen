@@ -393,7 +393,7 @@
     "settings": "Settings",
     "logout": "Log out",
     "adminPanel": "Admin Panel",
-    "consultantPortal": "Consultant Portal",
+    "consultantPortal": "Workspace",
     "applications": "My Applications",
     "spontaneous": "Spontaneous Application",
     "network": "Network",
@@ -7875,8 +7875,8 @@
       "fel": "The documentation could not be saved",
       "raknasIvo": "Counted in the IVO report for the quarter."
     },
-    "title": "Consultant Portal",
-    "subtitle": "Manage and follow up on your participants",
+    "title": "Workspace",
+    "subtitle": "Your participants and your day",
     "tabs": {
       "overview": "Overview",
       "overviewDesc": "Dashboard and KPIs",
@@ -9566,6 +9566,7 @@
       },
       "noteringEtikett": "Do you want to add something? (optional)",
       "bedomning": "Your konsulent decides if the reason is valid. It is better to report one time too many than one time too few.",
+      "bedomningLeverantor": "Your konsulent writes down what you report. Arbetsförmedlingen (the Swedish Public Employment Service) decides if the reason is accepted. It is better to report one time too many than one time too few.",
       "skicka": "Send to my konsulent",
       "avbryt": "Cancel",
       "valjOrsak": "Choose what stops you from coming.",
@@ -9616,6 +9617,7 @@
     "narvaro": {
       "present": "Present",
       "absent_valid": "Absent, valid reason",
+      "absent_validLeverantor": "Absent, reported in advance",
       "absent_invalid": "Absent",
       "sick_certified": "Sick",
       "external": "Other activity"
@@ -9766,7 +9768,9 @@
       "dennaVecka": "This week",
       "veckaNr": "Week {{nr}}",
       "tillbakaIdag": "Go to this week",
-      "anmald": "you have reported that you cannot come"
+      "anmald": "you have reported that you cannot come",
+      "franvaro": "Absent",
+      "franvaroAnmald": "Absent, reported in advance"
     }
   },
   "minVardagHub": {

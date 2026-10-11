@@ -127,6 +127,7 @@ export function AktivitetsplanSektion({ participantId, participantName, styrning
           participantId={participantId}
           participantName={participantName}
           arLeverantor={arLeverantor}
+          regelverk={regelverk}
           onLaggTill={() => setVisaNyttPass(true)}
           onChanged={ersattSession}
           onLadda={() => void ladda()}

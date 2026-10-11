@@ -34,6 +34,11 @@ export interface VeckoremsaProps {
   storlek?: 'kompakt' | 'stor'
   /** Dagens datum (YYYY-MM-DD) — markeras med aria-current="date". */
   idag?: string
+  /**
+   * Egna ord för vissa statusar (KSL21): hos en Rusta och matcha-leverantör är
+   * frånvaron fakta ("Frånvarande, inte anmäld"), inte "Ogiltig frånvaro".
+   */
+  statusOrd?: Partial<Record<Status, string>>
   className?: string
 }
 
@@ -43,7 +48,7 @@ function lokalDag(datum: string): Date | null {
   return new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]))
 }
 
-export function Veckoremsa({ dagar, rubrik, storlek = 'kompakt', idag, className }: VeckoremsaProps) {
+export function Veckoremsa({ dagar, rubrik, storlek = 'kompakt', idag, statusOrd, className }: VeckoremsaProps) {
   const { t, i18n } = useTranslation()
   const tagg = datumSprak(i18n.language)
   const ingetPass = t('kvarter.ingetPass', 'Inget pass')
@@ -61,7 +66,7 @@ export function Veckoremsa({ dagar, rubrik, storlek = 'kompakt', idag, className
         const d = lokalDag(dag.datum)
         const lang = d ? d.toLocaleDateString(tagg, { weekday: 'long', day: 'numeric', month: 'long' }) : dag.datum
         const kort = d ? d.toLocaleDateString(tagg, { weekday: 'short' }).replace('.', '') : ''
-        const ord = dag.status ? t(STATUS_NYCKEL[dag.status], STATUS_ORD_SV[dag.status]) : ingetPass
+        const ord = dag.status ? (statusOrd?.[dag.status] ?? t(STATUS_NYCKEL[dag.status], STATUS_ORD_SV[dag.status])) : ingetPass
         const lasText = `${lang.charAt(0).toUpperCase()}${lang.slice(1)}: ${ord}${dag.detalj ? `. ${dag.detalj}` : ''}`
         const farg = dag.status ? statusFarg(dag.status) : null
         const arIdag = idag === dag.datum

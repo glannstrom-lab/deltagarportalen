@@ -284,7 +284,9 @@ function NyOrganisationForm({ onSkapad, onAvbryt }: { onSkapad: (o: Organization
   return (
     <form onSubmit={spara} className="bg-white p-5 rounded-lg border border-gray-200 space-y-4">
       <h3 className="font-semibold text-gray-900">Ny organisation</h3>
-      {fel && <p role="alert" className="text-sm text-red-700">{fel}</p>}
+      {/* KSL25 (2026-10-11): standardvärdet i databasen är ai_enabled = false. */}
+      <p className="text-sm text-gray-700">AI-funktionerna är avstängda tills organisationen själv slår på dem (chefen under Inställningar → Din organisation).</p>
+      {fel &&<p role="alert" className="text-sm text-red-700">{fel}</p>}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <label className="block text-sm">
           <span className="text-gray-700">Namn</span>

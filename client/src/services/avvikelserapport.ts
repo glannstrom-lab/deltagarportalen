@@ -49,10 +49,15 @@ const ANMALD_ORSAK: Record<string, string> = {
   other: 'annat skäl',
 }
 
+/**
+ * KSL21 (beslut 2026-10-11, IAF 2024:12): leverantören bedömer inte om ett skäl
+ * är giltigt — det gör Arbetsförmedlingen. Typen säger fakta: frånvarande, och
+ * om frånvaron var anmäld i förväg. Ordet "giltig"/"ogiltig" står aldrig här.
+ */
 function typText(s: AvvikelseKalla): string | null {
   switch (s.attendance) {
-    case 'absent_invalid': return 'Ogiltig frånvaro'
-    case 'absent_valid': return 'Giltig frånvaro'
+    case 'absent_invalid': return 'Frånvarande, inte anmäld i förväg'
+    case 'absent_valid': return 'Frånvarande, anmäld i förväg'
     case 'sick_certified': return s.sick_certificate_received ? 'Sjuk, intyg inkommet' : 'Sjuk, intyg saknas'
     default: return null
   }

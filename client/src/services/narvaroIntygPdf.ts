@@ -57,6 +57,18 @@ const NARVARO_ETIKETT: Record<Attendance, string> = {
   external: 'Annan aktivitet',
 }
 
+/**
+ * KSL21: hos en Rusta och matcha-leverantör bedömer konsulenten inte om skälet
+ * är giltigt — det gör Arbetsförmedlingen. Intyget säger fakta: om frånvaron
+ * var anmäld i förväg.
+ */
+const NARVARO_ETIKETT_LEVERANTOR: Record<Attendance, string> = {
+  ...NARVARO_ETIKETT,
+  absent_valid: 'Frånvaro, anmäld i förväg',
+}
+
+type IntygRegelverk = 'kommun' | 'leverantor' | null | undefined
+
 const ORSAK_ETIKETT: Record<FranvaroOrsak, string> = {
   sick: 'sjuk',
   child_care: 'vård av barn',
@@ -141,8 +153,8 @@ export function manadensPass(sessions: readonly ActivitySession[], manad: string
  * vinner; sedan deltagarens egen anmälan; sedan incheckning som konsulenten
  * inte bekräftat; sedan "ej markerat" för passerade pass och "kommande" för resten.
  */
-export function utfall(session: ActivitySession, idag: string): string {
-  if (session.attendance) return NARVARO_ETIKETT[session.attendance]
+export function utfall(session: ActivitySession, idag: string, regelverk?: IntygRegelverk): string {
+  if (session.attendance) return (regelverk === 'leverantor' ? NARVARO_ETIKETT_LEVERANTOR : NARVARO_ETIKETT)[session.attendance]
   const anm = franvaroAv(session)
   if (anm) return `Anmäld frånvaro (${ORSAK_ETIKETT[anm.reason]})`
   if (session.self_checkin_at) return 'Incheckad, ej bekräftad av konsulent'
@@ -154,19 +166,19 @@ export function utfall(session: ActivitySession, idag: string): string {
  * (RD11). Märkt som hennes — det är inte konsulentens bedömning. Raka
  * citattecken: Helvetica i jsPDF skriver inte „ och ”.
  */
-function utfallMedForklaring(s: ActivitySession, idag: string): string {
-  const u = utfall(s, idag)
+function utfallMedForklaring(s: ActivitySession, idag: string, regelverk?: IntygRegelverk): string {
+  const u = utfall(s, idag, regelverk)
   const f = forklaringAv(s)
   return f ? `${u}\nDeltagarens förklaring: "${f.text}"` : u
 }
 
-export function intygRader(sessions: readonly ActivitySession[], manad: string, idag: string): string[][] {
+export function intygRader(sessions: readonly ActivitySession[], manad: string, idag: string, regelverk?: IntygRegelverk): string[][] {
   return manadensPass(sessions, manad).map((s) => [
     datumSv(s.date),
     `${s.start_time}-${s.end_time}`,
     s.title,
     TYP_ETIKETT[s.activity_type],
-    utfallMedForklaring(s, idag),
+    utfallMedForklaring(s, idag, regelverk),
   ])
 }
 
@@ -186,10 +198,10 @@ export function narvaroTimmar(sessions: readonly ActivitySession[], manad: strin
   return Math.round(sum * 10) / 10
 }
 
-export function antalPerUtfall(sessions: readonly ActivitySession[], manad: string, idag: string): Record<string, number> {
+export function antalPerUtfall(sessions: readonly ActivitySession[], manad: string, idag: string, regelverk?: IntygRegelverk): Record<string, number> {
   const r: Record<string, number> = {}
   for (const s of manadensPass(sessions, manad)) {
-    const u = utfall(s, idag)
+    const u = utfall(s, idag, regelverk)
     r[u] = (r[u] ?? 0) + 1
   }
   return r
@@ -230,7 +242,7 @@ export async function generateNarvaroIntygPDF(input: IntygInput): Promise<jsPDF>
   })
   y = doc.lastAutoTable.finalY + 8
 
-  const rader = intygRader(sessions, manad, idag)
+  const rader = intygRader(sessions, manad, idag, input.regelverk)
   doc.setFont('helvetica', 'bold')
   doc.setFontSize(12)
   doc.text('Anvisade aktiviteter', marg, y)
@@ -253,7 +265,7 @@ export async function generateNarvaroIntygPDF(input: IntygInput): Promise<jsPDF>
     y = doc.lastAutoTable.finalY + 6
     doc.setFont('helvetica', 'normal')
     doc.setFontSize(10)
-    const per = antalPerUtfall(sessions, manad, idag)
+    const per = antalPerUtfall(sessions, manad, idag, input.regelverk)
     doc.text(`Närvaro som konsulenten markerat: ${narvaroTimmar(sessions, manad)} timmar.`, marg, y)
     y += 5
     const summering = Object.entries(per).map(([u, n]) => `${u}: ${n}`).join(', ')

@@ -252,7 +252,10 @@ export async function generateManadsunderlagPDF(input: ManadsunderlagInput): Pro
   y += 2
   autoTable(doc, {
     startY: y,
-    head: [['Vecka', 'Dagar i månaden', 'Pass', 'Närvaro anvisat (h)', 'Eget jobbsökande kvitterat (h)', 'Giltig frånvaro', 'Ogiltig frånvaro', 'Sjuk med intyg', 'Sjuk utan intyg', 'Ej markerade']],
+    // KSL21: hos en Rusta och matcha-leverantör är frånvaron fakta (anmäld i förväg eller inte), aldrig giltig/ogiltig.
+    head: [['Vecka', 'Dagar i månaden', 'Pass', 'Närvaro anvisat (h)', 'Eget jobbsökande kvitterat (h)',
+      ...(input.regelverk === 'leverantor' ? ['Frånvaro, anmäld i förväg', 'Frånvaro, inte anmäld'] : ['Giltig frånvaro', 'Ogiltig frånvaro']),
+      'Sjuk med intyg', 'Sjuk utan intyg', 'Ej markerade']],
     body: veckoRader(input.sessions, input.ym),
     styles: { fontSize: 8, cellPadding: 1.2 },
     headStyles: { fillColor: [68, 83, 78], textColor: 255 },

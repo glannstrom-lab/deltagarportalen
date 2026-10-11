@@ -147,7 +147,7 @@ describe('PG20: konsulentens mobilmeny', () => {
     rendera(true)
     const meny = screen.getByRole('dialog', { name: /meny/i })
     const lankar = Array.from(meny.querySelectorAll('a')).map((a) => a.textContent?.trim())
-    const konsult = lankar.findIndex((t) => /konsultportal/i.test(t ?? ''))
+    const konsult = lankar.findIndex((t) => /^arbetsyta$/i.test(t ?? ''))
     const oversikt = lankar.findIndex((t) => /^översikt$/i.test(t ?? ''))
     expect(konsult).toBeGreaterThanOrEqual(0)
     expect(konsult).toBeLessThan(oversikt)

@@ -45,7 +45,7 @@ describe('RR8 — underlag för den periodiska rapporten', () => {
     const panel = screen.getByTestId('rapportunderlag')
     expect(panel).toHaveTextContent('Underlag för Jonas Demo, september 2026')
     expect(panel).toHaveTextContent('1 möte (varav 1 fysiskt): 10/9 fysiskt')
-    expect(panel).toHaveTextContent('15/9 Gruppträff: ogiltig frånvaro')
+    expect(panel).toHaveTextContent('15/9 Gruppträff: frånvarande, inte anmäld i förväg')
     expect(panel).toHaveTextContent('Portalen kan inte skicka något till Arbetsförmedlingen')
     fireEvent.click(within(panel).getByRole('button', { name: 'Kopiera individuella möten (datum och typ)' }))
     await vi.waitFor(() => expect(skriv).toHaveBeenCalledWith('1 möte (varav 1 fysiskt): 10/9 fysiskt'))

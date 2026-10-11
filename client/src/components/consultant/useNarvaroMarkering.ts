@@ -37,8 +37,10 @@ export function useNarvaroMarkering(args: {
   namnFor: (participantId: string) => string
   /** Anropas med det sparade passet så att föräldern kan uppdatera sin lista. */
   onSparat: (id: string, attendance: Attendance | null) => void
+  /** KSL21: passets regelverk — styr notisens ord till deltagaren. Utan: kommunens. */
+  regelverkFor?: (p: PassIdag) => 'kommun' | 'leverantor' | null
 }) {
-  const { namnFor, onSparat } = args
+  const { namnFor, onSparat, regelverkFor } = args
   const [sparar, setSparar] = useState<Set<string>>(new Set())
   const [markeradeHar, setMarkeradeHar] = useState<Set<string>>(new Set())
   const [besked, setBesked] = useState<string | null>(null)
@@ -49,7 +51,7 @@ export function useNarvaroMarkering(args: {
   const spara = async (p: PassIdag, attendance: Attendance | null): Promise<boolean> => {
     setSparar((s) => med(s, p.id, true))
     try {
-      const uppdaterad = await aktivitetsplanApi.markAttendance(p.id, { attendance })
+      const uppdaterad = await aktivitetsplanApi.markAttendance(p.id, regelverkFor?.(p) === 'leverantor' ? { attendance, regelverk: 'leverantor' } : { attendance })
       onSparat(p.id, uppdaterad.attendance)
       setMarkeradeHar((m) => med(m, p.id, attendance !== null))
       return true
@@ -110,5 +112,23 @@ export function useNarvaroMarkering(args: {
     if (misslyckade.length > 0) setFel(`Kunde inte spara för ${misslyckade.join(', ')}. Försök igen.`)
   }
 
-  return { sparar, markeradeHar, besked, fel, utkast, markera, valj, markeraFlera, upptagen: sparar.size > 0 || utkast.size > 0 }
+  /**
+   * KSL21, leverantör: "anmäld i förväg" på en frånvaro som markerats här. Byter
+   * bara mellan absent_valid och absent_invalid — anteckningen står kvar.
+   */
+  const andraAnmald = async (p: PassIdag, anmald: boolean) => {
+    setBesked(null)
+    setFel(null)
+    setSparar((s) => med(s, p.id, true))
+    try {
+      const uppdaterad = await aktivitetsplanApi.sattFranvaroAnmald(p.id, anmald, regelverkFor?.(p) ?? null)
+      onSparat(p.id, uppdaterad.attendance)
+    } catch {
+      setFel(`Uppgiften om anmälan för ${namnFor(p.participant_id)} kunde inte sparas. Försök igen.`)
+    } finally {
+      setSparar((s) => med(s, p.id, false))
+    }
+  }
+
+  return { sparar, markeradeHar, besked, fel, utkast, markera, valj, markeraFlera, andraAnmald, upptagen: sparar.size > 0 || utkast.size > 0 }
 }

@@ -85,8 +85,13 @@ export function bradskandePunkter(args: {
    * (slipningen 2026-10-11, kommunfynd A1). Utan värde: med, som tidigare.
    */
   medMotesregel?: boolean
+  /**
+   * KSL21: hos en Rusta och matcha-leverantör är `absent_invalid` "frånvarande,
+   * inte anmäld" — fakta, aldrig "ogiltig". Utan värde: kommunens ord.
+   */
+  franvaroSomFakta?: boolean
 }): Bradskande[] {
-  const { deltagare, moten, pass, idag, medMotesregel = true } = args
+  const { deltagare, moten, pass, idag, medMotesregel = true, franvaroSomFakta = false } = args
   const mina = new Set(deltagare.map((d) => d.participant_id))
   const { fran, till } = franvaroFonster(idag)
 
@@ -107,9 +112,13 @@ export function bradskandePunkter(args: {
     ut.push({
       participantId: d.participant_id,
       typ: 'franvaro',
-      text: datum.length === 1
-        ? `Ogiltig frånvaro ${kortDatum(senast)}`
-        : `Ogiltig frånvaro på ${datum.length} pass senaste 7 dagarna, senast ${kortDatum(senast)}`,
+      text: franvaroSomFakta
+        ? (datum.length === 1
+          ? `Frånvarande utan anmälan ${kortDatum(senast)}`
+          : `Frånvarande utan anmälan på ${datum.length} pass senaste 7 dagarna, senast ${kortDatum(senast)}`)
+        : (datum.length === 1
+          ? `Ogiltig frånvaro ${kortDatum(senast)}`
+          : `Ogiltig frånvaro på ${datum.length} pass senaste 7 dagarna, senast ${kortDatum(senast)}`),
     })
   }
 
@@ -224,8 +233,14 @@ function passNamn(p: Pick<AttGoraPass, 'date' | 'title' | 'start_time' | 'end_ti
   return `${kortDatum(p.date)} (${p.title}, ${p.start_time.slice(0, 5)}–${p.end_time.slice(0, 5)})`
 }
 
+/** KSL21: frånvarons ord. Leverantör: anmäld/inte anmäld (fakta). Kommun: giltig/ogiltig. */
+function franvaroSlag(a: Attendance | null, franvaroSomFakta: boolean): string {
+  if (franvaroSomFakta) return a === 'absent_invalid' ? 'inte anmäld' : 'anmäld i förväg'
+  return a === 'absent_invalid' ? 'ogiltig' : 'giltig'
+}
+
 /** Vilken punkt passet ger, eller null. Ren regel — testas utan React. */
-export function attGoraForPass(p: AttGoraPass, idag: string): AttGora | null {
+export function attGoraForPass(p: AttGoraPass, idag: string, franvaroSomFakta = false): AttGora | null {
   const fran = addDays(idag, -(ATT_GORA_BAKAT_DAGAR - 1))
   const till = addDays(idag, ATT_GORA_FRAMAT_DAGAR)
   if (p.date < fran || p.date > till) return null
@@ -236,12 +251,14 @@ export function attGoraForPass(p: AttGoraPass, idag: string): AttGora | null {
     const ny = !!forklaring && (!p.marked_at || !p.participant_explanation_at
       || new Date(p.participant_explanation_at).getTime() > new Date(p.marked_at).getTime())
     if (forklaring && ny) {
-      const slag = p.attendance === 'absent_invalid' ? 'ogiltig' : 'giltig'
+      const slag = franvaroSlag(p.attendance, franvaroSomFakta)
       const kort = forklaring.length > 120 ? `${forklaring.slice(0, 117)}…` : forklaring
       return ut('forklaring', `Har förklarat frånvaron ${passNamn(p)}, markerad som ${slag}: ”${kort}”`)
     }
     if (p.attendance === 'absent_invalid' && !p.attendance_note?.trim()) {
-      return ut('franvaro_utan_anteckning', `Ogiltig frånvaro ${passNamn(p)} saknar anteckning`)
+      return ut('franvaro_utan_anteckning', franvaroSomFakta
+        ? `Frånvarande utan anmälan ${passNamn(p)} saknar orsak`
+        : `Ogiltig frånvaro ${passNamn(p)} saknar anteckning`)
     }
     return null
   }
@@ -274,13 +291,15 @@ export function attGoraIdag(args: {
   deltagare: readonly { participant_id: string }[]
   pass: readonly AttGoraPass[]
   idag: Date
+  /** KSL21: leverantörens ord (anmäld/inte anmäld) i stället för giltig/ogiltig. */
+  franvaroSomFakta?: boolean
 }): AttGora[] {
   const mina = new Set(args.deltagare.map((d) => d.participant_id))
   const idag = formatLocalDate(args.idag)
   const ut: AttGora[] = []
   for (const p of args.pass) {
     if (!mina.has(p.participant_id)) continue
-    const punkt = attGoraForPass(p, idag)
+    const punkt = attGoraForPass(p, idag, args.franvaroSomFakta ?? false)
     if (punkt) ut.push(punkt)
   }
   return ut.sort((a, b) =>
@@ -526,17 +545,19 @@ function passTid(p: Pick<AttGoraPass, 'start_time' | 'end_time'>): string {
 }
 
 /** En Att göra-punkt som läge. Texterna i attGoraForPass står kvar för andra vyer. */
-export function lageForAttGora(a: AttGora, idag: string): MinDagPunkt {
+export function lageForAttGora(a: AttGora, idag: string, franvaroSomFakta = false): MinDagPunkt {
   const p = a.pass
   const nar = dagOrd(p.date, idag)
   const bas = { typ: a.typ, participantId: a.participantId, pass: p }
   switch (a.typ) {
     case 'franvaro_utan_anteckning':
-      return { ...bas, lage: `Var inte på ${p.title} ${nar}`, detalj: 'Ogiltig frånvaro, saknar en rad om vad som hände', status: 'ogiltig' }
+      return franvaroSomFakta
+        ? { ...bas, lage: `Var inte på ${p.title} ${nar}`, detalj: 'Frånvarande, inte anmäld i förväg. Saknar en rad om orsaken', status: 'ogiltig', statusText: 'Frånvarande, inte anmäld' }
+        : { ...bas, lage: `Var inte på ${p.title} ${nar}`, detalj: 'Ogiltig frånvaro, saknar en rad om vad som hände', status: 'ogiltig' }
     case 'forklaring': {
       const forklaring = (p.participant_explanation ?? '').trim()
       const kort = forklaring.length > 120 ? `${forklaring.slice(0, 117)}…` : forklaring
-      const slag = p.attendance === 'absent_invalid' ? 'ogiltig' : 'giltig'
+      const slag = franvaroSlag(p.attendance, franvaroSomFakta)
       return { ...bas, lage: `Har förklarat frånvaron ${nar}`, detalj: `${p.title}, markerad som ${slag}: ”${kort}”`, status: 'vantar' }
     }
     case 'anmald_franvaro': {
@@ -604,19 +625,24 @@ export function minDagPersoner(args: {
   deadlines: readonly MalDeadline[]
   kontakter: readonly KontaktPunkt[]
   idag: Date
+  /** KSL21: leverantörens ord för frånvaron (fakta), aldrig giltig/ogiltig. */
+  franvaroSomFakta?: boolean
 }): MinDagPerson[] {
   const idag = formatLocalDate(args.idag)
+  const fakta = args.franvaroSomFakta ?? false
   const punkter: MinDagPunkt[] = []
 
   for (const a of args.attGora) {
     // En incheckning på ett av dagens pass bekräftas i passet (nästa steg "Markera
     // närvaro" eller Dagens pass) — inte en gång till som en rad per person.
     if (a.typ === 'kvittera' && a.pass.date === idag && a.pass.activity_type !== 'jobsearch_own') continue
-    punkter.push(lageForAttGora(a, idag))
+    punkter.push(lageForAttGora(a, idag, fakta))
   }
   for (const b of bradskandeUtanDubbletter(args.bradskande, args.attGora)) {
     punkter.push(b.typ === 'franvaro'
-      ? { typ: 'franvaro', participantId: b.participantId, lage: b.text, detalj: 'Anteckningen finns, underlaget är klart', status: 'ogiltig' }
+      ? fakta
+        ? { typ: 'franvaro', participantId: b.participantId, lage: b.text, detalj: 'Orsaken är antecknad, avvikelsen är klar att rapportera', status: 'ogiltig', statusText: 'Frånvarande, inte anmäld' }
+        : { typ: 'franvaro', participantId: b.participantId, lage: b.text, detalj: 'Anteckningen finns, underlaget är klart', status: 'ogiltig' }
       : { typ: 'mote_over_gransen', participantId: b.participantId, lage: b.text, detalj: 'Mötesregeln i avtalet', status: 'vantar', statusText: 'Möte behövs' })
   }
   if (args.leverantor) {
@@ -685,7 +711,7 @@ export function minDagPersoner(args: {
  * enheten — tio omarkerade pass är en sak om Dana, inte tio. `fler` räknar
  * bara det som är något ANNAT än det sammanfattade.
  */
-export function radSammanfattning(person: MinDagPerson): { lage: string; detalj?: string; fler: number } {
+export function radSammanfattning(person: MinDagPerson, franvaroSomFakta = false): { lage: string; detalj?: string; fler: number } {
   const [forsta] = person.punkter
   const samma = person.punkter.filter((p) => p.typ === forsta.typ)
   const n = samma.length
@@ -696,7 +722,7 @@ export function radSammanfattning(person: MinDagPerson): { lage: string; detalj?
     case 'omarkerat':
       return { lage: `${talOrd(n)} pass är inte markerade`, detalj: `Det första: ${forsta.lage.replace(/ är inte markerat$/, '')}`, fler }
     case 'franvaro_utan_anteckning':
-      return { lage: `Var inte på ${tal} pass`, detalj: 'Ogiltig frånvaro utan en rad om vad som hände', fler }
+      return { lage: `Var inte på ${tal} pass`, detalj: franvaroSomFakta ? 'Frånvarande, inte anmäld i förväg, utan en rad om orsaken' : 'Ogiltig frånvaro utan en rad om vad som hände', fler }
     case 'kvittera':
       return { lage: `${talOrd(n)} redovisningar väntar på din kvittens`, detalj: forsta.lage, fler }
     case 'anmald_franvaro':

@@ -86,13 +86,22 @@ export async function notisPassAndrat(session: ActivitySession, opts: { typ: Pas
   })
 }
 
-/** När konsulenten markerar ett pass som frånvaro utan giltigt skäl. */
-export async function notisOgiltigFranvaro(session: ActivitySession): Promise<void> {
+/**
+ * När konsulenten markerar ett pass som `absent_invalid`.
+ *
+ * Kommun: frånvaro utan giltigt skäl (konsulentens bedömning, underlag till
+ * socialnämnden). Leverantör (KSL21): bara fakta — frånvaron var inte anmäld i
+ * förväg — och att det är Arbetsförmedlingen som avgör, aldrig "giltigt skäl".
+ */
+export async function notisOgiltigFranvaro(session: ActivitySession, regelverk?: 'kommun' | 'leverantor' | null): Promise<void> {
+  const message = regelverk === 'leverantor'
+    ? `Du var inte med på ett pass den ${langtDatum(session.date)}, och frånvaron var inte anmäld i förväg. Din konsulent rapporterar frånvaron till Arbetsförmedlingen. Det är Arbetsförmedlingen som avgör vad den betyder för dig. Berätta för din konsulent vad som hände.`
+    : `Ett pass den ${langtDatum(session.date)} är markerat som frånvaro utan giltigt skäl. Prata med din konsulent om du har ett skäl.`
   await skrivNotis({
     user_id: session.participant_id,
     type: 'aktivitet_franvaro',
     title: 'Frånvaro på ett pass',
-    message: `Ett pass den ${langtDatum(session.date)} är markerat som frånvaro utan giltigt skäl. Prata med din konsulent om du har ett skäl.`,
+    message,
     data: { session_id: session.id, plan_id: session.plan_id, date: session.date },
   })
 }

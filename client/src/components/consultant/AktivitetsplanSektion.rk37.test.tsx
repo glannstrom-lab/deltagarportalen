@@ -192,7 +192,7 @@ describe('RR28: leverantörens avvikelserapport', () => {
     const api = await montera(plan({ org_id: 'org1' }), [franvaro])
     vi.mocked(api.sattAfUnderrattad).mockImplementation(async (id, nar) => ({ ...franvaro, id, af_notified_at: nar }) as never)
     const kort = await screen.findByTestId('avvikelserapport')
-    expect(kort).toHaveTextContent('22 sep · Ogiltig frånvaro')
+    expect(kort).toHaveTextContent('22 sep · Frånvarande, inte anmäld i förväg')
     expect(kort).toHaveTextContent('Orsak: Kom inte')
     expect(kort).toHaveTextContent('AF inte underrättad')
     expect(kort).toHaveTextContent('Portalen skickar ingenting till Arbetsförmedlingen')

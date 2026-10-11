@@ -397,7 +397,7 @@
     "settings": "Inställningar",
     "logout": "Logga ut",
     "adminPanel": "Admin Panel",
-    "consultantPortal": "Konsultportal",
+    "consultantPortal": "Arbetsyta",
     "applications": "Dina jobbansökningar",
     "spontaneous": "Spontanansökan",
     "network": "Nätverk",
@@ -7875,8 +7875,8 @@
       "fel": "Underlaget kunde inte sparas",
       "raknasIvo": "Räknas i IVO-underlaget för kvartalet."
     },
-    "title": "Konsultportal",
-    "subtitle": "Hantera och följ upp dina deltagare",
+    "title": "Arbetsyta",
+    "subtitle": "Dina deltagare och din dag",
     "tabs": {
       "overview": "Översikt",
       "overviewDesc": "Dashboard och KPI:er",
@@ -9566,6 +9566,7 @@
       },
       "noteringEtikett": "Vill du säga något mer? (frivilligt)",
       "bedomning": "Det är din konsulent som avgör om skälet är giltigt. Anmäl hellre en gång för mycket än en gång för lite.",
+      "bedomningLeverantor": "Din konsulent skriver ner det du anmäler. Det är Arbetsförmedlingen som avgör om skälet godtas. Anmäl hellre en gång för mycket än en gång för lite.",
       "skicka": "Skicka till min konsulent",
       "avbryt": "Avbryt",
       "valjOrsak": "Välj vad som hindrar dig.",
@@ -9616,6 +9617,7 @@
     "narvaro": {
       "present": "Närvarande",
       "absent_valid": "Frånvaro, giltig",
+      "absent_validLeverantor": "Frånvaro, anmäld i förväg",
       "absent_invalid": "Frånvaro",
       "sick_certified": "Sjuk",
       "external": "Annan aktivitet"
@@ -9766,7 +9768,9 @@
       "dennaVecka": "Den här veckan",
       "veckaNr": "Vecka {{nr}}",
       "tillbakaIdag": "Till den här veckan",
-      "anmald": "du har anmält frånvaro"
+      "anmald": "du har anmält frånvaro",
+      "franvaro": "Frånvaro",
+      "franvaroAnmald": "Frånvaro, anmäld i förväg"
     }
   },
   "minVardagHub": {

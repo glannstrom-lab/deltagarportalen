@@ -9,7 +9,7 @@
 import { useEffect, useState, type ElementType, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { MessageSquare, Target, CheckCircle, Calendar, Briefcase, ClipboardCheck, Clock, AlertTriangle } from 'lucide-react'
-import { tidslinjeApi, type TidslinjeHandelse, type TidslinjeSektion, type TidslinjeTyp } from '@/services/tidslinjeApi'
+import { tidslinjeApi, type RegelverkForOrg, type TidslinjeHandelse, type TidslinjeSektion, type TidslinjeTyp } from '@/services/tidslinjeApi'
 
 /** Omtaget "Kvarter", steg 5: en platt yta i stället för Card, färger ur tokens. */
 function Yta({ children }: { children: ReactNode }) {
@@ -29,6 +29,8 @@ interface Props {
   participantId: string
   /** Öppnar sektionen händelsen hör hemma i. */
   onGaTill: (sektion: TidslinjeSektion) => void
+  /** KSL21: planens organisation → regelverk (leverantörens frånvaro som fakta). Stabil identitet. */
+  regelverkFor?: RegelverkForOrg | null
 }
 
 type Lage =
@@ -36,7 +38,7 @@ type Lage =
   | { status: 'fel'; meddelande: string }
   | { status: 'klart'; handelser: TidslinjeHandelse[]; misslyckadeKallor: string[] }
 
-export function Tidslinje({ participantId, onGaTill }: Props) {
+export function Tidslinje({ participantId, onGaTill, regelverkFor }: Props) {
   const { t } = useTranslation()
   const [lage, setLage] = useState<Lage>({ status: 'laddar' })
 
@@ -52,11 +54,11 @@ export function Tidslinje({ participantId, onGaTill }: Props) {
   useEffect(() => {
     let aktiv = true
     tidslinjeApi
-      .hamtaTidslinje(participantId)
+      .hamtaTidslinje(participantId, regelverkFor ?? undefined)
       .then((r) => { if (aktiv) setLage({ status: 'klart', ...r }) })
       .catch((err) => { if (aktiv) setLage({ status: 'fel', meddelande: err instanceof Error ? err.message : String(err) }) })
     return () => { aktiv = false }
-  }, [participantId])
+  }, [participantId, regelverkFor])
 
   if (lage.status === 'laddar') {
     return (

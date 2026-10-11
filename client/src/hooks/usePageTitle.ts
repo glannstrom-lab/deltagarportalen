@@ -111,7 +111,7 @@ export const PAGE_TITLE_RULES: PageTitleRule[] = [
   // Konto och administration
   { path: '/profile', key: 'nav.profile', sv: 'Min profil' },
   { path: '/settings', key: 'nav.settings', sv: 'Inställningar' },
-  { path: '/consultant', key: 'nav.consultantPortal', sv: 'Konsultportal' },
+  { path: '/consultant', key: 'nav.consultantPortal', sv: 'Arbetsyta' },
   { path: '/admin', key: 'nav.adminPanel', sv: 'Administration' },
 
 ]

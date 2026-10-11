@@ -97,12 +97,20 @@ function klockslag(iso: string): string {
   return new Date(iso).toLocaleTimeString('sv-SE', { hour: '2-digit', minute: '2-digit' })
 }
 
-/** Förslaget för ett omarkerat pass, eller null. Ett markerat pass har inget förslag. */
-export function narvaroForslag(p: PassIdag): NarvaroForslag | null {
+/**
+ * Förslaget för ett omarkerat pass, eller null. Ett markerat pass har inget förslag.
+ *
+ * KSL21, leverantör: varje anmälan som inte är sjukdom föreslår "Frånvarande,
+ * anmäld i förväg" — att den var anmäld är ett faktum, och leverantören bedömer
+ * inte skälet (det gör Arbetsförmedlingen).
+ */
+export function narvaroForslag(p: PassIdag, regelverk?: 'kommun' | 'leverantor' | null): NarvaroForslag | null {
   if (p.attendance !== null) return null
   if (p.self_checkin_at) return { varde: 'present', skal: `Checkade in själv ${klockslag(p.self_checkin_at)}` }
   if (p.absence_reason) {
-    const varde = FORSLAG_FRAN_ORSAK[p.absence_reason]
+    const varde = regelverk === 'leverantor'
+      ? (p.absence_reason === 'sick' ? 'sick_certified' : 'absent_valid')
+      : FORSLAG_FRAN_ORSAK[p.absence_reason]
     if (!varde) return null
     return { varde, skal: `Anmälde frånvaro: ${orsakText(p.absence_reason)}` }
   }

@@ -10,12 +10,15 @@ import { StatusChip } from '@/components/ui/StatusChip'
 import { Veckoremsa } from '@/components/ui/Veckoremsa'
 import { anvisatVeckomal, formatLocalDate, veckansMandag, veckoampel, veckosaldo } from '@/services/aktivitetSchema'
 import { formatTimmar, veckoRubrik } from '../aktivitetEtiketter'
-import { AMPEL_TEXT, passStatus, veckansDagar } from './veckodagar'
+import { ampelText, passStatus, veckansDagar } from './veckodagar'
 import type { PlanLage } from './useAktivitetsplan'
+import { STATUS_ORD_LEVERANTOR, type Regelverk } from '../franvaroFakta'
 
-export function VeckanKort({ lage, participantName, onOppnaPlan, onForsokIgen }: {
+export function VeckanKort({ lage, participantName, regelverk = null, onOppnaPlan, onForsokIgen }: {
   lage: PlanLage
   participantName: string
+  /** KSL21: planens regelverk — leverantörens frånvaro står som fakta. */
+  regelverk?: Regelverk | null
   /** Öppnar Aktivitet-fliken. */
   onOppnaPlan: () => void
   onForsokIgen: () => void
@@ -50,7 +53,13 @@ export function VeckanKort({ lage, participantName, onOppnaPlan, onForsokIgen }:
     const attMarkera = sessions.filter((s) => s.date >= mandag && s.date <= idag && passStatus(s, idag) === 'vantar').length
     innehall = (
       <div className="grid gap-4">
-        <Veckoremsa storlek="stor" rubrik={`Veckan för ${participantName}`} dagar={veckansDagar(sessions, idag, idag)} idag={idag} />
+        <Veckoremsa
+          storlek="stor"
+          rubrik={`Veckan för ${participantName}`}
+          dagar={veckansDagar(sessions, idag, idag)}
+          idag={idag}
+          statusOrd={regelverk === 'leverantor' ? STATUS_ORD_LEVERANTOR : undefined}
+        />
         <div className="flex flex-wrap items-center justify-between gap-3">
           <p className="m-0 text-[0.9375rem] text-[var(--j-blak-2)]">
             {ampel === 'inga_pass'
@@ -58,7 +67,7 @@ export function VeckanKort({ lage, participantName, onOppnaPlan, onForsokIgen }:
               : <><span className="font-semibold text-[var(--j-blak)]">{formatTimmar(saldo.narvaroTimmar)} av {formatTimmar(anvisatMal)}</span> anvisad aktivitet bekräftad</>}
             {attMarkera > 0 && <> · {attMarkera === 1 ? 'ett pass väntar på din markering' : `${attMarkera} pass väntar på din markering`}</>}
           </p>
-          {ampel !== 'inga_pass' && <StatusChip status={AMPEL_TEXT[ampel].status}>{AMPEL_TEXT[ampel].text}</StatusChip>}
+          {ampel !== 'inga_pass' && <StatusChip status={ampelText(ampel, regelverk === 'leverantor').status}>{ampelText(ampel, regelverk === 'leverantor').text}</StatusChip>}
         </div>
         <div>
           <Button ton="kvarter" variant="secondary" size="sm" onClick={onOppnaPlan}>Öppna planen och markera närvaro</Button>

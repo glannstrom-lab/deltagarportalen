@@ -64,6 +64,16 @@ const NARVARO: Record<string, string> = {
   sick: 'Sjuk',
 }
 
+/** KSL21: hos en Rusta och matcha-leverantör är frånvaron fakta, inte giltig/ogiltig. */
+const NARVARO_LEVERANTOR: Record<string, string> = {
+  ...NARVARO,
+  absent_valid: 'Frånvarande, anmäld i förväg',
+  absent_invalid: 'Frånvarande, inte anmäld',
+}
+
+/** Planens organisation → regelverk. Utan: kommunens ord, som förut. */
+export type RegelverkForOrg = (orgId: string | null | undefined) => 'kommun' | 'leverantor' | null
+
 function kortText(s: string, max = 90): string {
   const t = s.replace(/\s+/g, ' ').trim()
   return t.length > max ? `${t.slice(0, max - 1)}…` : t
@@ -125,9 +135,10 @@ async function platsHandelser(participantId: string): Promise<TidslinjeHandelse[
   }))
 }
 
-function passTillHandelse(s: ActivitySession): TidslinjeHandelse | null {
+function passTillHandelse(s: ActivitySession, leverantor = false): TidslinjeHandelse | null {
   // Bara pass som fått ett utfall är historia; kommande pass hör hemma i planen.
-  const utfall = s.attendance ? NARVARO[s.attendance as string] ?? s.attendance : s.self_checkin_at ? 'Incheckad' : null
+  const ord = leverantor ? NARVARO_LEVERANTOR : NARVARO
+  const utfall = s.attendance ? ord[s.attendance as string] ?? s.attendance : s.self_checkin_at ? 'Incheckad' : null
   if (!utfall) return null
   // `date` + `start_time` är lokal (svensk) tid utan tidszon; övriga källor är
   // timestamptz i UTC ("…+00:00"). Tidigare jämfördes de som strängar, så ett
@@ -145,13 +156,16 @@ function passTillHandelse(s: ActivitySession): TidslinjeHandelse | null {
   }
 }
 
-async function passHandelser(participantId: string): Promise<TidslinjeHandelse[]> {
+async function passHandelser(participantId: string, regelverkFor?: RegelverkForOrg): Promise<TidslinjeHandelse[]> {
   const planer = await aktivitetsplanApi.listForParticipant(participantId)
-  const alla = await Promise.all(planer.map((p) => aktivitetsplanApi.listAllSessions(p.id)))
-  return alla.flat().map(passTillHandelse).filter((h): h is TidslinjeHandelse => h !== null)
+  const alla = await Promise.all(planer.map(async (p) => {
+    const leverantor = regelverkFor?.(p.org_id) === 'leverantor'
+    return (await aktivitetsplanApi.listAllSessions(p.id)).map((s) => passTillHandelse(s, leverantor))
+  }))
+  return alla.flat().filter((h): h is TidslinjeHandelse => h !== null)
 }
 
-const KALLOR: Array<[string, (id: string) => Promise<TidslinjeHandelse[]>]> = [
+const KALLOR: Array<[string, (id: string, regelverkFor?: RegelverkForOrg) => Promise<TidslinjeHandelse[]>]> = [
   ['journalen', journalHandelser],
   ['målen', malHandelser],
   ['mötena', motesHandelser],
@@ -159,8 +173,8 @@ const KALLOR: Array<[string, (id: string) => Promise<TidslinjeHandelse[]>]> = [
   ['passen', passHandelser],
 ]
 
-export async function hamtaTidslinje(participantId: string): Promise<TidslinjeResultat> {
-  const utfall = await Promise.allSettled(KALLOR.map(([, fn]) => fn(participantId)))
+export async function hamtaTidslinje(participantId: string, regelverkFor?: RegelverkForOrg): Promise<TidslinjeResultat> {
+  const utfall = await Promise.allSettled(KALLOR.map(([, fn]) => fn(participantId, regelverkFor)))
   const handelser: TidslinjeHandelse[] = []
   const misslyckadeKallor: string[] = []
   utfall.forEach((u, i) => {

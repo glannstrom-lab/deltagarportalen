@@ -83,6 +83,7 @@
       },
       "noteringEtikett": "Vill du skriva något mer? Du måste inte.",
       "bedomning": "Din konsulent bestämmer om skälet är okej. Det är bättre att säga till en gång för mycket.",
+      "bedomningLeverantor": "Din konsulent skriver ner det du berättar. Arbetsförmedlingen bestämmer om skälet är okej. Det är bättre att säga till en gång för mycket.",
       "skicka": "Skicka till min konsulent",
       "avbryt": "Avbryt",
       "valjOrsak": "Välj varför du inte kan komma.",
@@ -133,6 +134,7 @@
     "narvaro": {
       "present": "Du var där",
       "absent_valid": "Du var borta, med giltigt skäl",
+      "absent_validLeverantor": "Du var borta. Du sa till innan.",
       "absent_invalid": "Du var borta",
       "sick_certified": "Sjuk",
       "external": "Annan aktivitet"
@@ -283,7 +285,9 @@
       "dennaVecka": "Den här veckan",
       "veckaNr": "Vecka {{nr}}",
       "tillbakaIdag": "Till den här veckan",
-      "anmald": "du har sagt att du inte kan komma"
+      "anmald": "du har sagt att du inte kan komma",
+      "franvaro": "Du var borta",
+      "franvaroAnmald": "Du var borta. Du sa till innan."
     }
   },
   "minVardagHub": {

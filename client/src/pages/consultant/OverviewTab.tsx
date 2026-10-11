@@ -44,7 +44,7 @@ import { FYSISKT_GRANS_DAGAR, hamtaMotenForKonsulent, type MoteRad } from '@/ser
 import { aktivitetsplanApi, type ActivityPlan, type AttendanceInput } from '@/services/aktivitetApi'
 import { orgApi, type OrgKind } from '@/services/orgApi'
 import { MottagnaUnderlag } from '@/components/consultant/MottagnaUnderlag'
-import { orgTypVisning, regelverk } from '@/components/consultant/orgTypVisning'
+import { orgTypVisning, regelverk, regelverkForPlan } from '@/components/consultant/orgTypVisning'
 import { formatLocalDate } from '@/services/aktivitetSchema'
 import { senasteKontakt } from '@/services/senasteKontakt'
 import {
@@ -154,8 +154,8 @@ export function OverviewTab() {
 
   const attGora = useMemo(() => {
     if (!underlagsDag) return []
-    return attGoraIdag({ deltagare: participants, pass: egnaPass, idag: underlagsDag })
-  }, [egnaPass, participants, underlagsDag])
+    return attGoraIdag({ deltagare: participants, pass: egnaPass, idag: underlagsDag, franvaroSomFakta: arLeverantor })
+  }, [egnaPass, participants, underlagsDag, arLeverantor])
 
   const leverantor = useMemo(() => {
     if (!arLeverantor || !levUnderlag || !underlagsDag) return null
@@ -171,8 +171,8 @@ export function OverviewTab() {
 
   const personer = useMemo(() => {
     if (!underlagsDag) return []
-    return minDagPersoner({ attGora, bradskande, leverantor, moten, deadlines, kontakter, idag: underlagsDag })
-  }, [attGora, bradskande, leverantor, moten, deadlines, kontakter, underlagsDag])
+    return minDagPersoner({ attGora, bradskande, leverantor, moten, deadlines, kontakter, idag: underlagsDag, franvaroSomFakta: arLeverantor })
+  }, [attGora, bradskande, leverantor, moten, deadlines, kontakter, underlagsDag, arLeverantor])
 
   const nu = new Date()
   const markeraNu = useMemo(() => (bradskandeFel ? [] : passAttMarkera(egnaPass, new Date())), [egnaPass, bradskandeFel])
@@ -260,6 +260,8 @@ export function OverviewTab() {
         pass: (passUtfall as PromiseFulfilledResult<AttGoraPass[]>).value,
         idag: idagNu,
         medMotesregel,
+        // KSL21: leverantörens frånvaro är fakta (inte anmäld), inte "ogiltig".
+        franvaroSomFakta: regelverk(medlemskap.map((m) => m.organization?.kind).filter((k): k is OrgKind => !!k)) === 'leverantor',
       }))
       setBradskandeFel(underlagFel)
       setAttGoraPass(passUtfall.status === 'fulfilled' ? (passUtfall.value as AttGoraPass[]) : [])
@@ -385,7 +387,13 @@ export function OverviewTab() {
         onSeAlla={() => navigate('/consultant/participants')}
         veckan={veckan}
         avtal={leverantor ? leverantorSammanfattning(leverantor) : null}
-        pass={dagensPassAntal > 0 ? <DagensPass namnFor={namnForDeltagare} /> : null}
+        pass={dagensPassAntal > 0 ? (
+          <DagensPass
+            namnFor={namnForDeltagare}
+            // KSL21: planens organisation avgör om frånvaron är giltig/ogiltig (kommun) eller fakta (leverantör).
+            regelverkFor={medlemskapQ.isSuccess ? (orgId) => regelverkForPlan(medlemskapQ.data, orgId) : undefined}
+          />
+        ) : null}
         meny={[
           { etikett: 'Bjud in deltagare', ikon: 'deltagare', onClick: () => setShowInviteDialog(true) },
           { etikett: 'Skicka gruppmeddelande', ikon: 'meddelande', onClick: () => setShowMessageDialog(true) },
@@ -420,6 +428,7 @@ export function OverviewTab() {
             nu={nu}
             namnFor={namnForDeltagare}
             onMarkera={markeraPass}
+            regelverk={medlemskapQ.isSuccess ? (arLeverantor ? 'leverantor' : 'kommun') : null}
             onSparaAnteckning={sparaPassAnteckning}
             onBokaMote={oppnaMote}
             // F12: ett samtal utanför portalen loggas med ett klick; listan räknas om ur färsk data.

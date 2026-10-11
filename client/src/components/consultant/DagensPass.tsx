@@ -20,11 +20,12 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { KvarterIkon } from '@/components/ui/icons/kvarter/KvarterIkon'
-import { KVARTER_FOKUS, NARVARO_STANDARDVAL, type NarvaroAlternativ } from '@/components/ui/kvarterStatus'
+import { KVARTER_FOKUS, type NarvaroAlternativ } from '@/components/ui/kvarterStatus'
 import { hamtaDagensPass, type PassIdag } from '@/lib/dagensPass'
 import { dagensPoster, gruppLageText, gruppLank, narvaroForslag } from '@/lib/gruppnarvaro'
 import { NarvaroRad } from './NarvaroRad'
 import { useNarvaroMarkering } from './useNarvaroMarkering'
+import type { Regelverk } from './franvaroFakta'
 import { cn } from '@/lib/utils'
 
 type Lage = 'laddar' | 'fel' | 'klart'
@@ -32,13 +33,19 @@ type Lage = 'laddar' | 'fel' | 'klart'
 interface Props {
   /** Namn per deltagar-id — kommer ur Översiktens redan hämtade deltagarlista. */
   namnFor: (participantId: string) => string
-  /** Kundtypens närvaroval. Standard: Här / Giltig / Ogiltig / Sjuk. */
+  /** Skriver över närvarovalen (tester). Standard: planens regelverk avgör (KSL21). */
   alternativ?: readonly NarvaroAlternativ[]
+  /**
+   * KSL21: regelverket för passets plan (planens organisation). Kommun: Här /
+   * Giltig / Ogiltig / Sjuk. Leverantör: Närvarande / Frånvarande / Sjuk + anmäld
+   * i förväg. Utan: kommunens val, som förut.
+   */
+  regelverkFor?: (planOrgId: string | null | undefined) => Regelverk | null
   /** Rubriknivå i Min dag. Standard 4. */
   rubrikNiva?: 2 | 3 | 4
 }
 
-export function DagensPass({ namnFor, alternativ = NARVARO_STANDARDVAL, rubrikNiva = 4 }: Props) {
+export function DagensPass({ namnFor, alternativ, regelverkFor, rubrikNiva = 4 }: Props) {
   const navigate = useNavigate()
   const [pass, setPass] = useState<PassIdag[]>([])
   // Läget härleds ur vilket försök som senast blev klart — "Försök igen" ökar
@@ -65,9 +72,11 @@ export function DagensPass({ namnFor, alternativ = NARVARO_STANDARDVAL, rubrikNi
   const lage: Lage = !klar || klar.forsok !== forsok ? 'laddar' : klar.fel ? 'fel' : 'klart'
   const ladda = () => setForsok((n) => n + 1)
 
+  const regelverkForPass = regelverkFor ? (p: PassIdag) => regelverkFor(p.plan_org_id) : undefined
   const markering = useNarvaroMarkering({
     namnFor,
     onSparat: (id, attendance) => setPass((prev) => prev.map((x) => (x.id === id ? { ...x, attendance } : x))),
+    regelverkFor: regelverkForPass,
   })
 
   const poster = useMemo(() => dagensPoster(pass), [pass])
@@ -121,6 +130,8 @@ export function DagensPass({ namnFor, alternativ = NARVARO_STANDARDVAL, rubrikNi
                   pass={p}
                   namn={namnFor(p.participant_id)}
                   alternativ={alternativ}
+                  regelverk={regelverkForPass?.(p) ?? null}
+                  onAnmald={(anmald) => void markering.andraAnmald(p, anmald)}
                   sparar={markering.sparar.has(p.id)}
                   markeradHar={markering.markeradeHar.has(p.id)}
                   onValj={(v) => markering.valj(p, v)}
@@ -133,7 +144,7 @@ export function DagensPass({ namnFor, alternativ = NARVARO_STANDARDVAL, rubrikNi
             }
             const g = post.grupp
             const klar = g.pass.every((p) => p.attendance !== null)
-            const forslag = g.pass.filter((p) => narvaroForslag(p)).length
+            const forslag = g.pass.filter((p) => narvaroForslag(p, regelverkForPass?.(p) ?? null)).length
             return (
               <li
                 key={g.nyckel}

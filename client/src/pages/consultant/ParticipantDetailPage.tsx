@@ -43,7 +43,7 @@ import { useAktivitetsplan } from '@/components/consultant/aktivitetsplan/useAkt
 import { VeckanKort } from '@/components/consultant/aktivitetsplan/VeckanKort'
 import { SpaltYta } from '@/components/consultant/SpaltYta'
 import { Tidslinje } from '@/components/consultant/Tidslinje'
-import { useRegelverk } from '@/components/consultant/useRegelverk'
+import { useRegelverk, useRegelverkForPlan } from '@/components/consultant/useRegelverk'
 import { Motesklocka } from '@/components/consultant/Motesklocka'
 import { motesklocka } from '@/components/consultant/motesklockaRegel'
 import { useOrgAiSparr } from '@/hooks/useOrgAiSparr'
@@ -255,6 +255,8 @@ export function ParticipantDetailPage() {
   )
   // Kundtypen när det inte finns någon plan att läsa den ur (null medan medlemskapen laddar).
   const kundRegelverk = useRegelverk()
+  // KSL21: tidslinjens frånvaroord följer planens organisation.
+  const regelverkForPlan = useRegelverkForPlan()
 
   // Hämtningarna skriver tillstånd först efter await — laddar-läget sätts av
   // den som begär en ny omgång (samma mönster som AktivitetsplanSektion).
@@ -925,6 +927,7 @@ export function ParticipantDetailPage() {
             <VeckanKort
               lage={planLage}
               participantName={participant.first_name || fullNamn}
+              regelverk={planStyrning.regelverk}
               onOppnaPlan={() => setActiveTab('aktivitet')}
               onForsokIgen={planStyrning.ladda}
             />
@@ -1112,7 +1115,7 @@ export function ParticipantDetailPage() {
       )}
 
       {activeTab === 'timeline' && participantId && (
-        <Tidslinje participantId={participantId} onGaTill={(sektion) => setActiveTab(sektion)} />
+        <Tidslinje participantId={participantId} onGaTill={(sektion) => setActiveTab(sektion)} regelverkFor={regelverkForPlan} />
       )}
       </div>
 

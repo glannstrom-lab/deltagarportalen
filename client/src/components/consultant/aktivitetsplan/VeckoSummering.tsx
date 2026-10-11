@@ -14,7 +14,7 @@
  */
 import { StatusChip } from '@/components/ui/StatusChip'
 import { formatLocalDate, anvisatVeckomal, veckoampel, veckomalMotSchema, veckosaldo } from '@/services/aktivitetSchema'
-import { AMPEL_TEXT } from './veckodagar'
+import { AMPEL_TEXT, ampelText } from './veckodagar'
 import { egetJobbsokSaldo } from '@/services/egenrapport'
 import type { ActivityPlan, ActivitySession } from '@/services/aktivitetApi'
 import { JobbsokTidKort } from '../JobbsokTidKort'
@@ -48,7 +48,7 @@ export function VeckoSummering({ plan, sessions, vecka, arLeverantor, participan
             : <><span className="font-semibold">{formatTimmar(saldo.narvaroTimmar)} av {formatTimmar(anvisatMal)}</span> anvisad aktivitet den här veckan</>}
         </h4>
         {ampel !== 'inga_pass' && (
-          <span role="status"><StatusChip status={AMPEL_TEXT[ampel].status}>{AMPEL_TEXT[ampel].text}</StatusChip></span>
+          <span role="status"><StatusChip status={ampelText(ampel, arLeverantor).status}>{ampelText(ampel, arLeverantor).text}</StatusChip></span>
         )}
       </div>
 
@@ -68,7 +68,9 @@ export function VeckoSummering({ plan, sessions, vecka, arLeverantor, participan
           : null}
         {saldo.antalOgiltigFranvaro > 0 && (
           <span className="font-semibold text-[var(--s-ogiltig-text)]">
-            {saldo.antalOgiltigFranvaro === 1 ? '1 pass ogiltig frånvaro' : `${saldo.antalOgiltigFranvaro} pass ogiltig frånvaro`}
+            {arLeverantor
+              ? (saldo.antalOgiltigFranvaro === 1 ? '1 pass frånvarande utan anmälan' : `${saldo.antalOgiltigFranvaro} pass frånvarande utan anmälan`)
+              : (saldo.antalOgiltigFranvaro === 1 ? '1 pass ogiltig frånvaro' : `${saldo.antalOgiltigFranvaro} pass ogiltig frånvaro`)}
           </span>
         )}
       </p>
@@ -99,7 +101,7 @@ export function VeckoSummering({ plan, sessions, vecka, arLeverantor, participan
               varde={ampel === 'inga_pass' && saldo.jobbsokTimmar === 0 ? '—' : formatTimmar(egetSaldo.kvitteradeTimmar)}
             />
             <Saldotal
-              etikett="Ogiltig frånvaro"
+              etikett={arLeverantor ? 'Frånvaro utan anmälan' : 'Ogiltig frånvaro'}
               varde={ampel === 'inga_pass' ? '—' : saldo.antalOgiltigFranvaro === 0 ? 'Ingen' : `${saldo.antalOgiltigFranvaro} pass`}
               varning={saldo.antalOgiltigFranvaro > 0}
             />
@@ -110,7 +112,7 @@ export function VeckoSummering({ plan, sessions, vecka, arLeverantor, participan
           </p>
           <p className="m-0">
             {arLeverantor
-              ? 'Ogiltig frånvaro är underlag för avvikelserapporteringen till Arbetsförmedlingen enligt avtalet.'
+              ? 'Frånvaro rapporteras som avvikelse till Arbetsförmedlingen enligt avtalet, med orsak och om den var anmäld i förväg. Det är Arbetsförmedlingen som avgör om skälet godtas.'
               : 'Beslut om nedsättning fattas av socialnämnden, inte här. Ogiltig frånvaro är underlag till handläggaren.'}
             {saldo.antalOmarkerade > 0 && <span> {omarkeradeText(saldo.antalOmarkerade)}</span>}
           </p>

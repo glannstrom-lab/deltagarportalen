@@ -5,6 +5,16 @@ on:
     branches: [main, develop]
   pull_request:
     branches: [main, develop]
+  # KSL25 (beslut Mikael 2026-10-11): repot blir privat, och gratiskvoten är 2 000
+  # Actions-minuter/månad. Mätt 2026-10-11: 115 pushar på 30 dagar × ~37 debiterade
+  # minuter (CI 32 + Deploy 5) ≈ 4 250. Per push körs därför bara lint, typer och
+  # tester (~8 min); bygget, båda e2e-sviterna, Lighthouse, coverage och
+  # säkerhetsskanningen körs mån/ons/fre kl 02:30 UTC och kan startas för hand.
+  # Deploy-workflowen bygger och röktestar själv vid varje push.
+  # Före en riskabel push: kör den inloggade e2e-sviten lokalt (se CLAUDE.md).
+  schedule:
+    - cron: '30 2 * * 1,3,5'
+  workflow_dispatch:
 
 # D8 (2026-07-23): avbryt föregående körning vid snabba på-varandra-följande
 # pushar till samma branch/PR — sparar CI-minuter och kortar kön.
@@ -119,6 +129,7 @@ jobs:
 
   coverage:
     name: Coverage (informerande — inga nedströmsberoenden)
+    if: github.event_name != 'push'
     runs-on: ubuntu-latest
 
     steps:
@@ -173,6 +184,7 @@ jobs:
 
   build:
     name: Build
+    if: github.event_name != 'push'
     runs-on: ubuntu-latest
     needs: [lint-and-typecheck, test]
 
@@ -207,6 +219,7 @@ jobs:
 
   lighthouse:
     name: Lighthouse CI
+    if: github.event_name != 'push'
     runs-on: ubuntu-latest
     needs: build
 
@@ -292,6 +305,7 @@ jobs:
 
   e2e-smoke:
     name: E2E Smoke (public pages)
+    if: github.event_name != 'push'
     runs-on: ubuntu-latest
     needs: build
 
@@ -338,6 +352,7 @@ jobs:
   # TEST_CONSULTANT_EMAIL/TEST_CONSULTANT_PASSWORD) läggs in i repot.
   e2e-authenticated:
     name: E2E Authenticated (golden path)
+    if: github.event_name != 'push'
     runs-on: ubuntu-latest
     needs: build
 
@@ -386,6 +401,7 @@ jobs:
 
   security:
     name: Security Scan
+    if: github.event_name != 'push'
     runs-on: ubuntu-latest
 
     steps:

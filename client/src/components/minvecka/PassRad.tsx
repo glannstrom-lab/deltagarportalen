@@ -22,6 +22,7 @@ import { ForklaraFranvaro } from './ForklaraFranvaro'
 import { FragaOmPasset } from './FragaOmPasset'
 import { visaTid } from './forvantasRegler'
 import { TYP_NYCKEL } from './passTyp'
+import type { PlanensRegelverk } from './planensRegelverk'
 
 const NARVARO_NYCKEL: Record<Attendance, string> = {
   present: 'minVecka.narvaro.present',
@@ -29,6 +30,15 @@ const NARVARO_NYCKEL: Record<Attendance, string> = {
   absent_invalid: 'minVecka.narvaro.absent_invalid',
   sick_certified: 'minVecka.narvaro.sick_certified',
   external: 'minVecka.narvaro.external',
+}
+
+/**
+ * KSL21: hos en Rusta och matcha-leverantör bedömer konsulenten inte om skälet
+ * är giltigt (det gör Arbetsförmedlingen). Deltagaren ser fakta: anmäld i förväg.
+ */
+const NARVARO_NYCKEL_LEVERANTOR: Record<Attendance, string> = {
+  ...NARVARO_NYCKEL,
+  absent_valid: 'minVecka.narvaro.absent_validLeverantor',
 }
 
 interface Props {
@@ -47,6 +57,8 @@ interface Props {
   onUppdateradeFlera: (pass: ActivitySession[]) => void
   onForklarat: (pass: ActivitySession) => void
   onFragat: (namn: string) => void
+  /** KSL21: planens regelverk — styr frånvarons ord. */
+  regelverk?: PlanensRegelverk | null
 }
 
 export function PassRad({
@@ -64,6 +76,7 @@ export function PassRad({
   onUppdateradeFlera,
   onForklarat,
   onFragat,
+  regelverk = null,
 }: Props) {
   const { t } = useTranslation()
   const status = franNarvarovarde(s.attendance)
@@ -87,7 +100,7 @@ export function PassRad({
         </div>
 
         {s.attendance && status ? (
-          <StatusChip status={status}>{t(NARVARO_NYCKEL[s.attendance])}</StatusChip>
+          <StatusChip status={status}>{t((regelverk === 'leverantor' ? NARVARO_NYCKEL_LEVERANTOR : NARVARO_NYCKEL)[s.attendance])}</StatusChip>
         ) : incheckadKl ? (
           <StatusChip status="narvarande">
             {t('minVecka.incheckad', { defaultValue: 'Incheckad kl {{tid}}', tid: incheckadKl })}
@@ -108,6 +121,7 @@ export function PassRad({
             datumText={datumText}
             onSaved={onUppdaterat}
             onSavedFlera={onUppdateradeFlera}
+            regelverk={regelverk}
           />
         )}
         {/* RD11: en markerad frånvaro kan förklaras i efterhand */}

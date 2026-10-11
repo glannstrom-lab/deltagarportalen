@@ -190,8 +190,13 @@ export function deltagarLage(args: {
   idag: string
   /** Lokal klocka "HH:MM" — avgör om dagens pass har varit. */
   klockan: string
+  /**
+   * KSL21: hos en Rusta och matcha-leverantör är frånvaron fakta (anmäld / inte
+   * anmäld i förväg), aldrig "giltig" eller "ogiltig". Utan: kommunens ord.
+   */
+  franvaroSomFakta?: boolean
 }): DeltagarLage {
-  const { participantId, underlag, idag, klockan } = args
+  const { participantId, underlag, idag, klockan, franvaroSomFakta = false } = args
   const planer = underlag.planer.filter((p) => p.participant_id === participantId)
   const aktiv = planer.find((p) => p.status === 'active') ?? null
   const pausad = !aktiv ? planer.find((p) => p.status === 'paused') ?? null : null
@@ -228,13 +233,22 @@ export function deltagarLage(args: {
   if (ogiltiga.length > 0) {
     const senast = ogiltiga[ogiltiga.length - 1]
     const utanRad = ogiltiga.some((p) => !p.attendance_note?.trim())
-    saker.push({
-      lage: ogiltiga.length === 1
-        ? `Ogiltig frånvaro ${dagSomVarit(senast.date, idag)} (${senast.title})`
-        : `Ogiltig frånvaro på ${ogiltiga.length} pass i veckan`,
-      tillagg: utanRad ? 'Ingen anteckning om varför än' : undefined,
-      status: 'ogiltig',
-    })
+    saker.push(franvaroSomFakta
+      ? {
+          lage: ogiltiga.length === 1
+            ? `Frånvarande utan anmälan ${dagSomVarit(senast.date, idag)} (${senast.title})`
+            : `Frånvarande utan anmälan på ${ogiltiga.length} pass i veckan`,
+          tillagg: utanRad ? 'Ingen orsak antecknad än' : undefined,
+          status: 'ogiltig',
+          statusText: 'Frånvarande, inte anmäld',
+        }
+      : {
+          lage: ogiltiga.length === 1
+            ? `Ogiltig frånvaro ${dagSomVarit(senast.date, idag)} (${senast.title})`
+            : `Ogiltig frånvaro på ${ogiltiga.length} pass i veckan`,
+          tillagg: utanRad ? 'Ingen anteckning om varför än' : undefined,
+          status: 'ogiltig',
+        })
   }
 
   const anmalda = veckans.filter((p) => p.attendance === null && !!p.absence_reason)
@@ -278,7 +292,10 @@ export function deltagarLage(args: {
 
   const giltiga = varit.filter((p) => p.attendance === 'absent_valid')
   if (giltiga.length > 0) {
-    saker.push({ lage: `Giltig frånvaro ${dagSomVarit(giltiga[giltiga.length - 1].date, idag)}`, status: 'giltig' })
+    const dag = dagSomVarit(giltiga[giltiga.length - 1].date, idag)
+    saker.push(franvaroSomFakta
+      ? { lage: `Frånvarande, anmäld i förväg ${dag}`, status: 'giltig', statusText: 'Frånvarande, anmäld i förväg' }
+      : { lage: `Giltig frånvaro ${dag}`, status: 'giltig' })
   }
 
   if (saker.length > 0) {

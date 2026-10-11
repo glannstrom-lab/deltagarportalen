@@ -131,7 +131,7 @@ describe('RR2: kundtypen styr planens fält', () => {
     const { orgApi } = await import('@/services/orgApi')
     vi.mocked(orgApi.myMemberships).mockResolvedValue(medlemskap('leverantor') as never)
     await montera(plan({ org_id: 'org1' }), [])
-    await vi.waitFor(() => expect(screen.getByText(/avvikelserapporteringen till Arbetsförmedlingen/)).toBeInTheDocument())
+    await vi.waitFor(() => expect(screen.getByText(/rapporteras som avvikelse till Arbetsförmedlingen/)).toBeInTheDocument())
     expect(screen.queryByText('Försörjningshinder')).toBeNull()
     expect(screen.queryByText(/socialnämnden/)).toBeNull()
   })

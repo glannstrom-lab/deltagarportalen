@@ -23,7 +23,7 @@ describe('avvikelserader', () => {
   it('tar bara markerad frånvaro i leverantörsledda pass i perioden, i datumordning', () => {
     const rader = avvikelserader(sessions, '2026-09-01', '2026-09-30')
     expect(rader.map((r) => r.sessionId)).toEqual(['b', 'e', 'a'])
-    expect(rader.map((r) => r.typ)).toEqual(['Sjuk, intyg saknas', 'Giltig frånvaro', 'Ogiltig frånvaro'])
+    expect(rader.map((r) => r.typ)).toEqual(['Sjuk, intyg saknas', 'Frånvarande, anmäld i förväg', 'Frånvarande, inte anmäld i förväg'])
   })
 
   it('orsaken samlar anteckning, anmälan och förklaring — och är null när inget finns', () => {
@@ -42,7 +42,7 @@ describe('avvikelserader', () => {
 
   it('texten att kopiera säger "ingen antecknad" i stället för att hitta på en orsak', () => {
     const text = avvikelserSomText(avvikelserader([pass({ id: 'g', date: '2026-09-11', attendance: 'absent_invalid' })], '2026-09-01', '2026-09-30'), true)
-    expect(text).toBe('2026-09-11 · Ogiltig frånvaro · Verkstad · Orsak: ingen antecknad · AF underrättad: nej')
+    expect(text).toBe('2026-09-11 · Frånvarande, inte anmäld i förväg · Verkstad · Orsak: ingen antecknad · AF underrättad: nej')
     expect(avvikelserSomText([], true)).toBe('Inga avvikelser registrerade i perioden.')
     expect(avvikelserSomText(avvikelserader(sessions, '2026-09-10', '2026-09-10'), false)).not.toContain('AF underrättad')
   })

@@ -39,6 +39,7 @@ import { cn } from '@/lib/utils'
 import { BulkActionsDialog } from '@/components/consultant/BulkActionsDialog'
 import { InviteParticipantDialog } from '@/components/consultant/InviteParticipantDialog'
 import { useOrgTypVisning } from '@/components/consultant/useRegelverk'
+import { STATUS_ORD_LEVERANTOR } from '@/components/consultant/franvaroFakta'
 import { getTagLabel } from '@/components/consultant/participantTags'
 import { senasteKontakt } from '@/services/senasteKontakt'
 import { formatLocalDate } from '@/services/aktivitetSchema'
@@ -104,6 +105,9 @@ export function ParticipantsTab() {
   // Slipningen 2026-10-11: möteskadensen är Rusta och matcha-avtalets regel —
   // chipet visas inte för en konsulent som bara arbetar i kommun.
   const kundtyp = useOrgTypVisning()
+  // KSL21: samma regel som regelverk() — leverantör när ingen organisation är kommun.
+  // Då är frånvaron fakta (anmäld / inte anmäld), aldrig giltig/ogiltig.
+  const franvaroSomFakta = !!kundtyp && kundtyp.visaAvtalskrav && !kundtyp.visaIvoUnderlag
   // "Nu" fångas en gång per montering (react-hooks/purity). Listan hämtas också
   // vid montering, så tid och data är samma ögonblicksbild.
   const [nu] = useState(() => Date.now())
@@ -202,10 +206,10 @@ export function ParticipantsTab() {
     const karta = new Map<string, DeltagarLage>()
     if (!underlag) return karta
     for (const p of participants) {
-      karta.set(p.participant_id, deltagarLage({ participantId: p.participant_id, underlag, idag, klockan }))
+      karta.set(p.participant_id, deltagarLage({ participantId: p.participant_id, underlag, idag, klockan, franvaroSomFakta }))
     }
     return karta
-  }, [participants, underlag, idag, klockan])
+  }, [participants, underlag, idag, klockan, franvaroSomFakta])
   // En konsulent som inte använder aktivitetsplaner (t.ex. bara Rusta och matcha)
   // ska inte få "Ingen aktivitetsplan" på varje rad.
   const anvanderPlaner = !!underlag && underlag.planer.length > 0
@@ -480,7 +484,7 @@ export function ParticipantsTab() {
             if (lage?.dagar && visaVecka) {
               mitten.push(
                 <span key="vecka" className="grid gap-1">
-                  <Veckoremsa dagar={lage.dagar} rubrik={`${namn}s vecka`} idag={idag} />
+                  <Veckoremsa dagar={lage.dagar} rubrik={`${namn}s vecka`} idag={idag} statusOrd={franvaroSomFakta ? STATUS_ORD_LEVERANTOR : undefined} />
                 </span>,
               )
             }
