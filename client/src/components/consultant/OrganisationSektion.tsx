@@ -271,7 +271,7 @@ function AiBrytare({ organisation, onAndrad }: { organisation: Organization; onA
       title: pa ? `Stäng av AI för ${organisation.name}?` : `Slå på AI för ${organisation.name}?`,
       message: pa
         ? 'Alla deltagare som är kopplade till organisationens konsulenter nekas AI-funktionerna (CV-hjälp, personligt brev, intervjuträning, AI-teamet, lönekompassen med flera). De ser beskedet "AI-funktionerna är avstängda av din organisation". Deras egna texter skickas inte längre till någon modell. Du kan slå på igen när som helst.'
-        : 'Deltagarna får använda AI-funktionerna igen, enligt sina egna inställningar. Text de skriver i AI-verktygen behandlas hos OpenRouter i USA — se integritetspolicyn.',
+        : 'Deltagarna får använda AI-funktionerna igen, enligt sina egna inställningar. Text de skriver i AI-verktygen skickas via OpenRouter (USA), i första hand till Amazon Bedrock i Irland — se integritetspolicyn.',
       confirmText: pa ? 'Stäng av AI' : 'Slå på AI',
       cancelText: 'Avbryt',
     })

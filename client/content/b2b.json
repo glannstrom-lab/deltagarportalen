@@ -54,8 +54,8 @@
         "klart": [
           "Databas, inloggning och lagrade filer ligger hos Supabase i Irland (EU).",
           "Serverfunktionerna körs hos Vercel i Frankfurt (EU).",
-          "AI-funktionerna kräver ett eget samtycke, funktion för funktion, innan något skickas — och går att stänga av helt.",
-          "Använder en deltagare en AI-funktion behandlas den texten hos OpenRouter i USA."
+          "AI-funktionerna kräver ett eget samtycke, funktion för funktion, innan något skickas — och går att stänga av helt. För en ny organisation är de avstängda tills ni själva slår på dem.",
+          "Använder en deltagare en AI-funktion skickas texten via OpenRouter (USA) till i första hand Amazon Bedrock i Irland (EU). Är den inte tillgänglig går anropet till en annan leverantör som inte får spara eller träna på texten."
         ],
         "pagar": [
           "För organisationskonton (kommuner och leverantörer) är webbsökningen via Perplexity avstängd sedan 2026-09-12 — era deltagares frågor går bara till OpenRouters basmodell utan sökning. Fria konton kan fortfarande använda sökmodellen, vilket står i integritetspolicyn.",
@@ -99,7 +99,7 @@
         ],
         [
           "Vem är personuppgiftsansvarig när en kommun använder portalen?",
-          "Kommunen. Jobin är personuppgiftsbiträde enligt ett biträdesavtal som tecknas innan första deltagaren läggs in, med underbiträdena listade (Supabase i Irland, Vercel i Frankfurt, OpenRouter i USA för AI-funktionerna, Sentry, Resend). AI-funktionerna kan stängas av för hela organisationen."
+          "Kommunen. Jobin är personuppgiftsbiträde enligt ett biträdesavtal som tecknas innan första deltagaren läggs in, med underbiträdena listade (Supabase i Irland, Vercel i Frankfurt, OpenRouter i USA som förmedlar AI-anropen, i första hand till Amazon Bedrock i Irland, Sentry, Resend). AI-funktionerna kan stängas av för hela organisationen."
         ],
         [
           "Vem driver Jobin?",
@@ -218,8 +218,8 @@
         "klart": [
           "Databas, inloggning och lagrade filer ligger hos Supabase i Irland (EU).",
           "Serverfunktionerna körs hos Vercel i Frankfurt (EU).",
-          "AI-funktionerna kräver ett eget samtycke, funktion för funktion, innan något skickas — och går att stänga av helt.",
-          "Använder en deltagare en AI-funktion behandlas den texten hos OpenRouter i USA."
+          "AI-funktionerna kräver ett eget samtycke, funktion för funktion, innan något skickas — och går att stänga av helt. För en ny organisation är de avstängda tills ni själva slår på dem.",
+          "Använder en deltagare en AI-funktion skickas texten via OpenRouter (USA) till i första hand Amazon Bedrock i Irland (EU). Är den inte tillgänglig går anropet till en annan leverantör som inte får spara eller träna på texten."
         ],
         "pagar": [
           "För organisationskonton (kommuner och leverantörer) är webbsökningen via Perplexity avstängd sedan 2026-09-12 — era deltagares frågor går bara till OpenRouters basmodell utan sökning. Fria konton kan fortfarande använda sökmodellen, vilket står i integritetspolicyn.",
