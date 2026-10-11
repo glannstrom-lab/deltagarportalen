@@ -83,8 +83,11 @@ const RLS_UNDANTAG = {}
  *            som konsulent i prod); användar-id:na i argumenten avgör bara VAD, aldrig VEM.
  *   27 → 26  2026-09-29, RL1: check_rate_limit revokerad från anon OCH authenticated —
  *            bara service_role når den; alla anropare använder service-nyckeln.
+ *   26 → 27  2026-10-11, kopplingsförfrågan (Mikaels ja): `besvara_kopplingsforfragan(id, ja, text)` —
+ *            deltagaren svarar på en konsulents förfrågan. Raden måste ha participant_id = auth.uid()
+ *            (annars P0002, prövat som annan deltagare); ett ja skriver koppling + samtycke i en transaktion.
  */
-const AUTH_TAK = 26
+const AUTH_TAK = 27
 
 const snapshot = JSON.parse(fs.readFileSync(SNAPSHOT, 'utf8'))
 const definerFunktioner = snapshot.functions.filter((f) => f.definer)

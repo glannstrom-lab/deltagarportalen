@@ -9,6 +9,8 @@
  *               sekundär "Jag kan inte komma" om passet inte har börjat.
  *   nastaPass → ett lugnt kort "Nästa pass" — ingen primärknapp, för det
  *               finns inget hon behöver göra i dag.
+ *   meddelande → NastaSteg: "Du har ett meddelande från {{namn}}", primärknapp
+ *               "Läs meddelandet" till Min konsulent (där det markeras läst).
  *   mote      → "Nästa möte" med konsulenten.
  *   inget     → en mening, och vägen till konsulenten.
  *
@@ -17,7 +19,7 @@
  * markerar närvaron.
  */
 import { useTranslation } from 'react-i18next'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { NastaSteg } from '@/components/ui/NastaSteg'
 import { KvarterIkon } from '@/components/ui/icons/kvarter/KvarterIkon'
 import type { KvarterNamn } from '@/components/ui/icons/kvarter/ritningar'
@@ -44,6 +46,20 @@ function motesIkon(typ: string | null): KvarterNamn {
 
 export function NastaPass({ steg, konsulentNamn, dagText, pagar, onCheckin, onKanInte }: Props) {
   const { t } = useTranslation()
+  const navigate = useNavigate()
+
+  if (steg.typ === 'meddelande') {
+    return (
+      <NastaSteg
+        etikett={t('minVecka.nasta.meddelandeEtikett', 'Nytt meddelande')}
+        rubrik={konsulentNamn
+          ? t('minVecka.nasta.meddelandeFran', { count: steg.antal, namn: konsulentNamn, defaultValue: 'Du har ett meddelande från {{namn}}' })
+          : t('minVecka.nasta.meddelande', { count: steg.antal, defaultValue: 'Du har ett meddelande från din konsulent' })}
+        text={t('minVecka.nasta.meddelandeText', 'Läs det på Min konsulent. Du kan svara där också.')}
+        handling={{ etikett: t('minVecka.nasta.meddelandeLas', 'Läs meddelandet'), onClick: () => navigate('/my-consultant') }}
+      />
+    )
+  }
 
   if (steg.typ === 'passIdag') {
     const p = steg.pass

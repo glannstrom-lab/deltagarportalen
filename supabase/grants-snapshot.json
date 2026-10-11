@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-29T21:13:27.009Z",
+  "generatedAt": "2026-10-11T15:57:56.887Z",
   "functions": [
     {
       "name": "activity_plan_handovers_guard",
@@ -69,6 +69,13 @@
       "signature": "auto_generate_recommendations()",
       "definer": false,
       "anon": true,
+      "authenticated": true
+    },
+    {
+      "name": "besvara_kopplingsforfragan",
+      "signature": "besvara_kopplingsforfragan(uuid,boolean,text)",
+      "definer": true,
+      "anon": false,
       "authenticated": true
     },
     {
@@ -159,6 +166,13 @@
       "name": "consultant_journal_historik",
       "signature": "consultant_journal_historik()",
       "definer": true,
+      "anon": false,
+      "authenticated": false
+    },
+    {
+      "name": "consultant_messages_lasfalt",
+      "signature": "consultant_messages_lasfalt()",
+      "definer": false,
       "anon": false,
       "authenticated": false
     },
@@ -466,6 +480,13 @@
     {
       "name": "invitations_kollega_guard",
       "signature": "invitations_kollega_guard()",
+      "definer": true,
+      "anon": false,
+      "authenticated": false
+    },
+    {
+      "name": "invitations_kopplingsforfragan",
+      "signature": "invitations_kopplingsforfragan()",
       "definer": true,
       "anon": false,
       "authenticated": false

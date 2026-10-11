@@ -7,6 +7,7 @@ import { supabase } from '@/lib/supabase'
 import { uppfoljningJournaltext, utfallKolumner, type UppfoljningInput } from './placeringUtfall'
 
 import { anvandareFranSession } from '@/lib/anvandareFranSession'
+import type { DeltagarStatus } from '@/components/consultant/deltagarStatus'
 // Types
 export interface Message {
   id: string
@@ -544,6 +545,28 @@ class ConsultantService {
   }
 
   /**
+   * Beslut 2026-10-11: konsulentens senaste meddelande TILL deltagaren, med läsfälten
+   * (deltagaren markerar läst på Min konsulent). `select('*')`: `read_at` finns först
+   * efter 20261011b_meddelanden_last.sql. `null` = inget skickat. Kastar vid fel.
+   */
+  async getMittSenasteTill(participantId: string): Promise<{ created_at: string; is_read: boolean | null; read_at?: string | null } | null> {
+    const { data: { user } } = await anvandareFranSession()
+    if (!user) throw new Error('Not authenticated')
+
+    const { data, error } = await supabase
+      .from('consultant_messages')
+      .select('*')
+      .eq('sender_id', user.id)
+      .eq('receiver_id', participantId)
+      .order('created_at', { ascending: false })
+      .limit(1)
+
+    if (error) throw error
+    const rad = data?.[0] as { created_at: string; is_read: boolean | null; read_at?: string | null } | undefined
+    return rad ? { created_at: rad.created_at, is_read: rad.is_read, read_at: rad.read_at ?? null } : null
+  }
+
+  /**
    * RK14: tidpunkten för senaste meddelandet mellan den inloggade konsulenten
    * och deltagaren, åt något håll. `null` = inga meddelanden. Kastar vid fel.
    */
@@ -769,7 +792,7 @@ class ConsultantService {
    */
   async updateParticipantStatus(
     participantId: string,
-    status: 'ACTIVE' | 'INACTIVE' | 'COMPLETED' | 'ON_HOLD'
+    status: DeltagarStatus
   ): Promise<void> {
     const { data: { user } } = await anvandareFranSession()
     if (!user) throw new Error('Not authenticated')

@@ -39,6 +39,7 @@ import { cn } from '@/lib/utils'
 import { BulkActionsDialog } from '@/components/consultant/BulkActionsDialog'
 import { InviteParticipantDialog } from '@/components/consultant/InviteParticipantDialog'
 import { useOrgTypVisning } from '@/components/consultant/useRegelverk'
+import { DELTAGAR_STATUSAR, STATUS_ORD, STATUS_PLURAL, type DeltagarStatus } from '@/components/consultant/deltagarStatus'
 import { STATUS_ORD_LEVERANTOR } from '@/components/consultant/franvaroFakta'
 import { getTagLabel } from '@/components/consultant/participantTags'
 import { senasteKontakt } from '@/services/senasteKontakt'
@@ -53,7 +54,7 @@ interface Participant {
   last_name: string
   phone: string | null
   avatar_url: string | null
-  status: 'ACTIVE' | 'INACTIVE' | 'COMPLETED' | 'ON_HOLD'
+  status: DeltagarStatus
   priority: number
   has_cv: boolean
   ats_score: number | null
@@ -75,26 +76,16 @@ type StatusFilter = 'all' | Participant['status']
 type BulkTyp = 'message' | 'tag' | 'export' | 'status'
 
 const SORTERINGAR: readonly SortField[] = ['lage', 'name', 'last_contact', 'status', 'priority']
-const STATUSAR: readonly Participant['status'][] = ['ACTIVE', 'ON_HOLD', 'INACTIVE', 'COMPLETED']
-
-const STATUS_ORD: Record<Participant['status'], string> = {
-  ACTIVE: 'Aktiv',
-  ON_HOLD: 'Pausad',
-  INACTIVE: 'Inaktiv',
-  COMPLETED: 'Avslutad',
-}
-
-const STATUS_PLURAL: Record<Participant['status'], string> = {
-  ACTIVE: 'Aktiva',
-  ON_HOLD: 'Pausade',
-  INACTIVE: 'Inaktiva',
-  COMPLETED: 'Avslutade',
-}
+// Beslut 2026-10-11: FOLLOW_UP ("I uppföljning") — se components/consultant/deltagarStatus.ts.
+const STATUSAR = DELTAGAR_STATUSAR
 
 /** Det som väntar på konsulenten först. Ingen status = inget väntar. */
 const LAGE_ORDNING: Record<Status, number> = { ogiltig: 0, vantar: 1, sjuk: 2, giltig: 3, planerat: 4, narvarande: 5 }
 
 function behoverKontakt(p: Participant, nu: number): boolean {
+  // I uppföljning efter en placering hålls kontakten vid 3 och 6 månader (placeringen),
+  // inte varje vecka — de ska inte fylla "Behöver kontakt".
+  if (p.status === 'FOLLOW_UP') return false
   return !p.last_contact_at || new Date(p.last_contact_at).getTime() < nu - 7 * DYGN_MS
 }
 
@@ -263,7 +254,10 @@ export function ParticipantsTab() {
           break
       }
       // En riktning per ordning: det som väntar, A–Ö, äldst kontakt, högst prioritet.
-      return c || namnJmf(a, b)
+      // Beslut 2026-10-11: de i uppföljning är en egen grupp sist (utom vid ordning
+      // efter status, som redan grupperar).
+      const grupp = sortField === 'status' ? 0 : Number(a.status === 'FOLLOW_UP') - Number(b.status === 'FOLLOW_UP')
+      return grupp || c || namnJmf(a, b)
     })
     return result
   }, [iStatus, searchQuery, snabbfilter, sortField, lageFor, matcharSnabbfilter])

@@ -43,6 +43,7 @@ import { useConfirmDialog } from '@/components/ui/ConfirmDialog'
 import { fetchCachedConsultantParticipants, useInvalidateConsultantParticipants } from './consultantParticipantsQuery'
 
 import { anvandareFranSession } from '@/lib/anvandareFranSession'
+import { lastText } from '@/components/consultant/meddelandeLast'
 interface Message {
   id: string
   participantId: string
@@ -50,6 +51,8 @@ interface Message {
   participantEmail: string
   content: string
   isRead: boolean
+  /** Serverns lästid (20261011b). Saknas före migrationen — då står bara "Läst". */
+  readAt?: string | null
   createdAt: string
   direction: 'incoming' | 'outgoing'
 }
@@ -259,6 +262,10 @@ function ConversationThread({
                   {new Date(m.createdAt).toLocaleString(
                     locale === 'en' ? 'en-SE' : 'sv-SE',
                     { hour: '2-digit', minute: '2-digit', month: 'short', day: 'numeric' }
+                  )}
+                  {/* Beslut 2026-10-11: deltagaren markerar läst på Min konsulent. */}
+                  {isOwn && lastText({ is_read: m.isRead, read_at: m.readAt }) && (
+                    <span data-testid="meddelande-last"> · {lastText({ is_read: m.isRead, read_at: m.readAt })}</span>
                   )}
                 </p>
               </div>
@@ -709,6 +716,7 @@ export function CommunicationTab() {
               participantEmail: p?.email || '',
               content: m.content,
               isRead: m.is_read,
+              readAt: (m as { read_at?: string | null }).read_at ?? null,
               createdAt: m.created_at,
               direction: isIncoming ? 'incoming' : 'outgoing',
             }

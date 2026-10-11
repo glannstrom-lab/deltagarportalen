@@ -3,11 +3,13 @@
  * (beställning Mikael 2026-10-11: "så att de enkelt kan förstå vad som
  * förväntas av dom och vad de behöver göra i portalen").
  *
- * Ren logik, inga anrop. Bara pass och möten används:
- *   - Olästa meddelanden används INTE. Deltagarens vy markerar aldrig ett
- *     meddelande som läst (consultant_messages.is_read skrivs bara av
- *     konsulentens vy, mätt 2026-10-11) — "du har ett oläst meddelande" hade
- *     stått kvar för alltid.
+ * Ren logik, inga anrop. Pass, möten och olästa meddelanden används:
+ *   - Olästa meddelanden från konsulenten (beslut 2026-10-11). Min konsulent
+ *     markerar numera det som syns som läst, så "du har ett meddelande" går att
+ *     bocka av genom att öppna det. Det kommer efter ett pass i dag (där står hon
+ *     kanske redan på plats) men före allt annat. Antalet räknas bara på de
+ *     senaste 14 dagarna (konsulentMeddelandeApi.antalOlasta) — allt som skickats
+ *     innan markeringen fanns står som oläst i databasen.
  *   - Ett pass hon anmält frånvaro till, eller som redan är markerat, är inte
  *     längre något hon ska göra.
  */
@@ -25,6 +27,8 @@ export type NuSteg =
   | { typ: 'nastaPass'; pass: PassMedAnmalan }
   /** Nästa möte med konsulenten, när det kommer före nästa pass. */
   | { typ: 'mote'; mote: KonsulentMote }
+  /** Ett eller flera olästa meddelanden från konsulenten. */
+  | { typ: 'meddelande'; antal: number }
   /** Inget mer i veckan. */
   | { typ: 'inget' }
 
@@ -39,6 +43,7 @@ export function nuSteg({
   moten,
   idag,
   nuTid,
+  olasta = 0,
 }: {
   pass: readonly PassMedAnmalan[]
   moten: readonly KonsulentMote[]
@@ -46,6 +51,8 @@ export function nuSteg({
   idag: string
   /** `HH:MM` i lokal tid. */
   nuTid: string
+  /** Olästa meddelanden från konsulenten. 0 när det inte är känt (laddar/fel). */
+  olasta?: number
 }): NuSteg {
   const nu = `${idag} ${nuTid}`
   const kvar = pass
@@ -59,11 +66,16 @@ export function nuSteg({
     .filter((m) => moteNar(m) >= nu)
     .sort((a, b) => moteNar(a).localeCompare(moteNar(b)))[0] ?? null
 
-  if (forstaMote && (!forstaPass || moteNar(forstaMote) < passNar(forstaPass))) {
+  const moteForst = !!forstaMote && (!forstaPass || moteNar(forstaMote) < passNar(forstaPass))
+  if (!moteForst && forstaPass && forstaPass.date === idag) {
+    return { typ: 'passIdag', pass: forstaPass }
+  }
+  if (olasta > 0) return { typ: 'meddelande', antal: olasta }
+  if (moteForst && forstaMote) {
     return { typ: 'mote', mote: forstaMote }
   }
   if (forstaPass) {
-    return forstaPass.date === idag ? { typ: 'passIdag', pass: forstaPass } : { typ: 'nastaPass', pass: forstaPass }
+    return { typ: 'nastaPass', pass: forstaPass }
   }
   return { typ: 'inget' }
 }

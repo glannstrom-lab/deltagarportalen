@@ -41,7 +41,7 @@ vi.mock('@/services/narvaroIntygPdf', async () => {
   return { ...riktig, downloadNarvaroIntygPDF: (...a: unknown[]) => downloadNarvaroIntygPDF(...a) }
 })
 vi.mock('@/services/konsulentMeddelandeApi', () => ({
-  konsulentMeddelandeApi: { skickaTillMinKonsulent: vi.fn(), minKonsulent: vi.fn().mockResolvedValue({ id: 'k1', namn: 'Kim' }) },
+  konsulentMeddelandeApi: { skickaTillMinKonsulent: vi.fn(), minKonsulent: vi.fn().mockResolvedValue({ id: 'k1', namn: 'Kim' }), antalOlasta: vi.fn().mockResolvedValue(0) },
 }))
 vi.mock('@/lib/supabase', () => ({
   supabase: { from: () => ({ select: () => ({ limit: async () => ({ data: [{ org_name: 'Testkommun' }], error: null }) }) }) },

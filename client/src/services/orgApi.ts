@@ -73,6 +73,11 @@ export interface CaseloadRow {
   first_name: string | null
   last_name: string | null
   antal_deltagare: number
+  /**
+   * Deltagare i läget Uppföljning (räknas inte mot taket). Finns först efter
+   * 20261011b_uppfoljning_caseload.sql — saknas fältet räknas alla mot taket.
+   */
+  antal_uppfoljning?: number | null
   antal_aktiva_planer: number
   ogiltig_franvaro_30d: number
 }

@@ -20,6 +20,8 @@
 
 import { useState, useEffect } from 'react'
 import { useOrgTypVisning } from './useRegelverk'
+import { foreslaUppfoljning } from './deltagarStatus'
+import { FFU_TAK_HELTID } from './caseloadKapacitet'
 import { FelSammanfattning } from './FelSammanfattning'
 import type { FormularFel } from './gaTillFalt'
 import {
@@ -56,6 +58,8 @@ interface Participant {
   participant_id: string
   first_name: string
   last_name: string
+  /** profiles.status — avgör om Uppföljning ska föreslås. Saknas = okänt. */
+  status?: string | null
   email: string
 }
 
@@ -65,6 +69,8 @@ interface PlacementDialogProps {
   onSuccess: () => void
   /** Hoppar över deltagarsökningen — dialogen öppnas direkt på formuläret. */
   preselectedParticipant?: Participant
+  /** Anropas när konsulenten bekräftat läget Uppföljning (så sidan kan visa det direkt). */
+  onStatusAndrad?: (status: 'FOLLOW_UP') => void
 }
 
 // RR7 (rollspelet 2026-09-27): studier gav också resultatersättning men fanns
@@ -80,8 +86,11 @@ export function PlacementDialog({
   onClose,
   onSuccess,
   preselectedParticipant,
+  onStatusAndrad,
 }: PlacementDialogProps) {
-  const [step, setStep] = useState<'participant' | 'form'>('participant')
+  // 'uppfoljning': placeringen är sparad och dialogen föreslår läget Uppföljning (beslut 2026-10-11).
+  const [step, setStep] = useState<'participant' | 'form' | 'uppfoljning'>('participant')
+  const [uppfoljningFel, setUppfoljningFel] = useState<string | null>(null)
   // Nivå A/B/C är Rusta och matcha-avtalets begrepp — inte kommunens (slipningen 2026-10-11).
   const kundtyp = useOrgTypVisning()
   const [loading, setLoading] = useState(false)
@@ -129,7 +138,7 @@ export function PlacementDialog({
 
       const { data, error } = await supabase
         .from('consultant_dashboard_participants')
-        .select('participant_id, first_name, last_name, email')
+        .select('participant_id, first_name, last_name, email, status')
         .eq('consultant_id', user.id)
 
       if (error) throw error
@@ -156,6 +165,7 @@ export function PlacementDialog({
     setNiva('')
     setSearchQuery('')
     setError(null)
+    setUppfoljningFel(null)
   }
 
   const handleClose = () => {
@@ -205,6 +215,12 @@ export function PlacementDialog({
         followup_6m: false,
         ...(extraKolumner(extra) as Partial<Placement>),
       })
+      // Beslut 2026-10-11: ett utfall (jobb/studier) hos Rusta och matcha föreslår
+      // läget Uppföljning. Konsulenten bekräftar — inget ändras utan hennes ja.
+      if (foreslaUppfoljning(kundtyp?.visaAvtalskrav, selectedParticipant.status)) {
+        setStep('uppfoljning')
+        return
+      }
       onSuccess()
       handleClose()
     } catch (err) {
@@ -213,6 +229,26 @@ export function PlacementDialog({
     } finally {
       setLoading(false)
     }
+  }
+
+  const valjUppfoljning = async (ja: boolean) => {
+    if (!selectedParticipant) return
+    if (ja) {
+      setLoading(true)
+      setUppfoljningFel(null)
+      try {
+        await consultantService.updateParticipantStatus(selectedParticipant.participant_id, 'FOLLOW_UP')
+      } catch (err) {
+        console.error('[PlacementDialog] kunde inte sätta Uppföljning:', err)
+        setUppfoljningFel('Placeringen är sparad, men läget kunde inte ändras. Försök igen eller ändra det i deltagarlistan.')
+        setLoading(false)
+        return
+      }
+      setLoading(false)
+      onStatusAndrad?.('FOLLOW_UP')
+    }
+    onSuccess()
+    handleClose()
   }
 
   const filteredParticipants = participants.filter(p =>
@@ -307,6 +343,26 @@ export function PlacementDialog({
                   </button>
                 ))}
               </div>
+            </div>
+          )}
+
+          {step === 'uppfoljning' && selectedParticipant && (
+            <div className="space-y-3" data-testid="foreslag-uppfoljning">
+              <p className="flex items-center gap-2 font-semibold text-stone-900 dark:text-stone-100" role="status">
+                <Check className="w-5 h-5 text-[var(--c-text)]" aria-hidden="true" />
+                Placeringen är sparad.
+              </p>
+              <h3 className="text-base font-semibold text-stone-900 dark:text-stone-100">
+                Flytta {selectedParticipant.first_name || 'deltagaren'} till Uppföljning?
+              </h3>
+              <ul className="list-disc pl-5 space-y-1 text-sm text-stone-700 dark:text-stone-300">
+                <li>Räknas inte mot taket på {FFU_TAK_HELTID} deltagare per handledare.</li>
+                <li>Står som en egen grupp i deltagarlistan.</li>
+                <li>Påminnelserna om uppföljning efter 3 och 6 månader ligger kvar.</li>
+              </ul>
+              {uppfoljningFel && (
+                <p role="alert" className="text-sm text-rose-600 dark:text-rose-400">{uppfoljningFel}</p>
+              )}
             </div>
           )}
 
@@ -551,6 +607,15 @@ export function PlacementDialog({
         <FelSammanfattning signal={felSignal} fel={felLista} />
 
         {/* Footer */}
+        {step === 'uppfoljning' && selectedParticipant && (
+          <div className="flex flex-wrap items-center justify-end gap-3 p-5 border-t border-stone-200 dark:border-stone-700">
+            <Button variant="outline" onClick={() => void valjUppfoljning(false)} disabled={loading}>Nej, behåll som aktiv</Button>
+            <Button onClick={() => void valjUppfoljning(true)} disabled={loading}>
+              {loading && <Loader2 className="w-4 h-4 mr-2 animate-spin" aria-hidden="true" />}
+              Ja, flytta till Uppföljning
+            </Button>
+          </div>
+        )}
         {step === 'form' && selectedParticipant && (
           <div className="flex items-center justify-end gap-3 p-5 border-t border-stone-200 dark:border-stone-700">
             <Button variant="outline" onClick={handleClose}>Avbryt</Button>

@@ -131,6 +131,68 @@ export const getGenericInviteEmailTemplate = (data: TemplateData) => `
 `
 
 // =============================================================================
+// KOPPLINGSFÖRFRÅGAN (beslut Mikael 2026-10-11)
+// =============================================================================
+// Personen har redan ett konto. Triggern invitations_kopplingsforfragan har skapat
+// en väntande förfrågan; mejlet ber henne logga in och svara på Min konsulent.
+// Mejlet lovar bara det som är sant: inget delas förrän hon sagt ja (RPC:n
+// besvara_kopplingsforfragan är den enda vägen till kopplingen).
+
+export interface KopplingsforfraganTemplateData {
+  consultantName: string
+  actionUrl: string
+  message?: string
+}
+
+export const getKopplingsforfraganEmailTemplate = (data: KopplingsforfraganTemplateData) => `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>En konsulent vill koppla dig i Jobin</title>
+  <style>
+    ${SHARED_STYLES}
+    .header { background: #e0e7ff; color: #312e81; }
+    .button { background: #4f46e5; color: #ffffff; }
+  </style>
+</head>
+<body>
+  <div class="header" style="padding:32px 30px;border-radius:12px 12px 0 0;background:#e0e7ff;color:#312e81;">
+    <div class="eyebrow">Förfrågan</div>
+    <h1>${escapeHtml(data.consultantName)} vill bli din konsulent i Jobin</h1>
+  </div>
+
+  <div class="content">
+    <p>Logga in på Jobin och svara på förfrågan under <strong>Min konsulent</strong>.
+    Du väljer själv. Inget delas med ${escapeHtml(data.consultantName)} förrän du har sagt ja.</p>
+
+    ${data.message ? `
+    <div class="message-box">
+      <strong>Meddelande:</strong><br>
+      ${meddelandeHtml(data.message)}
+    </div>
+    ` : ''}
+
+    <center>
+      <a href="${escapeHtml(data.actionUrl)}" class="button" style="display:inline-block;padding:14px 28px;text-decoration:none;border-radius:8px;font-weight:600;margin:16px 0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#4f46e5;color:#ffffff;"><span style="color:#ffffff;">Logga in och svara</span></a>
+    </center>
+
+    <p class="small">
+      Om knappen inte fungerar, kopiera denna länk till din webbläsare:<br>
+      <span class="fallback-link">${escapeHtml(data.actionUrl)}</span>
+    </p>
+    <p class="small">Känner du inte igen namnet? Då kan du säga nej, eller låta bli att svara.</p>
+  </div>
+
+  <div class="footer">
+    <p>&copy; ${new Date().getFullYear()} Jobin · jobin.se</p>
+  </div>
+</body>
+</html>
+`
+
+// =============================================================================
 // FÖRETAGSKONTO (AG6, 2026-09-13)
 // =============================================================================
 // Inbjudan till ett företag skapas av triggern employer_invitations_insert

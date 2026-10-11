@@ -8,8 +8,9 @@
  * att en gissad grad räknas in. Kommunen har inget motsvarande tak i lag; där
  * visas bara antalet (det finns redan i tabellen).
  *
- * Talet är `antal_deltagare` ur vyn organization_caseload: alla rader i
- * consultant_participants för konsulenten. Ren logik.
+ * Talet är `antal_deltagare − antal_uppfoljning` ur vyn organization_caseload
+ * (deltagarStatus.antalMotTaket): deltagare i läget Uppföljning efter en placering
+ * räknas inte (beslut Mikael 2026-10-11). Ren logik.
  */
 import type { OrgKind } from '@/services/orgApi'
 
@@ -33,4 +34,4 @@ export function kapacitet(antal: number, kind: OrgKind | null | undefined): Kapa
   return { visas: true, antal, tak: FFU_TAK_HELTID, andel, lage, text }
 }
 
-export const KAPACITET_REGEL = `Taket i Rusta och matcha (FFU §4.5.2) är ${FFU_TAK_HELTID} deltagare per handledare på heltid och sänks i proportion vid deltid — för en handledare på 50 % är det ${FFU_TAK_HELTID / 2}. Jobin vet inte tjänstgöringsgraden, så mätaren visar taket för heltid.`
+export const KAPACITET_REGEL = `Taket i Rusta och matcha (FFU §4.5.2) är ${FFU_TAK_HELTID} deltagare per handledare på heltid och sänks i proportion vid deltid — för en handledare på 50 % är det ${FFU_TAK_HELTID / 2}. Jobin vet inte tjänstgöringsgraden, så mätaren visar taket för heltid. Deltagare i uppföljning efter en placering räknas inte.`

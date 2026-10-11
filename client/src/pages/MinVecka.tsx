@@ -31,7 +31,7 @@ import { StatusChip } from '@/components/ui/StatusChip'
 import { Veckoremsa, type VeckoremsaDag } from '@/components/ui/Veckoremsa'
 import { KvarterIkon } from '@/components/ui/icons/kvarter/KvarterIkon'
 import { minVeckaApi, type ActivitySession } from '@/services/aktivitetApi'
-import { MIN_VECKA_PLAN_KEY, minVeckaSessionsKey } from '@/services/minVeckaKeys'
+import { MIN_VECKA_OLASTA_KEY, MIN_VECKA_PLAN_KEY, minVeckaSessionsKey } from '@/services/minVeckaKeys'
 import { jobbsokAktivitetApi, harNagot } from '@/services/jobbsokAktivitet'
 import { konsulentMeddelandeApi } from '@/services/konsulentMeddelandeApi'
 import { franvaroAv } from '@/services/franvaroApi'
@@ -159,6 +159,15 @@ export default function MinVecka() {
     staleTime: 60_000,
   })
 
+  // Beslut 2026-10-11: ett oläst meddelande från konsulenten är nästa steg. Hämtas om
+  // varje gång sidan visas (staleTime 0) — Min konsulent markerar läst. Vid fel räknas
+  // inget: passet i dag ska aldrig skymmas av en räknefråga som gick fel.
+  const olastaQuery = useQuery({
+    queryKey: MIN_VECKA_OLASTA_KEY,
+    queryFn: () => konsulentMeddelandeApi.antalOlasta(),
+    staleTime: 0,
+  })
+
   const locale = i18n.language?.startsWith('en') ? 'en-GB' : 'sv-SE'
   // "15,9 h" på svenska, inte "15.9 h"
   const tal = (n: number) => n.toLocaleString(locale, { maximumFractionDigits: 1 })
@@ -186,8 +195,9 @@ export default function MinVecka() {
         moten: dennaVeckansMoten.data ?? [],
         idag: dagens,
         nuTid: nuKlockslag(),
+        olasta: olastaQuery.data ?? 0,
       }),
-    [dennaVeckanQuery.data, dennaVeckansMoten.data, dagens],
+    [dennaVeckanQuery.data, dennaVeckansMoten.data, dagens, olastaQuery.data],
   )
   const iFokus = steg.typ === 'passIdag' ? steg.pass.id : null
 

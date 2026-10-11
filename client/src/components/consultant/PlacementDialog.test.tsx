@@ -133,6 +133,9 @@ describe('PlacementDialog — spara placering', () => {
         followup_6m: false,
       })
     )
+    // Beslut 2026-10-11: hos Rusta och matcha föreslås läget Uppföljning först
+    // (PlacementDialog.uppfoljning.test.tsx). Nej behåller läget och stänger.
+    fireEvent.click(await screen.findByRole('button', { name: /Nej, behåll som aktiv/ }))
     await waitFor(() => expect(onSuccess).toHaveBeenCalledTimes(1))
   })
 

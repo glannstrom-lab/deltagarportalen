@@ -52,6 +52,7 @@ vi.mock('@/services/consultantService', async (orig) => {
       ...o.consultantService,
       getPlacementsForParticipant: vi.fn(async () => placeringar),
       getSenasteMeddelande: vi.fn(async () => null),
+      getMittSenasteTill: vi.fn(async () => null),
     },
   }
 })

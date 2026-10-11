@@ -65,6 +65,8 @@ import { formatLocalDate, veckosaldo } from '@/services/aktivitetSchema'
 import type { Placement } from '@/services/consultantService'
 import type { Uppfoljning } from './placeringsmatt'
 import { DeltagarHuvud } from './DeltagarHuvud'
+import { lastText, type Lasbart } from '@/components/consultant/meddelandeLast'
+import type { DeltagarStatus } from '@/components/consultant/deltagarStatus'
 import { deltagarLaget, type LagetMoten, type LagetPlan } from './deltagarLaget'
 
 import { anvandareFranSession } from '@/lib/anvandareFranSession'
@@ -75,7 +77,7 @@ interface Participant {
   last_name: string
   phone: string | null
   avatar_url: string | null
-  status: 'ACTIVE' | 'INACTIVE' | 'COMPLETED' | 'ON_HOLD'
+  status: DeltagarStatus
   priority: number
   has_cv: boolean
   ats_score: number | null
@@ -246,6 +248,8 @@ export function ParticipantDetailPage() {
   const [uppfoljning, setUppfoljning] = useState<{ placering: Placement; vilken: Uppfoljning } | null>(null)
   // RK14: senaste meddelandet åt något håll; null = inga eller inte hämtat.
   const [senasteMeddelande, setSenasteMeddelande] = useState<string | null>(null)
+  // Beslut 2026-10-11: är mitt senaste meddelande läst? null = inget skickat / inte inläst.
+  const [mittSenaste, setMittSenaste] = useState<Lasbart | null>(null)
   // Omtaget steg 5: planen hämtas här EN gång och delas av huvudet (läget,
   // Mer-menyn), Översikt (veckan) och Aktivitet-fliken.
   const planStyrning = useAktivitetsplan(
@@ -285,8 +289,12 @@ export function ParticipantDetailPage() {
     consultantService.getSenasteMeddelande(participantId)
       .then((at) => { if (aktiv) setSenasteMeddelande(at) })
       .catch((err) => console.warn('[ParticipantDetailPage] senaste meddelande:', err))
+    // Best effort: läsraden är en upplysning; vid fel står ingenting, hellre än "oläst".
+    consultantService.getMittSenasteTill(participantId)
+      .then((m) => { if (aktiv) setMittSenaste(m) })
+      .catch((err) => console.warn('[ParticipantDetailPage] läst-status:', err))
     return () => { aktiv = false }
-  }, [participantId])
+  }, [participantId, showMessageDialog])
 
   const laddaOmMoten = () => { setMotenLage({ status: 'laddar' }); setMotenOmgang((n) => n + 1) }
   const laddaOmPlaceringar = () => { setPlaceringarLage({ status: 'laddar' }); setPlaceringOmgang((n) => n + 1) }
@@ -324,6 +332,7 @@ export function ParticipantDetailPage() {
     setMotenLage({ status: 'laddar' })
     setPlaceringarLage({ status: 'laddar' })
     setSenasteMeddelande(null)
+    setMittSenaste(null)
     fetchParticipantData(participantId)
     // ÖV1: deltagaren ska kunna se vem som öppnat hens uppgifter. En rad per
     // deltagare och webbläsarsession; fel sväljs i laslogg (console.warn) och
@@ -860,6 +869,7 @@ export function ParticipantDetailPage() {
         status={participant.status}
         placeringsrad={placeringsrad}
         laget={laget}
+        meddelandeLast={mittSenaste ? lastText(mittSenaste) : null}
 
         loggarSamtal={loggarSamtal}
         onMeddelande={() => setShowMessageDialog(true)}
@@ -1174,6 +1184,7 @@ export function ParticipantDetailPage() {
             notifications.success('Placeringen är registrerad')
             laddaOmPlaceringar()
           }}
+          onStatusAndrad={(status) => setParticipant((p) => (p ? { ...p, status } : p))}
           preselectedParticipant={participant}
         />
       )}

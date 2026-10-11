@@ -31,6 +31,7 @@ import { PageLayout } from '@/components/layout/PageLayout'
 import { RevokeConsultantLinkSection } from '@/components/consultant/RevokeConsultantLinkSection'
 import { VemHarOppnatKort } from '@/components/consultant/VemHarOppnatKort'
 import { Delningsforslag } from '@/components/participant/Delningsforslag'
+import { Kopplingsforfragan } from '@/components/participant/Kopplingsforfragan'
 import { FokusVaxel } from '@/components/focus/shell/FokusVaxel'
 import { MerMeny, type MerMenyVal } from '@/components/ui/MerMeny'
 import { KvarterIkon } from '@/components/ui/icons/kvarter/KvarterIkon'
@@ -343,11 +344,17 @@ export function MessagesSection({
   onSendMessage,
   loading,
   textRef,
+  onLasta,
 }: {
   messages: Message[]
   consultant: ConsultantInfo | null
   onSendMessage: (content: string) => Promise<void>
   loading: boolean
+  /**
+   * Beslut 2026-10-11: meddelanden från konsulenten som SYNS markeras lästa. Bara de
+   * synliga — ett äldre meddelande bakom "Visa äldre" markeras när det fälls ut.
+   */
+  onLasta?: (ids: string[]) => void
   /** Omtaget: "Skriv" överst flyttar fokus hit. */
   textRef?: React.Ref<HTMLTextAreaElement>
 }) {
@@ -367,6 +374,19 @@ export function MessagesSection({
       ? window.matchMedia('(pointer: coarse)').matches
       : false,
   )
+
+  // Olästa från konsulenten bland det som syns just nu. En sträng som beroende, så
+  // effekten bara körs när mängden faktiskt ändras (inte vid varje render).
+  const olastaSynliga = loading
+    ? ''
+    : (visaAlla ? messages : messages.slice(-SENASTE))
+        .filter((m) => !m.is_read && m.sender_id !== user?.id)
+        .map((m) => m.id)
+        .join(',')
+  const markeraLasta = useEffectEvent((ids: string[]) => onLasta?.(ids))
+  useEffect(() => {
+    if (olastaSynliga) markeraLasta(olastaSynliga.split(','))
+  }, [olastaSynliga])
 
   // Nyaste meddelandet syns: listan rullas inom sig själv, inte hela sidan.
   useEffect(() => {
@@ -871,6 +891,18 @@ function MyConsultantInner() {
     setMessages(prev => [...prev, { ...skickat, sender_id: user.id, is_read: false } as unknown as (typeof prev)[number]])
   }
 
+  // Beslut 2026-10-11: det som syns på Min konsulent är läst. Lästiden sätts av servern.
+  // Ett fel här är inte deltagarens sak — meddelandet står kvar som oläst och
+  // markeras nästa gång sidan öppnas.
+  const handleLasta = async (ids: string[]) => {
+    try {
+      await konsulentMeddelandeApi.markeraLasta(ids)
+      setMessages(prev => prev.map(m => (ids.includes(m.id) ? { ...m, is_read: true } : m)))
+    } catch (err) {
+      console.warn('[MyConsultant] kunde inte markera meddelanden som lästa:', err)
+    }
+  }
+
   const handleBookMeeting = () => {
     // For now, open email with meeting request
     if (consultant) {
@@ -926,6 +958,11 @@ function MyConsultantInner() {
       showTabs={false}
       className="sidbredd"
     >
+
+      {/* Beslut 2026-10-11: en konsulent vill koppla ett befintligt konto. Notisen
+          "En konsulent vill koppla dig" länkar hit. Står före "ingen konsulent" —
+          den som saknar konsulent är just den som oftast får frågan. */}
+      <Kopplingsforfragan className="mb-6 max-w-2xl" />
 
       {/* UX12: "ingen konsulent" och "vi kunde inte hämta" är två olika
           besked. Att visa det första när det andra är sant är precis vad som
@@ -990,6 +1027,7 @@ function MyConsultantInner() {
             onSendMessage={handleSendMessage}
             loading={messagesLoading}
             textRef={skrivRef}
+            onLasta={(ids) => void handleLasta(ids)}
           />
 
           <MerLista

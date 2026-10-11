@@ -20,10 +20,39 @@ import {
   getGenericInviteEmailTemplate,
   getEmployerInviteEmailTemplate,
   getKollegaInviteEmailTemplate,
+  getKopplingsforfraganEmailTemplate,
 } from './mallar.ts'
 
 // Mallarna (deltagare, företagskonto, kollega) bor i mallar.ts — se motiveringen där.
 
+
+/**
+ * Beslut 2026-10-11 (kopplingsförfrågan): finns en väntande förfrågan från den här
+ * konsulenten till ett befintligt deltagarkonto med adressen? Raden skapas av
+ * triggern invitations_kopplingsforfragan (20261011b_kopplingsforfragan.sql) i samma
+ * ögonblick som inbjudan sparas. Före migrationen finns ingen sådan rad — då är
+ * svaret false och allt går som förut. Ett uppslagsfel ger också false (gamla vägen).
+ */
+async function harVantandeForfragan(client: SupabaseClient, email: string, consultantId: string): Promise<boolean> {
+  // ilike utan jokrar: _ och % i en e-postadress får inte matcha andra adresser.
+  const monster = email.trim().replace(/[\\%_]/g, (t) => '\\' + t)
+  const { data: konto, error: kontoFel } = await client
+    .from('profiles')
+    .select('id')
+    .ilike('email', monster)
+    .limit(1)
+    .maybeSingle()
+  if (kontoFel || !konto) return false
+  const { data: forfragan, error: forfraganFel } = await client
+    .from('consultant_requests')
+    .select('id')
+    .eq('consultant_id', consultantId)
+    .eq('participant_id', (konto as { id: string }).id)
+    .eq('status', 'PENDING')
+    .limit(1)
+    .maybeSingle()
+  return !forfraganFel && !!forfragan
+}
 
 interface ProcessResult {
   invitationId: string
@@ -95,6 +124,12 @@ async function processInvitation(
   // gäller oförändrad.
   const isKollegaInvite = invitation.metadata?.kind === 'kollega'
 
+  // Kopplingsförfrågan: samma utskick från konsulentens håll, annat mejl till
+  // mottagaren ("logga in och svara"). Ingen generateLink — kontot finns redan.
+  const arForfragan = !isKollegaInvite && !isEmployerInvite && !!invitation.consultant_id
+    ? await harVantandeForfragan(client, invitation.email, invitation.consultant_id)
+    : false
+
   // De användarmetadata som följer med generateLink/inviteUserByEmail. För
   // företag: first_name ur kontaktnamnet, last_name tomt (triggern delar inte
   // upp namnet), inget program och ingen konsulentkoppling — kontot ska bli
@@ -128,7 +163,9 @@ async function processInvitation(
     // RESEND-LÄGE
     try {
       let actionLink: string
-      if (employerHasAccount) {
+      if (arForfragan) {
+        actionLink = `${siteUrl}/#/my-consultant`
+      } else if (employerHasAccount) {
         // Kontot finns: ingen generateLink (den skulle skapa en pending-
         // användare för en adress som redan har ett konto). Knappen är "Logga in".
         actionLink = `${siteUrl}/#/login`
@@ -159,7 +196,13 @@ async function processInvitation(
         actionLink = `${inviteUrl}?th=${encodeURIComponent(hashedToken)}`
       }
 
-      const html = isKollegaInvite
+      const html = arForfragan
+        ? getKopplingsforfraganEmailTemplate({
+            consultantName,
+            actionUrl: actionLink,
+            message: invitation.metadata?.message,
+          })
+        : isKollegaInvite
         ? getKollegaInviteEmailTemplate({
             orgName: invitation.metadata?.org_name || '',
             orgRole: invitation.metadata?.org_role || '',
@@ -186,7 +229,9 @@ async function processInvitation(
             expiresAt: expiresAtFormatted,
           })
 
-      const subject = isKollegaInvite
+      const subject = arForfragan
+        ? `${consultantName} vill bli din konsulent i Jobin`
+        : isKollegaInvite
         ? `Inbjudan till ${invitation.metadata?.org_name || 'din organisation'} på Jobin`
         : isEmployerInvite
         ? `${companyName || 'Ert företag'} — företagskonto på Jobin`
@@ -213,6 +258,10 @@ async function processInvitation(
     } catch (err) {
       emailErrorMessage = err instanceof Error ? err.message : 'Unknown Resend error'
     }
+  } else if (arForfragan) {
+    // Samma skäl som företagsgrenen nedan: Supabase kan inte mejla ett befintligt konto.
+    emailErrorMessage =
+      'Kopplingsförfrågan till ett befintligt konto kräver Resend (RESEND_API_KEY saknas). Förfrågan finns i Jobin.'
   } else if (employerHasAccount) {
     // FALLBACK-LÄGE utan Resend: Supabase kan bara skicka ett invite-mejl,
     // och det går inte till en adress som redan har ett konto. Hellre ett

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-11T14:18:43.824Z",
+  "generatedAt": "2026-10-11T15:57:50.903Z",
   "note": "Genererad av client/scripts/refresh-schema-snapshot.cjs. Kör om efter varje migration och committa i samma commit. Läses av check-schema-drift.cjs.",
   "tables": {
     "account_deletion_requests": [
@@ -539,6 +539,7 @@
       "created_at",
       "id",
       "is_read",
+      "read_at",
       "receiver_id",
       "sender_id",
       "updated_at"
@@ -603,7 +604,9 @@
       "consultant_id",
       "created_at",
       "id",
+      "konsulent_namn",
       "message",
+      "organisation_namn",
       "participant_id",
       "responded_at",
       "status"
@@ -1443,6 +1446,7 @@
     "organization_caseload": [
       "antal_aktiva_planer",
       "antal_deltagare",
+      "antal_uppfoljning",
       "consultant_id",
       "first_name",
       "last_name",
@@ -2131,6 +2135,7 @@
       "energy_updated_at",
       "focus_mode",
       "graphics_style",
+      "guider",
       "has_completed_onboarding",
       "high_contrast",
       "id",
@@ -2277,6 +2282,7 @@
     "ar_personal",
     "audit_data_sharing_change",
     "auto_generate_recommendations",
+    "besvara_kopplingsforfragan",
     "calculate_profile_completeness",
     "can_assign_role",
     "cancel_account_deletion",
@@ -2290,6 +2296,7 @@
     "cleanup_rate_limits",
     "consultant_has_access",
     "consultant_journal_historik",
+    "consultant_messages_lasfalt",
     "consultant_messages_notify",
     "create_daily_quests",
     "create_learning_path_from_gap",
@@ -2334,6 +2341,7 @@
     "increment_user_points",
     "initialize_user_milestones",
     "invitations_kollega_guard",
+    "invitations_kopplingsforfragan",
     "is_admin_or_superadmin",
     "join_community_group",
     "kollega_inbjudan_medlemskap",

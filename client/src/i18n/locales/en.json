@@ -7917,7 +7917,8 @@
       "status": {
         "inactive": "Inactive",
         "completed": "Completed",
-        "onHold": "On hold"
+        "onHold": "On hold",
+        "followUp": "Follow-up"
       }
     },
     "settings": {
@@ -9760,7 +9761,14 @@
       "ingetEtikett": "This week",
       "inget": "Nothing more is planned this week.",
       "ingetText": "Do you have a question?",
-      "tillbaka": "Back to the week"
+      "tillbaka": "Back to the week",
+      "meddelandeEtikett": "New message",
+      "meddelandeFran_one": "You have a message from {{namn}}",
+      "meddelandeFran_other": "You have {{count}} messages from {{namn}}",
+      "meddelande_one": "You have a message from your consultant",
+      "meddelande_other": "You have {{count}} messages from your consultant",
+      "meddelandeText": "Read it on My consultant. You can reply there too.",
+      "meddelandeLas": "Read the message"
     },
     "passRubrik": "Your sessions",
     "remsa": {
@@ -10308,5 +10316,20 @@
     "mer": "More",
     "nastaSteg": "Next step",
     "fler": "+{{count}} more"
+  },
+  "kopplingsforfragan": {
+    "etikett": "Request",
+    "rubrik": "A consultant wants to connect with you",
+    "fran": "{{namn}} wants to be your consultant in Jobin.",
+    "franOrg": "{{namn}} at {{org}} wants to be your consultant in Jobin.",
+    "enKonsulent": "A consultant",
+    "ingetDelas": "Nothing is shared with {{namn}} until you say yes.",
+    "meddelande": "Message from {{namn}}:",
+    "byte": "You already have a consultant. If you say yes, that connection ends.",
+    "ja": "Yes, connect us",
+    "nej": "No, thank you",
+    "nekad": "You said no. Nothing has been shared.",
+    "fel": "We could not save your answer right now. Please try again later.",
+    "laddaFel": "We could not load a request from a consultant right now. Please reload the page later."
   }
 }

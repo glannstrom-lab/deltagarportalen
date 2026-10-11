@@ -60,6 +60,7 @@ import {
 // `@kommun.se` erbjöds en Rusta och matcha-leverantör.
 import { epostPlatshallare, rollerForOrg } from '@/components/consultant/orgTypVisning'
 import { kapacitet, KAPACITET_REGEL } from './caseloadKapacitet'
+import { antalMotTaket } from './deltagarStatus'
 
 type Medlemskap = OrgMembership & { organization: Organization }
 
@@ -434,7 +435,7 @@ function CaseloadRad({
         >
           {r.ogiltig_franvaro_30d}
         </td>
-        {visaKapacitet && <KapacitetsCell antal={r.antal_deltagare} kind={orgKind} namn={namn(r)} />}
+        {visaKapacitet && <KapacitetsCell antal={antalMotTaket(r)} uppfoljning={r.antal_uppfoljning ?? 0} kind={orgKind} namn={namn(r)} />}
         <td className="py-2">
           {r.antal_deltagare > 0 && (
             <Button
@@ -529,7 +530,7 @@ function CaseloadRad({
   )
 }
 
-function KapacitetsCell({ antal, kind, namn: vem }: { antal: number; kind: OrgKind | null; namn: string }) {
+function KapacitetsCell({ antal, uppfoljning = 0, kind, namn: vem }: { antal: number; uppfoljning?: number; kind: OrgKind | null; namn: string }) {
   const k = kapacitet(antal, kind)
   if (!k.visas) {
     return <td className="py-2 pr-3 text-xs text-stone-500 dark:text-stone-400">Inget tak</td>
@@ -562,6 +563,12 @@ function KapacitetsCell({ antal, kind, namn: vem }: { antal: number; kind: OrgKi
       >
         {k.text}
       </span>
+      {/* Beslut 2026-10-11: placerade i uppföljning räknas inte mot taket — men syns. */}
+      {uppfoljning > 0 && (
+        <span className="block text-xs text-stone-500 dark:text-stone-400" data-testid="kapacitet-uppfoljning">
+          + {uppfoljning} i uppföljning, räknas inte
+        </span>
+      )}
     </td>
   )
 }

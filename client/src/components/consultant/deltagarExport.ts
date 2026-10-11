@@ -12,6 +12,7 @@ export const STATUS_ETIKETT: Record<string, string> = {
   ACTIVE: 'Aktiv',
   INACTIVE: 'Inaktiv',
   ON_HOLD: 'Pausad',
+  FOLLOW_UP: 'I uppföljning',
   COMPLETED: 'Avslutad',
 }
 

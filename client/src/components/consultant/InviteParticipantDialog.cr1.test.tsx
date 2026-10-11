@@ -38,7 +38,8 @@ import { InviteParticipantDialog } from './InviteParticipantDialog'
 describe('InviteParticipantDialog — befintligt konto (CR1)', () => {
   it('säger som det är och skriver ingen kopplingsförfrågan', async () => {
     const onSuccess = vi.fn()
-    render(<InviteParticipantDialog isOpen onClose={vi.fn()} onSuccess={onSuccess} />)
+    // Gäller grenen utan kopplingsförfrågan (flaggan av); grenen med förfrågan prövas i InviteParticipantDialog-testerna för 2026-10-11.
+    render(<InviteParticipantDialog isOpen onClose={vi.fn()} onSuccess={onSuccess} forfraganAktiv={false} />)
     fireEvent.change(screen.getByPlaceholderText('anna@example.com'), { target: { value: 'anna@example.com' } })
     fireEvent.click(screen.getByRole('button', { name: /^skicka$/i }))
     await waitFor(() => expect(screen.getByText(/har redan ett konto hos jobin/i)).toBeInTheDocument())

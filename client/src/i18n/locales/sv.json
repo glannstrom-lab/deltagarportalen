@@ -7917,7 +7917,8 @@
       "status": {
         "inactive": "Inaktiv",
         "completed": "Avslutad",
-        "onHold": "Pausad"
+        "onHold": "Pausad",
+        "followUp": "I uppföljning"
       }
     },
     "handover": {
@@ -9760,7 +9761,14 @@
       "ingetEtikett": "Den här veckan",
       "inget": "Inget mer är planerat den här veckan.",
       "ingetText": "Undrar du något?",
-      "tillbaka": "Tillbaka till veckan"
+      "tillbaka": "Tillbaka till veckan",
+      "meddelandeEtikett": "Nytt meddelande",
+      "meddelandeFran_one": "Du har ett meddelande från {{namn}}",
+      "meddelandeFran_other": "Du har {{count}} meddelanden från {{namn}}",
+      "meddelande_one": "Du har ett meddelande från din konsulent",
+      "meddelande_other": "Du har {{count}} meddelanden från din konsulent",
+      "meddelandeText": "Läs det på Min konsulent. Där kan du också svara.",
+      "meddelandeLas": "Läs meddelandet"
     },
     "passRubrik": "Dina pass",
     "remsa": {
@@ -10308,5 +10316,20 @@
     "mer": "Mer",
     "nastaSteg": "Nästa steg",
     "fler": "+{{count}} till"
+  },
+  "kopplingsforfragan": {
+    "etikett": "Förfrågan",
+    "rubrik": "En konsulent vill koppla dig",
+    "fran": "{{namn}} vill bli din konsulent i Jobin.",
+    "franOrg": "{{namn}} på {{org}} vill bli din konsulent i Jobin.",
+    "enKonsulent": "En konsulent",
+    "ingetDelas": "Inget delas med {{namn}} förrän du har sagt ja.",
+    "meddelande": "Meddelande från {{namn}}:",
+    "byte": "Du har redan en konsulent. Säger du ja avslutas den kopplingen.",
+    "ja": "Ja, koppla oss",
+    "nej": "Nej tack",
+    "nekad": "Du sa nej. Ingenting har delats.",
+    "fel": "Ditt svar kunde inte sparas just nu. Försök igen om en stund.",
+    "laddaFel": "Vi kunde inte hämta en förfrågan från en konsulent just nu. Ladda om sidan om en stund."
   }
 }

@@ -29,6 +29,7 @@ import { loadJsPDFWithAutoTable } from '@/services/pdfLazyLoad'
 import { AVAILABLE_TAGS, TAG_COLOR_CLASSES } from './participantTags'
 import { formatLocalDate } from '@/services/aktivitetSchema'
 import { exportRader, csvText, EXPORT_RUBRIKER, STATUS_ETIKETT } from './deltagarExport'
+import type { DeltagarStatus } from './deltagarStatus'
 
 import { anvandareFranSession } from '@/lib/anvandareFranSession'
 interface Participant {
@@ -83,6 +84,8 @@ const STATUS_OPTIONS = [
   { value: 'ACTIVE', label: STATUS_ETIKETT.ACTIVE, color: 'emerald' },
   { value: 'INACTIVE', label: STATUS_ETIKETT.INACTIVE, color: 'stone' },
   { value: 'ON_HOLD', label: STATUS_ETIKETT.ON_HOLD, color: 'amber' },
+  // Beslut 2026-10-11: placerad Rusta och matcha-deltagare — räknas inte mot taket.
+  { value: 'FOLLOW_UP', label: STATUS_ETIKETT.FOLLOW_UP, color: 'blue' },
   { value: 'COMPLETED', label: STATUS_ETIKETT.COMPLETED, color: 'blue' },
 ]
 
@@ -302,7 +305,7 @@ export function BulkActionsDialog({
         selectedParticipants.map(p =>
           consultantService.updateParticipantStatus(
             p.participant_id,
-            newStatus as 'ACTIVE' | 'INACTIVE' | 'COMPLETED' | 'ON_HOLD'
+            newStatus as DeltagarStatus
           )
         )
       )

@@ -19,14 +19,16 @@ import { MerMeny, type MerMenyVal } from '@/components/ui/MerMeny'
 import { StatusChip } from '@/components/ui/StatusChip'
 import { KvarterIkon } from '@/components/ui/icons/kvarter/KvarterIkon'
 import { initialerAv, type Status } from '@/components/ui/kvarterStatus'
+import type { DeltagarStatus } from '@/components/consultant/deltagarStatus'
 
-export type DeltagarStatus = 'ACTIVE' | 'INACTIVE' | 'COMPLETED' | 'ON_HOLD'
+export type { DeltagarStatus }
 
 /** Aktiv är det vanliga och visas inte; de andra är värda en rad. */
 const STATUS_CHIP: Record<Exclude<DeltagarStatus, 'ACTIVE'>, { status: Status; nyckel: string }> = {
   INACTIVE: { status: 'planerat', nyckel: 'consultant.participants.status.inactive' },
   COMPLETED: { status: 'planerat', nyckel: 'consultant.participants.status.completed' },
   ON_HOLD: { status: 'vantar', nyckel: 'consultant.participants.status.onHold' },
+  FOLLOW_UP: { status: 'planerat', nyckel: 'consultant.participants.status.followUp' },
 }
 
 export interface PlanAtgarder {
@@ -45,6 +47,7 @@ export function DeltagarHuvud({
   status,
   placeringsrad,
   laget,
+  meddelandeLast = null,
   loggarSamtal,
   onMeddelande,
   onBokaMote,
@@ -59,6 +62,8 @@ export function DeltagarHuvud({
   status: DeltagarStatus
   placeringsrad: string | null
   laget: string | null
+  /** "Läst 14:32" för konsulentens senaste meddelande till deltagaren, null = visa inget. */
+  meddelandeLast?: string | null
   loggarSamtal: boolean
   onMeddelande: () => void
   onBokaMote: () => void
@@ -105,6 +110,12 @@ export function DeltagarHuvud({
       </p>
       <p className="row-start-3 col-[1/3] sm:col-[2/3] lg:col-[2/4] m-0 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-sm">
         {statusChip && <StatusChip status={statusChip.status}>{t(statusChip.nyckel)}</StatusChip>}
+        {meddelandeLast && (
+          <span data-testid="meddelande-last" className="inline-flex items-center gap-1.5 text-[var(--j-blak-2)]">
+            <KvarterIkon namn="meddelande" size={16} />
+            Ditt senaste meddelande: {meddelandeLast.charAt(0).toLowerCase() + meddelandeLast.slice(1)}
+          </span>
+        )}
         {placeringsrad && (
           <span data-testid="placering-status"><StatusChip status="narvarande">{placeringsrad}</StatusChip></span>
         )}

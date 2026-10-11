@@ -17,6 +17,9 @@
 import { supabase } from '@/lib/supabase'
 
 import { anvandareFranSession } from '@/lib/anvandareFranSession'
+/** Hur långt bak ett oläst meddelande räknas som deltagarens nästa steg. */
+export const OLASTA_DAGAR = 14
+
 export interface MinKonsulent {
   id: string
   namn: string
@@ -44,6 +47,44 @@ export const konsulentMeddelandeApi = {
     if (!rad?.id) return null
     const namn = [rad.first_name, rad.last_name].filter(Boolean).join(' ').trim()
     return { id: rad.id, namn: namn || 'din konsulent' }
+  },
+
+  /**
+   * Beslut 2026-10-11: deltagaren markerar meddelanden lästa när de syns på Min konsulent.
+   * Bara `is_read` skickas — lästiden (`read_at`) sätts av servern (triggern i
+   * 20261011b_meddelanden_last.sql), och samma trigger nekar allt utom läsfälten.
+   * Policyn "Receivers can update read status" släpper bara igenom egna mottagna
+   * meddelanden; `receiver_id` står ändå med så att avsikten syns i frågan.
+   */
+  async markeraLasta(ids: readonly string[]): Promise<void> {
+    if (ids.length === 0) return
+    const userId = await requireUserId()
+    const { error } = await supabase
+      .from('consultant_messages')
+      .update({ is_read: true })
+      .in('id', [...ids])
+      .eq('receiver_id', userId)
+      .eq('is_read', false)
+    if (error) throw error
+  },
+
+  /**
+   * Olästa meddelanden till deltagaren, de senaste OLASTA_DAGAR dagarna. Fönstret finns
+   * för att allt som skickades innan Min konsulent började markera läst (2026-10-11)
+   * står som oläst i databasen — de ska inte bli "nästa steg" för alltid.
+   * Kastar vid fel: ett läsfel är inte "inga olästa".
+   */
+  async antalOlasta(nu: Date = new Date()): Promise<number> {
+    const userId = await requireUserId()
+    const fran = new Date(nu.getTime() - OLASTA_DAGAR * 24 * 60 * 60 * 1000).toISOString()
+    const { count, error } = await supabase
+      .from('consultant_messages')
+      .select('id', { count: 'exact', head: true })
+      .eq('receiver_id', userId)
+      .eq('is_read', false)
+      .gte('created_at', fran)
+    if (error) throw error
+    return count ?? 0
   },
 
   /** Skickar ett meddelande till den kopplade konsulenten. Kastar om ingen är kopplad eller RLS nekar. */

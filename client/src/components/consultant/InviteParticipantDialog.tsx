@@ -1,6 +1,18 @@
 /**
  * InviteParticipantDialog
  * Dialog för att bjuda in nya deltagare eller skicka kopplingsförfrågan till befintliga
+ *
+ * Beslut 2026-10-11 (KOPPLINGSFORFRAGAN_FINNS): konsulenten gör SAMMA sak oavsett
+ * om adressen har ett konto — en rad i `invitations`. Servern avgör resten
+ * (triggern invitations_kopplingsforfragan skapar en förfrågan + notis när kontot
+ * finns; send-invite-email skickar då ett "logga in och svara"-mejl i stället för
+ * en registreringslänk). Kvittot är detsamma i båda fallen, så dialogen kan inte
+ * användas för att ta reda på vem som har ett konto.
+ *
+ * Premiss (mätt i prod 2026-10-11): konsulentens uppslag i `profiles` nedan ser
+ * bara egna deltagare (RLS: consultant_id = uid; admin ser alla). "Har redan ett
+ * konto" kunde alltså aldrig nås för någon annans eller en okopplad deltagare —
+ * de fick en vanlig inbjudan som föll på "already registered" i generateLink.
  */
 
 import React, { useState, useEffect } from 'react';
@@ -9,10 +21,13 @@ import { supabase } from '@/lib/supabase';
 import { Dialog } from '@/components/ui/Dialog';
 
 import { anvandareFranSession } from '@/lib/anvandareFranSession'
+import { KOPPLINGSFORFRAGAN_FINNS } from '@/services/kopplingsforfraganApi'
 interface InviteParticipantDialogProps {
   isOpen: boolean;
   onClose: () => void;
   onSuccess: () => void;
+  /** Flaggan (PENDING_20261011b) — parametern finns för testerna. */
+  forfraganAktiv?: boolean;
 }
 
 // 'invite-utan-mejl': inbjudan sparad men send-invite-email gick inte igenom.
@@ -23,6 +38,7 @@ export const InviteParticipantDialog: React.FC<InviteParticipantDialogProps> = (
   isOpen,
   onClose,
   onSuccess,
+  forfraganAktiv = KOPPLINGSFORFRAGAN_FINNS,
 }) => {
   const [formData, setFormData] = useState({
     email: '',
@@ -66,7 +82,14 @@ export const InviteParticipantDialog: React.FC<InviteParticipantDialogProps> = (
 
       if (existingUserError) throw existingUserError;
 
-      if (existingUser) {
+      if (existingUser && forfraganAktiv) {
+        // Bara egna deltagare (och för admin: alla) syns här. Redan kopplad till mig
+        // är något konsulenten vet — allt annat går vidare som en inbjudan, och servern
+        // gör den till en förfrågan om kontot finns.
+        if (existingUser.consultant_id === user.id) {
+          throw new Error('Denna deltagare är redan kopplad till dig');
+        }
+      } else if (existingUser) {
         // Användaren finns redan - skicka kopplingsförfrågan
 
         // Kolla om användaren redan är kopplad till denna konsulent
@@ -167,8 +190,11 @@ export const InviteParticipantDialog: React.FC<InviteParticipantDialogProps> = (
                 Inbjudan sparad
               </h2>
               <p className="text-gray-600 dark:text-gray-400 mb-6">
-                Men mejlet kunde inte skickas. Hör av dig till {formData.firstName || formData.email} på
-                annat sätt och be hen registrera sig med den här e-postadressen.
+                {forfraganAktiv
+                  ? <>Men mejlet kunde inte skickas. Hör av dig till {formData.firstName || formData.email} på
+                    annat sätt och be hen logga in på Jobin (eller skapa ett konto) med den här e-postadressen.</>
+                  : <>Men mejlet kunde inte skickas. Hör av dig till {formData.firstName || formData.email} på
+                    annat sätt och be hen registrera sig med den här e-postadressen.</>}
               </p>
               <button
                 type="button"
@@ -186,6 +212,12 @@ export const InviteParticipantDialog: React.FC<InviteParticipantDialogProps> = (
               <p className="text-gray-600 dark:text-gray-400">
                 {formData.firstName || formData.email} har fått en inbjudan via e-post.
               </p>
+              {forfraganAktiv && (
+                <p className="text-gray-600 dark:text-gray-400 mt-2" data-testid="invite-neutral-kvitto">
+                  Har adressen redan ett konto i Jobin är det en förfrågan som hen godkänner själv.
+                  Inget delas förrän hen sagt ja. Deltagaren syns i din lista när hen har gått med.
+                </p>
+              )}
             </>
           )}
       </Dialog>
@@ -226,7 +258,9 @@ export const InviteParticipantDialog: React.FC<InviteParticipantDialogProps> = (
               <p className="font-medium mb-1">Så fungerar det:</p>
               <ul className="list-disc list-inside space-y-1 text-blue-700 dark:text-blue-400">
                 <li><strong>Ny användare:</strong> Får en inbjudan via e-post</li>
-                <li><strong>Har redan ett konto:</strong> Kan inte kopplas härifrån — be din chef lämna över deltagaren</li>
+                {forfraganAktiv
+                  ? <li><strong>Har redan ett konto:</strong> Får en förfrågan i Jobin och godkänner själv. Inget delas förrän hen sagt ja.</li>
+                  : <li><strong>Har redan ett konto:</strong> Kan inte kopplas härifrån — be din chef lämna över deltagaren</li>}
               </ul>
             </div>
           </div>

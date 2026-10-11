@@ -277,7 +277,14 @@
       "ingetEtikett": "Den här veckan",
       "inget": "Det finns inget mer den här veckan.",
       "ingetText": "Undrar du något?",
-      "tillbaka": "Tillbaka"
+      "tillbaka": "Tillbaka",
+      "meddelandeEtikett": "Nytt meddelande",
+      "meddelandeFran_one": "Du har ett meddelande från {{namn}}",
+      "meddelandeFran_other": "Du har {{count}} meddelanden från {{namn}}",
+      "meddelande_one": "Du har ett meddelande från din konsulent",
+      "meddelande_other": "Du har {{count}} meddelanden från din konsulent",
+      "meddelandeText": "Läs det på sidan Min konsulent. Där kan du svara.",
+      "meddelandeLas": "Läs meddelandet"
     },
     "passRubrik": "Dina pass",
     "remsa": {
@@ -1544,5 +1551,20 @@
         "dagbok": "Skriv lite i dagboken"
       }
     }
+  },
+  "kopplingsforfragan": {
+    "etikett": "Fråga",
+    "rubrik": "En konsulent vill hjälpa dig",
+    "fran": "{{namn}} vill bli din konsulent.",
+    "franOrg": "{{namn}} på {{org}} vill bli din konsulent.",
+    "enKonsulent": "En konsulent",
+    "ingetDelas": "{{namn}} ser ingenting förrän du säger ja.",
+    "meddelande": "{{namn}} skriver:",
+    "byte": "Du har redan en konsulent. Säger du ja slutar den konsulenten att hjälpa dig.",
+    "ja": "Ja, det är okej",
+    "nej": "Nej tack",
+    "nekad": "Du sa nej. Ingenting har delats.",
+    "fel": "Det gick inte att spara. Försök igen sen.",
+    "laddaFel": "Det gick inte att visa frågan. Försök igen sen."
   }
 }
