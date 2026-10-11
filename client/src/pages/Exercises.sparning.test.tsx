@@ -133,7 +133,8 @@ describe('Exercises — filterraden på engelska (drift 2026-09-22)', () => {
       expect(amnesKnapp).toBeDefined()
       fireEvent.click(amnesKnapp!)
       const namn = (en as unknown as { exercises: { categories: Record<string, string> } }).exercises.categories['Självkännedom']
-      const knapp = screen.getAllByRole('button', { name: namn }).find((b) => b.hasAttribute('aria-pressed'))
+      // findAll: på CI:s långsammare maskin hann ämneslistan inte ritas efter klicket (CI d545e26d).
+      const knapp = (await screen.findAllByRole('button', { name: namn })).find((b) => b.hasAttribute('aria-pressed'))
       expect(knapp).toBeDefined()
       expect(screen.queryByRole('button', { name: 'Självkännedom' })).toBeNull()
     } finally {
