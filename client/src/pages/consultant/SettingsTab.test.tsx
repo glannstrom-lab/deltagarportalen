@@ -129,8 +129,7 @@ describe('SettingsTab — RK29: inget språkval i en vy som inte översätts', (
   // tillbaka SettingRow med språkvalet → faller.
   it('visar inget språkval och inga English-alternativ', async () => {
     renderTab()
-    await screen.findByText('Standardvy', { exact: false }).catch(() => null)
-    await screen.findAllByRole('combobox')
+    await screen.findByText('consultant.settings.dataPrivacy', { exact: false }).catch(() => null)
     expect(screen.queryByRole('option', { name: 'English' })).not.toBeInTheDocument()
     expect(screen.queryByText(/^Språk$/)).not.toBeInTheDocument()
   })
@@ -238,8 +237,21 @@ describe('SettingsTab — KK5: exportens omfattning', () => {
 describe('SettingsTab — tidszonsvalet är borttaget (lästes av ingen kod)', () => {
   it('visar ingen tidszonsrad och inget löfte om mötesbokning', async () => {
     renderTab()
-    await screen.findByText('Veckan börjar')
+    await waitFor(() => expect(screen.queryByText(/kunde inte hämtas/i)).toBeNull())
     expect(screen.queryByText('Tidszon')).toBeNull()
     expect(screen.queryByText(/Används för mötesbokning/)).toBeNull()
+  })
+})
+
+describe('SettingsTab — val som ingen kod läste är borttagna (slipningen 2026-10-11)', () => {
+  // Standardvy, veckostart och inaktivitetsvarning sparades men lästes aldrig.
+  // Mutation: lägg tillbaka någon av raderna → faller.
+  it('visar varken standardvy, veckostart eller inaktivitetsvarning', async () => {
+    renderTab()
+    await waitFor(() => expect(fromCallCount.consultant_settings).toBeGreaterThan(0))
+    await waitFor(() => expect(screen.queryByRole('status')).toBeNull())
+    expect(screen.queryByText(/Standardvy|defaultParticipantView/)).toBeNull()
+    expect(screen.queryByText(/Veckan börjar|weekStart/)).toBeNull()
+    expect(screen.queryByText(/Inaktivitetsvarning|inactivityWarning/)).toBeNull()
   })
 })

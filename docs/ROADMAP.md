@@ -1,5 +1,7 @@
 # Roadmap — Jobin (Deltagarportalen)
 
+> **Senast 2026-10-11:** konsulentvyn slipad för kommun och Rusta och matcha (avsnittet "Konsulentvyn 2026-10-11" nedan), inbyggda guider för konsulent och deltagare, säljberedskap i säkerhet, och research om båda kundgrupperna. Förra:
+>
 > **Senast 2026-10-09:** spår JS — Jobin-staden, beslutat och under bygge (första avsnittet). Mikael upphävde de visuella reglerna för ombyggnaden.
 >
 > **Före det, 2026-09-29/30:** tre roadmap-pass — se "Äldre kvar-listor genomgångna 2026-09-29", "Skarpt funktionstest" och "Rollspel 2026-09-28" nedan (✅-märkta med vad som verifierats). Öppna beslut: CVK1, SFT2, SFT4, CH4.
@@ -26,6 +28,44 @@
 **Så tas en punkt:** Premissgranska först — se `CLAUDE.md § Premissgranskning`. Läs koden, spåra konsumenter, kolla schemat mot `information_schema`, mät i stället för att lita på siffrorna här. Rapportera "premissen håller / håller inte" och föreslå bygg / omscopa / avskriv **innan** du bygger. Raderna nedan beskriver vad någon trodde när de skrevs — sex av dem visade sig ha fel premiss 2026-07-27.
 
 ---
+
+## Konsulentvyn 2026-10-11 — slipning, guider, research och säljberedskap (kommun + Rusta och matcha)
+
+Underlag (scratchpad, inte i repot): research-kommun.md, research-rm.md, research-internationellt.md, sakerhet-saljberedskap.md, slip-kommun/fynd.md, slip-rm/fynd.md. Designförslag: https://claude.ai/artifact/PpTmzfyp91p5VtiFFdouUZ · R&M-deck: https://claude.ai/artifact/HC1XKg4stMEfhwscXriHzf
+
+**Princip som infördes:** kundtypen styr. `useOrgTypVisning()`/`useRegelverk()` i `components/consultant/useRegelverk.ts`. Rusta och matcha-begrepp (möteskadens 14/28, nivå A/B/C, "fysiskt (härlett)") visas inte för en konsulent som bara arbetar i kommun.
+
+**Gjort (verify grön, 4 757 tester, build grön — inte pushat):**
+- [x] **KSL1** Kom igång-guide för konsulent (kommun/leverantör × konsulent/handläggare/chef, stegen bockas ur data) och "Vad förväntas av mig?" i Min vecka (sv/en/Lätt svenska). `KomIgangGuide.tsx`, `VadForvantas.tsx`. Stängt läge i localStorage per konto.
+- [x] **KSL2** Möteskadensen: chip, regelrad och Brådskande bara när `visaAvtalskrav`; "(RM3)" borta ur UI-texten.
+- [x] **KSL3** Nivå A/B/C i placeringsdialogen bara för leverantör. Passmärkningen bara för leverantör, "(antaget — ändra passet…)"; eget jobbsökande härleds aldrig som fysiskt (`planMarkning.ts`).
+- [x] **KSL4** Min dag: tomläget säger inte "bra läge att jobba proaktivt" under en lista med saker att göra.
+- [x] **KSL5** Tre inställningar som ingen kod läste borttagna (standardvy, veckostart, inaktivitetsvarning) + 13 döda nycklar.
+- [x] **KSL6** Rapporter: IVO-underlag / avtalskravet först; "—" i stället för 0 % utan deltagare.
+- [x] **KSL7** Deltagarsidan: "Skicka meddelande" + "Logga samtal", klickbar e-post/telefon, mål utan slutdatum får inget påhittat datum.
+- [x] **KSL8** Översikt: placerad deltagare utan aktiv plan jagas inte för fysiskt möte eller CV; "Inget genomfört fysiskt möte än" (inte "90 dagar").
+- [x] **KSL9** "Lämna underlag" är en knapp; "Avsluta plan" avskild och röd.
+- [x] **KSL10** Gruppnärvaro: eget jobbsökande listas inte, gemensamma pass först.
+- [x] **KSL11** Platser: "Registrera X som plats" från planen öppnar Ny plats ifylld. Avvikelser: orsaken skrivs i raden.
+- [x] **KSL12** Ctrl K hittar konsulentens egna deltagare och gruppnärvaron.
+- [x] **KSL13** Min vecka: "N h inbokade … Målet är M" + egen rad "Närvaro hittills". "Din konsulent" i stället för "Din arbetskonsulent". Småsaker: E-post, Sparade jobb, Arbetssätt som fungerar, förvald vardag i Boka möte, Lugnare läge borta ur konsulentvyn, chip radbryts, "Senaste kontakt:".
+
+**Öppet — bygg (inget beslut):**
+- [ ] **KSL14** Avvikelser som inte rapporterats till AF syns på Översikt (R&M B1); KPI-kortet "Snitt ATS" byts mot avtalsläget/planläget per kundtyp (R&M B1, kommun B2).
+- [ ] **KSL15** Handläggarens egen flikuppsättning (kommun B1): Översikt + Rapporter + Inställningar.
+- [ ] **KSL16** Aktivitetsfliken: veckan först, förklaringar bakom "Så räknas veckan" (båda granskningarna).
+- [ ] **KSL17** Deltagarlistan: snabbfilter "utan plan", "ogiltig frånvaro i veckan", "underlag ej lämnat"; deltagarhuvudet visar avtals-/planläge i stället för CV-statistik.
+- [ ] **KSL18** Demoleverantörens sådd: en plats + ett Nordfrakt-förslag så matchningen kan visas (migration av seed-funktionen).
+- [ ] **KSL19** Kommun (research): 4 a §/4 d § på planen, nekad/nedsatt via kvittensen till IVO-underlaget, uppehållsräknare och läkarintygsflagga dag 8, inskrivning/avslut med orsak + Kolada-export.
+- [ ] **KSL20** R&M (research): avvikelser i AF:s format och frister, periodisk redovisning i Mina sidors struktur, fristbevakning (planering/slutredovisning 5 dagar), möteslängd per nivå, ledningsvy mot resultatöversynen.
+
+**Kräver beslut av Mikael:**
+- [ ] **KSL21** "Giltig/ogiltig frånvaro" i leverantörens vy — IAF 2024:12 kallar leverantörens giltighetsbedömning otillåten myndighetsutövning. Förslag: hos leverantör visas orsak och fakta, ingen bedömning; deltagartexten "din konsulent avgör om skälet är giltigt" anpassas.
+- [ ] **KSL22** R&M C1 (koppla deltagare med eget konto) · C2 (status "Uppföljning" för placerad, utanför taket 50).
+- [ ] **KSL23** Vyns namn ("Konsultportal") och om kundtypen ska styra hela vyn som standard.
+- [ ] **KSL24** Guidernas läge mellan enheter (kolumn i user_preferences) · ska deltagaren markera meddelanden som lästa.
+- [ ] **KSL25** Säkerhet inför försäljning (se sakerhet-saljberedskap.md): MFA för personal, Supabase Pro/PITR, AI av som standard för organisationer, OpenRouter data_collection: deny, läslogg på serversidan, repot privat, PUB-avtal för leverantörer.
+- [x] **KSL26** ✅ 2026-10-11 (beslut Mikael "kör vidare med designomtaget"): steg 1–6 byggda — tokens `--j-*`/`--s-*`, Hanken Grotesk + Bricolage Grotesque, ikonsetet Kvarter (32), primitiverna NastaSteg/PersonRad/StatusChip/Veckoremsa/NarvaroVal/MerMeny; Min dag (kontorstonen `data-ton="kontor"`), deltagarlistan + närvaro per pass (förslag ur incheckning/anmälan, sparas först vid klick), deltagarsidan (huvud, planen som vecka, högerspalt per kundtyp), deltagarens Min vecka/Min konsulent/frånvaroanmälan. CV-mallarna (12) omarbetade samma dag, CVK1 löst. verify 5 011 tester, inloggad e2e lokalt 77/77. **Kvar:** prod-röktest efter push (cv-pdf-typsnitt i Lambda-Chromium), axe/kontrastmätning i båda lägena, beslut: genomgången i Vad förväntas visas inte automatiskt längre; Chicago/Atelier/Berlin (0 användare) behålla eller dölja; Resurssidans CV-export via /api/cv-pdf; delningsrutan på Min konsulent visar CV-procent.
 
 ## Spår JS — Jobin-staden: portalen som en plats du rör dig i (beslut Mikael 2026-10-09)
 
@@ -187,7 +227,7 @@ CH4 caseload-tak (beslut: vad är "för mycket"?) · ~~CH5~~ ✅ ingen bugg, fö
 ~~SV8/EG4 guideturen återkommer / ovanpå toasten~~ ✅ (CV-turen sparade avfärdandet i en GLOBAL nyckel och startade efter en fast timer; nu per användare, via `claimOnboardingSession`, aldrig under Snabb-CV) · ~~SV9~~ ✅ · ~~SV10~~ ✅ statusrad vid spara jobb · ~~SV11~~ ✅ rubriker på jobbsöket · **SV12 kvar:** `components/ui/EmptyState.tsx` har hårdkodad `<h3>` i alla varianter (behöver en `headingLevel`-prop), `Settings.tsx:909`, och h3/h4 i `DailyJobTab`/`MatchesTab`/`SlumpjobbetTab` — kräver axe-körning · ~~SV13~~ ✅ länknamnet är bara rubriken ·
 ~~UT4~~ ✅ (Hälsa väntade på allt samtidigt och samtyckesgrinden laddade om hela appen; nu väntar humörvalet bara på dagens humör, och samtycket läggs i storen utan omladdning) · UT5 ingen bugg (Amina är placerad i sådden) · ~~UT6~~ ✅ en tuff dag får en lugn rad i stället för "0 av 4" · ~~UT7~~ ✅ ingen "— Okänd" · ~~EG6~~ ✅ "Fyll i med exempeldata", sist i raden · ~~EG7~~ ✅ lager/truck/chaufför-gren · ~~EG8~~ ✅ påminnelse före export om texten kommer oredigerad ur Snabb-CV-mallen · AlertsTab: jobbevakningens reglage är `role="switch"`.
 
-- [ ] **CVK1** (ny 2026-09-29) CV-mallarnas egna färger klarar inte AA på skärm: t.ex. sektionsrubriker `#999` på vitt (2,84:1), datum `#888` (3,54:1), titel `#6366f1` (4,46:1). Syntes först när EG3 fick `/cv` att öppna på granskningen och axe i CI såg förhandsvisningen. Samma färger hamnar i PDF:en som arbetsgivaren läser. Dokumentet är undantaget i `e2e/axe-a11y.spec.ts` (`[data-cv-dokument]`) tills beslut — att ändra mallfärger ändrar varje användares CV. **Dessutom:** alla tolv mallar ritar namnet som `<h1>`, så granskningssteget har två h1 (sidans "CV" och dokumentets namn) — behöver en rubriknivå-prop i förhandsvisningen men inte i PDF:en. **Följdrättning samma kväll:** stegöversikten visas nu också på granskningen; förut var "Föregående" fem gånger enda vägen tillbaka för den som EG3 landar där.
+- [x] **CVK1** (ny 2026-09-29; ✅ 2026-10-11, se slutet av posten) CV-mallarnas egna färger klarar inte AA på skärm: t.ex. sektionsrubriker `#999` på vitt (2,84:1), datum `#888` (3,54:1), titel `#6366f1` (4,46:1). Syntes först när EG3 fick `/cv` att öppna på granskningen och axe i CI såg förhandsvisningen. Samma färger hamnar i PDF:en som arbetsgivaren läser. Dokumentet är undantaget i `e2e/axe-a11y.spec.ts` (`[data-cv-dokument]`) tills beslut — att ändra mallfärger ändrar varje användares CV. **Dessutom:** alla tolv mallar ritar namnet som `<h1>`, så granskningssteget har två h1 (sidans "CV" och dokumentets namn) — behöver en rubriknivå-prop i förhandsvisningen men inte i PDF:en. **Följdrättning samma kväll:** stegöversikten visas nu också på granskningen; förut var "Föregående" fem gånger enda vägen tillbaka för den som EG3 landar där. **✅ 2026-10-11 (mallslipningen):** alla tolv mallar omarbetade — text ≥ 4,5:1 (stor ≥ 3:1), mallen ritar namnet som h1 i PDF:en och h2 i förhandsvisningen (`rubrikniva`, `templates/typografi.ts`), undantaget i `e2e/axe-a11y.spec.ts` borttaget. Grind: `templates/__tests__/mallkontrast.test.tsx` (kontrast per textelement, rubrikhierarki, sidopanelens/sidans färg = print-konfigurationens) + `cvMallar.test.ts` "inget mall-id försvinner". Samtidigt: mallarnas typsnitt laddas nu av mallarna (`cv/cvTypsnitt.ts`) — `Inter` laddades aldrig och `Georgia` finns inte i Linux-Chromium, så PDF:en sattes i reservtypsnitt; `PrintCV` väntar på typsnitten innan `.cv-preview` ritas. Datum "mar 2023 – nu", beskrivningarnas radbrytningar och punktlistor bevaras (18 av 72 i prod hade radbrytningar som slogs ihop), sidopanelen står efter huvudtexten i DOM (läsordning namn → erfarenhet), Berlin är sandfärgad även i PDF:en.
 
 ### Förslag — utveckling (35, grupperade)
 - **Enheten, inte bara konsulenten:** CH8 chefsvy, CH9 omfångsval i rapporter, CH10 text till tjänsteskrivelse,

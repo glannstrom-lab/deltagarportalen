@@ -1,339 +1,319 @@
 /**
- * Modern Template - Dark Tech
- * Vercel/Linear inspired, dark sidebar, indigo accents
+ * Modern (id `sidebar`, i väljaren "Sidokolumn") — mörk sidopanel, indigo
+ * accent, Inter. Standardmallen: den som är förvald och den som okända id
+ * faller på.
+ *
+ * Slipad 2026-10-11 (CVK1):
+ * - Panelen är solid #141414 i stället för en gradient. I PDF:en målas den
+ *   som canvas-bakgrund i #141414 (SIDEBAR_CONFIG), så gradienten syntes bara
+ *   i förhandsvisningen — nu ser de två likadana ut.
+ * - Indigo #6366F1 på vitt är 4,46:1 och på svart ~4:1. Text i accentfärg är
+ *   nu #4F46E5 på vitt och #A5B4FC på svart; den mättade tonen bär bara ikoner.
+ * - Rubrikerna "Erfarenhet"/"Utbildning" i #999 (2,84:1) → #5F5F5F.
+ * - Datumen står i en egen kolumn som "dec 2025 / – nu", tabulära siffror.
  */
 
+import type { CSSProperties } from 'react'
 import { Mail, Phone, MapPin } from '@/components/ui/icons'
 import type { TemplateProps } from './types'
 import { getLanguageLevelDisplay, getSkillName, getInitials } from './helpers'
+import { periodDelar, periodText, rubrikTaggar } from './typografi'
+import { Beskrivning } from './Beskrivning'
+import { Url } from './Url'
 
-const accent = '#6366F1'
+const PANEL = '#141414'
+const INDIGO = '#6366F1' // ikoner och linjer
+const INDIGO_TEXT = '#4F46E5' // 6,3:1 på vitt
+const INDIGO_LJUS = '#A5B4FC' // 9,5:1 på panelen
+const PANEL_TEXT = '#E6E6E6'
+const PANEL_DAMPAD = '#A3A3A3' // 7,3:1 på panelen
+const SVART = '#0F0F0F'
+const TEXT = '#3A3A3A'
+const DAMPAD = '#5F5F5F' // 6,4:1 på vitt
 
-export function ModernTemplate({ data, fullName }: TemplateProps) {
+const panelrubrik: CSSProperties = {
+  fontSize: '10px',
+  fontWeight: 600,
+  letterSpacing: '0.2em',
+  textTransform: 'uppercase',
+  color: INDIGO_LJUS,
+  margin: '0 0 12px',
+}
+
+const huvudrubrik: CSSProperties = {
+  fontSize: '10.5px',
+  fontWeight: 600,
+  letterSpacing: '0.16em',
+  textTransform: 'uppercase',
+  color: DAMPAD,
+  margin: '0 0 12px',
+  paddingBottom: '6px',
+  borderBottom: '1px solid #ECECEC',
+}
+
+const datumkolumn: CSSProperties = {
+  fontSize: '11px',
+  color: DAMPAD,
+  lineHeight: 1.45,
+  paddingTop: '2px',
+}
+
+const ikon: CSSProperties = { width: '13px', height: '13px', color: INDIGO_LJUS, flexShrink: 0, marginTop: '1px' }
+
+export function ModernTemplate({ data, fullName, rubrikniva }: TemplateProps) {
+  const { Namn, Sektion, Post } = rubrikTaggar(rubrikniva)
+  const harKontakt = !!(data.email || data.phone || data.location)
+
   return (
     <div
       className="cv-preview"
+      lang="sv"
       style={{
         display: 'flex',
         minHeight: '297mm',
-        fontFamily: "'Inter', -apple-system, sans-serif",
+        color: TEXT,
+        fontFamily: "'Inter', 'Helvetica Neue', Arial, sans-serif",
       }}
     >
-      {/* Dark sidebar — 240px (≈30% av A4-bredd) ger balanserad proportion
-          mellan sidobar och main. Större (320px) gör main för smal och
-          rubriker bryts onödigt. */}
+
+      <main style={{ flex: 1, minWidth: 0, padding: '38px 40px 36px', background: '#FFFFFF' }}>
+        <header style={{ marginBottom: '22px' }}>
+          <Namn
+            style={{
+              fontSize: '36px',
+              fontWeight: 700,
+              letterSpacing: '-0.022em',
+              color: SVART,
+              lineHeight: 1.08,
+              margin: 0,
+            }}
+          >
+            {fullName}
+          </Namn>
+          {data.title && (
+            <p style={{ fontSize: '15.5px', color: INDIGO_TEXT, fontWeight: 500, margin: '6px 0 0' }}>{data.title}</p>
+          )}
+          <div aria-hidden="true" style={{ width: '36px', height: '3px', background: INDIGO, borderRadius: '2px', marginTop: '14px' }} />
+        </header>
+
+        {data.summary && (
+          <section style={{ marginBottom: '24px' }}>
+            <p style={{ fontSize: '13px', lineHeight: 1.6, color: TEXT, margin: 0 }}>{data.summary}</p>
+          </section>
+        )}
+
+        {data.workExperience.length > 0 && (
+          <section style={{ marginBottom: '24px' }}>
+            <Sektion style={huvudrubrik}>Erfarenhet</Sektion>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+              {data.workExperience.map((job) => {
+                const p = periodDelar(job.startDate, job.endDate, job.current)
+                return (
+                  <div key={job.id} className="cv-entry" style={{ display: 'grid', gridTemplateColumns: '78px 1fr', gap: '16px' }}>
+                    <div className="cv-datum" style={datumkolumn}>
+                      {p.fran}
+                      {p.till && (
+                        <>
+                          <br />– {p.till}
+                        </>
+                      )}
+                    </div>
+                    <div style={{ minWidth: 0 }}>
+                      <Post style={{ fontSize: '14px', fontWeight: 600, color: SVART, margin: 0 }}>{job.title}</Post>
+                      <p style={{ fontSize: '12.5px', margin: '2px 0 0', color: INDIGO_TEXT }}>
+                        {job.company}
+                        {job.location && <span style={{ color: DAMPAD }}> · {job.location}</span>}
+                      </p>
+                      <Beskrivning
+                        text={job.description}
+                        style={{ fontSize: '12.5px', lineHeight: 1.55, color: TEXT, marginTop: '5px' }}
+                      />
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          </section>
+        )}
+
+        {data.education.length > 0 && (
+          <section style={{ marginBottom: '24px' }}>
+            <Sektion style={huvudrubrik}>Utbildning</Sektion>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '11px' }}>
+              {data.education.map((edu) => {
+                const p = periodDelar(edu.startDate, edu.endDate, edu.current)
+                return (
+                  <div key={edu.id} className="cv-entry" style={{ display: 'grid', gridTemplateColumns: '78px 1fr', gap: '16px' }}>
+                    <div className="cv-datum" style={datumkolumn}>
+                      {p.fran}
+                      {p.till && (
+                        <>
+                          <br />– {p.till}
+                        </>
+                      )}
+                    </div>
+                    <div style={{ minWidth: 0 }}>
+                      <Post style={{ fontSize: '13.5px', fontWeight: 600, color: SVART, margin: 0 }}>{edu.degree || edu.school}</Post>
+                      <p style={{ fontSize: '12.5px', margin: '2px 0 0', color: DAMPAD }}>
+                        {[edu.degree ? edu.school : null, edu.field, edu.location].filter(Boolean).join(' · ')}
+                      </p>
+                      <Beskrivning
+                        text={edu.description}
+                        style={{ fontSize: '12.5px', lineHeight: 1.55, color: TEXT, marginTop: '4px' }}
+                      />
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          </section>
+        )}
+
+        {data.certificates.length > 0 && (
+          <section className="cv-keep">
+            <Sektion style={huvudrubrik}>Certifikat</Sektion>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
+              {data.certificates.map((cert) => (
+                <p key={cert.id} className="cv-entry" style={{ fontSize: '12.5px', color: SVART, margin: 0 }}>
+                  <span style={{ fontWeight: 500 }}>{cert.name}</span>
+                  {cert.issuer && <span style={{ color: DAMPAD }}> · {cert.issuer}</span>}
+                  {cert.date && <span className="cv-datum" style={{ color: DAMPAD }}> · {periodText(cert.date)}</span>}
+                </p>
+              ))}
+            </div>
+          </section>
+        )}
+      </main>
+      {/* Panelen står EFTER huvudtexten i dokumentet men till vänster på sidan
+          (order: -1). Läsordningen — för en skärmläsare, för den som kopierar
+          texten och för ett rekryteringssystem — blir då namn, erfarenhet,
+          utbildning, och sist kontakt och kompetenser, i stället för att
+          dokumentet börjar med ordet "Kontakt".
+          240 px ≈ 30 % av A4 — måste vara samma som SIDEBAR_CONFIG.sidebar. */}
       <aside
         style={{
+          order: -1,
           width: '240px',
-          background: 'linear-gradient(180deg, #0F0F0F 0%, #1A1A1A 100%)',
-          color: '#FFFFFF',
-          padding: '40px 28px',
+          background: PANEL,
+          color: PANEL_TEXT,
+          padding: '40px 26px',
           display: 'flex',
           flexDirection: 'column',
+          gap: '26px',
           flexShrink: 0,
         }}
       >
-        {/* Photo — centrerad, fast storlek max 160px så fotot inte
-            äter hela sidobaren när användaren har bild. */}
-        <div className="cv-keep" style={{ display: 'flex', justifyContent: 'center', marginBottom: '28px' }}>
+        <div className="cv-keep" style={{ display: 'flex', justifyContent: 'center' }}>
           {data.profileImage ? (
             <img
               src={data.profileImage}
               alt=""
-              style={{
-                width: '160px',
-                height: '160px',
-                objectFit: 'cover',
-                borderRadius: '14px',
-              }}
+              style={{ width: '148px', height: '148px', objectFit: 'cover', borderRadius: '12px' }}
             />
           ) : (
             <div
+              aria-hidden="true"
               style={{
-                width: '160px',
-                height: '160px',
-                background: 'rgba(255,255,255,0.05)',
-                borderRadius: '14px',
+                width: '148px',
+                height: '148px',
+                borderRadius: '12px',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                border: '1px solid rgba(255,255,255,0.08)',
+                border: '1px solid #2E2E2E',
               }}
             >
-              <span style={{ fontSize: '44px', fontWeight: 300, color: 'rgba(255,255,255,0.5)', letterSpacing: '0.02em' }}>
+              <span style={{ fontSize: '42px', fontWeight: 300, color: '#8A8A8A', letterSpacing: '0.02em' }}>
                 {getInitials(data.firstName, data.lastName)}
               </span>
             </div>
           )}
         </div>
 
-        {/* Contact */}
-        <div style={{ marginBottom: '28px' }}>
-          <h3
-            style={{
-              fontSize: '10px',
-              fontWeight: '600',
-              letterSpacing: '0.2em',
-              textTransform: 'uppercase',
-              color: accent,
-              marginBottom: '14px',
-            }}
-          >
-            Kontakt
-          </h3>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-            {data.email && (
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <Mail style={{ width: '14px', height: '14px', color: accent, flexShrink: 0 }} />
-                <span style={{ fontSize: '11.5px', color: 'rgba(255,255,255,0.8)', wordBreak: 'break-all', lineHeight: 1.4 }}>{data.email}</span>
-              </div>
-            )}
-            {data.phone && (
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <Phone style={{ width: '14px', height: '14px', color: accent, flexShrink: 0 }} />
-                <span style={{ fontSize: '12px', color: 'rgba(255,255,255,0.8)' }}>{data.phone}</span>
-              </div>
-            )}
-            {data.location && (
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <MapPin style={{ width: '14px', height: '14px', color: accent, flexShrink: 0 }} />
-                <span style={{ fontSize: '12px', color: 'rgba(255,255,255,0.8)' }}>{data.location}</span>
-              </div>
-            )}
-          </div>
-        </div>
+        {harKontakt && (
+          <section className="cv-keep">
+            <Sektion style={panelrubrik}>Kontakt</Sektion>
+            <ul className="cv-kontakt" style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: '9px' }}>
+              {data.email && (
+                <li style={{ display: 'flex', alignItems: 'flex-start', gap: '9px', fontSize: '11.5px', lineHeight: 1.4 }}>
+                  <Mail aria-hidden="true" style={ikon} />
+                  <span>{data.email}</span>
+                </li>
+              )}
+              {data.phone && (
+                <li style={{ display: 'flex', alignItems: 'flex-start', gap: '9px', fontSize: '11.5px', lineHeight: 1.4 }}>
+                  <Phone aria-hidden="true" style={ikon} />
+                  <span>{data.phone}</span>
+                </li>
+              )}
+              {data.location && (
+                <li style={{ display: 'flex', alignItems: 'flex-start', gap: '9px', fontSize: '11.5px', lineHeight: 1.4 }}>
+                  <MapPin aria-hidden="true" style={ikon} />
+                  <span>{data.location}</span>
+                </li>
+              )}
+            </ul>
+          </section>
+        )}
 
-        {/* Skills */}
-        {data.skills?.length > 0 && (
-          <div style={{ marginBottom: '28px' }}>
-            <h3
-              style={{
-                fontSize: '10px',
-                fontWeight: '600',
-                letterSpacing: '0.2em',
-                textTransform: 'uppercase',
-                color: accent,
-                marginBottom: '14px',
-              }}
-            >
-              Kompetenser
-            </h3>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+        {data.skills.length > 0 && (
+          <section>
+            <Sektion style={panelrubrik}>Kompetenser</Sektion>
+            <ul style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', listStyle: 'none', margin: 0, padding: 0 }}>
               {data.skills.map((skill, i) => (
-                <span
+                <li
                   key={i}
                   style={{
                     fontSize: '11px',
-                    padding: '4px 10px',
-                    background: 'rgba(99, 102, 241, 0.15)',
-                    borderRadius: '5px',
+                    padding: '3px 9px',
+                    borderRadius: '4px',
                     color: '#FFFFFF',
-                    border: '1px solid rgba(99, 102, 241, 0.3)',
+                    border: '1px solid #3B3D6B',
+                    background: '#1E1F33',
                   }}
                 >
                   {getSkillName(skill)}
-                </span>
+                </li>
               ))}
-            </div>
-          </div>
+            </ul>
+          </section>
         )}
 
-        {/* Länkar — nära kontaktuppgifterna där man letar efter dem. */}
-        {data.links?.length > 0 && (
-          <div className="cv-keep" style={{ marginBottom: '28px' }}>
-            <h3
-              style={{
-                fontSize: '10px',
-                fontWeight: '600',
-                letterSpacing: '0.2em',
-                textTransform: 'uppercase',
-                color: accent,
-                marginBottom: '14px',
-              }}
-            >
-              Länkar
-            </h3>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-              {data.links.map(link => (
-                <div key={link.id} className="cv-entry">
-                  {link.label && (
-                    <div style={{ fontSize: '11.5px', fontWeight: 500, color: 'rgba(255,255,255,0.9)' }}>{link.label}</div>
-                  )}
-                  <div style={{ fontSize: '10.5px', color: 'rgba(255,255,255,0.55)', wordBreak: 'break-all', lineHeight: 1.4 }}>
-                    {link.url}
+        {data.links.length > 0 && (
+          <section className="cv-keep">
+            <Sektion style={panelrubrik}>Länkar</Sektion>
+            <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              {data.links.map((link) => (
+                <li key={link.id} className="cv-entry">
+                  {link.label && <div style={{ fontSize: '11.5px', fontWeight: 500, color: '#FFFFFF' }}>{link.label}</div>}
+                  <div className="cv-url" style={{ fontSize: '10.5px', color: PANEL_DAMPAD, lineHeight: 1.4 }}>
+                    <Url text={link.url} />
                   </div>
-                </div>
+                </li>
               ))}
-            </div>
-          </div>
+            </ul>
+          </section>
         )}
 
-        {/* Languages — utan marginTop:auto eftersom det skapar stora
-            mellanrum när aside-content är kortare än main, vilket gör
-            att SPRÅK hamnar i mitten av sida 2 i flera-sidors-PDFs. */}
-        {data.languages?.length > 0 && (
-          <div className="cv-keep">
-            <h3
-              style={{
-                fontSize: '10px',
-                fontWeight: '600',
-                letterSpacing: '0.2em',
-                textTransform: 'uppercase',
-                color: accent,
-                marginBottom: '14px',
-              }}
-            >
-              Språk
-            </h3>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-              {data.languages.map(lang => {
+        {data.languages.length > 0 && (
+          <section className="cv-keep">
+            <Sektion style={panelrubrik}>Språk</Sektion>
+            <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: '7px' }}>
+              {data.languages.map((lang) => {
                 const name = lang.language || ('name' in lang ? (lang as { name: string }).name : '')
                 return (
-                  <div key={lang.id} className="cv-entry">
-                    <div style={{ fontSize: '12px', fontWeight: 500 }}>{name}</div>
-                    <div style={{ fontSize: '10.5px', color: 'rgba(255,255,255,0.5)', fontStyle: 'italic', marginTop: '1px' }}>
+                  <li key={lang.id} className="cv-entry">
+                    <div style={{ fontSize: '12px', fontWeight: 500, color: '#FFFFFF' }}>{name}</div>
+                    <div style={{ fontSize: '10.5px', color: PANEL_DAMPAD, marginTop: '1px' }}>
                       {getLanguageLevelDisplay(lang.level)}
                     </div>
-                  </div>
+                  </li>
                 )
               })}
-            </div>
-          </div>
+            </ul>
+          </section>
         )}
       </aside>
-
-      {/* Main content — kompakt padding för att maxa innehållsplats på A4. */}
-      <main style={{ flex: 1, padding: '36px 40px', background: '#FFFFFF' }}>
-        {/* Header — namn-font 38px så fullständigt namn ryms på 1 rad
-            inom main-bredden (~470px) även för långa namn. */}
-        <header style={{ marginBottom: '20px' }}>
-          <h1
-            style={{
-              fontSize: '38px',
-              fontWeight: '700',
-              letterSpacing: '-0.02em',
-              color: '#0F0F0F',
-              lineHeight: '1.1',
-              marginBottom: '6px',
-            }}
-          >
-            {fullName}
-          </h1>
-          {data.title && (
-            <p style={{ fontSize: '16px', color: accent, fontWeight: '500' }}>{data.title}</p>
-          )}
-        </header>
-
-        {/* Summary */}
-        {data.summary && (
-          <section style={{ marginBottom: '22px' }}>
-            <p style={{ fontSize: '13px', lineHeight: '1.55', color: '#444444' }}>
-              {data.summary}
-            </p>
-          </section>
-        )}
-
-        {/* Experience — datakolumn 90px så titel + beskrivning får mer luft. */}
-        {data.workExperience?.length > 0 && (
-          <section style={{ marginBottom: '22px' }}>
-            <h2
-              style={{
-                fontSize: '11px',
-                fontWeight: '600',
-                letterSpacing: '0.15em',
-                textTransform: 'uppercase',
-                color: '#999999',
-                marginBottom: '14px',
-              }}
-            >
-              Erfarenhet
-            </h2>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-              {data.workExperience.map(job => (
-                <div key={job.id} className="cv-entry">
-                  <div style={{ display: 'grid', gridTemplateColumns: '90px 1fr', gap: '18px' }}>
-                    <div>
-                      <span style={{ fontSize: '11px', color: '#888888', fontFeatureSettings: '"tnum"', lineHeight: 1.45 }}>
-                        {job.startDate}<br />— {job.current ? 'Nu' : job.endDate}
-                      </span>
-                    </div>
-                    <div>
-                      <h3 style={{ fontSize: '14.5px', fontWeight: '600', color: '#0F0F0F', marginBottom: '1px' }}>
-                        {job.title}
-                      </h3>
-                      <div style={{ fontSize: '12.5px', color: accent, marginBottom: '6px' }}>{job.company}</div>
-                      {job.description && (
-                        <p style={{ fontSize: '12.5px', lineHeight: '1.55', color: '#666666' }}>{job.description}</p>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </section>
-        )}
-
-        {/* Education — hela sektionen är ett cv-keep så de få utbildnings-
-            entries hålls ihop på samma sida (sektionen är typiskt 80-120px). */}
-        {data.education?.length > 0 && (
-          <section className="cv-keep">
-            <h2
-              style={{
-                fontSize: '11px',
-                fontWeight: '600',
-                letterSpacing: '0.15em',
-                textTransform: 'uppercase',
-                color: '#999999',
-                marginBottom: '14px',
-              }}
-            >
-              Utbildning
-            </h2>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-              {data.education.map(edu => (
-                <div key={edu.id} className="cv-entry">
-                  <div style={{ display: 'grid', gridTemplateColumns: '90px 1fr', gap: '18px' }}>
-                    <span style={{ fontSize: '11px', color: '#888888', lineHeight: 1.45 }}>
-                      {edu.startDate}<br />— {edu.endDate}
-                    </span>
-                    <div>
-                      <h3 style={{ fontSize: '13.5px', fontWeight: '600', color: '#0F0F0F' }}>{edu.degree}</h3>
-                      <div style={{ fontSize: '12.5px', color: '#666666' }}>{edu.school}</div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </section>
-        )}
-
-        {/* Certifikat */}
-        {data.certificates?.length > 0 && (
-          <section className="cv-keep" style={{ marginTop: '22px' }}>
-            <h2
-              style={{
-                fontSize: '11px',
-                fontWeight: '600',
-                letterSpacing: '0.15em',
-                textTransform: 'uppercase',
-                color: '#999999',
-                marginBottom: '14px',
-              }}
-            >
-              Certifikat
-            </h2>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-              {data.certificates.map(cert => (
-                <div key={cert.id} className="cv-entry">
-                  <span style={{ fontSize: '13px', fontWeight: 500, color: '#0F0F0F' }}>{cert.name}</span>
-                  {cert.issuer && <span style={{ fontSize: '12px', color: '#888888' }}> · {cert.issuer}</span>}
-                  {cert.date && <span style={{ fontSize: '12px', color: '#888888' }}> · {cert.date}</span>}
-                </div>
-              ))}
-            </div>
-          </section>
-        )}
-      </main>
     </div>
   )
 }

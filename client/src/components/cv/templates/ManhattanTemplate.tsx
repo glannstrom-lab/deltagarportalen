@@ -1,261 +1,107 @@
 /**
- * Manhattan Template — Kickresume-inspirerad premium-mall.
+ * Manhattan (id `manhattan`) — mörk navy-sidopanel, kopparaccent, namn och
+ * befattningar i Playfair Display, brödtext i Source Sans 3. Den bestämda,
+ * "executive" systern till Atelier (som är krämvit och dämpad).
  *
- * Designprinciper:
- * - Mörk navy-sidebar (#0F1B2D) med vit text — bold, executive-känsla
- * - Vit huvudkolumn med generös whitespace
- * - Brun/copper-accent (#B07A4C) för rubriker — varm metallisk ton
- * - Stora, breda serif-headlines (Playfair Display) för namn/titel
- * - Sober geometriska divider-linjer i sidebar
- * - Cirkulär profilbild med tunn copper-ring
- * - 2-kolumns: 220px navy-sidebar + flex content
- *
- * Skiljer sig från Atelier: Manhattan är bold/executive (mörk + copper),
- * Atelier är subtle/editorial (cream + teal).
+ * Slipad 2026-10-11 (CVK1):
+ * - Koppar #B07A4C som textfärg på vitt är 3,4:1 → #8A5A2E (5,6:1). Den ljusa
+ *   kopparn ligger kvar som linjer, och som text bara på navy där den klarar
+ *   8:1.
+ * - Panelen står efter huvudtexten i dokumentet (order: -1), så läsordningen
+ *   börjar med namnet i stället för "Kontakt".
+ * - Datumen i versaler med spärr var svåra att läsa ("2025-12 — NUVARANDE");
+ *   nu "dec 2025 – nuvarande" i gemener med tabulära siffror.
  */
 
+import type { CSSProperties } from 'react'
 import type { TemplateProps } from './types'
 import { getLanguageLevelDisplay, getSkillName, getInitials } from './helpers'
+import { periodText, rubrikTaggar } from './typografi'
+import { Beskrivning } from './Beskrivning'
+import { Url } from './Url'
 
-const navy = '#0F1B2D'
-const navySoft = '#1A2A42'
-const copper = '#B07A4C'
-const copperSoft = '#D4A574'
-const ink = '#1A1A1A'
-const muted = '#5A5A5A'
+const NAVY = '#0F1B2D'
+const KOPPAR = '#B07A4C' // linjer
+const KOPPAR_TEXT = '#8A5A2E' // 5,6:1 på vitt
+const KOPPAR_LJUS = '#D4A574' // 8,3:1 på navy
+const PANEL_TEXT = '#E6EBF2'
+const PANEL_DAMPAD = '#B4C0D0' // 9,0:1 på navy
+const BLACK = '#1A1A1A'
+const TEXT = '#3A3A3A'
+const DAMPAD = '#5A5A5A' // 6,9:1
+const PLAYFAIR = "'Playfair Display', Georgia, serif"
 
-export function ManhattanTemplate({ data, fullName }: TemplateProps) {
-  const initials = getInitials(data.firstName, data.lastName)
+const panelrubrik: CSSProperties = {
+  fontSize: '10px',
+  fontWeight: 700,
+  letterSpacing: '0.24em',
+  textTransform: 'uppercase',
+  color: KOPPAR_LJUS,
+  margin: '0 0 12px',
+  paddingBottom: '7px',
+  borderBottom: '1px solid #2A3B55',
+}
+
+const huvudrubrik: CSSProperties = {
+  fontSize: '11px',
+  fontWeight: 700,
+  letterSpacing: '0.24em',
+  textTransform: 'uppercase',
+  color: BLACK,
+  margin: '0 0 12px',
+}
+
+const datum: CSSProperties = {
+  fontSize: '11px',
+  fontWeight: 600,
+  letterSpacing: '0.03em',
+  color: KOPPAR_TEXT,
+  whiteSpace: 'nowrap',
+  marginLeft: '14px',
+}
+
+const post: CSSProperties = { paddingLeft: '13px', borderLeft: `2px solid ${KOPPAR}`, marginBottom: '13px' }
+
+export function ManhattanTemplate({ data, fullName, rubrikniva }: TemplateProps) {
+  const { Namn, Sektion, Post } = rubrikTaggar(rubrikniva)
+  const harKontakt = !!(data.email || data.phone || data.location)
 
   return (
     <div
       className="cv-preview"
+      lang="sv"
       style={{
         display: 'flex',
         minHeight: '297mm',
         background: '#FFFFFF',
         fontFamily: "'Source Sans 3', 'Helvetica Neue', Arial, sans-serif",
-        color: ink,
+        color: TEXT,
       }}
     >
-      {/* Vänster navy-sidebar */}
-      <aside
-        style={{
-          width: '220px',
-          background: navy,
-          color: '#FFFFFF',
-          padding: '48px 28px',
-          flexShrink: 0,
-        }}
-      >
-        {/* Profilbild */}
-        <div className="cv-keep" style={{ marginBottom: '36px', display: 'flex', justifyContent: 'center' }}>
-          {data.profileImage ? (
-            <img
-              src={data.profileImage}
-              alt=""
-              style={{
-                width: '140px',
-                height: '140px',
-                objectFit: 'cover',
-                borderRadius: '50%',
-                border: `2px solid ${copper}`,
-              }}
-            />
-          ) : (
-            <div
-              style={{
-                width: '140px',
-                height: '140px',
-                borderRadius: '50%',
-                border: `2px solid ${copper}`,
-                background: navySoft,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontSize: '38px',
-                fontWeight: 400,
-                color: copperSoft,
-                fontFamily: "'Playfair Display', 'Georgia', serif",
-                letterSpacing: '0.05em',
-              }}
-            >
-              {initials}
-            </div>
-          )}
-        </div>
-
-        {/* Kontakt */}
-        <section className="cv-keep" style={{ marginBottom: '32px' }}>
-          <h3
+      <main style={{ flex: 1, minWidth: 0, padding: '42px 44px 40px', background: '#FFFFFF' }}>
+        <header style={{ marginBottom: '22px', paddingBottom: '14px', borderBottom: `2px solid ${KOPPAR}` }}>
+          <Namn
             style={{
-              fontSize: '11px',
+              fontFamily: PLAYFAIR,
+              fontSize: fullName.length > 22 ? '30px' : '36px',
               fontWeight: 700,
-              letterSpacing: '0.22em',
-              textTransform: 'uppercase',
-              color: copper,
-              marginBottom: '14px',
-              paddingBottom: '8px',
-              borderBottom: `1px solid ${copper}`,
-            }}
-          >
-            Kontakt
-          </h3>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '12px' }}>
-            {data.email && (
-              <div style={{ color: '#E5E7EB', wordBreak: 'break-all', lineHeight: 1.5 }}>{data.email}</div>
-            )}
-            {data.phone && <div style={{ color: '#E5E7EB' }}>{data.phone}</div>}
-            {data.location && <div style={{ color: '#E5E7EB' }}>{data.location}</div>}
-          </div>
-        </section>
-
-        {data.skills?.length > 0 && (
-          <section className="cv-keep" style={{ marginBottom: '32px' }}>
-            <h3
-              style={{
-                fontSize: '11px',
-                fontWeight: 700,
-                letterSpacing: '0.22em',
-                textTransform: 'uppercase',
-                color: copper,
-                marginBottom: '14px',
-                paddingBottom: '8px',
-                borderBottom: `1px solid ${copper}`,
-              }}
-            >
-              Kompetenser
-            </h3>
-            <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-              {data.skills.map((skill, i) => (
-                <li
-                  key={i}
-                  style={{
-                    fontSize: '12px',
-                    color: '#E5E7EB',
-                    lineHeight: 1.8,
-                  }}
-                >
-                  {getSkillName(skill)}
-                </li>
-              ))}
-            </ul>
-          </section>
-        )}
-
-        {data.languages?.length > 0 && (
-          <section className="cv-keep" style={{ marginBottom: '32px' }}>
-            <h3
-              style={{
-                fontSize: '11px',
-                fontWeight: 700,
-                letterSpacing: '0.22em',
-                textTransform: 'uppercase',
-                color: copper,
-                marginBottom: '14px',
-                paddingBottom: '8px',
-                borderBottom: `1px solid ${copper}`,
-              }}
-            >
-              Språk
-            </h3>
-            {data.languages.map((lang) => {
-              const name = lang.language || ('name' in lang ? (lang as { name: string }).name : '')
-              return (
-                <div key={lang.id} style={{ marginBottom: '10px', fontSize: '12px' }}>
-                  <div style={{ fontWeight: 600, color: '#FFFFFF' }}>{name}</div>
-                  <div style={{ fontSize: '10px', color: copperSoft, marginTop: '2px', fontStyle: 'italic' }}>
-                    {getLanguageLevelDisplay(lang.level)}
-                  </div>
-                </div>
-              )
-            })}
-          </section>
-        )}
-
-        {data.certificates?.length > 0 && (
-          <section className="cv-keep" style={{ marginBottom: '32px' }}>
-            <h3
-              style={{
-                fontSize: '11px',
-                fontWeight: 700,
-                letterSpacing: '0.22em',
-                textTransform: 'uppercase',
-                color: copper,
-                marginBottom: '14px',
-                paddingBottom: '8px',
-                borderBottom: `1px solid ${copper}`,
-              }}
-            >
-              Certifikat
-            </h3>
-            {data.certificates.map((cert) => (
-              <div key={cert.id} style={{ marginBottom: '12px', fontSize: '12px' }}>
-                <div style={{ fontWeight: 600, color: '#FFFFFF' }}>{cert.name}</div>
-                {(cert.issuer || cert.date) && (
-                  <div style={{ fontSize: '11px', color: copperSoft, marginTop: '2px' }}>
-                    {[cert.issuer, cert.date].filter(Boolean).join(' · ')}
-                  </div>
-                )}
-              </div>
-            ))}
-          </section>
-        )}
-
-        {data.links?.length > 0 && (
-          <section className="cv-keep">
-            <h3
-              style={{
-                fontSize: '11px',
-                fontWeight: 700,
-                letterSpacing: '0.22em',
-                textTransform: 'uppercase',
-                color: copper,
-                marginBottom: '14px',
-                paddingBottom: '8px',
-                borderBottom: `1px solid ${copper}`,
-              }}
-            >
-              Länkar
-            </h3>
-            {data.links.map((link) => (
-              <div key={link.id} style={{ marginBottom: '10px', fontSize: '11px' }}>
-                {link.label && (
-                  <div style={{ fontWeight: 600, color: '#FFFFFF', fontSize: '12px' }}>{link.label}</div>
-                )}
-                <div style={{ color: copperSoft, wordBreak: 'break-all' }}>{link.url}</div>
-              </div>
-            ))}
-          </section>
-        )}
-      </aside>
-
-      {/* Höger huvudkolumn */}
-      <main style={{ flex: 1, padding: '32px 44px 36px' }}>
-        {/* Header */}
-        <header style={{ marginBottom: '18px', paddingBottom: '12px', borderBottom: `2px solid ${copper}` }}>
-          <h1
-            style={{
-              fontSize: '36px',
-              fontWeight: 700,
-              color: navy,
-              fontFamily: "'Playfair Display', 'Georgia', serif",
-              letterSpacing: '-0.01em',
-              lineHeight: 1.05,
-              marginBottom: '4px',
+              letterSpacing: '-0.005em',
+              color: NAVY,
+              lineHeight: 1.08,
+              margin: 0,
             }}
           >
             {fullName}
-          </h1>
+          </Namn>
           {data.title && (
             <p
               style={{
-                fontSize: '13px',
-                fontWeight: 500,
-                letterSpacing: '0.18em',
+                fontSize: '11.5px',
+                fontWeight: 600,
+                letterSpacing: '0.22em',
                 textTransform: 'uppercase',
-                color: copper,
-                marginTop: '8px',
+                color: KOPPAR_TEXT,
+                margin: '8px 0 0',
               }}
             >
               {data.title}
@@ -264,168 +110,161 @@ export function ManhattanTemplate({ data, fullName }: TemplateProps) {
         </header>
 
         {data.summary && (
-          <section style={{ marginBottom: '18px' }}>
-            <h2
-              style={{
-                fontSize: '12px',
-                fontWeight: 700,
-                letterSpacing: '0.22em',
-                textTransform: 'uppercase',
-                color: navy,
-                marginBottom: '8px',
-              }}
-            >
-              Profil
-            </h2>
-            <p
-              style={{
-                fontSize: '12.5px',
-                lineHeight: 1.55,
-                color: ink,
-              }}
-            >
-              {data.summary}
-            </p>
+          <section style={{ marginBottom: '22px' }}>
+            <Sektion style={huvudrubrik}>Profil</Sektion>
+            <p style={{ fontSize: '13px', lineHeight: 1.6, color: TEXT, margin: 0 }}>{data.summary}</p>
           </section>
         )}
 
-        {data.workExperience?.length > 0 && (
-          <section style={{ marginBottom: '18px' }}>
-            <h2
-              style={{
-                fontSize: '12px',
-                fontWeight: 700,
-                letterSpacing: '0.22em',
-                textTransform: 'uppercase',
-                color: navy,
-                marginBottom: '12px',
-              }}
-            >
-              Erfarenhet
-            </h2>
-            <div>
-              {data.workExperience.map((job) => (
-                <div key={job.id} className="cv-entry" style={{ marginBottom: '12px', paddingLeft: '14px', borderLeft: `2px solid ${copperSoft}` }}>
-                  <div
-                    style={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      alignItems: 'baseline',
-                      marginBottom: '4px',
-                    }}
-                  >
-                    <h3
-                      style={{
-                        fontSize: '14.5px',
-                        fontWeight: 700,
-                        color: navy,
-                        fontFamily: "'Playfair Display', 'Georgia', serif",
-                      }}
-                    >
-                      {job.title}
-                    </h3>
-                    <span
-                      style={{
-                        fontSize: '10.5px',
-                        color: copper,
-                        fontWeight: 600,
-                        letterSpacing: '0.05em',
-                        textTransform: 'uppercase',
-                        whiteSpace: 'nowrap',
-                        marginLeft: '12px',
-                      }}
-                    >
-                      {job.startDate} — {job.current ? 'Nuvarande' : job.endDate}
-                    </span>
-                  </div>
-                  <div
-                    style={{
-                      fontSize: '12px',
-                      fontWeight: 500,
-                      color: muted,
-                      marginBottom: '4px',
-                      fontStyle: 'italic',
-                    }}
-                  >
-                    {job.company}
-                    {job.location && <span> · {job.location}</span>}
-                  </div>
-                  {job.description && (
-                    <p style={{ fontSize: '12px', lineHeight: 1.5, color: '#3F3F3F' }}>{job.description}</p>
-                  )}
+        {data.workExperience.length > 0 && (
+          <section style={{ marginBottom: '22px' }}>
+            <Sektion style={huvudrubrik}>Erfarenhet</Sektion>
+            {data.workExperience.map((job) => (
+              <div key={job.id} className="cv-entry" style={post}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+                  <Post style={{ fontFamily: PLAYFAIR, fontSize: '15px', fontWeight: 600, color: NAVY, margin: 0 }}>{job.title}</Post>
+                  <span className="cv-datum" style={datum}>
+                    {periodText(job.startDate, job.endDate, job.current, 'nuvarande')}
+                  </span>
                 </div>
-              ))}
-            </div>
+                <p style={{ fontSize: '12.5px', fontStyle: 'italic', color: DAMPAD, margin: '2px 0 0' }}>
+                  {[job.company, job.location].filter(Boolean).join(' · ')}
+                </p>
+                <Beskrivning text={job.description} style={{ fontSize: '12.5px', lineHeight: 1.55, color: TEXT, marginTop: '4px' }} />
+              </div>
+            ))}
           </section>
         )}
 
-        {data.education?.length > 0 && (
-          <section className="cv-keep">
-            <h2
-              style={{
-                fontSize: '12px',
-                fontWeight: 700,
-                letterSpacing: '0.22em',
-                textTransform: 'uppercase',
-                color: navy,
-                marginBottom: '12px',
-              }}
-            >
-              Utbildning
-            </h2>
-            <div>
-              {data.education.map((edu) => (
-                <div key={edu.id} className="cv-entry" style={{ marginBottom: '10px', paddingLeft: '14px', borderLeft: `2px solid ${copperSoft}` }}>
-                  <div
-                    style={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      alignItems: 'baseline',
-                      marginBottom: '2px',
-                    }}
-                  >
-                    <h3
-                      style={{
-                        fontSize: '13.5px',
-                        fontWeight: 700,
-                        color: navy,
-                        fontFamily: "'Playfair Display', 'Georgia', serif",
-                      }}
-                    >
-                      {edu.degree}
-                    </h3>
-                    <span
-                      style={{
-                        fontSize: '10.5px',
-                        color: copper,
-                        fontWeight: 600,
-                        letterSpacing: '0.05em',
-                        textTransform: 'uppercase',
-                        whiteSpace: 'nowrap',
-                        marginLeft: '12px',
-                      }}
-                    >
-                      {edu.startDate} — {edu.endDate}
-                    </span>
-                  </div>
-                  <div
-                    style={{
-                      fontSize: '12px',
-                      color: muted,
-                      fontStyle: 'italic',
-                    }}
-                  >
-                    {edu.school}
-                  </div>
-                  {edu.field && (
-                    <div style={{ fontSize: '11.5px', color: muted, marginTop: '1px' }}>{edu.field}</div>
-                  )}
+        {data.education.length > 0 && (
+          <section style={{ marginBottom: '22px' }}>
+            <Sektion style={huvudrubrik}>Utbildning</Sektion>
+            {data.education.map((edu) => (
+              <div key={edu.id} className="cv-entry" style={post}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+                  <Post style={{ fontFamily: PLAYFAIR, fontSize: '14.5px', fontWeight: 600, color: NAVY, margin: 0 }}>{edu.degree || edu.school}</Post>
+                  <span className="cv-datum" style={datum}>
+                    {periodText(edu.startDate, edu.endDate, edu.current, 'nuvarande')}
+                  </span>
                 </div>
-              ))}
-            </div>
+                <p style={{ fontSize: '12.5px', fontStyle: 'italic', color: DAMPAD, margin: '2px 0 0' }}>
+                  {[edu.degree ? edu.school : null, edu.field, edu.location].filter(Boolean).join(' · ')}
+                </p>
+                <Beskrivning text={edu.description} style={{ fontSize: '12.5px', lineHeight: 1.55, color: TEXT, marginTop: '4px' }} />
+              </div>
+            ))}
           </section>
         )}
       </main>
+
+      {/* Efter huvudtexten i dokumentet, till vänster på sidan (order: -1).
+          220 px och #0F1B2D måste stämma med SIDEBAR_CONFIG.manhattan. */}
+      <aside
+        style={{
+          order: -1,
+          width: '220px',
+          background: NAVY,
+          color: PANEL_TEXT,
+          padding: '42px 26px 40px',
+          flexShrink: 0,
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '26px',
+        }}
+      >
+        <div className="cv-keep" style={{ display: 'flex', justifyContent: 'center' }}>
+          {data.profileImage ? (
+            <img
+              src={data.profileImage}
+              alt=""
+              style={{ width: '136px', height: '136px', objectFit: 'cover', borderRadius: '50%', border: `2px solid ${KOPPAR}` }}
+            />
+          ) : (
+            <div
+              aria-hidden="true"
+              style={{
+                width: '136px',
+                height: '136px',
+                borderRadius: '50%',
+                border: `2px solid ${KOPPAR}`,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontFamily: PLAYFAIR,
+                fontSize: '40px',
+                color: KOPPAR_LJUS,
+              }}
+            >
+              {getInitials(data.firstName, data.lastName)}
+            </div>
+          )}
+        </div>
+
+        {harKontakt && (
+          <section className="cv-keep">
+            <Sektion style={panelrubrik}>Kontakt</Sektion>
+            <ul className="cv-kontakt" style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: '7px', fontSize: '11.5px', lineHeight: 1.4, color: PANEL_TEXT }}>
+              {data.email && <li>{data.email}</li>}
+              {data.phone && <li>{data.phone}</li>}
+              {data.location && <li>{data.location}</li>}
+            </ul>
+          </section>
+        )}
+
+        {data.skills.length > 0 && (
+          <section>
+            <Sektion style={panelrubrik}>Kompetenser</Sektion>
+            <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: '5px', fontSize: '12px', color: PANEL_TEXT }}>
+              {data.skills.map((skill, i) => (
+                <li key={i}>{getSkillName(skill)}</li>
+              ))}
+            </ul>
+          </section>
+        )}
+
+        {data.languages.length > 0 && (
+          <section className="cv-keep">
+            <Sektion style={panelrubrik}>Språk</Sektion>
+            {data.languages.map((lang) => {
+              const name = lang.language || ('name' in lang ? (lang as { name: string }).name : '')
+              return (
+                <div key={lang.id} className="cv-entry" style={{ marginBottom: '7px' }}>
+                  <div style={{ fontSize: '12px', fontWeight: 600, color: '#FFFFFF' }}>{name}</div>
+                  <div style={{ fontSize: '11px', fontStyle: 'italic', color: KOPPAR_LJUS }}>{getLanguageLevelDisplay(lang.level)}</div>
+                </div>
+              )
+            })}
+          </section>
+        )}
+
+        {data.certificates.length > 0 && (
+          <section className="cv-keep">
+            <Sektion style={panelrubrik}>Certifikat</Sektion>
+            {data.certificates.map((cert) => (
+              <div key={cert.id} className="cv-entry" style={{ marginBottom: '8px' }}>
+                <div style={{ fontSize: '12px', fontWeight: 600, color: '#FFFFFF' }}>{cert.name}</div>
+                {(cert.issuer || cert.date) && (
+                  <div className="cv-datum" style={{ fontSize: '11px', color: PANEL_DAMPAD }}>
+                    {[cert.issuer, periodText(cert.date)].filter(Boolean).join(' · ')}
+                  </div>
+                )}
+              </div>
+            ))}
+          </section>
+        )}
+
+        {data.links.length > 0 && (
+          <section className="cv-keep">
+            <Sektion style={panelrubrik}>Länkar</Sektion>
+            {data.links.map((link) => (
+              <div key={link.id} className="cv-entry" style={{ marginBottom: '8px' }}>
+                {link.label && <div style={{ fontSize: '12px', fontWeight: 600, color: '#FFFFFF' }}>{link.label}</div>}
+                <div className="cv-url" style={{ fontSize: '11px', color: KOPPAR_LJUS }}><Url text={link.url} /></div>
+              </div>
+            ))}
+          </section>
+        )}
+      </aside>
     </div>
   )
 }

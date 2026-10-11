@@ -1,35 +1,68 @@
 /**
- * Centered Template - Gradient Elegance
- * Professional centered layout with gradient header
+ * Centrerad (id `centered`) — klassisk navy-rubrik med guldlinje, centrerat
+ * huvud, en spalt. Namnet i Source Serif 4, brödtexten i Inter: den klassiska
+ * kombinationen serif-rubrik och sans-text.
+ *
+ * Slipad 2026-10-11 (CVK1): datum och orter i #9CA3AF (2,54:1) → #5B6472;
+ * beskrivningar i #6B7280 → mörkare (#3F4652) för läsbarhet i löptext;
+ * rubrikhierarkin följer dokumentet (h1 i PDF:en, h2 i förhandsvisningen).
  */
 
+import type { CSSProperties } from 'react'
 import { Mail, Phone, MapPin } from '@/components/ui/icons'
 import type { TemplateProps } from './types'
 import { getLanguageLevelDisplay, getSkillName } from './helpers'
+import { periodText, rubrikTaggar } from './typografi'
+import { Beskrivning } from './Beskrivning'
+import { Url } from './Url'
 
-// Djup, klassisk navy istället för gradient — mer tidlös och mindre 2018-startup
-const primary = '#1E3A5F'
-const accent = '#C9A66B'
+const NAVY = '#1E3A5F' // 11,3:1 på vitt
+const GULD = '#C9A66B' // linjer; på navy 5,2:1
+const SVART = '#111827'
+const TEXT = '#3F4652'
+const DAMPAD = '#5B6472' // 6,0:1 på vitt
+const LINJE = '#D7DEE7'
 
-export function CenteredTemplate({ data, fullName }: TemplateProps) {
+const sektionsrubrik: CSSProperties = {
+  fontSize: '11px',
+  fontWeight: 600,
+  letterSpacing: '0.16em',
+  textTransform: 'uppercase',
+  color: NAVY,
+  margin: '0 0 11px',
+  paddingBottom: '5px',
+  borderBottom: `1px solid ${LINJE}`,
+}
+
+const sektion: CSSProperties = { marginBottom: '20px' }
+
+const datum: CSSProperties = { fontSize: '11.5px', color: DAMPAD, whiteSpace: 'nowrap', marginLeft: '16px' }
+
+const post: CSSProperties = { paddingLeft: '14px', borderLeft: `2px solid ${LINJE}`, marginBottom: '11px' }
+
+export function CenteredTemplate({ data, fullName, rubrikniva }: TemplateProps) {
+  const { Namn, Sektion, Post } = rubrikTaggar(rubrikniva)
+  const kontaktstil: CSSProperties = { display: 'inline-flex', alignItems: 'center', gap: '6px' }
+
   return (
     <div
       className="cv-preview"
+      lang="sv"
       style={{
         minHeight: '297mm',
         background: '#FFFFFF',
-        fontFamily: "'Inter', -apple-system, sans-serif",
+        color: TEXT,
+        fontFamily: "'Inter', 'Helvetica Neue', Arial, sans-serif",
       }}
     >
-      {/* Kompakt navy-header — tar ~130px så main får ~990px på 1 A4. */}
       <header
         className="cv-keep"
         style={{
-          background: primary,
-          padding: '20px 56px 16px',
+          background: NAVY,
+          padding: '26px 56px 20px',
           textAlign: 'center',
           color: '#FFFFFF',
-          borderBottom: `3px solid ${accent}`,
+          borderBottom: `3px solid ${GULD}`,
         }}
       >
         {data.profileImage && (
@@ -37,297 +70,199 @@ export function CenteredTemplate({ data, fullName }: TemplateProps) {
             src={data.profileImage}
             alt=""
             style={{
-              width: '66px',
-              height: '66px',
+              width: '72px',
+              height: '72px',
               objectFit: 'cover',
               borderRadius: '50%',
-              border: '3px solid rgba(255,255,255,0.25)',
-              marginBottom: '8px',
+              border: `2px solid ${GULD}`,
+              // Portalens preflight gör img till block — centrera med marginaler.
+              display: 'block',
+              margin: '0 auto 10px',
             }}
           />
         )}
-
-        <h1
+        <Namn
           style={{
-            fontSize: '28px',
-            fontWeight: '600',
-            letterSpacing: '-0.01em',
-            marginBottom: '3px',
+            fontFamily: "'Source Serif 4', Georgia, serif",
+            fontSize: '32px',
+            fontWeight: 600,
+            letterSpacing: '0.005em',
+            lineHeight: 1.1,
+            color: '#FFFFFF',
+            margin: 0,
           }}
         >
           {fullName}
-        </h1>
+        </Namn>
         {data.title && (
           <p
             style={{
               fontSize: '11.5px',
-              fontWeight: 400,
-              letterSpacing: '0.1em',
+              fontWeight: 500,
+              letterSpacing: '0.16em',
               textTransform: 'uppercase',
-              color: accent,
-              marginBottom: '10px',
+              color: GULD,
+              margin: '7px 0 0',
             }}
           >
             {data.title}
           </p>
         )}
-
-        {/* Contact */}
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'center',
-            gap: '20px',
-            flexWrap: 'wrap',
-          }}
-        >
-          {data.email && (
-            <span style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11.5px', color: 'rgba(255,255,255,0.85)' }}>
-              <Mail style={{ width: '12px', height: '12px' }} />
-              {data.email}
-            </span>
-          )}
-          {data.phone && (
-            <span style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11.5px', color: 'rgba(255,255,255,0.85)' }}>
-              <Phone style={{ width: '12px', height: '12px' }} />
-              {data.phone}
-            </span>
-          )}
-          {data.location && (
-            <span style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11.5px', color: 'rgba(255,255,255,0.85)' }}>
-              <MapPin style={{ width: '12px', height: '12px' }} />
-              {data.location}
-            </span>
-          )}
-        </div>
+        {(data.email || data.phone || data.location) && (
+          <p
+            className="cv-kontakt"
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              flexWrap: 'wrap',
+              gap: '4px 20px',
+              margin: '12px 0 0',
+              fontSize: '11.5px',
+              color: '#E4EAF2',
+            }}
+          >
+            {data.email && (
+              <span style={kontaktstil}>
+                <Mail aria-hidden="true" style={{ width: '12px', height: '12px', color: GULD }} />
+                {data.email}
+              </span>
+            )}
+            {data.phone && (
+              <span style={kontaktstil}>
+                <Phone aria-hidden="true" style={{ width: '12px', height: '12px', color: GULD }} />
+                {data.phone}
+              </span>
+            )}
+            {data.location && (
+              <span style={kontaktstil}>
+                <MapPin aria-hidden="true" style={{ width: '12px', height: '12px', color: GULD }} />
+                {data.location}
+              </span>
+            )}
+          </p>
+        )}
       </header>
 
-      <main style={{ padding: '20px 56px 24px' }}>
-        {/* Summary - centered, tighter line-height */}
+      <main style={{ padding: '24px 56px 32px' }}>
         {data.summary && (
-          <section style={{ textAlign: 'center', marginBottom: '16px' }}>
-            <p
-              style={{
-                fontSize: '13px',
-                lineHeight: '1.55',
-                color: '#4B5563',
-                maxWidth: '640px',
-                margin: '0 auto',
-              }}
-            >
+          <section style={{ ...sektion, textAlign: 'center' }}>
+            <p style={{ fontSize: '13px', lineHeight: 1.6, color: TEXT, maxWidth: '620px', margin: '0 auto' }}>
               {data.summary}
             </p>
           </section>
         )}
 
-        {/* Skills */}
-        {data.skills?.length > 0 && (
-          <section style={{ marginBottom: '18px', textAlign: 'center' }}>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '7px', justifyContent: 'center' }}>
+        {data.skills.length > 0 && (
+          <section style={{ ...sektion, textAlign: 'center' }}>
+            <Sektion style={{ position: 'absolute', width: 1, height: 1, overflow: 'hidden', clip: 'rect(0 0 0 0)', margin: 0, color: NAVY }}>
+              Kompetenser
+            </Sektion>
+            <ul style={{ display: 'flex', flexWrap: 'wrap', gap: '7px', justifyContent: 'center', listStyle: 'none', margin: 0, padding: 0 }}>
               {data.skills.map((skill, i) => (
-                <span
+                <li
                   key={i}
                   style={{
                     fontSize: '12px',
-                    fontWeight: '500',
-                    padding: '5px 13px',
-                    background: '#F4F1EC',
-                    color: primary,
-                    borderRadius: '4px',
-                    letterSpacing: '0.01em',
+                    fontWeight: 500,
+                    padding: '4px 12px',
+                    background: '#F1EEE7',
+                    color: NAVY,
+                    borderRadius: '3px',
                   }}
                 >
                   {getSkillName(skill)}
-                </span>
+                </li>
               ))}
-            </div>
+            </ul>
           </section>
         )}
 
-        {/* Linjär 1-kolumns layout — fungerar för alla data-mängder. */}
+        {data.workExperience.length > 0 && (
+          <section style={sektion}>
+            <Sektion style={sektionsrubrik}>Erfarenhet</Sektion>
+            {data.workExperience.map((job) => (
+              <div key={job.id} className="cv-entry" style={post}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+                  <Post style={{ fontSize: '14px', fontWeight: 600, color: SVART, margin: 0 }}>{job.title}</Post>
+                  <span className="cv-datum" style={datum}>
+                    {periodText(job.startDate, job.endDate, job.current)}
+                  </span>
+                </div>
+                <p style={{ fontSize: '12.5px', color: NAVY, margin: '2px 0 0', fontWeight: 500 }}>
+                  {job.company}
+                  {job.location && <span style={{ color: DAMPAD, fontWeight: 400 }}> · {job.location}</span>}
+                </p>
+                <Beskrivning text={job.description} style={{ fontSize: '12.5px', lineHeight: 1.55, color: TEXT, marginTop: '4px' }} />
+              </div>
+            ))}
+          </section>
+        )}
 
-        {data.workExperience?.length > 0 && (
-          <section style={{ marginBottom: '16px' }}>
-            <h2
-              style={{
-                fontSize: '11px',
-                fontWeight: '600',
-                letterSpacing: '0.15em',
-                textTransform: 'uppercase',
-                color: primary,
-                marginBottom: '10px',
-                paddingBottom: '5px',
-                borderBottom: `1px solid ${primary}25`,
-              }}
-            >
-              Erfarenhet
-            </h2>
-            <div>
-              {data.workExperience.map(job => (
-                <div
-                  key={job.id}
-                  className="cv-entry"
-                  style={{
-                    paddingLeft: '14px',
-                    borderLeft: `2px solid ${primary}30`,
-                    marginBottom: '10px',
-                  }}
-                >
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '1px' }}>
-                    <h3 style={{ fontSize: '14px', fontWeight: '600', color: '#111827', wordBreak: 'break-word' }}>
-                      {job.title}
-                    </h3>
-                    <span
-                      style={{
-                        fontSize: '11.5px',
-                        color: '#9CA3AF',
-                        whiteSpace: 'nowrap',
-                        marginLeft: '12px',
-                      }}
-                    >
-                      {job.startDate} — {job.current ? 'Nu' : job.endDate}
+        {data.education.length > 0 && (
+          <section style={sektion}>
+            <Sektion style={sektionsrubrik}>Utbildning</Sektion>
+            {data.education.map((edu) => (
+              <div key={edu.id} className="cv-entry" style={post}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+                  <Post style={{ fontSize: '13.5px', fontWeight: 600, color: SVART, margin: 0 }}>{edu.degree || edu.school}</Post>
+                  <span className="cv-datum" style={datum}>
+                    {periodText(edu.startDate, edu.endDate, edu.current)}
+                  </span>
+                </div>
+                <p style={{ fontSize: '12.5px', color: NAVY, margin: '2px 0 0', fontWeight: 500 }}>
+                  {edu.degree ? edu.school : null}
+                  {[edu.field, edu.location].filter(Boolean).length > 0 && (
+                    <span style={{ color: DAMPAD, fontWeight: 400 }}>
+                      {edu.degree ? ' · ' : ''}
+                      {[edu.field, edu.location].filter(Boolean).join(' · ')}
                     </span>
-                  </div>
-                  <div style={{ fontSize: '12.5px', color: primary, marginBottom: '3px' }}>
-                    {job.company}
-                    {job.location && <span style={{ color: '#9CA3AF' }}> · {job.location}</span>}
-                  </div>
-                  {job.description && (
-                    <p style={{ fontSize: '12.5px', lineHeight: '1.5', color: '#6B7280' }}>{job.description}</p>
                   )}
-                </div>
-              ))}
-            </div>
+                </p>
+                <Beskrivning text={edu.description} style={{ fontSize: '12.5px', lineHeight: 1.55, color: TEXT, marginTop: '4px' }} />
+              </div>
+            ))}
           </section>
         )}
 
-        {data.education?.length > 0 && (
-          <section className="cv-keep" style={{ marginBottom: '16px' }}>
-            <h2
-              style={{
-                fontSize: '11px',
-                fontWeight: '600',
-                letterSpacing: '0.15em',
-                textTransform: 'uppercase',
-                color: primary,
-                marginBottom: '10px',
-                paddingBottom: '5px',
-                borderBottom: `1px solid ${primary}25`,
-              }}
-            >
-              Utbildning
-            </h2>
-            <div>
-              {data.education.map(edu => (
-                <div
-                  key={edu.id}
-                  className="cv-entry"
-                  style={{
-                    paddingLeft: '14px',
-                    borderLeft: `2px solid ${primary}30`,
-                    marginBottom: '8px',
-                  }}
-                >
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '1px' }}>
-                    <h3 style={{ fontSize: '13.5px', fontWeight: '600', color: '#111827' }}>{edu.degree}</h3>
-                    <span style={{ fontSize: '11.5px', color: '#9CA3AF', whiteSpace: 'nowrap', marginLeft: '12px' }}>
-                      {edu.startDate} — {edu.endDate}
-                    </span>
-                  </div>
-                  <div style={{ fontSize: '12.5px', color: primary }}>
-                    {edu.school}
-                    {edu.field && <span style={{ color: '#9CA3AF' }}> · {edu.field}</span>}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </section>
-        )}
-
-        {data.languages?.length > 0 && (
-          <section className="cv-keep">
-            <h2
-              style={{
-                fontSize: '11px',
-                fontWeight: '600',
-                letterSpacing: '0.15em',
-                textTransform: 'uppercase',
-                color: primary,
-                marginBottom: '10px',
-                paddingBottom: '5px',
-                borderBottom: `1px solid ${primary}25`,
-              }}
-            >
-              Språk
-            </h2>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '6px' }}>
-              {data.languages.map(lang => {
+        {data.languages.length > 0 && (
+          <section className="cv-keep" style={sektion}>
+            <Sektion style={sektionsrubrik}>Språk</Sektion>
+            <ul style={{ display: 'flex', flexWrap: 'wrap', gap: '4px 32px', listStyle: 'none', margin: 0, padding: 0 }}>
+              {data.languages.map((lang) => {
                 const name = lang.language || ('name' in lang ? (lang as { name: string }).name : '')
                 return (
-                  <div key={lang.id} className="cv-entry">
-                    <div style={{ fontSize: '13px', color: '#374151', fontWeight: 500 }}>{name}</div>
-                    <div style={{ fontSize: '11.5px', color: '#9CA3AF', fontStyle: 'italic', marginTop: '1px' }}>
-                      {getLanguageLevelDisplay(lang.level)}
-                    </div>
-                  </div>
+                  <li key={lang.id} style={{ fontSize: '12.5px', color: SVART }}>
+                    {name}
+                    <span style={{ color: DAMPAD }}> · {getLanguageLevelDisplay(lang.level)}</span>
+                  </li>
                 )
               })}
-            </div>
+            </ul>
           </section>
         )}
 
-        {data.certificates?.length > 0 && (
-          <section className="cv-keep" style={{ marginTop: '16px' }}>
-            <h2
-              style={{
-                fontSize: '11px',
-                fontWeight: '600',
-                letterSpacing: '0.15em',
-                textTransform: 'uppercase',
-                color: primary,
-                marginBottom: '10px',
-                paddingBottom: '5px',
-                borderBottom: `1px solid ${primary}25`,
-              }}
-            >
-              Certifikat
-            </h2>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-              {data.certificates.map(cert => (
-                <div key={cert.id} className="cv-entry">
-                  <span style={{ fontSize: '13px', fontWeight: 500, color: '#111827' }}>{cert.name}</span>
-                  {cert.issuer && <span style={{ fontSize: '12px', color: '#6B7280' }}> · {cert.issuer}</span>}
-                  {cert.date && <span style={{ fontSize: '12px', color: '#9CA3AF' }}> · {cert.date}</span>}
-                </div>
-              ))}
-            </div>
+        {data.certificates.length > 0 && (
+          <section className="cv-keep" style={sektion}>
+            <Sektion style={sektionsrubrik}>Certifikat</Sektion>
+            {data.certificates.map((cert) => (
+              <p key={cert.id} className="cv-entry" style={{ fontSize: '12.5px', color: SVART, margin: '0 0 4px' }}>
+                <span style={{ fontWeight: 500 }}>{cert.name}</span>
+                {cert.issuer && <span style={{ color: DAMPAD }}> · {cert.issuer}</span>}
+                {cert.date && <span className="cv-datum" style={{ color: DAMPAD }}> · {periodText(cert.date)}</span>}
+              </p>
+            ))}
           </section>
         )}
 
-        {data.links?.length > 0 && (
-          <section className="cv-keep" style={{ marginTop: '16px' }}>
-            <h2
-              style={{
-                fontSize: '11px',
-                fontWeight: '600',
-                letterSpacing: '0.15em',
-                textTransform: 'uppercase',
-                color: primary,
-                marginBottom: '10px',
-                paddingBottom: '5px',
-                borderBottom: `1px solid ${primary}25`,
-              }}
-            >
-              Länkar
-            </h2>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
-              {data.links.map(link => (
-                <div key={link.id} className="cv-entry" style={{ fontSize: '12.5px' }}>
-                  {link.label && <span style={{ color: '#111827', fontWeight: 500 }}>{link.label} · </span>}
-                  <span style={{ color: '#6B7280', wordBreak: 'break-all' }}>{link.url}</span>
-                </div>
-              ))}
-            </div>
+        {data.links.length > 0 && (
+          <section className="cv-keep" style={sektion}>
+            <Sektion style={sektionsrubrik}>Länkar</Sektion>
+            {data.links.map((link) => (
+              <p key={link.id} className="cv-entry" style={{ fontSize: '12.5px', color: SVART, margin: '0 0 4px' }}>
+                {link.label && <span style={{ fontWeight: 500 }}>{link.label} · </span>}
+                <span className="cv-url" style={{ color: DAMPAD }}><Url text={link.url} /></span>
+              </p>
+            ))}
           </section>
         )}
       </main>

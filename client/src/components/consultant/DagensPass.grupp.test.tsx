@@ -4,7 +4,7 @@
  * testet "ett ensamt pass får ingen grupplänk" faller.
  */
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { render, screen, cleanup } from '@testing-library/react'
+import { render, screen, cleanup, within } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import type { PassIdag } from '@/lib/dagensPass'
 
@@ -40,5 +40,21 @@ describe('DagensPass → gruppnärvaro', () => {
     render(<MemoryRouter><DagensPass namnFor={(id) => id} /></MemoryRouter>)
     await screen.findByText('Motivationsgrupp', { exact: false })
     expect(screen.queryByRole('link', { name: /Markera hela passet/ })).not.toBeInTheDocument()
+  })
+
+  it('grupppasset sägs i ord; eget jobbsökande grupperas aldrig (det kvitteras per person)', async () => {
+    hamta.mockResolvedValue([
+      pass({ id: '1', participant_id: 'anna', self_checkin_at: '2026-09-28T06:58:00Z' }),
+      pass({ id: '2', participant_id: 'lisa', absence_reason: 'sick' }),
+      pass({ id: '3', participant_id: 'omar', attendance: 'present' }),
+      pass({ id: '4', participant_id: 'anna', title: 'Eget jobbsökande', activity_type: 'jobsearch_own', start_time: '13:00:00', end_time: '15:00:00' }),
+      pass({ id: '5', participant_id: 'lisa', title: 'Eget jobbsökande', activity_type: 'jobsearch_own', start_time: '13:00:00', end_time: '15:00:00' }),
+    ])
+    render(<MemoryRouter><DagensPass namnFor={(id) => id} /></MemoryRouter>)
+    const grupp = await screen.findByTestId('dagens-grupp')
+    expect(grupp).toHaveTextContent('3 deltagare · 1 av 3 markerade · 1 har checkat in · 1 har anmält frånvaro')
+    expect(within(grupp).getByRole('link')).toHaveTextContent('Bekräfta närvaro')
+    expect(screen.getAllByTestId('dagens-grupp')).toHaveLength(1)
+    expect(screen.getAllByRole('radiogroup', { name: /Närvaro för (anna|lisa)/ })).toHaveLength(2)
   })
 })

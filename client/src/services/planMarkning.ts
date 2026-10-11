@@ -101,8 +101,13 @@ export interface PassFlaggor {
 
 type FlaggPass = PassFlaggor & { activity_type: PassTyp; location: string | null }
 
-/** Härledningen från före RR27: arbetsplats eller ifyllt platsfält = fysiskt. */
+/**
+ * Härledningen från före RR27: arbetsplats eller ifyllt platsfält = fysiskt.
+ * Undantag (slipningen 2026-10-11): deltagarens eget jobbsökande är aldrig ett
+ * fysiskt möte med verksamheten, även när platsen är "Hemma/bibliotek".
+ */
 export function harlettFysiskt(s: Pick<FlaggPass, 'activity_type' | 'location'>): boolean {
+  if (s.activity_type === 'jobsearch_own') return false
   return s.activity_type === 'workplace' || (s.location !== null && s.location.trim() !== '')
 }
 

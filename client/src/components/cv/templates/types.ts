@@ -11,6 +11,7 @@ import type {
   Certificate,
   Link,
 } from '@/services/supabaseApi'
+import type { Rubrikniva } from './typografi'
 
 /**
  * CVData som den ser ut EFTER `sanitizeForTemplate()` — de sex listorna är
@@ -39,4 +40,9 @@ export type TemplateCVData = Omit<
 export interface TemplateProps {
   data: TemplateCVData
   fullName: string
+  /**
+   * Namnets rubriknivå. 1 (standard) i PDF:en; 2 i portalens förhandsvisning,
+   * där sidan redan har sin h1 (CVK1). Se `rubrikTaggar`.
+   */
+  rubrikniva?: Rubrikniva
 }

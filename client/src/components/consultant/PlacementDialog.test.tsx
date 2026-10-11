@@ -18,6 +18,8 @@ import { render, screen, fireEvent, waitFor, cleanup } from '@testing-library/re
 import { PlacementDialog } from './PlacementDialog'
 import { consultantService } from '@/services/consultantService'
 
+// Kundtypen (slipningen 2026-10-11) läses med React Query; här står den fast.
+vi.mock('@/components/consultant/useRegelverk', () => ({ useOrgTypVisning: () => ({ visaAvtalskrav: true, visaIvoUnderlag: true }), useRegelverk: () => 'kommun' }))
 vi.mock('@/services/consultantService', () => ({
   consultantService: {
     recordPlacement: vi.fn(),

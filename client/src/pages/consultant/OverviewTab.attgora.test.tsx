@@ -122,30 +122,34 @@ beforeEach(() => {
   api.myMemberships.mockResolvedValue(organisation('kommun'))
 })
 
-describe('Översikt — Att göra i dag', () => {
+const laddat = async () => {
+  const antal = await screen.findByTestId('mindag-antal')
+  await waitFor(() => expect(antal).not.toHaveTextContent('Hämtar'))
+}
+
+describe('Översikt — Att göra i dag i Min dag', () => {
   it('Kvittera går genom markAttendance och punkten försvinner utan omladdning', async () => {
     api.markAttendance.mockResolvedValue({ ...egenRedovisning, attendance: 'present', marked_at: new Date().toISOString() })
     rita()
-    const rubrik = await screen.findByRole('heading', { name: 'Att göra i dag' })
-    const lista = rubrik.closest('section')!
-    expect(within(lista).getByText(/^Egen redovisning .* väntar på kvittens$/)).toBeInTheDocument()
-    fireEvent.click(within(lista).getByRole('button', { name: 'Kvittera' }))
+    const steg = await screen.findByTestId('mindag-nasta-steg')
+    expect(steg).toHaveAttribute('data-typ', 'kvittera')
+    fireEvent.click(within(steg).getByRole('button', { name: 'Kvittera' }))
     await waitFor(() => expect(api.markAttendance).toHaveBeenCalledWith('s-egen', { attendance: 'present', note: null, sickCertificateReceived: false }))
-    await waitFor(() => expect(screen.queryByText(/väntar på kvittens$/)).not.toBeInTheDocument())
+    await waitFor(() => expect(screen.queryByTestId('mindag-nasta-steg')).not.toBeInTheDocument())
     expect(api.listSessionsBetween).toHaveBeenCalledTimes(1)
   })
 
   it('ett pass i en kollegas plan blir ingen punkt — knappen skulle nekas av databasen', async () => {
     api.listAll.mockResolvedValue([{ id: 'plan-anna', participant_id: 'anna', consultant_id: 'kollega', status: 'active', start_date: '2026-01-05', end_date: null }])
     rita()
-    await screen.findByText('Snitt ATS-poäng')
+    await laddat()
     await waitFor(() => expect(api.listAll).toHaveBeenCalled())
-    expect(screen.queryByText(/väntar på kvittens$/)).not.toBeInTheDocument()
+    expect(document.querySelector('[data-typ="kvittera"]')).toBeNull()
   })
 
   it('en kommun ser ingen rad om avtalet med Arbetsförmedlingen', async () => {
     rita()
-    await screen.findByRole('heading', { name: 'Att göra i dag' })
+    await laddat()
     await waitFor(() => expect(api.myMemberships).toHaveBeenCalled())
     expect(screen.queryByLabelText('Veckan mot avtalet')).not.toBeInTheDocument()
   })
@@ -155,8 +159,8 @@ describe('Översikt — Att göra i dag', () => {
     rita()
     const rad = await screen.findByLabelText('Veckan mot avtalet')
     expect(rad).toHaveTextContent('2 utan fysiskt möte')
-    const omar = screen.getAllByText('Omar Demo').map((el) => el.closest('li')).find((li) => li && within(li).queryByRole('button', { name: 'Boka fysiskt möte' }))!
-    fireEvent.click(within(omar).getByRole('button', { name: 'Boka fysiskt möte' }))
+    const omar = await screen.findByTestId('mindag-person-omar')
+    fireEvent.click(within(omar).getByRole('button', { name: 'Boka fysiskt möte: Omar Demo' }))
     expect(await screen.findByTestId('motesdialog')).toHaveTextContent('Omar · physical')
   })
 })

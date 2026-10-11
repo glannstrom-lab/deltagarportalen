@@ -6,6 +6,8 @@
  *   - std:  demo=mikael (4 jobb → 1 sida)
  *   - long: demo=mikael&jobs=12 (→ 2 sidor, testar sidbrytningar)
  *   - 3p:   demo=mikael&jobs=20 (→ 3 sidor, testar mellansidor)
+ *   - full: ?data= med certifikat, länkar och foto (prod-vägen)
+ *   - lite: ?data= med namn, kontakt och ett jobb (det tunna CV:t)
  *
  * Konverterar varje PDF till en PNG per sida via pdftoppm (poppler) om det
  * finns i PATH. Detta är den visuella verifieringsloopen för print-layouten
@@ -21,18 +23,24 @@ const fs = require('fs')
 const path = require('path')
 
 const BASE_URL = process.env.BASE_URL || 'http://localhost:3000'
-const OUT_DIR = path.join(__dirname, '..', 'cv-prints', 'visual-audit')
-const TEMPLATES = [
+const OUT_DIR = process.env.OUT_DIR || path.join(__dirname, '..', 'cv-prints', 'visual-audit')
+const ALLA_MALLAR = [
   'sidebar', 'centered', 'minimal', 'creative', 'executive',
   'nordic', 'budapest', 'rotterdam', 'chicago',
   'atelier', 'manhattan', 'berlin',
 ]
-const VARIANTS = [
+const ALLA_VARIANTER = [
   { suffix: 'std', query: '' },
   { suffix: 'long', query: '&jobs=12' },
   { suffix: '3p', query: '&jobs=20' },
   { suffix: 'full', query: '' }, // via ?data= (prod-vägen) — med certifikat/länkar/foto
+  { suffix: 'lite', query: '' }, // via ?data= — ett nästan tomt CV (namn, kontakt, ett jobb)
 ]
+// Avgränsa en körning: MALLAR=minimal,sidebar VARIANTER=lite,full
+const TEMPLATES = process.env.MALLAR ? process.env.MALLAR.split(',') : ALLA_MALLAR
+const VARIANTS = process.env.VARIANTER
+  ? ALLA_VARIANTER.filter((v) => process.env.VARIANTER.split(',').includes(v.suffix))
+  : ALLA_VARIANTER
 
 // "full"-fixture — testar sektioner som demo=mikael saknar: certifikat,
 // länkar och profilbild. Injiceras via ?data=<base64url> precis som
@@ -75,6 +83,22 @@ const FULL_FIXTURE = {
   profileImage: PHOTO_SVG,
 }
 
+// "lite"-fixture — så lite som en deltagare kan ha när hen exporterar första
+// gången. Ett tunt CV ska se avsiktligt ut, inte trasigt: inga tomma rubriker,
+// inga tomma panelrutor, ingen sidopanel som slutar mitt på sidan.
+const LITE_FIXTURE = {
+  firstName: 'Sara', lastName: 'Ek', title: '',
+  email: 'sara.ek@example.se', phone: '070-123 45 67', location: '',
+  summary: '',
+  skills: [],
+  workExperience: [
+    { id: '1', company: 'ICA Maxi', title: 'Butiksbiträde', location: 'Örebro', startDate: '2023-03', endDate: '', current: true, description: '' },
+  ],
+  education: [],
+  languages: [], certificates: [], links: [],
+  template: 'sidebar', colorScheme: 'indigo', font: 'inter', profileImage: null,
+}
+
 function encodeBase64Url(obj) {
   return Buffer.from(JSON.stringify(obj), 'utf8').toString('base64')
     .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '')
@@ -90,12 +114,14 @@ async function main() {
     localStorage.setItem('jobin_cookie_preferences', JSON.stringify({ necessary: true, analytics: false }))
   })
   const page = await context.newPage()
+  const genererade = []
   page.on('pageerror', (err) => console.log(`  [pageerror] ${err.message}`))
 
   for (const tpl of TEMPLATES) {
     for (const v of VARIANTS) {
-      const url = v.suffix === 'full'
-        ? `${BASE_URL}/#/print/cv?data=${encodeBase64Url({ ...FULL_FIXTURE, template: tpl })}&template=${tpl}&manual=1`
+      const fixtur = v.suffix === 'full' ? FULL_FIXTURE : v.suffix === 'lite' ? LITE_FIXTURE : null
+      const url = fixtur
+        ? `${BASE_URL}/#/print/cv?data=${encodeBase64Url({ ...fixtur, template: tpl })}&template=${tpl}&manual=1`
         : `${BASE_URL}/#/print/cv?demo=mikael&template=${tpl}&manual=1${v.query}`
       await page.goto(url, { waitUntil: 'domcontentloaded' })
       // Hash-navigering laddar inte om SPA:n — utan reload läcker förra
@@ -114,6 +140,7 @@ async function main() {
       const pdfOut = path.join(OUT_DIR, `${tpl}-${v.suffix}.pdf`)
       try {
         await page.pdf({ path: pdfOut, printBackground: true, preferCSSPageSize: true })
+        genererade.push(`${tpl}-${v.suffix}.pdf`)
         console.log(`✓ ${tpl}-${v.suffix}.pdf (${(fs.statSync(pdfOut).size / 1024).toFixed(0)} kB)`)
       } catch (e) {
         console.log(`✗ ${tpl}-${v.suffix}: pdf() failed: ${e.message.slice(0, 150)}`)
@@ -124,8 +151,13 @@ async function main() {
 
   // PDF → PNG per sida (för visuell granskning)
   try {
-    for (const f of fs.readdirSync(OUT_DIR).filter((n) => n.endsWith('.pdf'))) {
+    // Bara den här körningens PDF:er — gamla sid-PNG:er för samma fil tas bort
+    // först, så ett CV som krympt från tre sidor till två inte lämnar en spöksida.
+    for (const f of genererade) {
       const base = f.replace(/\.pdf$/, '')
+      for (const gammal of fs.readdirSync(OUT_DIR).filter((n) => n.startsWith(base + '-') && /-\d+\.png$/.test(n))) {
+        fs.unlinkSync(path.join(OUT_DIR, gammal))
+      }
       execFileSync('pdftoppm', ['-png', '-r', '100', path.join(OUT_DIR, f), path.join(OUT_DIR, base)])
     }
     console.log('PNG-konvertering klar.')

@@ -39,6 +39,8 @@ interface Props {
   deltagare: KopplaBarDeltagare[]
   /** Förvald deltagare (t.ex. när modalen öppnas från en deltagares egen kortvy). */
   forcedParticipantId?: string
+  /** Förifyllt företagsnamn för en ny plats (från planens fritext, slipningen 2026-10-11). */
+  forvaltForetag?: string
   /**
    * AG6: företagens egna platser (employer_places) att välja bland — förifyller
    * formuläret och sätter place_id + company_account_id. Valfritt: utan listan
@@ -142,6 +144,7 @@ export function PlaceringFormModal({
   existing,
   deltagare,
   forcedParticipantId,
+  forvaltForetag,
   foretagsplatser,
   foretagsplatserFel,
   onSave,
@@ -157,10 +160,10 @@ export function PlaceringFormModal({
     if (existing) {
       setDraft({ ...existing })
     } else {
-      setDraft(tomtFormular(forcedParticipantId ?? ''))
+      setDraft({ ...tomtFormular(forcedParticipantId ?? ''), company_name: forvaltForetag ?? '' })
     }
     setError(null)
-  }, [existing, open, forcedParticipantId])
+  }, [existing, open, forcedParticipantId, forvaltForetag])
 
   // Förslag på slutdatum + diskret avvikelsenotering (blockerar aldrig, se
   // placeringarApi.berakPeriodForslag). Måste ligga före den tidiga

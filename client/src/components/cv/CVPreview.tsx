@@ -10,7 +10,7 @@
  * - Centered: Elegant gradient, balanced, professional
  */
 
-import { useLayoutEffect } from 'react'
+import { useEffect, useLayoutEffect } from 'react'
 import { Sparkles } from '@/components/ui/icons'
 import type { CVData } from '@/services/supabaseApi'
 import { normaliseraMallId } from '@/data/cvMallar'
@@ -28,7 +28,9 @@ import {
   ManhattanTemplate,
   BerlinTemplate,
   sanitizeForTemplate,
+  CV_GRUNDSTIL,
 } from './templates'
+import { monteraCvTypsnitt } from './cvTypsnitt'
 
 interface CVPreviewProps {
   data: CVData
@@ -49,6 +51,11 @@ const SIDEBAR_WIDTHS: Record<string, string> = {
 export function CVPreview({ data: rawData }: CVPreviewProps) {
   const data = sanitizeForTemplate(rawData)
   const fullName = `${data.firstName} ${data.lastName}`.trim() || 'Ditt Namn'
+
+  // Mallarnas typsnitt — samma stilmall som PDF-vägen laddar (cvTypsnitt.ts).
+  useEffect(() => {
+    monteraCvTypsnitt()
+  }, [])
 
   // Tvinga aside att matcha main:s scrollHeight så sidobar-bakgrunden
   // spans EXAKT alla sidor som main:s content flödar över. Detta löser
@@ -141,7 +148,7 @@ export function CVPreview({ data: rawData }: CVPreviewProps) {
         <h3 style={{ fontSize: '20px', fontWeight: '600', color: '#525252', marginBottom: '8px' }}>
           Förhandsvisning
         </h3>
-        <p style={{ fontSize: '15px', color: '#A3A3A3', maxWidth: '280px' }}>
+        <p style={{ fontSize: '15px', color: '#5C5C5C', maxWidth: '280px' }}>
           Börja fylla i dina uppgifter för att se hur ditt CV kommer att se ut
         </p>
       </div>
@@ -152,41 +159,41 @@ export function CVPreview({ data: rawData }: CVPreviewProps) {
   let template: React.ReactElement
   switch (normaliseraMallId(data.template)) {
     case 'minimal':
-      template = <MinimalTemplate data={data} fullName={fullName} />
+      template = <MinimalTemplate data={data} fullName={fullName} rubrikniva={2} />
       break
     case 'executive':
-      template = <ExecutiveTemplate data={data} fullName={fullName} />
+      template = <ExecutiveTemplate data={data} fullName={fullName} rubrikniva={2} />
       break
     case 'creative':
-      template = <CreativeTemplate data={data} fullName={fullName} />
+      template = <CreativeTemplate data={data} fullName={fullName} rubrikniva={2} />
       break
     case 'nordic':
-      template = <NordicTemplate data={data} fullName={fullName} />
+      template = <NordicTemplate data={data} fullName={fullName} rubrikniva={2} />
       break
     case 'centered':
-      template = <CenteredTemplate data={data} fullName={fullName} />
+      template = <CenteredTemplate data={data} fullName={fullName} rubrikniva={2} />
       break
     case 'budapest':
-      template = <BudapestTemplate data={data} fullName={fullName} />
+      template = <BudapestTemplate data={data} fullName={fullName} rubrikniva={2} />
       break
     case 'rotterdam':
-      template = <RotterdamTemplate data={data} fullName={fullName} />
+      template = <RotterdamTemplate data={data} fullName={fullName} rubrikniva={2} />
       break
     case 'chicago':
-      template = <ChicagoTemplate data={data} fullName={fullName} />
+      template = <ChicagoTemplate data={data} fullName={fullName} rubrikniva={2} />
       break
     case 'atelier':
-      template = <AtelierTemplate data={data} fullName={fullName} />
+      template = <AtelierTemplate data={data} fullName={fullName} rubrikniva={2} />
       break
     case 'manhattan':
-      template = <ManhattanTemplate data={data} fullName={fullName} />
+      template = <ManhattanTemplate data={data} fullName={fullName} rubrikniva={2} />
       break
     case 'berlin':
-      template = <BerlinTemplate data={data} fullName={fullName} />
+      template = <BerlinTemplate data={data} fullName={fullName} rubrikniva={2} />
       break
     case 'sidebar':
     default:
-      template = <ModernTemplate data={data} fullName={fullName} />
+      template = <ModernTemplate data={data} fullName={fullName} rubrikniva={2} />
   }
 
   return (
@@ -194,6 +201,7 @@ export function CVPreview({ data: rawData }: CVPreviewProps) {
       {/* Print-CSS: gör det möjligt att printa CV via window.print() med
           korrekt sidbrytning. Samma rules som de stora aktörerna (resume.io,
           kickresume) använder för Chrome headless print → PDF. */}
+      <style>{CV_GRUNDSTIL}</style>
       <style>{`
         /* @page margin: 12mm topp + 10mm botten ger content-säkerhet på
            ALLA sidor (text aldrig mot kanten). aside-höjd sätts via JS-

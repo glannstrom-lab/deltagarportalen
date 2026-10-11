@@ -42,7 +42,9 @@ import {
   NordicTemplate, CenteredTemplate, BudapestTemplate, RotterdamTemplate,
   ChicagoTemplate, AtelierTemplate, ManhattanTemplate, BerlinTemplate,
   sanitizeForTemplate,
+  CV_GRUNDSTIL,
 } from './templates'
+import { monteraCvTypsnitt } from './cvTypsnitt'
 import type { TemplateCVData } from './templates'
 import { normaliseraMallId } from '@/data/cvMallar'
 
@@ -56,13 +58,15 @@ interface PrintLayoutProps {
  *    tonas i bg-färgen (mallar med tonad helsidesbakgrund)
  *  - bg: CSS-färg (solid — gradient inom sidebar är inte värt komplexiteten)
  *  - divider: optionell tunn linje mellan aside och main (för ljusa sidobar)
+ *  - main: huvudytans färg om den inte är vit (Berlin: sand). Utan den blev
+ *    Berlins sida vit i PDF:en men sandfärgad i förhandsvisningen.
  *
  * null = single-column-mall med vit bakgrund, ingen canvas-bg behövs.
  *
  * VIKTIGT: width måste matcha mallens egen aside exakt. Annars hamnar
  * text utanför färgfältet.
  */
-type SidebarConfig = { width: string; bg: string; divider?: string } | null
+type SidebarConfig = { width: string; bg: string; divider?: string; main?: string } | null
 const SIDEBAR_CONFIG: Record<string, SidebarConfig> = {
   sidebar:   { width: '240px', bg: '#141414' },                                  // ModernTemplate (mörk gradient → solid medel) — 30% av A4-bredd
   nordic:    { width: '240px', bg: '#F8FAFC', divider: '#E2E8F0' },              // NordicTemplate
@@ -70,7 +74,7 @@ const SIDEBAR_CONFIG: Record<string, SidebarConfig> = {
   manhattan: { width: '220px', bg: '#0F1B2D' },                                  // ManhattanTemplate
   rotterdam: { width: '220px', bg: '#FFFFFF', divider: '#E5E7EB' },              // RotterdamTemplate
   chicago:   { width: '200px', bg: '#FFFFFF', divider: '#E5E7EB' },              // ChicagoTemplate
-  berlin:    { width: '60px',  bg: '#1A1A1A' },                                  // BerlinTemplate
+  berlin:    { width: '60px',  bg: '#1A1A1A', main: '#F4EDE0' },                // BerlinTemplate (sand huvudyta)
   // Tonad helsidesbakgrund — canvas-bg i mallens egen sidfärg
   atelier:   { width: '100%',  bg: '#FAF8F4' },                                  // AtelierTemplate (cream)
   executive: { width: '100%',  bg: '#FDFCFA' },                                  // ExecutiveTemplate (varm off-white)
@@ -88,11 +92,12 @@ function buildBgImage(cfg: NonNullable<SidebarConfig>): string {
   }
   // linear-gradient to right gör hårda stopp: 0%→sidebar-w är sidebar-bg,
   // sidebar-w→100% är vit. Inga mjuka övergångar (det blir hårda kanter).
+  const main = cfg.main ?? '#FFFFFF'
   if (cfg.divider) {
-    // Med divider: smal 1px linje i divider-färg mellan sidebar och vit
-    return `linear-gradient(to right, ${cfg.bg} 0, ${cfg.bg} calc(${w} - 1px), ${cfg.divider} calc(${w} - 1px), ${cfg.divider} ${w}, #FFFFFF ${w}, #FFFFFF 100%)`
+    // Med divider: smal 1px linje i divider-färg mellan sidebar och huvudyta
+    return `linear-gradient(to right, ${cfg.bg} 0, ${cfg.bg} calc(${w} - 1px), ${cfg.divider} calc(${w} - 1px), ${cfg.divider} ${w}, ${main} ${w}, ${main} 100%)`
   }
-  return `linear-gradient(to right, ${cfg.bg} 0, ${cfg.bg} ${w}, #FFFFFF ${w}, #FFFFFF 100%)`
+  return `linear-gradient(to right, ${cfg.bg} 0, ${cfg.bg} ${w}, ${main} ${w}, ${main} 100%)`
 }
 
 function renderTemplate(data: TemplateCVData, fullName: string) {
@@ -144,10 +149,12 @@ export function CVPrintLayout({ data: rawData }: PrintLayoutProps) {
       root.style.margin = '0'
       root.style.padding = '0'
     }
+    monteraCvTypsnitt()
   }, [])
 
   return (
     <>
+      <style>{CV_GRUNDSTIL}</style>
       <style>{`
         @page {
           size: A4;

@@ -62,7 +62,8 @@ describe('UX24: /my-consultant får inte rendera råa i18n-nycklar', () => {
     ['en', en],
   ])('%s.json', (lang, bundle) => {
     it('har ett värde för varje nyckel sidan använder', () => {
-      const saknas = keys.filter((k) => lookup(bundle, k) === undefined)
+      // En pluralnyckel (t(k, { count })) finns som k_one/k_other — det är i18nexts form.
+      const saknas = keys.filter((k) => lookup(bundle, k) === undefined && lookup(bundle, `${k}_other`) === undefined)
       expect(saknas, `Nycklar som saknas i ${lang}.json → renderas som rå nyckel i UI`).toEqual([])
     })
 

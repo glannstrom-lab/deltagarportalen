@@ -21,6 +21,8 @@ import { useEffect, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { CVPrintLayout } from '@/components/cv/CVPrintLayout'
 import { cvApi } from '@/services/cvApi'
+import { vantaPaCvTypsnitt } from '@/components/cv/cvTypsnitt'
+import { normaliseraMallId } from '@/data/cvMallar'
 import type { CVData } from '@/services/supabaseApi'
 
 const MIKAEL_DEMO: CVData = {
@@ -141,12 +143,28 @@ export default function PrintCV() {
     setCv((prev) => prev ? { ...prev, workExperience: expanded } : prev)
   }, [cv, demo, params])
 
+  // Mallens typsnitt måste finnas INNAN `.cv-preview` ritas: api/cv-pdf.js
+  // väntar på just den väljaren och tar sedan PDF:en. Utan väntan kunde
+  // dokumentet sättas i ett reservtypsnitt (se cvTypsnitt.ts). Faller aldrig —
+  // efter högst fem sekunder ritas CV:t ändå.
+  const mall = cv ? normaliseraMallId(cv.template) : null
+  const [typsnittFor, setTypsnittFor] = useState<string | null>(null)
+  useEffect(() => {
+    if (!mall) return
+    let avbruten = false
+    vantaPaCvTypsnitt(mall).then(() => {
+      if (!avbruten) setTypsnittFor(mall)
+    })
+    return () => { avbruten = true }
+  }, [mall])
+  const typsnittKlara = mall !== null && typsnittFor === mall
+
   // Trigga print när content är renderat (om inte manual-flag)
   useEffect(() => {
-    if (!cv || manual) return
+    if (!cv || !typsnittKlara || manual) return
     const timer = setTimeout(() => window.print(), 300)
     return () => clearTimeout(timer)
-  }, [cv, manual])
+  }, [cv, typsnittKlara, manual])
 
   if (error) {
     return (
@@ -156,7 +174,7 @@ export default function PrintCV() {
     )
   }
 
-  if (!cv) {
+  if (!cv || !typsnittKlara) {
     return (
       <div style={{ padding: 40, fontFamily: 'sans-serif', color: '#666' }}>
         Laddar CV…

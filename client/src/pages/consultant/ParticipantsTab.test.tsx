@@ -34,6 +34,18 @@ vi.mock('@/services/moteskadens', async (importOriginal) => {
   return { ...orig, hamtaMotenForKonsulent: mockHamtaMoten }
 })
 
+// Omtaget 2026-10-11: veckans plan och pass hämtas separat (lib/deltagarlage).
+// Den rena logiken (deltagarLage, kontaktText) behålls; bara hämtningen mockas.
+const { mockVecka, kundtyp } = vi.hoisted(() => ({
+  mockVecka: vi.fn(async (): Promise<{ planer: Array<Record<string, unknown>>; pass: Array<Record<string, unknown>> }> => ({ planer: [], pass: [] })),
+  kundtyp: { varde: { visaAvtalskrav: true, visaIvoUnderlag: true } as { visaAvtalskrav: boolean; visaIvoUnderlag: boolean } | null },
+}))
+vi.mock('@/lib/deltagarlage', async (importOriginal) => {
+  const orig = await importOriginal<typeof import('@/lib/deltagarlage')>()
+  return { ...orig, hamtaVeckansUnderlag: mockVecka }
+})
+vi.mock('@/components/consultant/useRegelverk', () => ({ useOrgTypVisning: () => kundtyp.varde }))
+
 // BulkActionsDialog körs bara när något är markerat — inte relevant för de här
 // testerna, men mockas bort så den inte drar in sina egna beroenden.
 vi.mock('@/components/consultant/BulkActionsDialog', () => ({
@@ -106,13 +118,15 @@ beforeEach(() => {
   vi.clearAllMocks()
   mockGetUser.mockResolvedValue({ data: { user: { id: 'consultant-1' } }, error: null })
   mockEq.mockResolvedValue({ data: [makeParticipant()], error: null })
+  mockVecka.mockResolvedValue({ planer: [], pass: [] })
+  kundtyp.varde = { visaAvtalskrav: true, visaIvoUnderlag: true }
 })
 
 describe('ParticipantsTab — KA1: inbjudningsknappen', () => {
-  it('öppnar InviteParticipantDialog när "Bjud in" klickas', async () => {
+  it('öppnar InviteParticipantDialog när "Bjud in deltagare" klickas', async () => {
     renderTab()
 
-    const inviteButton = await screen.findByRole('button', { name: 'Bjud in' })
+    const inviteButton = await screen.findByRole('button', { name: 'Bjud in deltagare' })
     expect(screen.queryByTestId('invite-dialog')).not.toBeInTheDocument()
 
     fireEvent.click(inviteButton)
@@ -135,10 +149,12 @@ describe('ParticipantsTab — KA1: tomtillståndet utan deltagare', () => {
 })
 
 describe('ParticipantsTab — KT2: kryssrutornas tillgänglighet', () => {
-  it('radkryssrutan har role=checkbox, aria-checked och tillgängligt namn', async () => {
+  it('kryssrutorna syns först efter "Välj flera" — sedan role=checkbox, aria-checked och namn', async () => {
     renderTab()
     await screen.findByText('Anna Andersson')
+    expect(screen.queryByRole('checkbox')).toBeNull()
 
+    fireEvent.click(screen.getByRole('button', { name: 'Välj flera' }))
     const checkbox = screen.getByRole('checkbox', { name: 'Välj Anna Andersson' })
     expect(checkbox).toHaveAttribute('aria-checked', 'false')
 
@@ -146,15 +162,17 @@ describe('ParticipantsTab — KT2: kryssrutornas tillgänglighet', () => {
     expect(checkbox).toHaveAttribute('aria-checked', 'true')
   })
 
-  it('Välj alla-kryssrutan i tabellen har role=checkbox och ett tillgängligt namn', async () => {
+  it('Markera alla har role=checkbox och ett namn; massåtgärderna kräver ett val', async () => {
     renderTab()
     await screen.findByText('Anna Andersson')
-
-    // Byt till listvyn där tabellen (med Välj alla i <th>) renderas.
-    fireEvent.click(screen.getByRole('button', { name: 'Listvy' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Välj flera' }))
 
     const selectAll = screen.getByRole('checkbox', { name: 'Markera alla' })
     expect(selectAll).toHaveAttribute('aria-checked', 'false')
+    expect(screen.getByRole('button', { name: 'Skicka meddelande' })).toBeDisabled()
+    fireEvent.click(selectAll)
+    expect(screen.getByRole('checkbox', { name: 'Avmarkera alla' })).toHaveAttribute('aria-checked', 'true')
+    expect(screen.getByRole('button', { name: 'Skicka meddelande' })).toBeEnabled()
   })
 })
 
@@ -184,7 +202,7 @@ describe('ParticipantsTab — KA2: sök/sortering/vy i URL:en', () => {
     renderTab()
     await screen.findByText('Anna Andersson')
 
-    const searchInput = screen.getByPlaceholderText('Sök efter namn eller email...')
+    const searchInput = screen.getByPlaceholderText('Sök på namn eller e-post')
     fireEvent.change(searchInput, { target: { value: 'anna' } })
 
     await waitFor(() => {
@@ -234,7 +252,7 @@ describe('ParticipantsTab — senaste kontakt räknas i kalenderdagar (2026-09-2
   // 12 timmar gammal → 0 → "Idag". Konsulenten fick veta att hon talat med
   // deltagaren i dag när det var i går.
   // Mutation: räkna tillbaka i 24-timmarsblock → testet faller.
-  it('en kontakt i går kväll visas som "Igår", inte "Idag", en morgon', async () => {
+  it('en kontakt i går kväll visas som "i går", inte "i dag", en morgon', async () => {
     vi.useFakeTimers({ toFake: ['Date'] })
     try {
       const nu = new Date(); nu.setHours(8, 0, 0, 0)
@@ -243,8 +261,8 @@ describe('ParticipantsTab — senaste kontakt räknas i kalenderdagar (2026-09-2
       mockEq.mockResolvedValue({ data: [makeParticipant({ last_contact_at: igarKvall.toISOString() })], error: null })
       renderTab()
       await screen.findByText('Anna Andersson')
-      expect(screen.getAllByText('Igår').length).toBeGreaterThan(0)
-      expect(screen.queryByText('Idag')).toBeNull()
+      expect(screen.getAllByText(/Senaste kontakt i går/).length).toBeGreaterThan(0)
+      expect(screen.queryByText(/Senaste kontakt i dag/)).toBeNull()
     } finally {
       vi.useRealTimers()
     }
@@ -257,7 +275,94 @@ describe('ParticipantsTab — RK14: senaste kontakt följer journalen', () => {
     mockHamtaMoten.mockResolvedValueOnce([])
     renderTab()
     await screen.findByText('Anna Andersson')
-    expect(screen.queryByText(i18n.t('consultant.participants.neverContacted'))).toBeNull()
-    expect(screen.getAllByText(i18n.t('common.today')).length).toBeGreaterThan(0)
+    expect(screen.queryByText(/Ingen kontakt registrerad/)).toBeNull()
+    expect(screen.getAllByText(/Senaste kontakt i dag/).length).toBeGreaterThan(0)
+  })
+})
+
+describe('ParticipantsTab — omtaget: en rad per människa med Läget och veckan', () => {
+  // Onsdag 14 oktober 2026, 10:00. Veckan är mån 12 – fre 16.
+  const ONSDAG = new Date(2026, 9, 14, 10, 0, 0)
+  const pass = (o: Record<string, unknown>) => ({
+    id: String(Math.random()), participant_id: 'p1', plan_id: 'pl1', date: '2026-10-12', start_time: '13:00:00', end_time: '14:00:00',
+    title: 'Gruppträff', activity_type: 'jobsearch', attendance: null, attendance_note: null, self_checkin_at: null, absence_reason: null, ...o,
+  })
+
+  it('Läget är en mening ur veckans pass, med statuschip och veckoremsa', async () => {
+    vi.useFakeTimers({ toFake: ['Date'] })
+    try {
+      vi.setSystemTime(ONSDAG)
+      mockVecka.mockResolvedValue({
+        planer: [{ id: 'pl1', participant_id: 'p1', weekly_hours_target: 10, status: 'active' }],
+        pass: [
+          pass({ date: '2026-10-12', attendance: 'present' }),
+          pass({ date: '2026-10-13', attendance: 'absent_invalid' }),
+          pass({ date: '2026-10-15', start_time: '09:00:00', end_time: '12:00:00', title: 'Språkcafé' }),
+        ],
+      })
+      renderTab()
+      const rad = (await screen.findByText('Ogiltig frånvaro i går (Gruppträff)')).closest('li') as HTMLElement
+      expect(rad).toHaveTextContent('Ingen anteckning om varför än')
+      expect(rad).toHaveTextContent('Plan 10 h/vecka')
+      expect(rad.querySelector('[data-status="ogiltig"]')).not.toBeNull()
+      const vecka = screen.getByRole('list', { name: 'Anna Anderssons vecka' })
+      const dagar = Array.from(vecka.querySelectorAll('li')).map((li) => li.getAttribute('data-status'))
+      expect(dagar).toEqual(['narvarande', 'ogiltig', 'ingen', 'planerat', 'ingen'])
+      expect(rad).toHaveTextContent('I morgon 09:00 · Språkcafé')
+    } finally {
+      vi.useRealTimers()
+    }
+  })
+
+  it('snabbfiltren "Utan plan" och "Frånvaro i veckan" filtrerar på veckans underlag', async () => {
+    vi.useFakeTimers({ toFake: ['Date'] })
+    try {
+      vi.setSystemTime(ONSDAG)
+      mockEq.mockResolvedValue({
+        data: [
+          makeParticipant(),
+          makeParticipant({ participant_id: 'p2', first_name: 'Bo', last_name: 'Berg', email: 'bo@example.com' }),
+        ],
+        error: null,
+      })
+      mockVecka.mockResolvedValue({
+        planer: [{ id: 'pl1', participant_id: 'p1', weekly_hours_target: 10, status: 'active' }],
+        pass: [pass({ date: '2026-10-13', attendance: 'sick_certified' })],
+      })
+      renderTab()
+      await screen.findByText('Sjuk i går')
+      expect(screen.getByText('Ingen aktivitetsplan')).toBeInTheDocument()
+
+      fireEvent.click(screen.getByRole('button', { name: /Utan plan/ }))
+      expect(screen.getByRole('button', { name: /Utan plan/ })).toHaveAttribute('aria-pressed', 'true')
+      expect(screen.queryByText('Anna Andersson')).toBeNull()
+      expect(screen.getByText('Bo Berg')).toBeInTheDocument()
+      await waitFor(() => expect(screen.getByTestId('location-probe').textContent).toContain('filter=utan-plan'))
+
+      fireEvent.click(screen.getByRole('button', { name: /Frånvaro i veckan/ }))
+      expect(screen.getByText('Anna Andersson')).toBeInTheDocument()
+      expect(screen.queryByText('Bo Berg')).toBeNull()
+    } finally {
+      vi.useRealTimers()
+    }
+  })
+
+  it('läsfel på veckan sägs rakt ut — läget faller tillbaka på kontakten, aldrig "allt väl"', async () => {
+    mockVecka.mockRejectedValue(new Error('nätverk'))
+    renderTab()
+    await screen.findByText('Anna Andersson')
+    expect(await screen.findByText(/Veckans pass kunde inte hämtas/)).toBeInTheDocument()
+    expect(screen.getAllByText(/Ingen kontakt registrerad/).length).toBeGreaterThan(0)
+    expect(screen.queryByText(/Har varit på alla pass/)).toBeNull()
+    expect(screen.queryByRole('button', { name: /Utan plan/ })).toBeNull()
+  })
+
+  it('kommunen ser ingen möteskadens — Rusta och matcha-regeln visas bara för leverantörer', async () => {
+    kundtyp.varde = { visaAvtalskrav: false, visaIvoUnderlag: true }
+    renderTab()
+    await screen.findByText('Anna Andersson')
+    await waitFor(() => expect(mockVecka).toHaveBeenCalled())
+    expect(screen.queryByTestId('kadens-chip')).toBeNull()
+    expect(mockHamtaMoten).not.toHaveBeenCalled()
   })
 })

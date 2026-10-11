@@ -13,8 +13,8 @@
  */
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Building2 } from '@/components/ui/icons'
-import { Card } from '@/components/ui/Card'
+import { Button } from '@/components/ui/Button'
+import { SpaltYta } from './SpaltYta'
 import { placeringarApi, type Placering } from '@/services/placeringarApi'
 import { platsAvstamning, type PassRad } from '@/services/platsKoppling'
 import { PLAN_PASS_KOLUMNER_FINNS } from '@/services/planMarkning'
@@ -44,7 +44,7 @@ export function PlatsKoppling({ participantId, sessions, plan, onPassSkapade }: 
 
   if (lage.status === 'laddar') return null
   if (lage.status === 'fel') {
-    return <p className="text-sm text-rose-700 dark:text-rose-300" role="status">Platser (praktik/arbetsträning) kunde inte hämtas — avstämningen mot planen visas inte.</p>
+    return <p className="m-0 text-sm text-[var(--s-ogiltig-text)]" role="status">Platser (praktik/arbetsträning) kunde inte hämtas — avstämningen mot planen visas inte.</p>
   }
 
   const { platserUtanPass, fritextUtanPlats } = platsAvstamning(lage.platser, sessions)
@@ -52,19 +52,17 @@ export function PlatsKoppling({ participantId, sessions, plan, onPassSkapade }: 
   if (aktuella.length === 0 && fritextUtanPlats.length === 0) return null
 
   return (
-    <Card className="p-5 space-y-3" data-testid="plats-koppling">
-      <div className="flex items-center justify-between gap-3 flex-wrap">
-        <h3 className="font-semibold text-stone-900 dark:text-stone-100 flex items-center gap-2">
-          <Building2 className="w-5 h-5 text-stone-500" aria-hidden="true" />
-          Praktik och arbetsträning
-        </h3>
-        <Link to="/consultant/platser" className="text-sm underline text-stone-600 dark:text-stone-300">Öppna Platser</Link>
-      </div>
+    <SpaltYta
+      ikon="fysiskt"
+      rubrik="Praktik och arbetsträning"
+      testId="plats-koppling"
+      atgard={<Link to="/consultant/platser" className="text-sm font-semibold underline-offset-2 hover:underline text-[var(--j-gran-text)]">Öppna Platser</Link>}
+    >
       {aktuella.length > 0 && (
-        <ul className="space-y-1 text-sm text-stone-700 dark:text-stone-200">
+        <ul className="m-0 p-0 list-none grid gap-1 text-sm text-[var(--j-blak-2)]">
           {aktuella.map((p) => (
             <li key={p.id}>
-              <span className="font-medium">{p.company_name}</span> · {PLACERING_TYP_LABEL[p.placement_type] ?? p.placement_type} · {PLACERING_STATUS_LABEL[p.status] ?? p.status}
+              <span className="font-semibold text-[var(--j-blak)]">{p.company_name}</span> · {PLACERING_TYP_LABEL[p.placement_type] ?? p.placement_type} · {PLACERING_STATUS_LABEL[p.status] ?? p.status}
               {p.start_date ? ` · från ${langtDatum(p.start_date)}` : ''}
               {p.hours_per_week ? ` · ${String(p.hours_per_week).replace('.', ',')} h/vecka` : ''}
             </li>
@@ -72,21 +70,30 @@ export function PlatsKoppling({ participantId, sessions, plan, onPassSkapade }: 
         </ul>
       )}
       {platserUtanPass.map((p) => (
-        <div key={p.id} className="text-sm rounded-xl bg-amber-50 text-amber-900 dark:bg-amber-900/30 dark:text-amber-100 px-3 py-2 flex flex-wrap items-center justify-between gap-2" role="status">
+        <div key={p.id} className="text-sm rounded-[var(--j-r-m)] bg-[var(--s-vantar-bg)] text-[var(--s-vantar-text)] px-3 py-2.5 grid gap-2" role="status">
           <span>{p.company_name} finns under Platser men har inga arbetsplatspass i planen — timmarna där räknas inte förrän passen ligger i planen.</span>
           {plan && onPassSkapade && (
-            <button type="button" className="underline font-medium whitespace-nowrap" onClick={() => setValdPlats(lage.platser.find((x) => x.id === p.id) ?? null)}>
-              Lägg in i planen<span className="sr-only"> — {p.company_name}</span>
-            </button>
+            <div>
+              <Button ton="kvarter" variant="secondary" size="sm" onClick={() => setValdPlats(lage.platser.find((x) => x.id === p.id) ?? null)}>
+                Lägg in i planen<span className="sr-only"> — {p.company_name}</span>
+              </Button>
+            </div>
           )}
         </div>
       ))}
       {fritextUtanPlats.map((loc) => (
-        <p key={loc} className="text-sm rounded-xl bg-sky-50 text-sky-900 dark:bg-sky-900/30 dark:text-sky-100 px-3 py-2" role="status">
-          Planen har arbetsplatspass på ”{loc}”, men platsen finns inte under Platser. Registrera den där för kontaktuppgifter, handledning och uppföljning.
+        <p key={loc} className="m-0 text-sm rounded-[var(--j-r-m)] bg-[var(--s-giltig-bg)] text-[var(--s-giltig-text)] px-3 py-2.5" role="status">
+          Planen har arbetsplatspass på ”{loc}”, men platsen finns inte under Platser.{' '}
+          <Link
+            to={`/consultant/platser?${new URLSearchParams({ ny: '1', deltagare: participantId, foretag: loc }).toString()}`}
+            className="underline font-semibold"
+          >
+            Registrera ”{loc}” som plats
+          </Link>
+          {' '}för kontaktuppgifter, handledning och uppföljning.
         </p>
       ))}
-      <p className="text-xs text-stone-500 dark:text-stone-400">
+      <p className="m-0 text-xs text-[var(--j-blak-3)]">
         Avstämningen jämför namnet på platsen med passens platsfält{PLAN_PASS_KOLUMNER_FINNS ? ', och känner igen pass som lagts in härifrån' : ''}.
       </p>
       {valdPlats && plan && onPassSkapade && (
@@ -97,6 +104,6 @@ export function PlatsKoppling({ participantId, sessions, plan, onPassSkapade }: 
           onSkapade={(antal) => { setValdPlats(null); onPassSkapade(antal) }}
         />
       )}
-    </Card>
+    </SpaltYta>
   )
 }

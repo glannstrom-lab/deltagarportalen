@@ -184,7 +184,7 @@ export const InviteParticipantDialog: React.FC<InviteParticipantDialogProps> = (
                 Inbjudan skickad!
               </h2>
               <p className="text-gray-600 dark:text-gray-400">
-                {formData.firstName || formData.email} har fått en inbjudan via email.
+                {formData.firstName || formData.email} har fått en inbjudan via e-post.
               </p>
             </>
           )}
@@ -225,7 +225,7 @@ export const InviteParticipantDialog: React.FC<InviteParticipantDialogProps> = (
             <div className="text-sm text-blue-800 dark:text-blue-300">
               <p className="font-medium mb-1">Så fungerar det:</p>
               <ul className="list-disc list-inside space-y-1 text-blue-700 dark:text-blue-400">
-                <li><strong>Ny användare:</strong> Får en inbjudan via email</li>
+                <li><strong>Ny användare:</strong> Får en inbjudan via e-post</li>
                 <li><strong>Har redan ett konto:</strong> Kan inte kopplas härifrån — be din chef lämna över deltagaren</li>
               </ul>
             </div>
@@ -272,7 +272,7 @@ export const InviteParticipantDialog: React.FC<InviteParticipantDialogProps> = (
 
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Email *
+              E-post *
             </label>
             <div className="relative">
               <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />

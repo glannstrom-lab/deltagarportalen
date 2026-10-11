@@ -52,28 +52,28 @@ describe('DagensPass (F9) — dagens pass överst i Min dag', () => {
     expect(screen.getByRole('button', { name: /Försök igen/ })).toBeTruthy()
   })
 
-  it('visar status per pass och markerar närvaro via samma API som deltagarsidan', async () => {
+  it('ett ensamt pass markeras i raden: förslag i ord, inget förval, sparas efter konsulentens klick', async () => {
     sessions = [
-      pass({ id: 's1', participant_id: 'p1' }),
-      pass({ id: 's2', participant_id: 'p2', absence_reason: 'sick', absence_note: 'feber' }),
-      pass({ id: 's3', participant_id: 'p3', self_checkin_at: new Date().toISOString() }),
+      pass({ id: 's1', participant_id: 'p1', title: 'Verkstad' }),
+      pass({ id: 's2', participant_id: 'p2', title: 'Samtal', start_time: '10:00:00', absence_reason: 'sick', absence_note: 'feber' }),
+      pass({ id: 's3', participant_id: 'p3', title: 'Praktik', start_time: '11:00:00', self_checkin_at: new Date().toISOString() }),
     ]
-    markAttendance.mockResolvedValue({ ...sessions[0], attendance: 'present' })
+    markAttendance.mockImplementation(async (id: string, input: { attendance: string | null }) => ({ id, attendance: input.attendance }))
     const namn: Record<string, string> = { p1: 'Dana', p2: 'Omar', p3: 'Lisa' }
     render(<MemoryRouter><DagensPass namnFor={(id) => namn[id]} /></MemoryRouter>)
 
     expect(await screen.findByText('Dana')).toBeTruthy()
-    expect(screen.getByText('Anmäld frånvaro: sjuk — „feber”')).toBeTruthy()
-    expect(screen.getByText(/^Incheckad \d{2}:\d{2}$/)).toBeTruthy()
-    expect(screen.getAllByText('Väntar')).toHaveLength(1)
+    expect(screen.getByText('Anmälde frånvaro: sjuk — „feber”')).toBeTruthy()
+    expect(screen.getByText(/^Checkade in själv \d{2}:\d{2}$/)).toBeTruthy()
+    expect(screen.getByText(/Förslag: Sjuk · inte sparat än/)).toBeTruthy()
+    expect(screen.getByText(/09:00–23:59 · Verkstad/)).toBeTruthy()
+    expect(markAttendance).not.toHaveBeenCalled()
 
-    const grupp = screen.getByRole('group', { name: 'Närvaro för Dana' })
-    fireEvent.click(grupp.querySelector('button') as HTMLButtonElement)
+    const grupp = screen.getByRole('radiogroup', { name: 'Närvaro för Dana' })
+    fireEvent.click(within(grupp).getByRole('radio', { name: /Här/ }))
     await waitFor(() => expect(markAttendance).toHaveBeenCalledWith('s1', { attendance: 'present' }))
-    // Danas rad visar statusen (knapparna på de andra raderna heter också "Närvarande")
-    const rad = screen.getByText('Dana').closest('li') as HTMLElement
-    await waitFor(() => expect(within(rad).getByText('Närvarande').tagName).toBe('P'))
-    // Markerat pass har inga knappar kvar
-    expect(screen.queryByRole('group', { name: 'Närvaro för Dana' })).toBeNull()
+    const rad = screen.getByText('Dana').closest('[data-testid="narvaro-rad"]') as HTMLElement
+    await waitFor(() => expect(rad.querySelector('[data-status="narvarande"]')).not.toBeNull())
+    expect(within(rad).getByRole('button', { name: 'Ångra: Dana' })).toBeTruthy()
   })
 })

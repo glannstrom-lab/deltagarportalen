@@ -1,124 +1,172 @@
 /**
- * BradskandeIdag — "Att göra i dag" (RK35/RR26, rollspelet 2026-09-27).
- * Varje rad leder direkt till åtgärden: knappen i raden anropar rätt
- * handling med rätt indata.
+ * BradskandeIdag — nästa steg + en rad per människa (omtaget "Kvarter",
+ * steg 3, 2026-10-11). Åtgärderna är desamma som i Att göra i dag
+ * (RK35/RR26): varje knapp anropar rätt handling med rätt indata.
+ *
+ * Testerna hittar element på roll och testid, inte på löptext.
  *
  * Motprov (körda): (1) skicka inte med `note: pass.attendance_note` vid
  * ommarkering → "Intyget har kommit"-testet faller (anteckningen skulle
  * skrivas över). (2) låt "Kvittera" markera 'external' → kvittenstestet
- * faller. (3) ta bort leverantörsraden → RR26-testet faller.
+ * faller. (3) rita nästa steg även när `visaNastaSteg` är falskt →
+ * läsfelstestet faller. (4) ta bort `utanNastaSteg` → "står inte två gånger" faller.
  */
 import { describe, it, expect, vi, afterEach } from 'vitest'
-import { render, screen, fireEvent, waitFor, cleanup } from '@testing-library/react'
-import { MemoryRouter } from 'react-router-dom'
+import { render, screen, fireEvent, waitFor, cleanup, within } from '@testing-library/react'
+import { MemoryRouter, Route, Routes, useLocation } from 'react-router-dom'
 import { BradskandeIdag } from './BradskandeIdag'
-import type { AttGora, AttGoraPass, LeverantorLage } from './oversiktRegler'
+import { minDagPersoner, type AttGora, type AttGoraPass, type LeverantorLage, type PassAttMarkera } from './oversiktRegler'
 
 afterEach(() => cleanup())
 
+const NU = new Date(2026, 8, 25, 12, 0)
 const pass = (o: Partial<AttGoraPass>): AttGoraPass => ({
   id: 's1', plan_id: 'plan1', participant_id: 'anna', date: '2026-09-25', start_time: '09:00', end_time: '12:00',
   title: 'Jobbsökarverkstad', activity_type: 'jobsearch', attendance: null, attendance_note: null,
   sick_certificate_received: false, marked_at: null, self_checkin_at: null, ...o,
 })
-const punkt = (typ: AttGora['typ'], p: AttGoraPass, text = `${typ}-text`): AttGora => ({ typ, participantId: p.participant_id, pass: p, text })
-const namnFor = (id: string) => ({ anna: 'Anna Exempel', omar: 'Omar Demo' } as Record<string, string>)[id] ?? id
+const punkt = (typ: AttGora['typ'], p: AttGoraPass): AttGora => ({ typ, participantId: p.participant_id, pass: p, text: typ })
+const namnFor = (id: string) => ({ anna: 'Anna Exempel', omar: 'Omar Demo', jonas: 'Jonas Berg' } as Record<string, string>)[id] ?? id
+
+function personer(args: { attGora?: AttGora[]; leverantor?: LeverantorLage | null; kontakt?: string[] } = {}) {
+  return minDagPersoner({
+    attGora: args.attGora ?? [],
+    bradskande: [],
+    leverantor: args.leverantor ?? null,
+    moten: [],
+    deadlines: [],
+    kontakter: (args.kontakt ?? []).map((id) => ({ participantId: id, text: 'Aldrig kontaktad' })),
+    idag: NU,
+  })
+}
+
+function Plats() {
+  const l = useLocation()
+  return <output data-testid="plats">{l.pathname + l.search + l.hash}</output>
+}
 
 function rita(props: Partial<Parameters<typeof BradskandeIdag>[0]> = {}) {
   return render(
-    <MemoryRouter>
-      <BradskandeIdag punkter={[]} fel={false} namnFor={namnFor} {...props} />
+    <MemoryRouter initialEntries={['/consultant']}>
+      <Routes>
+        <Route path="/consultant" element={<BradskandeIdag personer={[]} nu={NU} namnFor={namnFor} {...props} />} />
+        <Route path="*" element={<Plats />} />
+      </Routes>
     </MemoryRouter>,
   )
 }
 
-describe('Att göra i dag', () => {
-  it('ritar ingenting när inget väntar och det inte är en leverantör', () => {
+const nasta = () => screen.getByTestId('mindag-nasta-steg')
+
+describe('Min dag — nästa steg och en rad per människa', () => {
+  it('ritar ingenting när inget väntar', () => {
     const { container } = rita()
     expect(container).toBeEmptyDOMElement()
   })
 
-  it('underlagsfel sägs rakt ut, aldrig ett tyst "inget"', () => {
-    rita({ fel: true })
-    expect(screen.getByRole('alert')).toHaveTextContent('det som ska göras i dag visas inte just nu')
+  it('läsfel: inget nästa steg påstås, raderna står kvar', () => {
+    rita({ personer: personer({ kontakt: ['jonas'] }), visaNastaSteg: false })
+    expect(screen.queryByTestId('mindag-nasta-steg')).not.toBeInTheDocument()
+    expect(screen.getByTestId('mindag-person-jonas')).toBeInTheDocument()
+  })
+
+  it('frånvaro utan anteckning: raden skrivs i nästa steg och sparas genom saveAttendanceNote', async () => {
+    const onSparaAnteckning = vi.fn().mockResolvedValue(undefined)
+    const p = pass({ attendance: 'absent_invalid', date: '2026-09-24' })
+    rita({ personer: personer({ attGora: [punkt('franvaro_utan_anteckning', p)] }), onSparaAnteckning })
+    const steg = nasta()
+    expect(steg).toHaveAttribute('data-typ', 'franvaro_utan_anteckning')
+    expect(within(steg).getByRole('heading', { level: 2 })).toHaveTextContent('Skriv en rad om Annas frånvaro')
+    const spara = within(steg).getByRole('button', { name: 'Spara raden' })
+    expect(spara).toBeDisabled()
+    fireEvent.change(within(steg).getByRole('textbox'), { target: { value: 'Svarade inte i telefon' } })
+    fireEvent.click(spara)
+    await waitFor(() => expect(onSparaAnteckning).toHaveBeenCalledWith(p, 'Svarade inte i telefon'))
+    // Samma sak står inte två gånger: Anna har ingen rad i listan.
+    expect(screen.queryByTestId('mindag-person-anna')).not.toBeInTheDocument()
   })
 
   it('Kvittera markerar egenrapporten som närvarande', async () => {
-    const onMarkera = vi.fn(async () => {})
-    const p = pass({ activity_type: 'jobsearch_own' })
-    rita({ attGora: [punkt('kvittera', p, 'Egen redovisning 27 sep väntar på kvittens')], onMarkera })
-    expect(screen.getByRole('heading', { name: 'Att göra i dag' })).toBeInTheDocument()
-    expect(screen.getByText('Egen redovisning 27 sep väntar på kvittens')).toBeInTheDocument()
-    fireEvent.click(screen.getByRole('button', { name: 'Kvittera' }))
+    const onMarkera = vi.fn().mockResolvedValue(undefined)
+    const p = pass({ activity_type: 'jobsearch_own', title: 'Eget jobbsökande' })
+    rita({ personer: personer({ attGora: [punkt('kvittera', p)] }), onMarkera })
+    fireEvent.click(within(nasta()).getByRole('button', { name: 'Kvittera' }))
     await waitFor(() => expect(onMarkera).toHaveBeenCalledWith(p, { attendance: 'present', note: null, sickCertificateReceived: false }))
   })
 
   it('"Intyget har kommit" behåller sjukmarkeringen och anteckningen och sätter intyget', async () => {
-    const onMarkera = vi.fn(async () => {})
-    const p = pass({ attendance: 'sick_certified', attendance_note: 'Ringde 08.10' })
-    rita({ attGora: [punkt('sjuk_utan_intyg', p)], onMarkera })
-    fireEvent.click(screen.getByRole('button', { name: 'Intyget har kommit' }))
-    await waitFor(() => expect(onMarkera).toHaveBeenCalledWith(p, { attendance: 'sick_certified', note: 'Ringde 08.10', sickCertificateReceived: true }))
-  })
-
-  it('en saknad anteckning skrivs direkt i raden', async () => {
-    const onSparaAnteckning = vi.fn(async () => {})
-    const p = pass({ attendance: 'absent_invalid' })
-    rita({ attGora: [punkt('franvaro_utan_anteckning', p)], onSparaAnteckning })
-    const knapp = screen.getByRole('button', { name: 'Spara anteckning' })
-    expect(knapp).toBeDisabled()
-    fireEvent.change(screen.getByLabelText('Anteckning om frånvaron för Anna Exempel'), { target: { value: '  Kom inte, svarade inte  ' } })
-    fireEvent.click(knapp)
-    await waitFor(() => expect(onSparaAnteckning).toHaveBeenCalledWith(p, 'Kom inte, svarade inte'))
+    const onMarkera = vi.fn().mockResolvedValue(undefined)
+    const p = pass({ attendance: 'sick_certified', attendance_note: 'Ringde in' })
+    rita({ personer: personer({ attGora: [punkt('sjuk_utan_intyg', p)] }), onMarkera })
+    fireEvent.click(within(nasta()).getByRole('button', { name: 'Intyget har kommit' }))
+    await waitFor(() => expect(onMarkera).toHaveBeenCalledWith(p, { attendance: 'sick_certified', note: 'Ringde in', sickCertificateReceived: true }))
   })
 
   it('en förklaring kan godtas (ändra till giltig) eller avslås (behåll ogiltig)', async () => {
-    const onMarkera = vi.fn(async () => {})
-    const p = pass({ attendance: 'absent_invalid', attendance_note: 'Kom inte' })
-    rita({ attGora: [punkt('forklaring', p)], onMarkera })
-    fireEvent.click(screen.getByRole('button', { name: 'Ändra till giltig' }))
-    await waitFor(() => expect(onMarkera).toHaveBeenLastCalledWith(p, { attendance: 'absent_valid', note: 'Kom inte', sickCertificateReceived: false }))
-    fireEvent.click(screen.getByRole('button', { name: 'Behåll ogiltig' }))
-    await waitFor(() => expect(onMarkera).toHaveBeenLastCalledWith(p, { attendance: 'absent_invalid', note: 'Kom inte', sickCertificateReceived: false }))
+    const onMarkera = vi.fn().mockResolvedValue(undefined)
+    const p = pass({ attendance: 'absent_invalid', participant_explanation: 'Var hos läkaren', participant_explanation_at: '2026-09-25T10:00:00Z', marked_at: '2026-09-25T09:00:00Z' })
+    rita({ personer: personer({ attGora: [punkt('forklaring', p)] }), onMarkera })
+    fireEvent.click(within(nasta()).getByRole('button', { name: 'Godta, ändra till giltig' }))
+    await waitFor(() => expect(onMarkera).toHaveBeenLastCalledWith(p, expect.objectContaining({ attendance: 'absent_valid' })))
+    fireEvent.click(within(nasta()).getByRole('button', { name: 'Behåll ogiltig' }))
+    await waitFor(() => expect(onMarkera).toHaveBeenLastCalledWith(p, expect.objectContaining({ attendance: 'absent_invalid' })))
   })
 
-  it('ett omarkerat pass får samma fyra val som Dagens pass', () => {
-    rita({ attGora: [punkt('omarkerat', pass({}))], onMarkera: vi.fn(async () => {}) })
-    for (const namn of ['Närvarande', 'Frånvaro, giltig', 'Frånvaro, ogiltig', 'Sjuk']) {
-      expect(screen.getByRole('button', { name: namn })).toBeInTheDocument()
-    }
+  it('en rad per människa: tre saker om Omar är en rad med "+2 till", och raden fälls ut med alla tre', async () => {
+    const onMarkera = vi.fn().mockResolvedValue(undefined)
+    const franvaro = pass({ id: 'k', participant_id: 'anna', attendance: 'absent_invalid', date: '2026-09-24' })
+    const omarkerat = pass({ id: 'o', participant_id: 'omar', date: '2026-09-22' })
+    const anmald = pass({ id: 'a', participant_id: 'omar', date: '2026-09-26', absence_reported_at: '2026-09-24T08:00:00Z', absence_reason: 'sick' })
+    rita({ personer: personer({ attGora: [punkt('franvaro_utan_anteckning', franvaro), punkt('omarkerat', omarkerat), punkt('anmald_franvaro', anmald)], kontakt: ['omar'] }), onMarkera })
+    const lista = screen.getByTestId('mindag-lista')
+    expect(within(lista).getAllByRole('listitem').filter((li) => li.dataset.testid?.startsWith('mindag-person-'))).toHaveLength(1)
+    const omar = screen.getByTestId('mindag-person-omar')
+    expect(omar).toHaveAttribute('data-typ', 'anmald_franvaro')
+    expect(omar).toHaveTextContent('+2 till')
+    const bedom = within(omar).getByRole('button', { name: 'Bedöm: Omar Demo' })
+    expect(bedom).toHaveAttribute('aria-expanded', 'false')
+    fireEvent.click(bedom)
+    expect(bedom).toHaveAttribute('aria-expanded', 'true')
+    const panel = within(omar).getByRole('list', { name: 'Allt om Omar Demo i dag' })
+    expect(within(panel).getAllByRole('listitem')).toHaveLength(3)
+    // Det omarkerade passet markeras med radiogruppen — samma fyra val som Dagens pass.
+    const grupp = within(panel).getByRole('radiogroup')
+    expect(within(grupp).getAllByRole('radio').map((r) => r.textContent)).toEqual(['Här', 'Giltig', 'Ogiltig', 'Sjuk'])
+    fireEvent.click(within(grupp).getByRole('radio', { name: /Ogiltig/ }))
+    await waitFor(() => expect(onMarkera).toHaveBeenCalledWith(omarkerat, { attendance: 'absent_invalid', note: null, sickCertificateReceived: false }))
   })
 
-  it('ett fel vid sparning visas i raden', async () => {
-    const onMarkera = vi.fn(async () => { throw new Error('Nekad av databasen') })
-    rita({ attGora: [punkt('kvittera', pass({ activity_type: 'jobsearch_own' }))], onMarkera })
-    fireEvent.click(screen.getByRole('button', { name: 'Kvittera' }))
-    expect(await screen.findByRole('alert')).toHaveTextContent('Nekad av databasen')
+  it('ett fel vid sparning visas där handlingen gjordes', async () => {
+    const onMarkera = vi.fn().mockRejectedValue(new Error('Nekad av databasen'))
+    rita({ personer: personer({ attGora: [punkt('kvittera', pass({ activity_type: 'jobsearch_own' }))] }), onMarkera })
+    fireEvent.click(within(nasta()).getByRole('button', { name: 'Kvittera' }))
+    expect(await within(nasta()).findByRole('alert')).toHaveTextContent('Nekad av databasen')
   })
 
-  it('RR26: leverantörens vecka mot avtalet, och "Boka fysiskt möte" går till rätt deltagare', () => {
-    const onBokaFysiskt = vi.fn()
-    const leverantor: LeverantorLage = {
-      bedomdaPlaner: 2,
-      underTimkravet: [{ participantId: 'anna', text: 'Vecka 38: 0,5 h närvaro mot kravet 1 h' }],
-      utanFysisktMote: [{ participantId: 'omar', text: 'Senaste fysiska möte 48 dagar sedan — gränsen är 28' }],
+  it('RR26: "Boka fysiskt möte" i raden går till rätt deltagare med fysiskt förvalt', () => {
+    const onBokaMote = vi.fn()
+    const lev: LeverantorLage = {
+      bedomdaPlaner: 1,
+      underTimkravet: [],
+      utanFysisktMote: [{ participantId: 'omar', text: 'Inget genomfört fysiskt möte än' }],
       uppfoljningar: [],
     }
-    rita({ leverantor, onBokaFysiskt })
-    expect(screen.getByLabelText('Veckan mot avtalet')).toHaveTextContent('1 deltagare under timkravet · 1 utan fysiskt möte · 0 uppföljningar inom 14 dagar')
-    expect(screen.getByRole('link', { name: 'Se aktivitetsloggen' })).toHaveAttribute('href', '/consultant/analytics#avtalskrav')
-    fireEvent.click(screen.getByRole('button', { name: 'Boka fysiskt möte' }))
-    expect(onBokaFysiskt).toHaveBeenCalledWith('omar')
+    rita({ personer: personer({ attGora: [punkt('kvittera', pass({ activity_type: 'jobsearch_own' }))], leverantor: lev }), onBokaMote })
+    fireEvent.click(within(screen.getByTestId('mindag-person-omar')).getByRole('button', { name: 'Boka fysiskt möte: Omar Demo' }))
+    expect(onBokaMote).toHaveBeenCalledWith('omar', true)
   })
 
-  it('RR26: en mötesrad i brådskande-listan och en "utan fysiskt möte"-rad för samma person visas inte båda', () => {
-    const leverantor: LeverantorLage = {
-      bedomdaPlaner: 0, underTimkravet: [], uppfoljningar: [],
-      utanFysisktMote: [{ participantId: 'omar', text: 'Senaste fysiska möte 48 dagar sedan — gränsen är 28' }],
-    }
-    rita({ leverantor, punkter: [{ participantId: 'omar', typ: 'mote', text: 'Senaste fysiska möte 48 dagar sedan — gränsen är 28' }], onBokaFysiskt: vi.fn() })
-    expect(screen.getAllByText('Senaste fysiska möte 48 dagar sedan — gränsen är 28')).toHaveLength(1)
-    // Sammanfattningen räknar ändå deltagaren
-    expect(screen.getByLabelText('Veckan mot avtalet')).toHaveTextContent('1 utan fysiskt möte')
+  it('ett pass att markera blir nästa steg och leder till närvaron för hela passet', () => {
+    const p: PassAttMarkera = { title: 'Gruppträff', date: '2026-09-25', start_time: '13:00', end_time: '14:00', deltagare: 6, incheckade: 4, anmalda: 1, omarkerade: 6 }
+    rita({ pass: [p] })
+    expect(nasta()).toHaveAttribute('data-typ', 'pass')
+    expect(nasta()).toHaveTextContent('Sex deltagare. Fyra har checkat in själva, en har anmält frånvaro.')
+    fireEvent.click(within(nasta()).getByRole('button', { name: 'Markera närvaro' }))
+    expect(decodeURIComponent(screen.getByTestId('plats').textContent ?? '')).toBe('/consultant/pass/grupp?datum=2026-09-25&start=13:00&slut=14:00&titel=Gruppträff')
+  })
+
+  it('en vy, en primärknapp', () => {
+    rita({ personer: personer({ attGora: [punkt('kvittera', pass({ activity_type: 'jobsearch_own' })), punkt('kvittera', pass({ id: 's2', participant_id: 'omar', activity_type: 'jobsearch_own' }))], kontakt: ['jonas'] }) })
+    expect(document.querySelectorAll('[data-variant="primary"]')).toHaveLength(1)
   })
 })

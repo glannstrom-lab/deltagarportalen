@@ -291,3 +291,141 @@
 html {
   scroll-padding-bottom: var(--bottom-nav-h);
 }
+
+/* ===========================================================================
+   OMTAGET 2026-10-11 — "Kvarter": palett, status, form och typsnitt
+   ===========================================================================
+   Källa: designförslaget "Jobin i lugnare form" (11 okt 2026), avsnitt 3.
+   Värdena är tagna ur förslaget, inte uppfunna. Steg 1 i genomförandeplanen.
+
+   Allt här är ADDITIVT. Inget befintligt token ändras, så deltagarvyns
+   hubbfärger (--c-* via data-domain) står kvar som de är. Nya komponenter
+   (NastaSteg, PersonRad, StatusChip, Veckoremsa, NarvaroVal, MerMeny och
+   ikonsetet i components/ui/icons/kvarter) läser BARA --j-* och --s-*.
+
+   Prefix:
+     --j-*   grundpaletten (Papper, Kort, Bläck, Gran, Glöd …)
+     --s-*   statusfärgerna: -text, -bg och -ikon per status
+     --j-r-* rundning 8 / 14 / 22
+
+   Statusfärg betyder alltid samma sak, och står aldrig ensam: komponenterna
+   bär också ikon och ord (StatusChip). Kontrasten är uträknad i förslaget
+   mot respektive chipbakgrund, ljust / mörkt — och omräknad vid bygget, se
+   src/styles/kvarterKontrast.test.ts:
+     närvarande 5,5 / 7,9 · giltig 6,0 / 8,0 · ogiltig 5,8 / 7,6
+     sjuk 6,2 / 7,8 · väntar 5,9 / 8,0 · planerat 6,6 / 7,6
+*/
+:root {
+  /* Ytor */
+  --j-papper:   #F7F6F2;  /* sidbakgrund */
+  --j-kort:     #FFFFFF;  /* listor, paneler, dialoger */
+  --j-sankt:    #EFEEE8;  /* nedsänkt yta, neutral chip */
+  --j-linje:    #E3E2DB;  /* avdelare mellan rader */
+  --j-linje-2:  #D3D2C9;  /* ram på sekundärknapp och fält */
+
+  /* Text */
+  --j-blak:     #1C2421;  /* Bläck — 14,7:1 mot Papper */
+  --j-blak-2:   #4F5A55;  /* brödtext, "läget" */
+  /* Förslaget hade #6B7570. Omräknat vid bygget: 4,41:1 mot Papper och
+     4,10:1 mot Sänkt — under 4,5:1 för den minsta texten, som just den här
+     färgen bär. #636D68 är närmaste nyans som klarar alla tre ljusa ytor
+     (4,96 Papper · 4,61 Sänkt · 5,36 Kort). Mörkt läge var redan rätt. */
+  --j-blak-3:   #636D68;  /* metadata, minsta text */
+
+  /* Gran — primär, valt läge, fokusring */
+  --j-gran:      #1F5B4A;
+  --j-pa-gran:   #FFFFFF;  /* text på fylld Gran */
+  --j-gran-mjuk: #E5EFEA;
+  --j-gran-text: #1F5B4A;  /* Gran som textfärg (ljusare i mörkt läge) */
+
+  /* Glöd — nästa steg, "just nu" */
+  --j-glod:      #B04A1E;
+  --j-glod-mjuk: #FBEDE4;
+
+  /* Status — text, bakgrund, ikon */
+  --s-narvarande-text: #1E6B4C;  --s-narvarande-bg: #E4F1EA;
+  --s-giltig-text:     #2A5C8A;  --s-giltig-bg:     #E6EEF6;
+  --s-ogiltig-text:    #A3352B;  --s-ogiltig-bg:    #FBE9E6;
+  --s-sjuk-text:       #5E4A94;  --s-sjuk-bg:       #EEEAF6;
+  --s-vantar-text:     #80530C;  --s-vantar-bg:     #FBF0DC;
+  --s-planerat-text:   var(--j-blak-2);
+  --s-planerat-bg:     var(--j-sankt);
+
+  --s-narvarande-ikon: var(--s-narvarande-text);
+  --s-giltig-ikon:     var(--s-giltig-text);
+  --s-ogiltig-ikon:    var(--s-ogiltig-text);
+  --s-sjuk-ikon:       var(--s-sjuk-text);
+  --s-vantar-ikon:     var(--s-vantar-text);
+  --s-planerat-ikon:   var(--s-planerat-text);
+
+  /* Form: 8 chip och fält · 14 kort och knappar · 22 scener */
+  --j-r-s: 8px;
+  --j-r-m: 14px;
+  --j-r-l: 22px;
+
+  /* Två nivåer av djup. Platt yta med linje för listor; skugga bara för
+     nästa steg (--j-skugga) och dialoger (--j-skugga-stor). */
+  --j-skugga:      0 1px 2px rgba(28,36,33,.06), 0 8px 24px -12px rgba(28,36,33,.18);
+  --j-skugga-stor: 0 2px 4px rgba(28,36,33,.05), 0 24px 48px -24px rgba(28,36,33,.30);
+
+  /* Typsnitt — laddas i client/index.html (Google Fonts) */
+  --j-font-text:   "Hanken Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --j-font-rubrik: "Bricolage Grotesque", "Hanken Grotesk", system-ui, sans-serif;
+
+  /* Fokusring: Gran, 3 px */
+  --j-fokus: var(--j-gran);
+}
+
+.dark {
+  --j-papper:   #121715;
+  --j-kort:     #1A211E;
+  --j-sankt:    #151B19;
+  --j-linje:    #2A3430;
+  --j-linje-2:  #36423D;
+
+  --j-blak:     #E8ECE9;
+  --j-blak-2:   #A9B3AE;
+  --j-blak-3:   #8C9792;
+
+  --j-gran:      #7CC8A8;
+  --j-pa-gran:   #0E1A15;
+  --j-gran-mjuk: #1D3229;
+  --j-gran-text: #8FD4B2;
+
+  --j-glod:      #F0A47A;
+  --j-glod-mjuk: #3A2418;
+
+  --s-narvarande-text: #8FD4B2;  --s-narvarande-bg: #173327;
+  --s-giltig-text:     #9CC3EA;  --s-giltig-bg:     #172A3D;
+  --s-ogiltig-text:    #F2A397;  --s-ogiltig-bg:    #3A1D1A;
+  --s-sjuk-text:       #C3B3EE;  --s-sjuk-bg:       #2A2340;
+  --s-vantar-text:     #E9C17A;  --s-vantar-bg:     #3A2C12;
+
+  --j-skugga:      0 1px 2px rgba(0,0,0,.4), 0 8px 24px -12px rgba(0,0,0,.6);
+  --j-skugga-stor: 0 2px 4px rgba(0,0,0,.4), 0 24px 48px -24px rgba(0,0,0,.8);
+}
+
+/* === Kontorstonen — konsulentvyn slår på den med data-ton="kontor" ===
+
+   Sätt attributet på konsulentskalets yttersta element:
+       <div data-ton="kontor"> … </div>
+   Då blir sidan Papper med Bläck-text, och --c-* (som Button, flikar och
+   äldre komponenter läser) pekar på Gran i stället för hubbfärgen. Regeln
+   gäller också element INNE i tonen som själva bär data-domain — förslaget
+   ersätter de fem hubbfärgerna i konsulentvyn med en enda ton.
+
+   Utanför ett data-ton="kontor"-element händer ingenting: deltagarvyns
+   hubbfärger styrs som förut av [data-domain] ovan. */
+[data-ton="kontor"],
+[data-ton="kontor"] [data-domain] {
+  --c-bg:       var(--j-gran-mjuk);
+  --c-accent:   var(--j-linje-2);
+  --c-solid:    var(--j-gran);
+  --c-text:     var(--j-gran-text);
+  --c-on-solid: var(--j-pa-gran);
+}
+
+[data-ton="kontor"] {
+  background-color: var(--j-papper);
+  color: var(--j-blak);
+}

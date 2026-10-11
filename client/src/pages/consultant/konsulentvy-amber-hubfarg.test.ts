@@ -56,30 +56,16 @@ const AMBER_KLASS = /amber-\d/
  * osparade-ändringar-banner. Allt annat amber i filen är dekoration.
  */
 const TILLATNA_RADER: Record<string, string[]> = {
-  'pages/consultant/ParticipantsTab.tsx': [
-    `ON_HOLD: { label: t('consultant.participants.status.onHold'), color: 'bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300' },`,
-    `if (priority === 1) return { label: t('consultant.participants.priority.high'), color: 'bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300' }`,
-    `isOverdue(p.last_contact_at) ? 'text-amber-600' : 'text-stone-500'`,
-    `(p.ats_score || 0) >= 50 ? 'text-amber-600' : 'text-stone-600'`,
-    // RM3 (2026-09-12): möteskadensen — 'snart' = inom tre dagar från 14-/28-dagarsgränsen. En varningsstatus, inte dekoration.
-    `snart: 'bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300',`,
-  ],
+  // Omtaget 2026-10-11 (steg 4): deltagarlistan använder statustokens (--s-*), ingen amber kvar.
+  'pages/consultant/ParticipantsTab.tsx': [],
   'pages/consultant/ResourcesTab.tsx': [],
-  'pages/consultant/OverviewTab.tsx': [
-    `yellow: 'bg-amber-50 border-amber-200 dark:bg-amber-900/20 dark:border-amber-800',`,
-    `yellow: 'text-amber-700 dark:text-amber-400',`,
-    `status === 'yellow' ? 'bg-amber-100 dark:bg-amber-900/40' :`,
-    `color: 'text-amber-700 bg-amber-100 dark:text-amber-400 dark:bg-amber-900/40',`,
-    `<div className="p-2 rounded-lg bg-amber-100 dark:bg-amber-900/40">`,
-    `{activity.type === 'cv_updated' && <FileText className="w-4 h-4 text-amber-700 dark:text-amber-400" />}`,
-    `{activity.type === 'job_saved' && <Briefcase className="w-4 h-4 text-amber-700 dark:text-amber-400" />}`,
-    `{activity.type === 'login' && <Users className="w-4 h-4 text-amber-700 dark:text-amber-400" />}`,
-  ],
-  'pages/consultant/ParticipantDetailPage.tsx': [
-    `ON_HOLD: { label: t('consultant.participants.status.onHold'), color: 'bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300' },`,
-    `warning: 'text-amber-600',`,
-    `MEDIUM: 'text-amber-600',`,
-  ],
+  // Omtaget "Kvarter" steg 3 (2026-10-11): Översikten har inga amber-klasser kvar —
+  // status bär färg ur --s-*-tokens (StatusChip). Ett nytt amber här är en regression.
+  'pages/consultant/OverviewTab.tsx': [],
+  // Omtaget "Kvarter", steg 5 (2026-10-11): deltagarsidan har inga Tailwind-färgklasser
+  // kvar — varningarna (pausad, medelprioritet) bär statustokens via StatusChip/--s-*.
+  // Tom lista = ingen amber alls får komma tillbaka här.
+  'pages/consultant/ParticipantDetailPage.tsx': [],
   // ParticipantJournal kopplades in 2026-08-31 (efter KT3-svepet) och tog
   // över kategorifärgerna som tidigare låg inline i ParticipantDetailPage —
   // CONCERN ("Oro") är samma faktiska varningsstatus, bara flyttad.

@@ -79,8 +79,14 @@ export function bradskandePunkter(args: {
   moten: readonly MoteRad[]
   pass: readonly PassRad[]
   idag: Date
+  /**
+   * Möteskadensen (14/28 dagar) är Rusta och matcha-avtalets krav. Kommunen har
+   * inget sådant krav, så punkterna läggs bara till för leverantörer
+   * (slipningen 2026-10-11, kommunfynd A1). Utan värde: med, som tidigare.
+   */
+  medMotesregel?: boolean
 }): Bradskande[] {
-  const { deltagare, moten, pass, idag } = args
+  const { deltagare, moten, pass, idag, medMotesregel = true } = args
   const mina = new Set(deltagare.map((d) => d.participant_id))
   const { fran, till } = franvaroFonster(idag)
 
@@ -108,6 +114,7 @@ export function bradskandePunkter(args: {
   }
 
   for (const d of deltagare) {
+    if (!medMotesregel) break
     if (d.status !== 'ACTIVE') continue
     const k = kadensForMoten(moten.filter((m) => m.participant_id === d.participant_id), idag)
     if (k.laget !== 'over') continue
@@ -378,16 +385,24 @@ export function leverantorsLage(args: {
     })
   }
 
+  // Slipningen 2026-10-11 (R&M A4): en deltagare som fått jobb (placering som har
+  // startat) och inte har någon aktiv plan jagades ändå för fysiska möten. Hennes
+  // uppgift är uppföljningen. Med en aktiv plan är hon kvar i tjänsten — då gäller kravet.
+  const medAktivPlan = new Set(args.plans.filter((p) => p.status === 'active').map((p) => p.participant_id))
+  const placerade = new Set(args.placeringar
+    .filter((p) => (!p.start_date || p.start_date <= idagIso) && !medAktivPlan.has(p.participant_id))
+    .map((p) => p.participant_id))
   const utanFysisktMote: LeverantorPunkt[] = []
   for (const d of deltagare) {
-    if (d.status !== 'ACTIVE') continue
+    if (d.status !== 'ACTIVE' || placerade.has(d.participant_id)) continue
     const k = kadensForMoten(args.moten.filter((m) => m.participant_id === d.participant_id), idag)
     if (k.bokatFysiskt) continue
     if (k.dagarSedanFysiskt !== null && k.dagarSedanFysiskt <= FYSISKT_GRANS_DAGAR) continue
     utanFysisktMote.push({
       participantId: d.participant_id,
       text: k.dagarSedanFysiskt === null
-        ? 'Inget genomfört fysiskt möte de senaste 90 dagarna'
+        // Bara att inget genomfört fysiskt möte finns i datan — inte "90 dagar".
+        ? 'Inget genomfört fysiskt möte än'
         : `Senaste fysiska möte ${k.dagarSedanFysiskt} dagar sedan — gränsen är ${FYSISKT_GRANS_DAGAR}`,
     })
   }
@@ -412,4 +427,455 @@ export function leverantorSammanfattning(l: LeverantorLage): string[] {
     `${l.utanFysisktMote.length} utan fysiskt möte`,
     `${l.uppfoljningar.length} ${l.uppfoljningar.length === 1 ? 'uppföljning' : 'uppföljningar'} inom 14 dagar`,
   ]
+}
+
+// ===========================================================================
+// Min dag i omtaget "Kvarter" (steg 3, 2026-10-11)
+// ===========================================================================
+//
+// Förslagets två principer för Min dag: "Nästa steg står överst, och det är
+// ett" och "Personen är enheten". Det som Att göra, Kräver uppmärksamhet,
+// leverantörens vecka och dagens möten tidigare listade var för sig blir här
+// EN rad per människa, med det mest brådskande först och "+N till" efter —
+// och den enda viktigaste saken lyfts ut till ett nästa steg.
+//
+// Inga nya regler: varje punkt kommer ur reglerna ovan (attGoraIdag,
+// bradskandePunkter, leverantorsLage) eller ur Översiktens möten, mål och
+// kontaktregel. Det nya är ordningen och orden ("läget" som en mening).
+
+export type MinDagTyp =
+  | AttGoraTyp
+  | 'franvaro'
+  | 'mote_over_gransen'
+  | 'utan_fysiskt'
+  | 'under_timkravet'
+  | 'uppfoljning'
+  | 'mote_idag'
+  | 'deadline'
+  | 'kontakt'
+
+/** Lägre tal = mer brådskande. Förslagets ordning: frånvaro utan anteckning först. */
+export const MIN_DAG_PRIO: Record<MinDagTyp, number> = {
+  franvaro_utan_anteckning: 10,
+  forklaring: 20,
+  anmald_franvaro: 25,
+  sjuk_utan_intyg: 30,
+  kvittera: 35,
+  franvaro: 40,
+  omarkerat: 45,
+  mote_over_gransen: 50,
+  utan_fysiskt: 52,
+  under_timkravet: 55,
+  uppfoljning: 58,
+  mote_idag: 65,
+  deadline: 75,
+  kontakt: 85,
+}
+
+/** Statusens namn i Kvarter-systemet (components/ui/kvarterStatus.ts). */
+export type MinDagStatus = 'narvarande' | 'giltig' | 'ogiltig' | 'sjuk' | 'vantar' | 'planerat'
+
+export interface MinDagPunkt {
+  typ: MinDagTyp
+  participantId: string
+  /** "Läget" — en mening om personen, ord före siffror. */
+  lage: string
+  /** Mindre text under läget. */
+  detalj?: string
+  status?: MinDagStatus
+  /** Egen text i statuschippet; utelämnad → statusens ord. */
+  statusText?: string
+  /** Passet punkten gäller (Att göra-punkterna). */
+  pass?: AttGoraPass
+  /** Dagens möte (mote_idag). */
+  mote?: { id: string; scheduledAt: string; meetingLink: string | null }
+}
+
+export interface MinDagPerson {
+  participantId: string
+  /** Mest brådskande först. Minst en punkt. */
+  punkter: MinDagPunkt[]
+}
+
+const VECKODAG_SEDAN = ['söndags', 'måndags', 'tisdags', 'onsdags', 'torsdags', 'fredags', 'lördags']
+const VECKODAG_FRAM = ['söndag', 'måndag', 'tisdag', 'onsdag', 'torsdag', 'fredag', 'lördag']
+
+function isoTillDatum(iso: string): Date {
+  const [y, m, d] = iso.split('-').map(Number)
+  return new Date(y, m - 1, d)
+}
+
+/**
+ * Ett datum som ord, relativt i dag: "i dag", "i går", "i fredags", "på
+ * torsdag", annars "10 okt". Ord före siffror — men bara inom en vecka, där
+ * ordet är entydigt.
+ */
+export function dagOrd(iso: string, idag: string): string {
+  const dagar = Math.round((isoTillDatum(iso).getTime() - isoTillDatum(idag).getTime()) / 86_400_000)
+  if (dagar === 0) return 'i dag'
+  if (dagar === -1) return 'i går'
+  if (dagar === 1) return 'i morgon'
+  const vd = isoTillDatum(iso).getDay()
+  if (dagar < 0 && dagar >= -6) return `i ${VECKODAG_SEDAN[vd]}`
+  if (dagar > 0 && dagar <= 6) return `på ${VECKODAG_FRAM[vd]}`
+  return kortDatum(iso)
+}
+
+function passTid(p: Pick<AttGoraPass, 'start_time' | 'end_time'>): string {
+  return `${p.start_time.slice(0, 5)}–${p.end_time.slice(0, 5)}`
+}
+
+/** En Att göra-punkt som läge. Texterna i attGoraForPass står kvar för andra vyer. */
+export function lageForAttGora(a: AttGora, idag: string): MinDagPunkt {
+  const p = a.pass
+  const nar = dagOrd(p.date, idag)
+  const bas = { typ: a.typ, participantId: a.participantId, pass: p }
+  switch (a.typ) {
+    case 'franvaro_utan_anteckning':
+      return { ...bas, lage: `Var inte på ${p.title} ${nar}`, detalj: 'Ogiltig frånvaro, saknar en rad om vad som hände', status: 'ogiltig' }
+    case 'forklaring': {
+      const forklaring = (p.participant_explanation ?? '').trim()
+      const kort = forklaring.length > 120 ? `${forklaring.slice(0, 117)}…` : forklaring
+      const slag = p.attendance === 'absent_invalid' ? 'ogiltig' : 'giltig'
+      return { ...bas, lage: `Har förklarat frånvaron ${nar}`, detalj: `${p.title}, markerad som ${slag}: ”${kort}”`, status: 'vantar' }
+    }
+    case 'anmald_franvaro': {
+      const orsak = p.absence_reason ? ANMALAN_ORSAK[p.absence_reason] ?? p.absence_reason : 'ingen orsak angiven'
+      const not = p.absence_note?.trim() ? ` · ”${p.absence_note.trim()}”` : ''
+      return { ...bas, lage: `Har anmält frånvaro ${nar}: ${orsak}`, detalj: `${p.title} ${passTid(p)}${not}`, status: 'vantar' }
+    }
+    case 'sjuk_utan_intyg':
+      return { ...bas, lage: `Sjuk ${nar}, intyget har inte kommit`, detalj: `${p.title} ${passTid(p)}`, status: 'sjuk' }
+    case 'kvittera':
+      return {
+        ...bas,
+        lage: p.activity_type === 'jobsearch_own' ? `Har redovisat eget jobbsökande ${nar}` : `Checkade in på ${p.title} ${nar}`,
+        detalj: passTid(p),
+        status: 'vantar',
+        statusText: 'Väntar på kvittens',
+      }
+    case 'omarkerat':
+      return { ...bas, lage: `${p.title} ${nar} är inte markerat`, detalj: passTid(p), status: 'planerat', statusText: 'Inte markerat' }
+  }
+}
+
+export interface MoteIdag {
+  id: string
+  participantId: string
+  scheduledAt: string
+  meetingType: string | null
+  meetingLink: string | null
+  latestNote: { content: string } | null
+}
+
+export interface MalDeadline {
+  goalId: string
+  goalTitle: string
+  participantId: string
+  daysLeft: number
+}
+
+export interface KontaktPunkt {
+  participantId: string
+  /** Texten ur kontaktText (samma ord som deltagarkortet). */
+  text: string
+}
+
+const MOTESFORM: Record<string, string> = { physical: 'på kontoret', video: 'digitalt', phone: 'per telefon' }
+
+function klockslag(iso: string): string {
+  const d = new Date(iso)
+  return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`
+}
+
+function dagar(n: number): string {
+  return `${n} ${n === 1 ? 'dag' : 'dagar'}`
+}
+
+/**
+ * Alla punkter i Min dag, grupperade per person. Personens mest brådskande
+ * punkt avgör personens plats; lika → den med flest punkter först.
+ */
+export function minDagPersoner(args: {
+  attGora: readonly AttGora[]
+  bradskande: readonly Bradskande[]
+  leverantor: LeverantorLage | null
+  moten: readonly MoteIdag[]
+  deadlines: readonly MalDeadline[]
+  kontakter: readonly KontaktPunkt[]
+  idag: Date
+}): MinDagPerson[] {
+  const idag = formatLocalDate(args.idag)
+  const punkter: MinDagPunkt[] = []
+
+  for (const a of args.attGora) {
+    // En incheckning på ett av dagens pass bekräftas i passet (nästa steg "Markera
+    // närvaro" eller Dagens pass) — inte en gång till som en rad per person.
+    if (a.typ === 'kvittera' && a.pass.date === idag && a.pass.activity_type !== 'jobsearch_own') continue
+    punkter.push(lageForAttGora(a, idag))
+  }
+  for (const b of bradskandeUtanDubbletter(args.bradskande, args.attGora)) {
+    punkter.push(b.typ === 'franvaro'
+      ? { typ: 'franvaro', participantId: b.participantId, lage: b.text, detalj: 'Anteckningen finns, underlaget är klart', status: 'ogiltig' }
+      : { typ: 'mote_over_gransen', participantId: b.participantId, lage: b.text, detalj: 'Mötesregeln i avtalet', status: 'vantar', statusText: 'Möte behövs' })
+  }
+  if (args.leverantor) {
+    // En mötesrad och en "utan fysiskt möte"-rad för samma person säger samma sak.
+    const moteRedan = new Set(args.bradskande.filter((b) => b.typ === 'mote').map((b) => b.participantId))
+    for (const p of args.leverantor.utanFysisktMote) {
+      if (moteRedan.has(p.participantId)) continue
+      punkter.push({ typ: 'utan_fysiskt', participantId: p.participantId, lage: p.text, detalj: 'Ett fysiskt möte behövs enligt avtalet', status: 'vantar', statusText: 'Fysiskt möte behövs' })
+    }
+    for (const p of args.leverantor.underTimkravet) {
+      punkter.push({ typ: 'under_timkravet', participantId: p.participantId, lage: p.text, detalj: 'Senaste avslutade veckan', status: 'ogiltig', statusText: 'Under timkravet' })
+    }
+    for (const p of args.leverantor.uppfoljningar) {
+      punkter.push({ typ: 'uppfoljning', participantId: p.participantId, lage: p.text, status: 'vantar', statusText: 'Uppföljning' })
+    }
+  }
+  for (const m of args.moten) {
+    const form = m.meetingType ? MOTESFORM[m.meetingType] : null
+    const not = m.latestNote?.content.trim()
+    punkter.push({
+      typ: 'mote_idag',
+      participantId: m.participantId,
+      lage: `Möte i dag ${klockslag(m.scheduledAt)}${form ? `, ${form}` : ''}`,
+      detalj: not ? `Senaste anteckningen: ${not.length > 90 ? `${not.slice(0, 87)}…` : not}` : 'Inga anteckningar än',
+      status: 'planerat',
+      statusText: 'Möte i dag',
+      mote: { id: m.id, scheduledAt: m.scheduledAt, meetingLink: m.meetingLink },
+    })
+  }
+  for (const d of args.deadlines) {
+    const nar = d.daysLeft < 0
+      ? `skulle ha varit klart för ${dagar(Math.abs(d.daysLeft))} sedan`
+      : d.daysLeft === 0 ? 'ska vara klart i dag' : `ska vara klart om ${dagar(d.daysLeft)}`
+    punkter.push({
+      typ: 'deadline',
+      participantId: d.participantId,
+      lage: `Målet ”${d.goalTitle}” ${nar}`,
+      status: d.daysLeft < 0 ? 'vantar' : 'planerat',
+      statusText: d.daysLeft < 0 ? 'Försenat mål' : 'Mål',
+    })
+  }
+  for (const k of args.kontakter) {
+    punkter.push({ typ: 'kontakt', participantId: k.participantId, lage: k.text, detalj: 'Har ni pratat utanför Jobin? Logga det, så försvinner raden.' })
+  }
+
+  const perPerson = new Map<string, MinDagPunkt[]>()
+  for (const p of punkter) {
+    const lista = perPerson.get(p.participantId) ?? []
+    lista.push(p)
+    perPerson.set(p.participantId, lista)
+  }
+  return [...perPerson.entries()]
+    .map(([participantId, lista]) => ({
+      participantId,
+      punkter: [...lista].sort((a, b) => MIN_DAG_PRIO[a.typ] - MIN_DAG_PRIO[b.typ]),
+    }))
+    .sort((a, b) =>
+      MIN_DAG_PRIO[a.punkter[0].typ] - MIN_DAG_PRIO[b.punkter[0].typ]
+      || b.punkter.length - a.punkter.length
+      || a.participantId.localeCompare(b.participantId))
+}
+
+/**
+ * Radens läge när det mest brådskande finns flera gånger: "Fyra pass är inte
+ * markerade" i stället för det första passet och "+3 till". Personen är
+ * enheten — tio omarkerade pass är en sak om Dana, inte tio. `fler` räknar
+ * bara det som är något ANNAT än det sammanfattade.
+ */
+export function radSammanfattning(person: MinDagPerson): { lage: string; detalj?: string; fler: number } {
+  const [forsta] = person.punkter
+  const samma = person.punkter.filter((p) => p.typ === forsta.typ)
+  const n = samma.length
+  const fler = person.punkter.length - n
+  if (n < 2) return { lage: forsta.lage, detalj: forsta.detalj, fler }
+  const tal = talOrd(n).toLowerCase()
+  switch (forsta.typ) {
+    case 'omarkerat':
+      return { lage: `${talOrd(n)} pass är inte markerade`, detalj: `Det första: ${forsta.lage.replace(/ är inte markerat$/, '')}`, fler }
+    case 'franvaro_utan_anteckning':
+      return { lage: `Var inte på ${tal} pass`, detalj: 'Ogiltig frånvaro utan en rad om vad som hände', fler }
+    case 'kvittera':
+      return { lage: `${talOrd(n)} redovisningar väntar på din kvittens`, detalj: forsta.lage, fler }
+    case 'anmald_franvaro':
+      return { lage: `Har anmält frånvaro för ${tal} pass`, detalj: forsta.lage, fler }
+    case 'sjuk_utan_intyg':
+      return { lage: `Sjuk på ${tal} pass, intyget har inte kommit`, detalj: forsta.detalj, fler }
+    case 'forklaring':
+      return { lage: `Har förklarat frånvaron för ${tal} pass`, detalj: forsta.detalj, fler }
+    case 'deadline':
+      return { lage: `${talOrd(n)} mål ska vara klara snart eller är försenade`, detalj: forsta.lage, fler }
+    default:
+      return { lage: forsta.lage, detalj: forsta.detalj, fler: person.punkter.length - 1 }
+  }
+}
+
+/** Antal saker i dag: varje punkt, plus varje pass att markera nu. */
+export function antalSaker(personer: readonly MinDagPerson[], pass: readonly PassAttMarkera[]): number {
+  return personer.reduce((s, p) => s + p.punkter.length, 0) + pass.length
+}
+
+// ---------------------------------------------------------------------------
+// Nästa steg
+// ---------------------------------------------------------------------------
+
+/** Ett pass i dag som ska markeras: samma tid och titel = ett pass (som gruppnärvaron). */
+export interface PassAttMarkera {
+  title: string
+  date: string
+  start_time: string
+  end_time: string
+  deltagare: number
+  incheckade: number
+  anmalda: number
+  omarkerade: number
+}
+
+/** Hur lång tid före start ett pass räknas som "nu" (minuter). */
+export const PASS_SNART_MINUTER = 60
+
+function minuterIn(hhmm: string): number {
+  const [h, m] = hhmm.slice(0, 5).split(':').map(Number)
+  return h * 60 + m
+}
+
+/**
+ * Dagens pass som behöver markeras nu: har börjat eller börjar inom en timme,
+ * och minst en deltagare saknar markering. Eget jobbsökande räknas inte — det
+ * kvitteras, det markeras inte (gruppnärvaron gör samma sak). Tidigast först.
+ */
+export function passAttMarkera(pass: readonly AttGoraPass[], nu: Date): PassAttMarkera[] {
+  const idag = formatLocalDate(nu)
+  const nuMin = nu.getHours() * 60 + nu.getMinutes()
+  const grupper = new Map<string, AttGoraPass[]>()
+  for (const p of pass) {
+    if (p.date !== idag || p.activity_type === 'jobsearch_own') continue
+    if (minuterIn(p.start_time) - PASS_SNART_MINUTER > nuMin) continue
+    const nyckel = `${p.start_time.slice(0, 5)}|${p.end_time.slice(0, 5)}|${p.title.trim().toLocaleLowerCase('sv-SE')}`
+    const lista = grupper.get(nyckel) ?? []
+    lista.push(p)
+    grupper.set(nyckel, lista)
+  }
+  const ut: PassAttMarkera[] = []
+  for (const lista of grupper.values()) {
+    const omarkerade = lista.filter((p) => p.attendance === null)
+    if (omarkerade.length === 0) continue
+    const forsta = lista[0]
+    ut.push({
+      title: forsta.title.trim(),
+      date: forsta.date,
+      start_time: forsta.start_time.slice(0, 5),
+      end_time: forsta.end_time.slice(0, 5),
+      deltagare: new Set(lista.map((p) => p.participant_id)).size,
+      incheckade: omarkerade.filter((p) => !!p.self_checkin_at).length,
+      anmalda: omarkerade.filter((p) => !!p.absence_reported_at).length,
+      omarkerade: omarkerade.length,
+    })
+  }
+  return ut.sort((a, b) => a.start_time.localeCompare(b.start_time) || a.title.localeCompare(b.title, 'sv'))
+}
+
+const TAL = ['Noll', 'En', 'Två', 'Tre', 'Fyra', 'Fem', 'Sex', 'Sju', 'Åtta', 'Nio', 'Tio', 'Elva', 'Tolv']
+
+/** Tal i ord upp till tolv ("Fyra"), sedan siffror. Stor bokstav först. */
+export function talOrd(n: number): string {
+  return n >= 0 && n < TAL.length ? TAL[n] : String(n)
+}
+
+/** "Sex deltagare. Fyra har checkat in själva, en har anmält frånvaro." */
+export function passMening(p: PassAttMarkera): string {
+  const delar: string[] = []
+  if (p.incheckade > 0) delar.push(`${p.incheckade === p.deltagare && p.deltagare > 1 ? 'alla' : talOrd(p.incheckade).toLowerCase()} har checkat in ${p.incheckade === 1 ? 'själv' : 'själva'}`)
+  if (p.anmalda > 0) delar.push(`${talOrd(p.anmalda).toLowerCase()} har anmält frånvaro`)
+  const forsta = `${talOrd(p.deltagare)} deltagare.`
+  if (delar.length === 0) return `${forsta} Ingen är markerad än.`
+  const resten = delar.join(', ')
+  return `${forsta} ${resten.charAt(0).toUpperCase()}${resten.slice(1)}.`
+}
+
+export type NastaStegVal =
+  | { typ: 'punkt'; punkt: MinDagPunkt }
+  | { typ: 'pass'; pass: PassAttMarkera }
+
+/**
+ * Den enda viktigaste saken, i förslagets ordning:
+ *   1. frånvaro utan anteckning (dokumentationen handläggaren behöver)
+ *   2. ett pass att markera nu
+ *   3. underlag och avvikelser: förklaringar, anmälningar, intyg, kvittenser,
+ *      omarkerade pass och leverantörens punkter mot avtalet
+ *   4. dagens närmaste möte som inte har varit
+ *   5. resten (mål, kontakt)
+ * Ingenting → null. Den som anropar får inte fråga medan datan laddar eller
+ * när den inte kunde läsas — då finns inget att påstå.
+ */
+export function valjNastaSteg(personer: readonly MinDagPerson[], pass: readonly PassAttMarkera[], nu: Date): NastaStegVal | null {
+  const forsta = personer.map((p) => p.punkter[0])
+  const franvaro = forsta.find((p) => p.typ === 'franvaro_utan_anteckning')
+  if (franvaro) return { typ: 'punkt', punkt: franvaro }
+  if (pass.length > 0) return { typ: 'pass', pass: pass[0] }
+  const underlag = forsta.find((p) => MIN_DAG_PRIO[p.typ] < MIN_DAG_PRIO.mote_idag)
+  if (underlag) return { typ: 'punkt', punkt: underlag }
+  const moten = personer
+    .flatMap((p) => p.punkter)
+    .filter((p) => p.typ === 'mote_idag' && p.mote && new Date(p.mote.scheduledAt).getTime() >= nu.getTime() - 15 * 60_000)
+    .sort((a, b) => a.mote!.scheduledAt.localeCompare(b.mote!.scheduledAt))
+  if (moten[0]) return { typ: 'punkt', punkt: moten[0] }
+  const ovrigt = forsta.find((p) => p.typ !== 'mote_idag')
+  return ovrigt ? { typ: 'punkt', punkt: ovrigt } : null
+}
+
+/** Personerna utan punkten som blev nästa steg — samma sak ska inte stå två gånger. */
+export function utanNastaSteg(personer: readonly MinDagPerson[], val: NastaStegVal | null): MinDagPerson[] {
+  if (!val || val.typ !== 'punkt') return [...personer]
+  return personer
+    .map((p) => ({ ...p, punkter: p.punkter.filter((x) => x !== val.punkt) }))
+    .filter((p) => p.punkter.length > 0)
+}
+
+// ---------------------------------------------------------------------------
+// Veckan i en mening
+// ---------------------------------------------------------------------------
+
+/**
+ * En mening om veckan ur närvarodatan Översikten redan hämtar — bara det datan
+ * bär. Räknar konsulentens deltagare med minst ett pass måndag–i går (dagens
+ * pass kan fortfarande pågå). Eget jobbsökande räknas inte. Ingen sådan
+ * deltagare → null: hellre ingen mening än en påhittad.
+ */
+export function veckanIEnMening(
+  pass: readonly AttGoraPass[],
+  deltagare: readonly { participant_id: string }[],
+  nu: Date,
+): string | null {
+  const mina = new Set(deltagare.map((d) => d.participant_id))
+  const idag = formatLocalDate(nu)
+  const mandag = veckansMandag(idag)
+  const perPerson = new Map<string, AttGoraPass[]>()
+  for (const p of pass) {
+    if (!mina.has(p.participant_id) || p.activity_type === 'jobsearch_own') continue
+    if (p.date < mandag || p.date >= idag) continue
+    const lista = perPerson.get(p.participant_id) ?? []
+    lista.push(p)
+    perPerson.set(p.participant_id, lista)
+  }
+  const med = perPerson.size
+  if (med === 0) return null
+  let allaPass = 0
+  let omarkerade = 0
+  for (const lista of perPerson.values()) {
+    if (lista.every((p) => p.attendance === 'present' || p.attendance === 'external')) allaPass += 1
+    omarkerade += lista.filter((p) => p.attendance === null).length
+  }
+  const forsta = med === 1
+    ? (allaPass === 1
+      ? 'Den enda deltagaren med pass den här veckan har varit på alla sina.'
+      : 'Den enda deltagaren med pass den här veckan har inte varit på alla sina.')
+    : allaPass === med
+      ? `Alla ${talOrd(med).toLowerCase()} deltagare med pass den här veckan har varit på alla sina.`
+      : `${talOrd(allaPass)} av ${talOrd(med).toLowerCase()} deltagare med pass den här veckan har varit på alla sina.`
+  // "pass" är ett ett-ord: "Ett pass", inte "En pass".
+  const andra = omarkerade === 0 ? '' : omarkerade === 1 ? ' Ett pass är inte markerat än.' : ` ${talOrd(omarkerade)} pass är inte markerade än.`
+  return forsta + andra
 }

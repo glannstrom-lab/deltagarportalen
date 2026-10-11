@@ -9,7 +9,7 @@
  *  RR15:      journalvarningen sa "att hon läser" även om män.
  */
 import { describe, it, expect, vi, afterEach, beforeEach } from 'vitest'
-import { screen, fireEvent, cleanup, render as rtlRender } from '@testing-library/react'
+import { screen, fireEvent, cleanup, within, render as rtlRender } from '@testing-library/react'
 import { render } from '@/test/utils'
 import { AktivitetsplanSektion } from './AktivitetsplanSektion'
 import { cvRad, omarkeradeText } from './aktivitetEtiketter'
@@ -67,16 +67,22 @@ async function montera(planen: unknown, sessions: unknown[]) {
   return aktivitetsplanApi
 }
 
-describe('RK25/RR19 — planens huvud', () => {
-  it('försörjningshinder och underlag har egna rader över hela bredden', async () => {
+// Omtaget 2026-10-11: försörjningshinder och underlag står i högerspalten, var
+// för sig, och väljaren kan aldrig bli bredare än spalten. "Avsluta plan" ligger
+// i deltagarsidans Mer-meny, sist och i varningsfärg (DeltagarHuvud.test.tsx).
+describe('RK25/RR19 — planens fält i högerspalten', () => {
+  it('försörjningshinder och underlag har egna ytor i spalten, och väljaren är spaltens bredd', async () => {
     await montera(plan(), [])
-    expect(screen.getByTestId('rad-forsorjningshinder').className).toContain('sm:col-span-2')
-    expect(screen.getByTestId('rad-underlag').className).toContain('sm:col-span-2')
-    expect(screen.getByLabelText('Försörjningshinder').className).toContain('max-w-full')
+    const spalt = screen.getByRole('complementary', { name: 'Underlag och plan' })
+    expect(within(spalt).getByTestId('rad-forsorjningshinder')).toBeInTheDocument()
+    expect(within(spalt).getByTestId('rad-underlag')).toBeInTheDocument()
+    const valjare = screen.getByLabelText('Försörjningshinder')
+    expect(valjare.className).toContain('w-full')
+    expect(valjare.className).toContain('max-w-full')
   })
-  it('"Avsluta plan" har en egen färg i mörkt läge', async () => {
+  it('sektionen har ingen egen "Avsluta plan" bredvid de vardagliga knapparna', async () => {
     await montera(plan(), [])
-    expect(screen.getByRole('button', { name: 'Avsluta plan' }).className).toContain('dark:text-stone-200')
+    expect(screen.queryByRole('button', { name: 'Avsluta plan' })).toBeNull()
   })
 })
 
@@ -134,7 +140,7 @@ describe('RK28 — Lägg till pass', () => {
 describe('RK30 — intyg vid sjukfrånvaro', () => {
   it('påstår inte att lagen kräver intyg', async () => {
     await montera(plan(), [pass({})])
-    fireEvent.click(screen.getByRole('button', { name: 'Närvaro' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Anteckning' }))
     expect(screen.queryByText(/Lagen kräver intyg/)).toBeNull()
     expect(screen.getByText(/Om och från vilken dag intyg krävs följer er riktlinje/)).toBeInTheDocument()
   })

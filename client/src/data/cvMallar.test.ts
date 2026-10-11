@@ -237,3 +237,55 @@ describe('LS3: rekommenderade mallar i mallsteget', () => {
     expect(utfallt.slice(0, hopfallt.length)).toEqual(hopfallt)
   })
 })
+
+/**
+ * Grind: inget mall-id försvinner (2026-10-11, mallslipningen).
+ *
+ * Sparade CV:n pekar på sitt mall-id i `cvs.template`. Tas ett id bort ur
+ * registret — eller byter namn — faller de CV:na tyst på standardmallen, och
+ * användaren ser ett annat CV än hen valde. Testerna ovan vaktar att listorna
+ * stämmer MED VARANDRA; ett id som tas bort konsekvent på alla ställen går
+ * igenom dem. Den här listan är fryst: den får växa, aldrig krympa.
+ *
+ * `I_PROD` är de id som stod i `cvs.template` vid mätningen 2026-10-11
+ * (`select template, count(*) from cvs group by 1`, 39 CV:n). Även de arvda
+ * måste fortsätta peka på samma mall som i dag.
+ */
+describe('inget mall-id försvinner', () => {
+  const FRYSTA_MALLAR = [
+    'sidebar', 'centered', 'minimal', 'creative', 'executive', 'nordic',
+    'budapest', 'rotterdam', 'chicago', 'atelier', 'manhattan', 'berlin',
+  ]
+  const ARVDA: Record<string, string> = {
+    modern: 'sidebar',
+    sidokolumn: 'sidebar',
+    centrerad: 'centered',
+    classic: 'centered',
+    nordisk: 'nordic',
+  }
+  const I_PROD = [
+    'minimal', 'sidebar', 'manhattan', 'executive', 'sidokolumn', 'budapest',
+    'creative', 'centered', 'nordic', 'rotterdam', 'centrerad',
+  ]
+
+  it('varje id som någonsin funnits är fortfarande en mall', () => {
+    for (const id of FRYSTA_MALLAR) {
+      expect(arKantMallId(id), `mall-id "${id}" har försvunnit ur MALLFORMER`).toBe(true)
+      expect(normaliseraMallId(id)).toBe(id)
+    }
+  })
+
+  it('arvda id pekar på samma mall som förut', () => {
+    for (const [arvt, kanoniskt] of Object.entries(ARVDA)) {
+      expect(normaliseraMallId(arvt), `${arvt} → ${kanoniskt}`).toBe(kanoniskt)
+    }
+  })
+
+  it('varje id som används i prod går till en riktig mall, inte till reserven', () => {
+    for (const id of I_PROD) {
+      const mall = normaliseraMallId(id)
+      expect(arKantMallId(mall)).toBe(true)
+      expect(mall === STANDARDMALL ? ['sidebar', 'modern', 'sidokolumn'] : [mall]).toContain(ARVDA[id] ?? id)
+    }
+  })
+})

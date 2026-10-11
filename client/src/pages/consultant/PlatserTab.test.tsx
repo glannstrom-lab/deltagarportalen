@@ -135,11 +135,11 @@ function placering(overrides: Partial<Record<string, unknown>> = {}) {
   }
 }
 
-function renderTab() {
+function renderTab(adress = '/consultant/platser') {
   const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } })
   return render(
     <QueryClientProvider client={queryClient}>
-      <MemoryRouter initialEntries={['/consultant/platser']}>
+      <MemoryRouter initialEntries={[adress]}>
         <I18nextProvider i18n={i18n}>
           <ConfirmDialogProvider>
             <PlatserTab />
@@ -471,5 +471,20 @@ describe('PlatserTab — handledningsobalans lyfts synligt på kortet', () => {
     renderTab()
     await screen.findByText('ICA Maxi')
     expect(screen.queryByText('Handledningsobalans')).not.toBeInTheDocument()
+  })
+})
+
+describe('PlatserTab — förifylld ny plats från planen (slipningen 2026-10-11)', () => {
+  // R&M A7: "Öppna Platser" ledde till en tom lista. Mutation: läs inte ?ny=1 → faller.
+  it('öppnar Ny plats med företagsnamnet ifyllt', async () => {
+    renderTab('/consultant/platser?ny=1&deltagare=p1&foretag=Demobageriet')
+    const falt = await screen.findByDisplayValue('Demobageriet')
+    expect(falt).toBeInTheDocument()
+  })
+
+  it('utan parametrar öppnas inget formulär', async () => {
+    renderTab()
+    await screen.findByText('ICA Maxi')
+    expect(screen.queryByDisplayValue('Demobageriet')).toBeNull()
   })
 })

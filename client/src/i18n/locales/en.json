@@ -90,7 +90,6 @@
     "back": "Back",
     "next": "Next",
     "previous": "Previous",
-    "yes": "Yes",
     "and": "and",
     "all": "All",
     "more": "More",
@@ -545,10 +544,8 @@
     "subtitle": "Create and manage your CV",
     "experience": "Work experience",
     "educationsListAria": "Educations",
-    "languages": "Languages",
     "formattingToolbarAria": "Formatting tools",
     "createCV": "Create CV",
-    "links": "Links",
     "tabs": {
       "create": "Create CV",
       "myCvs": "My CVs",
@@ -2964,7 +2961,6 @@
     "subtitle": "Communicate with {{name}}",
     "subtitleNoConsultant": "No consultant yet",
     "noConsultant": "You don't have a consultant yet",
-    "noConsultantDesc": "You haven't been connected to a career consultant yet. Contact us if you need help.",
     "noConsultantFullDesc": "When you have a career consultant, you can stay in touch here — book meetings, share documents and ask questions. Do you want a consultant, or do you wonder how it works? Write to us and we will answer.",
     "noConsultantCta": "Write to us",
     "noConsultantMailSubject": "I want a career consultant in Jobin",
@@ -2991,9 +2987,8 @@
       "submitting": "Ending…",
       "confirmButton": "Yes, end the connection"
     },
-    "contactInfo": "How to reach them",
     "consultant": {
-      "yourConsultant": "Your career consultant"
+      "yourConsultant": "Your consultant"
     },
     "nextMeeting": {
       "title": "Next meeting",
@@ -3044,18 +3039,18 @@
       "history": "Message history",
       "writeMessage": "Write a message",
       "sendMessage": "Send message",
-      "pressEnterToSend": "Press Enter to send"
+      "pressEnterToSend": "Press Enter to send",
+      "visaAldre_one": "Show {{count}} older message",
+      "visaAldre_other": "Show {{count}} older messages"
     },
     "goals": {
       "completed": "Completed",
       "inProgress": "In progress",
       "notStarted": "Not started",
       "agreedGoals": "Goals you agreed on",
-      "deadline": "Due by",
-      "greatJob": "Nice work — you've completed {{count}} of your goals."
+      "deadline": "Due by"
     },
     "quickActions": {
-      "title": "Quick actions",
       "bookMeeting": "Book meeting",
       "sendEmail": "Send email",
       "call": "Call"
@@ -3063,6 +3058,20 @@
     "email": {
       "bookingSubject": "Meeting request",
       "bookingBody": "Hi {{name}},\n\nI would like to book a meeting.\n\nBest regards"
+    },
+    "kontakt": {
+      "skriv": "Write"
+    },
+    "mer": {
+      "rubrik": "More about you and {{namn}}",
+      "rubrikUtanNamn": "More about you and your consultant",
+      "mal": "Your goals",
+      "malText_one": "{{count}} goal you have agreed on",
+      "malText_other": "{{count}} goals you have agreed on",
+      "serNamn": "What {{namn}} can see",
+      "serText": "What you share, and how to change it.",
+      "lasloggText": "Every time your consultant opens your page.",
+      "revokeText": "If you no longer want to be linked to your consultant."
     }
   },
   "interestGuide": {
@@ -7884,28 +7893,15 @@
     },
     "overview": {
       "totalParticipants": "Total participants",
-      "needsAttention": "Needs attention",
       "meetingsThisWeek": "Meetings this week",
       "scheduled": "Scheduled",
-      "attentionAlerts": "Needs attention",
-      "viewAll": "View all",
-      "allCaughtUp": "All participants followed up!",
-      "noAttentionNeeded": "No participants need immediate attention.",
-      "quickActions": "Quick actions",
-      "inviteParticipant": "Invite participant",
-      "sendGroupMessage": "Send group message",
-      "scheduleMeeting": "Schedule meeting",
-      "exportReport": "Export report",
-      "createGoal": "Create goal for participant",
       "recentActivity": "Recent activity",
       "goalsOverview": "Goals overview",
       "completedGoals": "Completed goals",
       "overdueGoals": "Overdue goals",
       "noGoalCategoriesYet": "No goals registered yet — create the first one from a participant's page.",
       "topGoalCategories": "Top goal categories",
-      "vsLastWeek": "vs last week",
       "noActivity": "No activity yet",
-      "seeDetails": "See details",
       "activity": {
         "newNote": "New note",
         "progressNoted": "Progress noted",
@@ -7913,119 +7909,29 @@
         "activity": "Activity"
       },
       "myDay": {
-        "title": "My day",
-        "todaysMeetings": "Today's meetings",
-        "noMeetingsToday": "No meetings today.",
-        "latestNote": "Latest note",
-        "noNotes": "No journal entry yet.",
-        "deadlines": "Goal deadlines",
-        "noDeadlines": "No deadlines within 7 days.",
-        "daysLeft_one": "1 day left",
-        "daysLeft_other": "{{count}} days left",
-        "overdue_one": "1 day overdue",
-        "overdue_other": "{{count}} days overdue",
-        "dueToday": "Due today",
-        "needsContact": "Reach out",
-        "contactLogged": "Contact logged.",
-        "logContact": "Log contact (call outside the portal)",
-        "noContactsNeeded": "All participants have recent contact.",
-        "sendMessage": "Send message",
-        "joinMeeting": "Meeting link",
-        "allClear": "No meetings, deadlines or contacts to handle today",
-        "allClearDesc": "A good moment to work proactively with your participants."
+        "contactLogged": "Contact logged."
       }
     },
     "participants": {
       "neverContacted": "Never contacted",
-      "yesterday": "Yesterday",
-      "daysAgo": "{{count}} days ago",
-      "weeksAgo": "{{count}} weeks ago",
-      "noParticipants": "No participants yet",
-      "noParticipantsDesc": "You have not been assigned any participants yet.",
-      "jobs": "Jobs",
-      "notes": "Notes",
-      "priority": {
-        "critical": "Critical",
-        "high": "High"
-      },
-      "table": {
-        "name": "Name",
-        "status": "Status",
-        "cv": "CV",
-        "savedJobs": "Saved jobs",
-        "lastContact": "Last contact",
-        "actions": "Actions"
-      },
-      "searchPlaceholder": "Search by name or email...",
-      "invite": "Invite",
-      "selectedCount": "{{count}} selected",
-      "showingCount": "Showing {{shown}} of {{total}} participants",
-      "selectAll": "Select all",
-      "deselectAll": "Deselect all",
-      "noResults": "No participants found",
-      "tryDifferentFilters": "Try changing your filters or search terms.",
-      "clearFilters": "Clear filters",
       "status": {
-        "active": "Active",
         "inactive": "Inactive",
         "completed": "Completed",
         "onHold": "On hold"
-      },
-      "filter": {
-        "all": "All statuses",
-        "active": "Active",
-        "inactive": "Inactive",
-        "onHold": "On hold",
-        "completed": "Completed",
-        "needsAttention": "Needs attention"
-      },
-      "sort": {
-        "priority": "Priority",
-        "name": "Name",
-        "cvScore": "CV score",
-        "lastContact": "Last contact",
-        "status": "Status",
-        "setAscending": "Sort ascending",
-        "setDescending": "Sort descending"
-      },
-      "bulk": {
-        "sendMessage": "Send message",
-        "addTag": "Add tag",
-        "changeStatus": "Change status",
-        "export": "Export"
-      },
-      "inviteFirst": "Invite your first participant",
-      "selectParticipant": "Select {{firstName}} {{lastName}}",
-      "view": {
-        "grid": "Grid view",
-        "list": "List view"
       }
     },
     "settings": {
       "unsavedChanges": "You have unsaved changes",
-      "preferences": "Preferences",
       "dataPrivacy": "Data & Privacy",
       "undo": "Undo",
       "save": "Save",
-      "defaultParticipantView": "Default participant view",
-      "chooseDefaultView": "Choose how the participant list is displayed by default",
-      "grid": "Grid",
-      "list": "List",
-      "weekStart": "Week starts",
-      "affectsCalendar": "Affects calendar view",
-      "monday": "Monday",
-      "sunday": "Sunday",
-      "inactivityWarning": "Inactivity warning",
-      "daysBeforeInactive": "Days before a participant is marked as inactive",
       "exportAllData": "Export all data",
       "exportDone": "Your data was downloaded as a JSON file.",
       "exportError": "The export failed. Please try again.",
       "privacyPolicy": "Privacy policy",
       "saved": "Settings saved!",
       "saving": "Saving...",
-      "preferencesDesc": "Customize your consultant view",
       "dataPrivacyDesc": "Manage data and GDPR-related settings",
-      "daysCount": "{{count}} days",
       "exportScopeNote": "The export covers participants you have an active relationship with. Ended relationships are not included.",
       "exportIncludeConcern": "Include concern notes",
       "exportIncludeConcernNote": "Notes in the Concern category are left out by default."
@@ -8275,7 +8181,7 @@
     "resources": {
       "goalTemplates": "Goal templates",
       "jobCollections": "Job collections",
-      "bestPractices": "Best Practices",
+      "bestPractices": "Ways of working that work",
       "searchTemplates": "Search templates...",
       "allCategories": "All categories",
       "cv": "CV",
@@ -8345,11 +8251,7 @@
     },
     "alerts": {
       "noContactDays_one": "No contact for 1 day",
-      "noContactDays_other": "No contact for {{count}} days",
-      "noContact": "No contact for 7+ days",
-      "inactive": "Inactive for 14+ days",
-      "noCv": "CV missing",
-      "lowEngagement": "Low engagement"
+      "noContactDays_other": "No contact for {{count}} days"
     }
   },
   "aiTeam": {
@@ -9598,19 +9500,18 @@
     },
     "saldo": {
       "ingaPass": "Nothing planned this week.",
-      "radAnvisat_one": "You have {{planerade}} of {{mal}} hour of assigned sessions this week.",
+      "radAnvisat_one": "You have {{planerade}} h of assigned sessions booked this week. The goal is {{mal}} hour.",
       "vadRaknas": "Only sessions that your konsulent has planned count here.",
       "vadRaknasJobbsok_one": "Only sessions that your konsulent has planned count here. Your own job search counts separately: {{count}} hour per week in your plan.",
       "vadRaknasJobbsok_other": "Only sessions that your konsulent has planned count here. Your own job search counts separately: {{count}} hours per week in your plan.",
-      "radAnvisat_other": "You have {{planerade}} of {{mal}} hours of assigned sessions this week.",
+      "radAnvisat_other": "You have {{planerade}} h of assigned sessions booked this week. The goal is {{mal}} hours.",
       "radOver_one": "You have {{planerade}} hour of assigned sessions this week. That is more than the goal of {{mal}}.",
       "radOver_other": "You have {{planerade}} hours of assigned sessions this week. That is more than the goal of {{mal}}.",
-      "lasMer": "How the hours are counted"
+      "lasMer": "How the hours are counted",
+      "narvaroHittills": "Attended so far: {{narvaro}} h."
     },
-    "nastaPass": "Next: {{titel}}, {{dag}} at {{tid}}",
     "forraVeckan": "Last week",
     "nastaVeckan": "Next week",
-    "veckaRubrik": "Week {{fran}} – {{till}}",
     "idag": "today",
     "jagArHar": "I am here",
     "jobbsok": {
@@ -9656,7 +9557,7 @@
     },
     "franvaro": {
       "knapp": "I cannot come",
-      "rubrik": "What stops you from coming? Your konsulent (job coach) gets a message right away.",
+      "rubrik": "What stops you?",
       "orsak": {
         "sick": "I am sick",
         "child_care": "Caring for a child",
@@ -9683,7 +9584,9 @@
         "period": "Several days",
         "till": "Until and including",
         "periodHjalp": "All your sessions on those days are reported, also your own job search. You can undo each session on its own."
-      }
+      },
+      "titel": "Can you not come?",
+      "galler": "This is about {{titel}}, {{dag}} at {{tid}}. Tell your consultant what stops you. It takes one minute."
     },
     "forklaring": {
       "mal": "Your konsulent has set {{mal}} hours per week as the goal for assigned activities — this is the kommun's (municipality's) requirement under socialtjänstlagen (the Social Services Act).",
@@ -9794,6 +9697,76 @@
         }
       },
       "lasMer": "About your plan"
+    },
+    "forvantas": {
+      "rubrik": "What do I need to do?",
+      "dolj": "Hide What do I need to do",
+      "vem": {
+        "kommun": "{{namn}} is your konsulent (job coach). They help you with your plan and with getting closer to a job.",
+        "leverantor": "{{namn}} is your konsulent (job coach) in Rusta och matcha. They help you get closer to a job or to studies.",
+        "neutral": "{{namn}} is your konsulent (job coach). They help you with your plan.",
+        "utanNamn": "Your konsulent (job coach) helps you with your plan."
+      },
+      "skriv": "Write to your konsulent",
+      "genomgang": {
+        "steg": "Step {{nr}} of {{antal}}",
+        "s1": "Here you see your sessions, day by day. Change week with the arrows.",
+        "s2": "When you come to a session today: press I am here.",
+        "s3": "Can you not come? Press I cannot come on the session. Then your konsulent gets a message.",
+        "s4": "Do you have a question? Write to your konsulent on the page My Consultant.",
+        "nasta": "Next",
+        "hoppa": "Skip",
+        "klar": "Done",
+        "visa": "Show a short guide"
+      },
+      "rad": {
+        "komma": {
+          "rubrik": "Come to your sessions",
+          "text": "Press I am here when you arrive.",
+          "textTimmar_one": "{{count}} hour per week in your plan. Press I am here when you arrive.",
+          "textTimmar_other": "{{count}} hours per week in your plan. Press I am here when you arrive."
+        },
+        "franvaro": {
+          "rubrik": "Tell us if you cannot come",
+          "text": "If you can, do it before the session starts. Press I cannot come, and your consultant gets the message at once."
+        },
+        "jobbsok": {
+          "rubrik": "Look for jobs on your own",
+          "text_one": "{{count}} hour per week in your plan.",
+          "text_other": "{{count}} hours per week in your plan."
+        },
+        "rapport": {
+          "rubrik": "Send your aktivitetsrapport (activity report)",
+          "text": "To Arbetsförmedlingen as usual, at the start of each month. You do this yourself."
+        }
+      }
+    },
+    "mer": {
+      "rubrik": "More about your week",
+      "planText": "Where you are, who decided it and what counts.",
+      "jobbsokText": "What you have done in Jobin, for your own overview.",
+      "intygText": "Download a certificate for one month."
+    },
+    "nasta": {
+      "idag": "Today",
+      "idagText": "Press I am here when you arrive.",
+      "nastaPass": "Next session",
+      "nar": "{{dag}} at {{fran}}–{{till}}",
+      "nastaPassText": "You do not need to do anything until then. Can you not come? Tell us at the session further down.",
+      "mote": "Next meeting",
+      "moteMed": "Meeting with {{namn}}",
+      "ingetEtikett": "This week",
+      "inget": "Nothing more is planned this week.",
+      "ingetText": "Do you have a question?",
+      "tillbaka": "Back to the week"
+    },
+    "passRubrik": "Your sessions",
+    "remsa": {
+      "rubrik": "Your days, Monday to Friday",
+      "dennaVecka": "This week",
+      "veckaNr": "Week {{nr}}",
+      "tillbakaIdag": "Go to this week",
+      "anmald": "you have reported that you cannot come"
     }
   },
   "minVardagHub": {
@@ -10317,5 +10290,19 @@
         "dagbok": "Write a few lines in the diary"
       }
     }
+  },
+  "kvarter": {
+    "status": {
+      "narvarande": "Present",
+      "giltig": "Absent with valid reason",
+      "ogiltig": "Absent without valid reason",
+      "sjuk": "Sick",
+      "vantar": "Waiting for you",
+      "planerat": "Planned"
+    },
+    "ingetPass": "No session",
+    "mer": "More",
+    "nastaSteg": "Next step",
+    "fler": "+{{count}} more"
   }
 }

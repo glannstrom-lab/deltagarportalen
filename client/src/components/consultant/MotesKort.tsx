@@ -8,13 +8,19 @@
  * fysiskt möte redan var bokat. Här syns regeln, nästa bokade möte, och möten
  * vars tid passerat kan markeras "Hölls" eller "Blev inte av".
  *
+ * Omtaget "Kvarter", steg 5 (2026-10-11): en platt yta, och för Rusta och
+ * matcha mötesklockan (dagar kvar till 14-dagarsgränsen) överst.
+ *
  * Svenska literaler: konsulentvyn översätts inte (DESIGN.md §2).
  */
 import { useState } from 'react'
-import { Calendar, Loader2 } from '@/components/ui/icons'
-import { Card } from '@/components/ui/Card'
+import { Loader2 } from '@/components/ui/icons'
 import { Button } from '@/components/ui/Button'
 import { cn } from '@/lib/utils'
+import { useOrgTypVisning } from './useRegelverk'
+import { SpaltYta } from './SpaltYta'
+import { Motesklocka } from './Motesklocka'
+import { motesklocka } from './motesklockaRegel'
 import {
   KADENS_REGEL,
   bekraftaMote,
@@ -43,6 +49,7 @@ export function MotesKort({ lage, onBoka, onAndrat, onForsokIgen }: {
   onAndrat: (id: string, status: 'completed' | 'cancelled') => void
   onForsokIgen: () => void
 }) {
+  const kundtyp = useOrgTypVisning()
   const [sparar, setSparar] = useState<string | null>(null)
   const [fel, setFel] = useState<string | null>(null)
   const nu = new Date()
@@ -61,20 +68,16 @@ export function MotesKort({ lage, onBoka, onAndrat, onForsokIgen }: {
   }
 
   return (
-    <Card className="p-5">
-      <div className="flex items-center justify-between gap-3 mb-2">
-        <h3 className="font-semibold text-stone-900 dark:text-stone-100 flex items-center gap-2">
-          <Calendar className="w-5 h-5 text-stone-500" aria-hidden="true" />
-          Möten
-        </h3>
-        <Button size="sm" variant="outline" onClick={onBoka}>Boka nytt möte</Button>
-      </div>
-      <p className="text-xs text-stone-500 dark:text-stone-400 mb-3">{KADENS_REGEL}</p>
-
-      {lage.status === 'laddar' && <p className="text-sm text-stone-500">Hämtar möten…</p>}
+    <SpaltYta
+      ikon="mote"
+      rubrik="Möten"
+      testId="motes-kort"
+      atgard={<Button ton="kvarter" variant="tertiary" size="sm" onClick={onBoka}>Boka nytt möte</Button>}
+    >
+      {lage.status === 'laddar' && <p className="m-0 sr-only" role="status">Hämtar möten</p>}
       {lage.status === 'fel' && (
-        <p role="alert" className="text-sm text-rose-700 dark:text-rose-300">
-          Mötena kunde inte hämtas. <button type="button" className="underline" onClick={onForsokIgen}>Försök igen</button>
+        <p role="alert" className="m-0 text-sm text-[var(--s-ogiltig-text)]">
+          Mötena kunde inte hämtas. <button type="button" className="font-semibold underline underline-offset-2" onClick={onForsokIgen}>Försök igen</button>
         </p>
       )}
       {lage.status === 'klart' && (() => {
@@ -84,23 +87,28 @@ export function MotesKort({ lage, onBoka, onAndrat, onForsokIgen }: {
           .filter((m) => m.status === 'scheduled' && new Date(m.scheduled_at).getTime() > nu.getTime())
           .sort((a, b) => a.scheduled_at.localeCompare(b.scheduled_at))
         return (
-          <div className="space-y-3">
-            <p className="text-sm text-stone-800 dark:text-stone-100" data-testid="motes-kadens">{kadensText(k)}</p>
+          <div className="grid gap-3">
+            {/* Mötesklockan och regeln är Rusta och matcha-avtalets; kommunen har ingen (slipningen 2026-10-11). */}
+            {kundtyp?.visaAvtalskrav && <Motesklocka klocka={motesklocka(k, nu)} />}
+            {/* Med klockan säger raden bara något nytt när ett möte är bokat — annars upprepar den klockan. */}
+            {(!kundtyp?.visaAvtalskrav || k.bokat) && (
+              <p className="m-0 text-sm text-[var(--j-blak-2)]" data-testid="motes-kadens">{kadensText(k)}</p>
+            )}
             {vantar.length > 0 && (
-              <div>
-                <p className="text-xs font-medium text-amber-800 dark:text-amber-200 mb-1">
+              <div className="grid gap-2">
+                <p className="m-0 text-sm font-semibold text-[var(--s-vantar-text)]">
                   Hölls mötet? Bara bekräftade möten räknas mot regeln.
                 </p>
-                <ul className="space-y-2">
+                <ul className="m-0 p-0 list-none grid gap-2">
                   {vantar.map((m) => (
-                    <li key={m.id} className="flex flex-wrap items-center justify-between gap-2 rounded-lg bg-amber-50 dark:bg-amber-900/20 px-3 py-2">
-                      <span className="text-sm text-stone-800 dark:text-stone-100">{TYP_TEXT[m.meeting_type]} · {tidText(m.scheduled_at)}</span>
-                      <span className="flex gap-2">
-                        <Button size="sm" variant="outline" disabled={sparar !== null} onClick={() => void bekrafta(m.id, 'completed')}>
-                          {sparar === m.id ? <Loader2 className="w-4 h-4 mr-1 animate-spin" aria-hidden="true" /> : null}
+                    <li key={m.id} className="grid gap-2 rounded-[var(--j-r-m)] bg-[var(--s-vantar-bg)] px-3 py-2.5">
+                      <span className="text-sm font-semibold text-[var(--j-blak)]">{TYP_TEXT[m.meeting_type]} · {tidText(m.scheduled_at)}</span>
+                      <span className="flex flex-wrap gap-2">
+                        <Button ton="kvarter" variant="secondary" size="sm" disabled={sparar !== null} onClick={() => void bekrafta(m.id, 'completed')}>
+                          {sparar === m.id ? <Loader2 className="w-4 h-4 animate-spin" aria-hidden="true" /> : null}
                           Hölls
                         </Button>
-                        <Button size="sm" variant="ghost" disabled={sparar !== null} onClick={() => void bekrafta(m.id, 'cancelled')}>
+                        <Button ton="kvarter" variant="tertiary" size="sm" disabled={sparar !== null} onClick={() => void bekrafta(m.id, 'cancelled')}>
                           Blev inte av
                         </Button>
                       </span>
@@ -110,20 +118,21 @@ export function MotesKort({ lage, onBoka, onAndrat, onForsokIgen }: {
               </div>
             )}
             {kommande.length > 0 ? (
-              <ul className="space-y-1" aria-label="Bokade möten">
+              <ul className="m-0 p-0 list-none grid gap-1" aria-label="Bokade möten">
                 {kommande.slice(0, 3).map((m) => (
-                  <li key={m.id} className={cn('text-sm', m.meeting_type === 'physical' ? 'text-stone-900 dark:text-stone-100' : 'text-stone-600 dark:text-stone-300')}>
+                  <li key={m.id} className={cn('text-sm', m.meeting_type === 'physical' ? 'text-[var(--j-blak)] font-semibold' : 'text-[var(--j-blak-2)]')}>
                     Bokat: {TYP_TEXT[m.meeting_type]} · {tidText(m.scheduled_at)}{m.location ? ` · ${m.location}` : ''}
                   </li>
                 ))}
               </ul>
             ) : (
-              <p className="text-sm text-stone-500 dark:text-stone-400">Inget möte bokat framåt.</p>
+              <p className="m-0 text-sm text-[var(--j-blak-3)]">Inget möte bokat framåt.</p>
             )}
-            {fel && <p role="alert" className="text-sm text-rose-700 dark:text-rose-300">{fel}</p>}
+            {kundtyp?.visaAvtalskrav && <p className="m-0 text-xs text-[var(--j-blak-3)]">{KADENS_REGEL}</p>}
+            {fel && <p role="alert" className="m-0 text-sm text-[var(--s-ogiltig-text)]">{fel}</p>}
           </div>
         )
       })()}
-    </Card>
+    </SpaltYta>
   )
 }

@@ -109,7 +109,9 @@ describe('RK37: ändra ett pass och alla kommande i serien', () => {
       pass({ id: 'd', date: '2026-10-14' }),
     ]
     const api = await montera(plan(), serie)
-    fireEvent.click(screen.getByRole('button', { name: /Ändra Jobbsökarverkstad 29 sep/ }))
+    // Omtaget 2026-10-11: "Ändra passet" ligger i radens Mer-meny.
+    fireEvent.click(screen.getByRole('button', { name: 'Mer för Jobbsökarverkstad 29 sep' }))
+    fireEvent.click(screen.getByRole('menuitem', { name: 'Ändra passet' }))
     const dialog = await screen.findByRole('dialog')
     fireEvent.click(within(dialog).getByLabelText(/Det här och alla kommande i serien \(2 pass, det sista 13 okt\)/))
     fireEvent.change(within(dialog).getByLabelText('Start'), { target: { value: '10:00' } })
@@ -124,7 +126,8 @@ describe('RK37: ändra ett pass och alla kommande i serien', () => {
 
   it('"bara det här passet" är förvalt', async () => {
     const api = await montera(plan(), [pass({ id: 'a' }), pass({ id: 'c', date: '2026-10-06' })])
-    fireEvent.click(screen.getByRole('button', { name: /Ändra Jobbsökarverkstad 29 sep/ }))
+    fireEvent.click(screen.getByRole('button', { name: 'Mer för Jobbsökarverkstad 29 sep' }))
+    fireEvent.click(screen.getByRole('menuitem', { name: 'Ändra passet' }))
     const dialog = await screen.findByRole('dialog')
     fireEvent.change(within(dialog).getByLabelText('Form'), { target: { value: 'digitalt' } })
     fireEvent.click(within(dialog).getByRole('button', { name: 'Spara' }))
@@ -145,10 +148,20 @@ describe('RR27: märkningen när ett pass läggs till', () => {
     await vi.waitFor(() => expect(api.addSession).toHaveBeenCalledWith('plan1', 'p1', expect.objectContaining({ title: 'Digital verkstad' }), { is_provider_led: true, is_physical: false }))
   })
 
-  it('passet visar sin märkning och säger när den är härledd', async () => {
+  it('passet visar sin märkning och säger när den är antagen (leverantör)', async () => {
+    const { orgApi } = await import('@/services/orgApi')
+    vi.mocked(orgApi.myMemberships).mockResolvedValue([{ id: 'm1', org_id: 'org1', user_id: 'c1', role: 'chef', organization: { id: 'org1', name: 'X', kind: 'leverantor' } }] as never)
     await montera(plan(), [pass({ id: 'a' }), pass({ id: 'b', date: '2026-09-30', is_physical: false, is_provider_led: true })])
-    const markningar = screen.getAllByTestId('pass-markning').map((e) => e.textContent)
-    expect(markningar).toEqual(['Verksamheten · fysiskt (härlett)', 'Verksamheten · digitalt'])
+    const markningar = (await screen.findAllByTestId('pass-markning')).map((e) => e.textContent)
+    expect(markningar).toEqual(['Verksamheten · fysiskt (antaget — ändra passet för att märka det)', 'Verksamheten · digitalt'])
+  })
+
+  // Slipningen 2026-10-11: märkningen är Rusta och matcha-avtalets — kommunen ser den inte.
+  it('kommunen ser ingen märkning på passen', async () => {
+    const { orgApi } = await import('@/services/orgApi')
+    vi.mocked(orgApi.myMemberships).mockResolvedValue([{ id: 'm1', org_id: 'org1', user_id: 'c1', role: 'chef', organization: { id: 'org1', name: 'X', kind: 'kommun' } }] as never)
+    await montera(plan(), [pass({ id: 'a' })])
+    expect(screen.queryByTestId('pass-markning')).toBeNull()
   })
 })
 

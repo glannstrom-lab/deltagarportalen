@@ -133,8 +133,8 @@ interface ParticipantJournalProps {
 const categoryConfig: Record<NoteCategory, { label: string; badge: string; border: string; icon: typeof BookOpen }> = {
   GENERAL: {
     label: 'Anteckning',
-    badge: 'bg-stone-100 text-stone-700 dark:bg-stone-700 dark:text-stone-200',
-    border: 'border-stone-200 dark:border-stone-700',
+    badge: 'bg-[var(--j-sankt)] text-[var(--j-blak-2)]',
+    border: 'border-[var(--j-linje)]',
     icon: BookOpen,
   },
   PROGRESS: {
@@ -291,17 +291,17 @@ export function ParticipantJournal({
   }, {} as Record<string, JournalEntry[]>)
 
   return (
-    <Card padding="none" className={cn('overflow-hidden', className)}>
+    <Card padding="none" className={cn('overflow-hidden !bg-[var(--j-kort)] !border-[var(--j-linje)] !rounded-[var(--j-r-l)] !shadow-none text-[var(--j-blak)]', className)}>
       {/* Header */}
-      <div className="p-4 sm:p-6 border-b border-stone-100 dark:border-stone-700">
+      <div className="p-4 sm:p-6 border-b border-[var(--j-linje)]">
         <div className="flex items-center justify-between gap-3">
           <div className="flex items-center gap-3 min-w-0">
             <div className="w-10 h-10 rounded-full bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40 flex items-center justify-center flex-shrink-0">
               <BookOpen className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-solid)]" aria-hidden="true" />
             </div>
             <div className="min-w-0">
-              <h3 className="font-semibold text-stone-900 dark:text-stone-100">Deltagarjournal</h3>
-              <p className="text-sm text-stone-500 dark:text-stone-400 truncate">{participantName}</p>
+              <h3 className="m-0 font-rubrik text-[1.0625rem] font-bold text-[var(--j-blak)]">Deltagarjournal</h3>
+              <p className="text-sm text-[var(--j-blak-3)] truncate">{participantName}</p>
             </div>
           </div>
 
@@ -314,7 +314,7 @@ export function ParticipantJournal({
 
         {/* Synlighet — sanning, inte antagande: deltagaren kan läsa ALLT här.
             RR15: "att hon läser" stod också på män — könsneutralt nu. */}
-        <div className="mt-4 flex items-start gap-2 text-xs text-stone-500 dark:text-stone-400">
+        <div className="mt-4 flex items-start gap-2 text-xs text-[var(--j-blak-3)]">
           <Eye className="w-4 h-4 flex-shrink-0 mt-0.5" aria-hidden="true" />
           <p>Deltagaren kan läsa alla anteckningar här, inklusive de märkta &quot;Oro&quot;. Skriv inget du inte kan stå för att deltagaren läser.</p>
         </div>
@@ -324,7 +324,7 @@ export function ParticipantJournal({
           formuläret är öppet, så en nekad radering (som inte har något
           formulär att visa felet i) inte bara tystnar. */}
       {formError && (
-        <div role="alert" className="flex items-start gap-2 p-3 mx-4 sm:mx-6 mt-4 rounded-lg bg-rose-50 dark:bg-rose-900/20 text-rose-700 dark:text-rose-300 text-sm">
+        <div role="alert" className="flex items-start gap-2 p-3 mx-4 sm:mx-6 mt-4 rounded-lg bg-[var(--s-ogiltig-bg)] text-[var(--s-ogiltig-text)] text-sm">
           <AlertTriangle className="w-4 h-4 flex-shrink-0 mt-0.5" aria-hidden="true" />
           <span>{formError}</span>
         </div>
@@ -332,7 +332,7 @@ export function ParticipantJournal({
 
       {/* Add/Edit Form */}
       {(isAdding || editingId) && (
-        <div className="p-4 sm:p-6 bg-stone-50 dark:bg-stone-800/60 border-b border-stone-100 dark:border-stone-700">
+        <div className="p-4 sm:p-6 bg-[var(--j-sankt)] border-b border-[var(--j-linje)]">
           <div className="space-y-4">
             <div className="flex gap-2 flex-wrap" role="radiogroup" aria-label="Kategori">
               {(Object.keys(categoryConfig) as NoteCategory[]).map((cat) => {
@@ -348,8 +348,8 @@ export function ParticipantJournal({
                     className={cn(
                       'flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium transition-colors',
                       category === cat
-                        ? config.badge
-                        : 'bg-white dark:bg-stone-700 text-stone-600 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-600'
+                        ? cn(config.badge, 'ring-2 ring-[var(--j-gran)]')
+                        : 'bg-[var(--j-kort)] border border-[var(--j-linje-2)] text-[var(--j-blak-2)] hover:bg-[var(--j-sankt)]'
                     )}
                   >
                     <Icon className="w-4 h-4" aria-hidden="true" />
@@ -361,7 +361,7 @@ export function ParticipantJournal({
 
             {solKolumner && (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div className="text-sm text-stone-700 dark:text-stone-300">
+                <div className="text-sm text-[var(--j-blak-2)]">
                   <label htmlFor="journal-klockslag" className="block mb-1">När skedde kontakten?</label>
                   <input
                     id="journal-klockslag"
@@ -369,16 +369,16 @@ export function ParticipantJournal({
                     value={klockslag}
                     onChange={(e) => setKlockslag(e.target.value)}
                     aria-describedby="journal-klockslag-hint"
-                    className="w-full px-3 py-2 border border-stone-200 dark:border-stone-600 rounded-xl bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100"
+                    className="w-full px-3 py-2 border border-[var(--j-linje-2)] rounded-[var(--j-r-m)] bg-[var(--j-kort)] text-[var(--j-blak)]"
                   />
-                  <span id="journal-klockslag-hint" className="block mt-1 text-xs text-stone-500 dark:text-stone-400">Tomt = nu, när du sparar.</span>
+                  <span id="journal-klockslag-hint" className="block mt-1 text-xs text-[var(--j-blak-3)]">Tomt = nu, när du sparar.</span>
                 </div>
-                <label className="text-sm text-stone-700 dark:text-stone-300">
+                <label className="text-sm text-[var(--j-blak-2)]">
                   <span className="block mb-1">Kontaktform</span>
                   <select
                     value={kontaktform}
                     onChange={(e) => setKontaktform(e.target.value as Kontaktform | '')}
-                    className="w-full px-3 py-2 border border-stone-200 dark:border-stone-600 rounded-xl bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100"
+                    className="w-full px-3 py-2 border border-[var(--j-linje-2)] rounded-[var(--j-r-m)] bg-[var(--j-kort)] text-[var(--j-blak)]"
                   >
                     <option value="">Ingen kontakt (egen anteckning)</option>
                     {KONTAKTFORMER.map((k) => (
@@ -394,7 +394,7 @@ export function ParticipantJournal({
               value={content}
               onChange={(e) => setContent(e.target.value)}
               placeholder="Skriv din anteckning här..."
-              className="w-full p-4 border border-stone-200 dark:border-stone-600 rounded-xl bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] resize-none"
+              className="w-full p-4 border border-[var(--j-linje-2)] rounded-[var(--j-r-m)] bg-[var(--j-kort)] text-[var(--j-blak)] focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] resize-none"
               rows={4}
               autoFocus
             />
@@ -419,8 +419,8 @@ export function ParticipantJournal({
       {/* Fel vid hämtning — ett eget läge, aldrig tom lista */}
       {loadError && (
         <div role="alert" className="p-6 text-center">
-          <AlertTriangle className="w-8 h-8 mx-auto text-rose-500 mb-2" aria-hidden="true" />
-          <p className="text-stone-700 dark:text-stone-200 font-medium">{loadError}</p>
+          <AlertTriangle className="w-8 h-8 mx-auto text-[var(--s-ogiltig-ikon)] mb-2" aria-hidden="true" />
+          <p className="text-[var(--j-blak)] font-medium">{loadError}</p>
           <Button variant="outline" size="sm" className="mt-3" onClick={onRetryLoad} leftIcon={<RefreshCw className="w-4 h-4" />}>
             Försök igen
           </Button>
@@ -438,12 +438,12 @@ export function ParticipantJournal({
               action={{ label: 'Skriv din första anteckning', onClick: () => setIsAdding(true) }}
             />
           ) : (
-            <div className="divide-y divide-stone-100 dark:divide-stone-700">
+            <div className="divide-y divide-[var(--j-linje)]">
               {Object.entries(groupedEntries).map(([date, dateEntries]) => (
                 <div key={date} className="p-4">
                   <div className="flex items-center gap-2 mb-3">
-                    <Calendar className="w-4 h-4 text-stone-500 dark:text-stone-400" aria-hidden="true" />
-                    <span className="text-sm font-medium text-stone-600 dark:text-stone-300">{date}</span>
+                    <Calendar className="w-4 h-4 text-[var(--j-blak-3)]" aria-hidden="true" />
+                    <span className="text-sm font-medium text-[var(--j-blak-2)]">{date}</span>
                   </div>
 
                   <div className="space-y-3">
@@ -460,7 +460,7 @@ export function ParticipantJournal({
                       return (
                         <div
                           key={entry.id}
-                          className={cn('p-4 rounded-xl border bg-white dark:bg-stone-800', config.border)}
+                          className={cn('p-4 rounded-[var(--j-r-m)] border bg-[var(--j-kort)]', config.border)}
                         >
                           <div className="flex items-start gap-3">
                             <div className={cn('w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0', config.badge)}>
@@ -472,13 +472,13 @@ export function ParticipantJournal({
                                 {config.label}
                               </span>
                               {entry.contactForm && (
-                                <span className="inline-block text-xs font-medium px-2 py-0.5 rounded-full mb-1 ml-2 bg-stone-100 text-stone-700 dark:bg-stone-700 dark:text-stone-200">
+                                <span className="inline-block text-xs font-medium px-2 py-0.5 rounded-full mb-1 ml-2 bg-[var(--j-sankt)] text-[var(--j-blak-2)]">
                                   {KONTAKTFORM_ETIKETT[entry.contactForm]}
                                 </span>
                               )}
                               {/* RK38: klockslag och författare på varje rad. */}
                               <span
-                                className="inline-block text-xs text-stone-500 dark:text-stone-400 ml-2 mb-1"
+                                className="inline-block text-xs text-[var(--j-blak-3)] ml-2 mb-1"
                                 title={!arEgen ? 'Skrivet före överlämningen — går att läsa men inte ändra' : undefined}
                               >
                                 {entry.occurredAt ? 'Kontakt ' : 'Kl. '}
@@ -488,12 +488,12 @@ export function ParticipantJournal({
                                 {entry.occurredAt && <> · journalförd {journalTid(entry.createdAt)}</>}
                               </span>
 
-                              <p className={cn('text-stone-700 dark:text-stone-200 whitespace-pre-wrap', !isExpanded && 'line-clamp-2')}>
+                              <p className={cn('text-[var(--j-blak)] whitespace-pre-wrap', !isExpanded && 'line-clamp-2')}>
                                 {entry.content}
                               </p>
 
                               {entry.updatedAt && (
-                                <p className="text-xs text-stone-500 dark:text-stone-400 mt-1">
+                                <p className="text-xs text-[var(--j-blak-3)] mt-1">
                                   Ändrad {journalTid(entry.updatedAt)}
                                   {solKolumner && (
                                     <>
@@ -539,7 +539,7 @@ export function ParticipantJournal({
                               <button
                                 type="button"
                                 onClick={() => handleEdit(entry)}
-                                className="p-1.5 text-stone-500 dark:text-stone-400 hover:text-[var(--c-text)] dark:hover:text-[var(--c-solid)] hover:bg-[var(--c-bg)] dark:hover:bg-[var(--c-bg)]/30 rounded-lg transition-colors"
+                                className="p-1.5 text-[var(--j-blak-3)] hover:text-[var(--c-text)] dark:hover:text-[var(--c-solid)] hover:bg-[var(--c-bg)] dark:hover:bg-[var(--c-bg)]/30 rounded-lg transition-colors"
                                 title="Redigera"
                                 aria-label={`Redigera anteckningen från ${date}`}
                               >
@@ -549,7 +549,7 @@ export function ParticipantJournal({
                                 type="button"
                                 onClick={() => handleDelete(entry)}
                                 disabled={deletingId === entry.id}
-                                className="p-1.5 text-stone-500 dark:text-stone-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-900/20 rounded-lg transition-colors disabled:opacity-50"
+                                className="p-1.5 text-[var(--j-blak-3)] hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-900/20 rounded-lg transition-colors disabled:opacity-50"
                                 title="Ta bort"
                                 aria-label={`Ta bort anteckningen från ${date}`}
                               >

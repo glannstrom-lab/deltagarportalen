@@ -15,6 +15,7 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/Button'
+import { KvarterIkon } from '@/components/ui/icons/kvarter/KvarterIkon'
 import { SkrivFel } from '@/components/ui/SkrivFel'
 import type { ActivitySession } from '@/services/aktivitetApi'
 import { konsulentMeddelandeApi } from '@/services/konsulentMeddelandeApi'
@@ -74,7 +75,7 @@ export function FragaOmPasset({ session, datumText, onSent }: Props) {
 
   if (skickatTill) {
     return (
-      <p className="text-sm text-emerald-700 dark:text-emerald-300" role="status">
+      <p className="m-0 text-[0.9375rem] font-semibold text-s-narvarande" role="status">
         {t('minVecka.fraga.skickat', { defaultValue: 'Skickat till {{namn}}.', namn: skickatTill })}
       </p>
     )
@@ -85,8 +86,9 @@ export function FragaOmPasset({ session, datumText, onSent }: Props) {
       <button
         type="button"
         onClick={oppna}
-        className="self-start text-sm font-medium text-stone-700 dark:text-stone-300 underline-offset-2 hover:underline"
+        className="inline-flex min-h-[44px] items-center gap-1.5 rounded-j-m px-3 text-[0.9375rem] font-semibold text-j-blak-2 hover:bg-j-sankt hover:text-j-blak focus:outline-none focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-[var(--j-fokus)] sm:min-h-[36px]"
       >
+        <KvarterIkon namn="meddelande" size={18} />
         {t('minVecka.fraga.knapp', 'Fråga om passet')}
       </button>
     )
@@ -95,10 +97,10 @@ export function FragaOmPasset({ session, datumText, onSent }: Props) {
   const id = `fraga-${session.id}`
   return (
     <div className="space-y-2">
-      <label htmlFor={id} className="block text-sm font-medium text-stone-800 dark:text-stone-200">
+      <label htmlFor={id} className="block text-[0.9375rem] font-medium text-j-blak">
         {t('minVecka.fraga.etikett', 'Din fråga till konsulenten')}
       </label>
-      <p id={`${id}-om`} className="text-sm text-stone-600 dark:text-stone-400">
+      <p id={`${id}-om`} className="text-[0.9375rem] text-j-blak-2">
         {t('minVecka.fraga.om', {
           defaultValue: 'Om passet "{{titel}}" den {{datum}} kl {{tid}}. Det ser din konsulent.',
           titel: session.title,
@@ -113,9 +115,9 @@ export function FragaOmPasset({ session, datumText, onSent }: Props) {
         onChange={(e) => setText(e.target.value)}
         rows={4}
         maxLength={4000}
-        className="w-full rounded-lg border border-stone-300 dark:border-stone-600 bg-white dark:bg-stone-900 p-3 text-sm text-stone-900 dark:text-stone-100"
+        className="w-full rounded-j-s border border-j-linje-2 bg-j-kort p-3 text-[0.9375rem] text-j-blak"
       />
-      {fel && <p role="alert" className="text-sm text-red-700 dark:text-red-300">{fel}</p>}
+      {fel && <p role="alert" className="text-[0.9375rem] font-semibold text-s-ogiltig">{fel}</p>}
       {sandfel && (
         <SkrivFel
           extra={t('skrivfel.minKonsulent', 'Du kan också skriva eller ringa till din konsulent från sidan Min konsulent.')}
@@ -124,10 +126,10 @@ export function FragaOmPasset({ session, datumText, onSent }: Props) {
         />
       )}
       <div className="flex flex-wrap gap-2">
-        <Button className="min-h-11" onClick={skicka} disabled={skickar}>
+        <Button ton="kvarter" variant="secondary" onClick={skicka} disabled={skickar}>
           {skickar ? t('minVecka.fraga.skickar', 'Skickar …') : t('minVecka.fraga.skicka', 'Skicka')}
         </Button>
-        <Button variant="outline" className="min-h-11" onClick={() => setOppen(false)} disabled={skickar}>
+        <Button ton="kvarter" variant="tertiary" onClick={() => setOppen(false)} disabled={skickar}>
           {t('minVecka.fraga.avbryt', 'Avbryt')}
         </Button>
       </div>

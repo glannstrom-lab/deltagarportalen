@@ -23,9 +23,9 @@
  * kopplat till EN plats, och deltagaren svarar. Bygg inte in något annat.
  */
 
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { EmptyState } from '@/components/ui/EmptyState'
@@ -74,8 +74,20 @@ export function PlatserTab() {
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('alla')
   const [sok, setSok] = useState('')
 
-  const [formOpen, setFormOpen] = useState(false)
+  // Slipningen 2026-10-11 (R&M A7): "Registrera platsen" från en deltagares plan öppnar
+  // Ny plats med deltagaren och företagsnamnet ifyllda — förut en tom lista och 30 tomma fält.
+  // Läses en gång vid montering; parametrarna städas sedan bort ur adressen.
+  const [sokParametrar, setSokParametrar] = useSearchParams()
+  const [forval, setForval] = useState<{ deltagare?: string; foretag?: string } | null>(() =>
+    sokParametrar.get('ny') === '1'
+      ? { deltagare: sokParametrar.get('deltagare') ?? undefined, foretag: sokParametrar.get('foretag') ?? undefined }
+      : null,
+  )
+  const [formOpen, setFormOpen] = useState(() => sokParametrar.get('ny') === '1')
   const [editing, setEditing] = useState<Placering | null>(null)
+  useEffect(() => {
+    if (sokParametrar.get('ny') === '1') setSokParametrar({}, { replace: true })
+  }, [sokParametrar, setSokParametrar])
   const [uppfoljningFor, setUppfoljningFor] = useState<Placering | null>(null)
   /** AG2 — stödkalkylatorn, expanderad för högst en placering i taget. */
   const [stodOppetFor, setStodOppetFor] = useState<string | null>(null)
@@ -456,12 +468,15 @@ export function PlatserTab() {
         open={formOpen}
         existing={editing}
         deltagare={deltagare ?? []}
+        forcedParticipantId={forval?.deltagare}
+        forvaltForetag={forval?.foretag}
         foretagsplatser={foretagsplatser}
         foretagsplatserFel={foretagsplatserError ? (foretagsplatserError instanceof Error ? foretagsplatserError.message : 'okänt fel') : null}
         onSave={handleSave}
         onClose={() => {
           setFormOpen(false)
           setEditing(null)
+          setForval(null)
         }}
       />
 

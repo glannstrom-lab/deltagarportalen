@@ -6,11 +6,15 @@
  * sektion där den hör hemma (journal, mål, aktivitet, översikt).
  */
 
-import { useEffect, useState, type ElementType } from 'react'
+import { useEffect, useState, type ElementType, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { MessageSquare, Target, CheckCircle, Calendar, Briefcase, ClipboardCheck, Clock, AlertTriangle } from 'lucide-react'
-import { Card } from '@/components/ui/Card'
 import { tidslinjeApi, type TidslinjeHandelse, type TidslinjeSektion, type TidslinjeTyp } from '@/services/tidslinjeApi'
+
+/** Omtaget "Kvarter", steg 5: en platt yta i stället för Card, färger ur tokens. */
+function Yta({ children }: { children: ReactNode }) {
+  return <section className="p-5 sm:p-6 bg-[var(--j-kort)] border border-[var(--j-linje)] rounded-[var(--j-r-l)] text-[var(--j-blak)]">{children}</section>
+}
 
 const IKON: Record<TidslinjeTyp, ElementType> = {
   journal: MessageSquare,
@@ -56,47 +60,47 @@ export function Tidslinje({ participantId, onGaTill }: Props) {
 
   if (lage.status === 'laddar') {
     return (
-      <Card className="p-5">
-        <p role="status" aria-live="polite" className="text-sm text-stone-500 dark:text-stone-400">
+      <Yta>
+        <p role="status" aria-live="polite" className="m-0 text-sm text-[var(--j-blak-3)]">
           {t('consultant.participantDetail.timelineLoading')}
         </p>
-      </Card>
+      </Yta>
     )
   }
 
   if (lage.status === 'fel') {
     return (
-      <Card className="p-5">
+      <Yta>
         <div role="alert" className="flex items-start gap-3 text-sm">
-          <AlertTriangle className="w-5 h-5 text-amber-600 shrink-0" aria-hidden="true" />
-          <p className="text-stone-700 dark:text-stone-200">{t('consultant.participantDetail.timelineError')}</p>
+          <AlertTriangle className="w-5 h-5 text-[var(--s-ogiltig-ikon)] shrink-0" aria-hidden="true" />
+          <p className="m-0 text-[var(--j-blak)]">{t('consultant.participantDetail.timelineError')}</p>
         </div>
-      </Card>
+      </Yta>
     )
   }
 
   const { handelser, misslyckadeKallor } = lage
 
   return (
-    <Card className="p-5">
+    <Yta>
       {misslyckadeKallor.length > 0 && (
-        <p role="status" className="mb-4 text-sm text-amber-700 dark:text-amber-300">
+        <p role="status" className="mb-4 rounded-[var(--j-r-m)] bg-[var(--s-vantar-bg)] px-3 py-2 text-sm text-[var(--s-vantar-text)]">
           {t('consultant.participantDetail.timelinePartial', { kallor: misslyckadeKallor.join(', ') })}
         </p>
       )}
 
       {handelser.length === 0 ? (
         <div className="py-10 text-center">
-          <Clock className="w-10 h-10 mx-auto text-stone-400 dark:text-stone-500 mb-3" aria-hidden="true" />
-          <p className="font-medium text-stone-700 dark:text-stone-200">
+          <Clock className="w-10 h-10 mx-auto text-[var(--j-blak-3)] mb-3" aria-hidden="true" />
+          <p className="m-0 font-semibold text-[var(--j-blak)]">
             {t('consultant.participantDetail.timelineEmptyTitle')}
           </p>
-          <p className="text-sm text-stone-500 dark:text-stone-400 mt-1 max-w-md mx-auto">
+          <p className="m-0 text-sm text-[var(--j-blak-2)] mt-1 max-w-md mx-auto">
             {t('consultant.participantDetail.timelineEmptyDesc')}
           </p>
         </div>
       ) : (
-        <ol className="space-y-0" aria-label={t('consultant.participantDetail.tabs.timeline')}>
+        <ol className="m-0 p-0 list-none" aria-label={t('consultant.participantDetail.tabs.timeline')}>
           {handelser.map((h, index) => {
             const Ikon = IKON[h.typ]
             const datum = new Date(h.tidpunkt)
@@ -106,25 +110,25 @@ export function Tidslinje({ participantId, onGaTill }: Props) {
             return (
               <li key={h.id} className="flex gap-4">
                 <div className="relative">
-                  <div className="w-10 h-10 rounded-full bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40 flex items-center justify-center">
-                    <Ikon className="w-5 h-5 text-[var(--c-solid)]" aria-hidden="true" />
+                  <div className="w-10 h-10 rounded-full bg-[var(--j-gran-mjuk)] flex items-center justify-center">
+                    <Ikon className="w-5 h-5 text-[var(--j-gran-text)]" aria-hidden="true" />
                   </div>
                   {index < handelser.length - 1 && (
-                    <div className="absolute top-10 left-1/2 -translate-x-1/2 w-0.5 h-6 bg-stone-200 dark:bg-stone-700" aria-hidden="true" />
+                    <div className="absolute top-10 left-1/2 -translate-x-1/2 w-0.5 h-6 bg-[var(--j-linje)]" aria-hidden="true" />
                   )}
                 </div>
                 <div className="flex-1 pb-6 min-w-0">
                   <button
                     type="button"
                     onClick={() => onGaTill(h.sektion)}
-                    className="text-left font-medium text-stone-900 dark:text-stone-100 hover:underline underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--c-solid)] rounded"
+                    className="text-left font-semibold text-[var(--j-blak)] hover:underline underline-offset-4 rounded-[var(--j-r-s)] focus:outline-none focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-offset-2 focus-visible:outline-[var(--j-fokus)]"
                   >
                     {h.titel}
                   </button>
                   {h.detalj && (
-                    <p className="text-sm text-stone-600 dark:text-stone-300 break-words">{h.detalj}</p>
+                    <p className="m-0 text-sm text-[var(--j-blak-2)] break-words">{h.detalj}</p>
                   )}
-                  <p className="text-sm text-stone-500 dark:text-stone-400">
+                  <p className="m-0 text-sm text-[var(--j-blak-3)]">
                     <time dateTime={h.tidpunkt}>{datumText}</time>
                   </p>
                 </div>
@@ -133,6 +137,6 @@ export function Tidslinje({ participantId, onGaTill }: Props) {
           })}
         </ol>
       )}
-    </Card>
+    </Yta>
   )
 }

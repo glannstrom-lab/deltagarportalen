@@ -88,6 +88,53 @@
   --radius-3xl: 1.5rem;
 }
 
+/* Omtaget 2026-10-11 ("Kvarter"): tokens.css → Tailwind-verktyg.
+   `inline` gör att verktygen pekar på var(--j-…) direkt, så de byter värde
+   med .dark och med data-ton="kontor" utan egna dark:-klasser.
+   Ger t.ex. bg-j-kort, text-j-blak-2, border-j-linje, bg-s-sjuk-bg,
+   rounded-j-m, shadow-j, font-text, font-rubrik.
+   OBS: --font-sans rörs INTE — tre brevmallar använder `font-sans` och ska
+   behålla sitt typsnitt. */
+@theme inline {
+  --color-j-papper:   var(--j-papper);
+  --color-j-kort:     var(--j-kort);
+  --color-j-sankt:    var(--j-sankt);
+  --color-j-linje:    var(--j-linje);
+  --color-j-linje-2:  var(--j-linje-2);
+  --color-j-blak:     var(--j-blak);
+  --color-j-blak-2:   var(--j-blak-2);
+  --color-j-blak-3:   var(--j-blak-3);
+  --color-j-gran:      var(--j-gran);
+  --color-j-pa-gran:   var(--j-pa-gran);
+  --color-j-gran-mjuk: var(--j-gran-mjuk);
+  --color-j-gran-text: var(--j-gran-text);
+  --color-j-glod:      var(--j-glod);
+  --color-j-glod-mjuk: var(--j-glod-mjuk);
+
+  --color-s-narvarande:    var(--s-narvarande-text);
+  --color-s-narvarande-bg: var(--s-narvarande-bg);
+  --color-s-giltig:        var(--s-giltig-text);
+  --color-s-giltig-bg:     var(--s-giltig-bg);
+  --color-s-ogiltig:       var(--s-ogiltig-text);
+  --color-s-ogiltig-bg:    var(--s-ogiltig-bg);
+  --color-s-sjuk:          var(--s-sjuk-text);
+  --color-s-sjuk-bg:       var(--s-sjuk-bg);
+  --color-s-vantar:        var(--s-vantar-text);
+  --color-s-vantar-bg:     var(--s-vantar-bg);
+  --color-s-planerat:      var(--s-planerat-text);
+  --color-s-planerat-bg:   var(--s-planerat-bg);
+
+  --radius-j-s: var(--j-r-s);
+  --radius-j-m: var(--j-r-m);
+  --radius-j-l: var(--j-r-l);
+
+  --shadow-j:      var(--j-skugga);
+  --shadow-j-stor: var(--j-skugga-stor);
+
+  --font-text:   var(--j-font-text);
+  --font-rubrik: var(--j-font-rubrik);
+}
+
 @layer base {
   html {
     scroll-behavior: smooth;
@@ -236,7 +283,11 @@
   }
 
   body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    /* Hanken Grotesk sedan omtaget 2026-10-11 (tokens.css, --j-font-text).
+       Här stod 'Inter', som aldrig laddades — portalen visades i
+       systemtypsnittet (Segoe UI på Windows). CV-mallarna sätter eget
+       typsnitt på sin rot och påverkas inte. */
+    font-family: var(--j-font-text);
     background-color: var(--bg-page);
     color: var(--text-primary);
     transition: background-color 0.2s ease, color 0.2s ease;

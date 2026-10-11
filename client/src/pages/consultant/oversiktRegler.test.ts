@@ -52,6 +52,12 @@ describe('bradskandePunkter — RR3/RK7', () => {
     expect(p).toEqual([{ participantId: 'jonas', typ: 'mote', text: 'Senaste möte 33 dagar sedan — gränsen är 14' }])
   })
 
+  // Slipningen 2026-10-11: möteskadensen är Rusta och matcha-avtalets — inte kommunens.
+  it('utan mötesregel (kommun) blir ett gammalt möte inte brådskande', () => {
+    const p = bradskandePunkter({ deltagare: [{ participant_id: 'jonas', status: 'ACTIVE' }], moten: [mote('jonas', 33)], pass: [], idag, medMotesregel: false })
+    expect(p).toEqual([])
+  })
+
   it('ett färskt möte är inte brådskande, och "inget möte än" är grått som i deltagarlistan', () => {
     const p = bradskandePunkter({
       deltagare: [{ participant_id: 'a', status: 'ACTIVE' }, { participant_id: 'b', status: 'ACTIVE' }],

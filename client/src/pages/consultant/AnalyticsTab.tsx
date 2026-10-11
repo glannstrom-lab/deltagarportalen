@@ -53,6 +53,7 @@ import { csvTabell } from '@/components/consultant/deltagarExport'
 import { useRapportOmfang } from '@/components/consultant/useRapportOmfang'
 
 import { anvandareFranSession } from '@/lib/anvandareFranSession'
+import { OversiktSiffror } from './OversiktSiffror'
 interface PlacementRow {
   id: string
   participantId: string
@@ -622,6 +623,9 @@ export function AnalyticsTab() {
   // AG3/KS1: se computePlacementMetric ovan för varför det här ersätter
   // completedParticipants-baserad "placeringsgrad".
   const placementMetric = computePlacementMetric(analytics.totalPlacements, analytics.totalParticipants)
+  // Slipningen 2026-10-11: en handläggare utan egna deltagare såg "0 %" på fyra mått.
+  // Ett värde utan underlag är "—", aldrig en nolla (CLAUDE.md, 2026-08-09).
+  const utanDeltagare = analytics.totalParticipants === 0
 
   if (loading) {
     return <LoadingState fullHeight />
@@ -664,6 +668,14 @@ export function AnalyticsTab() {
           <>Rapporterna gäller <strong>dina egna deltagare</strong>.</>
         )}
       </p>
+      {/* Slipningen 2026-10-11: det kunden redovisar står först — kommunens IVO-underlag
+          och leverantörens aktivitetslogg mot avtalskravet låg sist, under alla CV-diagram. */}
+      {/* KM7: kvartalsunderlag till IVO + AF-checklista. Svenska literaler — konsulentvyn översätts inte. */}
+      {kundtypsVisning?.visaIvoUnderlag && <IvoUnderlagSektion />}
+
+      {/* RM4: aktivitetsloggen mot avtalskravet (FFU §4.1.1) — timkrav per vecka och andel fysiska. */}
+      {kundtypsVisning?.visaAvtalskrav && <AvtalskravKort />}
+
       {/* Header with Date Range and Export */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="flex items-center gap-2">
@@ -713,8 +725,8 @@ export function AnalyticsTab() {
         />
         <MetricCard
           title={t('consultant.analytics.metrics.cvCompletion')}
-          value={`${analytics.cvCompletionRate}%`}
-          subtitle={t('consultant.analytics.metrics.hasCompleteCV')}
+          value={utanDeltagare ? '—' : `${analytics.cvCompletionRate}%`}
+          subtitle={utanDeltagare ? 'Inga deltagare kopplade till dig' : t('consultant.analytics.metrics.hasCompleteCV')}
           icon={FileText}
           trend={trends.cvCompletion.value > 0 ? trends.cvCompletion : undefined}
           trendLabel={t('consultant.analytics.vsLastMonth')}
@@ -783,6 +795,11 @@ export function AnalyticsTab() {
             </div>
             <PieChart className="w-5 h-5 text-stone-500 dark:text-stone-400" />
           </div>
+          {utanDeltagare ? (
+            <p className="text-sm text-stone-600 dark:text-stone-400" data-testid="nyckeltal-utan-underlag">
+              — Inga deltagare kopplade till dig, så det finns inget att räkna andelar på.
+            </p>
+          ) : (
           <div className="grid grid-cols-3 gap-4">
             {/* KV5: kortet visar andelen med registrerat CV (has_cv), inte
                 CV:ets kvalitet (ATS-poäng) — OverviewTab.tsx visar snitt-ATS
@@ -811,6 +828,7 @@ export function AnalyticsTab() {
               label={t('consultant.analytics.keyMetrics.engagement')}
             />
           </div>
+          )}
         </Card>
       </div>
 
@@ -1158,11 +1176,9 @@ export function AnalyticsTab() {
         )}
       </Card>
 
-      {/* KM7: kvartalsunderlag till IVO + AF-checklista. Svenska literaler — konsulentvyn översätts inte. */}
-      {kundtypsVisning?.visaIvoUnderlag && <IvoUnderlagSektion />}
-
-      {/* RM4: aktivitetsloggen mot avtalskravet (FFU §4.1.1) — timkrav per vecka och andel fysiska. */}
-      {kundtypsVisning?.visaAvtalskrav && <AvtalskravKort />}
+      {/* Omtaget "Kvarter" steg 3 (2026-10-11): nyckeltalen, Målöversikt och Senaste
+          aktivitet flyttade hit från Översikt, som nu bara svarar på "vad ska jag göra nu?". */}
+      <OversiktSiffror />
 
       {/* PDF Report Dialog */}
       <ReportGeneratorDialog

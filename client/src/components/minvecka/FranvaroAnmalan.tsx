@@ -1,7 +1,7 @@
 /**
  * FranvaroAnmalan — "Jag kan inte komma" på ett kommande pass i Min vecka (F1).
  *
- * Tre lägen: knapp → formulär (orsak + valfri rad till konsulenten) → bekräftat
+ * Tre lägen: knapp → formulär (orsak + vad det gäller + valfri rad) → bekräftat
  * ("Anmält: sjuk. Din konsulent har fått besked."). Inga hot, inga konsekvenser
  * uppräknade — det är konsulenten som bedömer skälet, och det står så. Ton:
  * lugn vän (DESIGN.md §2). Texterna finns också i Lätt svenska (sv-latt.json).
@@ -10,13 +10,22 @@
  * Anmälan frågar därför vad den gäller — bara passet, hela dagen eller flera
  * dagar — och anmäler alla pass i perioden på en gång, också eget jobbsökande.
  * RD26: ett fel behåller allt hon valt och skrivit, och erbjuder Försök igen.
+ *
+ * Omtaget steg 6 (2026-10-11): formuläret är förslagets skärm "Anmäl frånvaro".
+ * Bilden "hemma i regn" överst, frågorna numrerade och en i taget nedåt, och
+ * valen är stora tryckytor (minst 56 px) i stället för små radioknappar.
+ * Radioknapparna finns kvar i DOM:en — tangentbord och skärmläsare får en
+ * riktig radiogrupp, ögat får rutorna.
  */
 
-import { useId, useState } from 'react'
+import { useEffect, useId, useRef, useState, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/Button'
 import { SkrivFel } from '@/components/ui/SkrivFel'
 import { useSkrivning } from '@/components/ui/useSkrivning'
+import { KvarterIkon } from '@/components/ui/icons/kvarter/KvarterIkon'
+import type { KvarterNamn } from '@/components/ui/icons/kvarter/ritningar'
+import { cn } from '@/lib/utils'
 import type { ActivitySession } from '@/services/aktivitetApi'
 import {
   FRANVARO_ORSAKER,
@@ -40,6 +49,23 @@ export interface MoteSammaDag {
   datum?: string
 }
 
+/** Bilden överst i formuläret (public/hemma, gjord i Jobin-stadens stil). */
+export const HEMMA_REGN = '/hemma/hemma-regn.webp'
+const HEMMA_REGN_LITEN = '/hemma/hemma-regn-560.webp'
+
+const ORSAK_IKON: Record<FranvaroOrsak, KvarterNamn> = {
+  sick: 'sjuk',
+  child_care: 'hem',
+  authority_meeting: 'handlaggare',
+  other: 'meddelande',
+}
+
+const OMFATTNING_IKON: Record<Omfattning, KvarterNamn> = {
+  pass: 'kalender',
+  dag: 'tid',
+  period: 'plan',
+}
+
 interface Props {
   session: ActivitySession
   onSaved: (session: ActivitySession) => void
@@ -58,6 +84,10 @@ interface Props {
   passSammaDag?: readonly ActivitySession[]
   /** RD27: efter en anmälan av flera pass. Saknas den anropas `onSaved` per pass. */
   onSavedFlera?: (sessions: ActivitySession[]) => void
+  /** Omtaget: formuläret öppet direkt (när "Jag kan inte komma" trycktes i nästa steg). */
+  startaOppen?: boolean
+  /** Anropas när formuläret stängs utan anmälan. */
+  onAvbryt?: () => void
   /** Testkrok: "nu" för att avgöra om passet är kommande. */
   nu?: Date
 }
@@ -76,11 +106,13 @@ export function FranvaroAnmalan({
   datumText,
   passSammaDag = [],
   onSavedFlera,
+  startaOppen = false,
+  onAvbryt,
   nu,
 }: Props) {
   const { t, i18n } = useTranslation()
   const gruppId = useId()
-  const [oppen, setOppen] = useState(false)
+  const [oppen, setOppen] = useState(startaOppen)
   const [orsak, setOrsak] = useState<FranvaroOrsak | null>(null)
   const [notering, setNotering] = useState('')
   const [omfattning, setOmfattning] = useState<Omfattning>('pass')
@@ -91,6 +123,12 @@ export function FranvaroAnmalan({
   const [moteFraga, setMoteFraga] = useState<'fraga' | 'skickar' | 'skickat' | 'fel' | null>(null)
   // Perioden som anmäldes — för frågan om möten efteråt.
   const [anmald, setAnmald] = useState({ fran: session.date, till: session.date })
+  const rubrikRef = useRef<HTMLHeadingElement>(null)
+
+  // Formuläret som öppnas får fokus på sin rubrik, så skärmläsaren börjar där.
+  useEffect(() => {
+    if (oppen) rubrikRef.current?.focus()
+  }, [oppen])
 
   const anmalan = franvaroAv(session)
   const locale = i18n.language?.startsWith('en') ? 'en-GB' : 'sv-SE'
@@ -138,19 +176,24 @@ export function FranvaroAnmalan({
       )
       .join(` ${t('minVecka.mote.och', 'och')} `)
     return (
-      <div className="rounded-lg bg-stone-100 dark:bg-stone-800 p-3 text-sm">
-        <p className="text-stone-800 dark:text-stone-200">
-          {t('minVecka.franvaro.anmalt', {
-            defaultValue: 'Anmält: {{orsak}}. Din konsulent har fått besked ({{nar}}).',
-            orsak: t(`minVecka.franvaro.orsak.${anmalan.reason}`),
-            nar,
-          })}
+      <div className="rounded-j-m bg-s-vantar-bg p-4 text-[0.9375rem] text-j-blak" data-testid="franvaro-anmald">
+        <p className="m-0 flex items-start gap-2.5">
+          <KvarterIkon namn="franvaro" size={22} ton="vantar" className="mt-px shrink-0" />
+          <span>
+            {t('minVecka.franvaro.anmalt', {
+              defaultValue: 'Anmält: {{orsak}}. Din konsulent har fått besked ({{nar}}).',
+              orsak: t(`minVecka.franvaro.orsak.${anmalan.reason}`),
+              nar,
+            })}
+          </span>
         </p>
-        {anmalan.note && <p className="mt-1 text-stone-600 dark:text-stone-400">„{anmalan.note}”</p>}
+        {anmalan.note && <p className="m-0 mt-1 pl-[34px] text-j-blak-2">„{anmalan.note}”</p>}
         {!session.attendance && (
-          <button
-            type="button"
-            className="mt-2 text-xs underline underline-offset-2 text-stone-700 dark:text-stone-300"
+          <Button
+            ton="kvarter"
+            variant="tertiary"
+            size="sm"
+            className="mt-1 ml-[22px] underline underline-offset-2"
             disabled={angrar}
             onClick={async () => {
               setAngrar(true); setFel(null)
@@ -160,9 +203,9 @@ export function FranvaroAnmalan({
             }}
           >
             {t('minVecka.franvaro.angra', 'Ångra anmälan')}
-          </button>
+          </Button>
         )}
-        {fel && <p role="alert" className="mt-1 text-red-700 dark:text-red-300">{fel}</p>}
+        {fel && <p role="alert" className="m-0 mt-1 font-semibold text-s-ogiltig">{fel}</p>}
         {moteFraga && berorda.length > 0 && (
           <MoteFraga
             tid={motesText}
@@ -202,7 +245,13 @@ export function FranvaroAnmalan({
 
   if (!oppen) {
     return (
-      <Button variant="outline" className="min-h-12 w-full sm:w-auto" onClick={() => setOppen(true)}>
+      <Button
+        ton="kvarter"
+        variant="secondary"
+        className="w-full sm:w-auto"
+        onClick={() => setOppen(true)}
+        leftIcon={<KvarterIkon namn="franvaro" size={20} ton="vantar" />}
+      >
         {t('minVecka.franvaro.knapp', 'Jag kan inte komma')}
       </Button>
     )
@@ -218,112 +267,198 @@ export function FranvaroAnmalan({
     await anmalning.kor({ orsak, notering, omfattning, till })
   }
 
+  const stang = () => {
+    setOppen(false); setFel(null); anmalning.nollstall()
+    onAvbryt?.()
+  }
+
   const omfattningar: Omfattning[] = kanHelaDagen ? ['pass', 'dag', 'period'] : ['pass', 'period']
 
   return (
     <form
-      className="rounded-lg border border-stone-200 dark:border-stone-700 p-3 space-y-3"
-      aria-labelledby={`${gruppId}-rubrik`}
+      className="overflow-hidden rounded-j-m border border-j-linje bg-j-kort text-j-blak shadow-j"
+      aria-labelledby={`${gruppId}-titel`}
+      data-testid="franvaro-formular"
       onSubmit={(e) => { e.preventDefault(); void skicka() }}
     >
-      <p id={`${gruppId}-rubrik`} className="text-sm text-stone-800 dark:text-stone-200">
-        {t('minVecka.franvaro.rubrik', 'Vad hindrar dig? Din konsulent får besked direkt.')}
-      </p>
-      <div role="radiogroup" aria-labelledby={`${gruppId}-rubrik`} className="grid gap-2 sm:grid-cols-2">
-        {FRANVARO_ORSAKER.map((o) => (
-          <label key={o} className="flex items-center gap-2 rounded-md border border-stone-200 dark:border-stone-700 px-3 py-2 text-sm cursor-pointer has-[:checked]:border-[var(--c-solid)]">
-            <input type="radio" name={`${gruppId}-orsak`} value={o} checked={orsak === o} onChange={() => setOrsak(o)} className="accent-[var(--c-solid)]" />
-            <span>{t(`minVecka.franvaro.orsak.${o}`)}</span>
-          </label>
-        ))}
-      </div>
-
-      {/* RD27: vad anmälan gäller */}
-      <fieldset className="space-y-2">
-        <legend className="text-sm text-stone-800 dark:text-stone-200">
-          {t('minVecka.franvaro.omfattning.rubrik', 'Vad gäller det?')}
-        </legend>
-        <div className="grid gap-2 sm:grid-cols-3">
-          {omfattningar.map((o) => (
-            <label key={o} className="flex items-center gap-2 rounded-md border border-stone-200 dark:border-stone-700 px-3 py-2 text-sm cursor-pointer has-[:checked]:border-[var(--c-solid)]">
-              <input
-                type="radio"
-                name={`${gruppId}-omfattning`}
-                value={o}
-                checked={omfattning === o}
-                onChange={() => setOmfattning(o)}
-                className="accent-[var(--c-solid)]"
-              />
-              <span>
-                {o === 'pass'
-                  ? t('minVecka.franvaro.omfattning.pass', 'Bara det här passet')
-                  : o === 'dag'
-                    ? t('minVecka.franvaro.omfattning.dag', { defaultValue: 'Hela dagen ({{count}} pass)', count: dagensAnmalbara.length })
-                    : t('minVecka.franvaro.omfattning.period', 'Flera dagar')}
-              </span>
-            </label>
-          ))}
+      <img
+        src={HEMMA_REGN}
+        srcSet={`${HEMMA_REGN_LITEN} 560w, ${HEMMA_REGN} 900w`}
+        sizes="(min-width: 700px) 640px, 100vw"
+        alt=""
+        aria-hidden="true"
+        decoding="async"
+        className="block h-28 w-full object-cover sm:h-36"
+      />
+      <div className="space-y-5 p-4 sm:p-5">
+        <div>
+          <h3
+            id={`${gruppId}-titel`}
+            ref={rubrikRef}
+            tabIndex={-1}
+            className="m-0 font-rubrik text-[1.375rem] font-bold leading-tight focus:outline-none"
+          >
+            {t('minVecka.franvaro.titel', 'Kan du inte komma?')}
+          </h3>
+          <p className="m-0 mt-1 text-[0.9375rem] leading-[1.45] text-j-blak-2">
+            {t('minVecka.franvaro.galler', {
+              defaultValue: 'Det gäller {{titel}}, {{dag}} kl {{tid}}. Berätta för din konsulent vad som hindrar dig. Det tar en minut.',
+              titel: session.title,
+              dag: langtDatum(session.date),
+              tid: session.start_time.slice(0, 5),
+            })}
+          </p>
         </div>
-        {omfattning === 'period' && (
-          <div>
-            <label htmlFor={`${gruppId}-till`} className="block text-xs text-stone-600 dark:text-stone-400 mb-1">
-              {t('minVecka.franvaro.omfattning.till', 'Till och med')}
-            </label>
-            <input
-              id={`${gruppId}-till`}
-              type="date"
-              value={till}
-              min={session.date}
-              max={sistaDag}
-              onChange={(e) => setTill(e.target.value)}
-              className="min-h-11 rounded-md border border-stone-300 dark:border-stone-600 bg-white dark:bg-stone-900 px-3 text-sm text-stone-900 dark:text-stone-100"
-            />
-            <p className="mt-1 text-xs text-stone-600 dark:text-stone-400">
-              {t('minVecka.franvaro.omfattning.periodHjalp', 'Alla dina pass de dagarna anmäls, också eget jobbsökande. Du kan ångra varje pass för sig.')}
-            </p>
-          </div>
-        )}
-      </fieldset>
 
-      <div>
-        <label htmlFor={`${gruppId}-notering`} className="block text-xs text-stone-600 dark:text-stone-400 mb-1">
-          {t('minVecka.franvaro.noteringEtikett', 'Vill du säga något mer? (frivilligt)')}
-        </label>
-        <textarea
-          id={`${gruppId}-notering`}
-          value={notering}
-          onChange={(e) => setNotering(e.target.value)}
-          maxLength={500}
-          rows={2}
-          className="w-full rounded-md border border-stone-300 dark:border-stone-600 bg-white dark:bg-stone-900 px-3 py-2 text-sm text-stone-900 dark:text-stone-100"
-        />
-      </div>
-      <p className="text-xs text-stone-500 dark:text-stone-400">
-        {t('minVecka.franvaro.bedomning', 'Det är din konsulent som avgör om skälet är giltigt. Anmäl hellre en gång för mycket än en gång för lite.')}
-      </p>
-      {fel && <p role="alert" className="text-sm text-red-700 dark:text-red-300">{fel}</p>}
-      {anmalning.lage === 'fel' && (
-        <SkrivFel
-          extra={t('skrivfel.minKonsulent', 'Du kan också skriva eller ringa till din konsulent från sidan Min konsulent.')}
-          onForsokIgen={() => { void anmalning.forsokIgen() }}
-          forsoker={skickar}
-        />
-      )}
-      <div className="flex flex-wrap gap-2">
-        <Button type="submit" className="min-h-12" disabled={skickar}>
-          {t('minVecka.franvaro.skicka', 'Skicka till min konsulent')}
-        </Button>
-        <Button
-          type="button"
-          variant="ghost"
-          className="min-h-12"
-          onClick={() => { setOppen(false); setFel(null); anmalning.nollstall() }}
-          disabled={skickar}
-        >
-          {t('minVecka.franvaro.avbryt', 'Avbryt')}
-        </Button>
+        <Fraga nr={1} id={`${gruppId}-rubrik`} text={t('minVecka.franvaro.rubrik', 'Vad hindrar dig?')}>
+          <div role="radiogroup" aria-labelledby={`${gruppId}-rubrik`} className="grid grid-cols-2 gap-2">
+            {FRANVARO_ORSAKER.map((o) => (
+              <Ruta
+                key={o}
+                namn={`${gruppId}-orsak`}
+                varde={o}
+                vald={orsak === o}
+                onVal={() => { setOrsak(o); setFel(null) }}
+                ikon={ORSAK_IKON[o]}
+                etikett={t(`minVecka.franvaro.orsak.${o}`)}
+              />
+            ))}
+          </div>
+        </Fraga>
+
+        {/* RD27: vad anmälan gäller */}
+        <fieldset className="m-0 border-0 p-0">
+          <legend className="mb-2 flex items-center gap-2 p-0 text-base font-semibold">
+            <Nummer nr={2} />
+            {t('minVecka.franvaro.omfattning.rubrik', 'Vad gäller det?')}
+          </legend>
+          <div className={cn('grid gap-2', omfattningar.length === 3 ? 'grid-cols-1 sm:grid-cols-3' : 'grid-cols-2')}>
+            {omfattningar.map((o) => (
+              <Ruta
+                key={o}
+                namn={`${gruppId}-omfattning`}
+                varde={o}
+                vald={omfattning === o}
+                onVal={() => setOmfattning(o)}
+                ikon={OMFATTNING_IKON[o]}
+                etikett={
+                  o === 'pass'
+                    ? t('minVecka.franvaro.omfattning.pass', 'Bara det här passet')
+                    : o === 'dag'
+                      ? t('minVecka.franvaro.omfattning.dag', { defaultValue: 'Hela dagen ({{count}} pass)', count: dagensAnmalbara.length })
+                      : t('minVecka.franvaro.omfattning.period', 'Flera dagar')
+                }
+              />
+            ))}
+          </div>
+          {omfattning === 'period' && (
+            <div className="mt-3">
+              <label htmlFor={`${gruppId}-till`} className="mb-1 block">
+                <span className="text-[0.9375rem] font-semibold">{t('minVecka.franvaro.omfattning.till', 'Till och med')}</span>
+              </label>
+              <input
+                id={`${gruppId}-till`}
+                type="date"
+                value={till}
+                min={session.date}
+                max={sistaDag}
+                onChange={(e) => setTill(e.target.value)}
+                className="min-h-12 rounded-j-s border border-j-linje-2 bg-j-kort px-3 text-base text-j-blak focus:outline-none focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-[var(--j-fokus)]"
+              />
+              <p className="m-0 mt-1 text-[0.9375rem] text-j-blak-2">
+                {t('minVecka.franvaro.omfattning.periodHjalp', 'Alla dina pass de dagarna anmäls, också eget jobbsökande. Du kan ångra varje pass för sig.')}
+              </p>
+            </div>
+          )}
+        </fieldset>
+
+        <div>
+          <label htmlFor={`${gruppId}-notering`} className="mb-2 block text-base font-semibold">
+            <span className="flex items-center gap-2 text-base font-semibold">
+              <Nummer nr={3} />
+              {t('minVecka.franvaro.noteringEtikett', 'Vill du säga något mer? (frivilligt)')}
+            </span>
+          </label>
+          <textarea
+            id={`${gruppId}-notering`}
+            value={notering}
+            onChange={(e) => setNotering(e.target.value)}
+            maxLength={500}
+            rows={2}
+            className="w-full rounded-j-s border border-j-linje-2 bg-j-kort px-3 py-2.5 text-base text-j-blak focus:outline-none focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-[var(--j-fokus)]"
+          />
+        </div>
+
+        {fel && <p role="alert" className="m-0 font-semibold text-s-ogiltig">{fel}</p>}
+        {anmalning.lage === 'fel' && (
+          <SkrivFel
+            extra={t('skrivfel.minKonsulent', 'Du kan också skriva eller ringa till din konsulent från sidan Min konsulent.')}
+            onForsokIgen={() => { void anmalning.forsokIgen() }}
+            forsoker={skickar}
+          />
+        )}
+        <div className="flex flex-col gap-2 sm:flex-row">
+          <Button ton="kvarter" variant="primary" type="submit" className="w-full sm:w-auto" disabled={skickar}>
+            {t('minVecka.franvaro.skicka', 'Skicka till min konsulent')}
+          </Button>
+          <Button ton="kvarter" variant="tertiary" type="button" className="w-full sm:w-auto" onClick={stang} disabled={skickar}>
+            {t('minVecka.franvaro.avbryt', 'Avbryt')}
+          </Button>
+        </div>
+        <p className="m-0 flex gap-2 text-[0.9375rem] leading-[1.45] text-j-blak-2">
+          <KvarterIkon namn="klart" size={20} ton="gran" className="mt-px shrink-0" />
+          {t('minVecka.franvaro.bedomning', 'Det är din konsulent som avgör om skälet är giltigt. Anmäl hellre en gång för mycket än en gång för lite.')}
+        </p>
       </div>
     </form>
+  )
+}
+
+function Nummer({ nr }: { nr: number }) {
+  return (
+    <span aria-hidden="true" className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-j-gran-mjuk text-[0.875rem] font-bold text-j-gran-text">
+      {nr}
+    </span>
+  )
+}
+
+function Fraga({ nr, id, text, children }: { nr: number; id: string; text: string; children: ReactNode }) {
+  return (
+    <div>
+      <p id={id} className="m-0 mb-2 flex items-center gap-2 text-base font-semibold">
+        <Nummer nr={nr} />
+        {text}
+      </p>
+      {children}
+    </div>
+  )
+}
+
+/** En stor valruta. Radioknappen finns kvar (sr-only) — rutan är dess etikett. */
+function Ruta({ namn, varde, vald, onVal, ikon, etikett }: {
+  namn: string
+  varde: string
+  vald: boolean
+  onVal: () => void
+  ikon: KvarterNamn
+  etikett: string
+}) {
+  return (
+    <label
+      className={cn(
+        'relative flex min-h-[56px] cursor-pointer items-center gap-2.5 rounded-j-m border px-3 py-2.5 text-[0.9375rem] font-semibold leading-5',
+        'has-[:focus-visible]:outline has-[:focus-visible]:outline-[3px] has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-[var(--j-fokus)]',
+        vald ? 'border-2 border-j-gran bg-j-gran-mjuk text-j-blak' : 'border-j-linje-2 bg-j-kort text-j-blak hover:bg-j-sankt',
+      )}
+    >
+      <input type="radio" name={namn} value={varde} checked={vald} onChange={onVal} className="sr-only" />
+      {/* Inre flex: globala formulärregler på mobil kan göra label till block. */}
+      <span className="flex w-full items-center gap-2.5 text-[0.9375rem] font-semibold leading-5">
+        <KvarterIkon namn={ikon} size={22} ton={vald ? 'gran' : undefined} className="shrink-0" />
+        <span className="min-w-0 flex-1">{etikett}</span>
+        {vald ? <KvarterIkon namn="bock" size={18} className="shrink-0 text-j-gran-text" /> : null}
+      </span>
+    </label>
   )
 }
 
@@ -341,28 +476,28 @@ function MoteFraga({ tid, flerDagar = false, lage, onJa, onNej }: MoteFragaProps
   const { t } = useTranslation()
   if (lage === 'skickat') {
     return (
-      <p role="status" className="mt-2 text-emerald-700 dark:text-emerald-300">
+      <p role="status" className="m-0 mt-2 font-semibold text-s-narvarande">
         {t('minVecka.mote.skickat', 'Din konsulent har fått besked om mötet också.')}
       </p>
     )
   }
   return (
-    <div className="mt-3 border-t border-stone-200 dark:border-stone-700 pt-3 space-y-2">
-      <p className="text-stone-800 dark:text-stone-200">
+    <div className="mt-3 space-y-2 border-t border-j-linje pt-3">
+      <p className="m-0">
         {flerDagar
           ? t('minVecka.mote.fragaPeriod', { defaultValue: 'Gäller det också mötet med din konsulent {{tid}}?', tid })
           : t('minVecka.mote.fraga', { defaultValue: 'Gäller det också mötet med din konsulent kl {{tid}}?', tid })}
       </p>
       {lage === 'fel' && (
-        <p role="alert" className="text-red-700 dark:text-red-300">
+        <p role="alert" className="m-0 font-semibold text-s-ogiltig">
           {t('minVecka.mote.fel', 'Beskedet om mötet gick inte att skicka just nu. Du kan skriva eller ringa till din konsulent från sidan Min konsulent.')}
         </p>
       )}
-      <div className="flex flex-wrap gap-2">
-        <Button className="min-h-11" disabled={lage === 'skickar'} onClick={() => onJa(tid)}>
+      <div className="flex flex-col gap-2 sm:flex-row">
+        <Button ton="kvarter" variant="secondary" disabled={lage === 'skickar'} onClick={() => onJa(tid)}>
           {t('minVecka.mote.ja', 'Ja, meddela om mötet också')}
         </Button>
-        <Button variant="ghost" className="min-h-11" disabled={lage === 'skickar'} onClick={onNej}>
+        <Button ton="kvarter" variant="tertiary" disabled={lage === 'skickar'} onClick={onNej}>
           {t('minVecka.mote.nej', 'Nej, jag kommer till mötet')}
         </Button>
       </div>

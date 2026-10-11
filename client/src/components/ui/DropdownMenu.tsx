@@ -122,15 +122,24 @@ export function DropdownMenuTrigger({
   )
 }
 
+/**
+ * `utseende="kvarter"` (omtaget 2026-10-11): färger och form ur tokens
+ * (--j-*) i stället för stone-klasser, så menyn följer mörkt läge och
+ * kontorstonen utan dark:-varianter. Används av MerMeny. Standard = som förut.
+ */
+type Utseende = 'standard' | 'kvarter'
+
 // Content container
 export function DropdownMenuContent({
   children,
   align = 'end',
   className,
+  utseende = 'standard',
 }: {
   children: ReactNode
   align?: 'start' | 'end' | 'center'
   className?: string
+  utseende?: Utseende
 }) {
   const { isOpen, close, closeAndFocusTrigger, menuId } = useContext(DropdownContext)
   const ref = useRef<HTMLDivElement>(null)
@@ -217,7 +226,9 @@ export function DropdownMenuContent({
         role="menu"
         onKeyDown={handleKeyDown}
         className={cn(
-          'absolute z-50 mt-1 bg-white dark:bg-stone-900 rounded-lg shadow-lg border border-stone-200 dark:border-stone-700 py-1 min-w-[180px]',
+          utseende === 'kvarter'
+            ? 'absolute z-50 mt-1 bg-[var(--j-kort)] text-[var(--j-blak)] rounded-[var(--j-r-m)] shadow-[var(--j-skugga-stor)] border border-[var(--j-linje)] py-1 min-w-[220px]'
+            : 'absolute z-50 mt-1 bg-white dark:bg-stone-900 rounded-lg shadow-lg border border-stone-200 dark:border-stone-700 py-1 min-w-[180px]',
           alignmentClasses[align],
           className
         )}
@@ -234,11 +245,13 @@ export function DropdownMenuItem({
   onClick,
   className,
   disabled = false,
+  utseende = 'standard',
 }: {
   children: ReactNode
   onClick?: () => void
   className?: string
   disabled?: boolean
+  utseende?: Utseende
 }) {
   const { closeAndFocusTrigger } = useContext(DropdownContext)
 
@@ -256,10 +269,20 @@ export function DropdownMenuItem({
       onClick={handleClick}
       disabled={disabled}
       className={cn(
-        'w-full text-left px-3 py-2 text-sm flex items-center gap-2 transition-colors',
-        disabled
-          ? 'text-stone-600 dark:text-stone-400 cursor-not-allowed'
-          : 'text-stone-700 dark:text-stone-200 hover:bg-stone-100 dark:hover:bg-stone-800',
+        utseende === 'kvarter'
+          ? cn(
+              'w-full text-left px-4 min-h-[44px] text-[0.9375rem] flex items-center gap-3 transition-colors',
+              'focus:outline-none focus-visible:bg-[var(--j-sankt)]',
+              disabled
+                ? 'text-[var(--j-blak-3)] cursor-not-allowed'
+                : 'text-[var(--j-blak)] hover:bg-[var(--j-sankt)]'
+            )
+          : cn(
+              'w-full text-left px-3 py-2 text-sm flex items-center gap-2 transition-colors',
+              disabled
+                ? 'text-stone-600 dark:text-stone-400 cursor-not-allowed'
+                : 'text-stone-700 dark:text-stone-200 hover:bg-stone-100 dark:hover:bg-stone-800'
+            ),
         className
       )}
     >
@@ -269,6 +292,11 @@ export function DropdownMenuItem({
 }
 
 // Separator line
-export function DropdownMenuSeparator() {
-  return <div role="separator" className="h-px bg-stone-200 dark:bg-stone-700 my-1" />
+export function DropdownMenuSeparator({ utseende = 'standard' }: { utseende?: Utseende } = {}) {
+  return (
+    <div
+      role="separator"
+      className={utseende === 'kvarter' ? 'h-px bg-[var(--j-linje)] my-1' : 'h-px bg-stone-200 dark:bg-stone-700 my-1'}
+    />
+  )
 }

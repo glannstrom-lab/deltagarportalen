@@ -1,73 +1,181 @@
 /**
- * Rotterdam Template - Spacious med stort efternamn + 2-kolumns body
- * Inspirerad av resume-example.com Rotterdam.
+ * Rotterdam (id `rotterdam`) — luftig, med förnamnet spärrat och efternamnet
+ * stort, en smal vänsterkolumn med kontakt, kompetenser, utbildning och språk.
+ * Inter, nästan svartvit.
  *
- * Strukturen är cv-preview > aside + main så att vänsterkolumnen kan
+ * Strukturen är cv-preview > main + aside så att vänsterkolumnen kan
  * upprepas på sida 2+ via print-CSS (samma teknik som Modern/Nordic).
- * Det stora namnet bor i main-kolumnen och behåller sin visuella vikt.
+ *
+ * Slipad 2026-10-11 (CVK1):
+ * - Bara efternamnet var rubrik (h1); förnamnet låg i ett vanligt stycke.
+ *   En skärmläsare och ett rekryteringssystem fick alltså "GLÄNNSTRÖM" som
+ *   dokumentets namn. Nu är hela namnet h1, med samma utseende.
+ * - Versaler via `text-transform` i stället för `toUpperCase()` i texten.
+ * - Kolumnens rubriker var h3 utan någon h2 — nivåerna hoppade.
+ * - Ett långt efternamn får mindre grad i stället för att brytas mitt i ordet.
+ * - Tunn kant mellan kolumnerna även i förhandsvisningen (PDF:en hade den).
  */
 
-import { useTranslation } from 'react-i18next'
+import type { CSSProperties } from 'react'
 import type { TemplateProps } from './types'
 import { getLanguageLevelDisplay, getSkillName, getInitials } from './helpers'
+import { periodText, rubrikTaggar } from './typografi'
+import { Beskrivning } from './Beskrivning'
+import { Url } from './Url'
 
-const ink = '#1F2937'
-const muted = '#6B7280'
+const BLACK = '#1F2937'
+const TEXT = '#374151'
+const DAMPAD = '#5B6472' // 6,0:1 på vitt
+const KANT = '#E5E7EB'
 
-export function RotterdamTemplate({ data, fullName }: TemplateProps) {
-  const { t } = useTranslation()
-  const firstName = (data.firstName || '').toUpperCase()
-  const lastName = (data.lastName || '').toUpperCase()
+const sektionsrubrik: CSSProperties = {
+  fontSize: '10.5px',
+  fontWeight: 700,
+  letterSpacing: '0.24em',
+  textTransform: 'uppercase',
+  color: BLACK,
+  margin: '0 0 12px',
+  paddingBottom: '6px',
+  borderBottom: `1px solid ${BLACK}`,
+}
 
-  const sectionHeader: React.CSSProperties = {
-    fontSize: '11px',
-    fontWeight: 700,
-    letterSpacing: '0.25em',
-    color: ink,
-    marginBottom: '12px',
-    paddingBottom: '6px',
-    borderBottom: `1px solid ${ink}`,
-  }
+/** Efternamnets grad efter längd — "Andersson-Kristoffersson" ska rymmas. */
+function efternamnsgrad(namn: string): string {
+  if (namn.length > 16) return '36px'
+  if (namn.length > 11) return '44px'
+  return '54px'
+}
+
+export function RotterdamTemplate({ data, fullName, rubrikniva }: TemplateProps) {
+  const { Namn, Sektion, Post } = rubrikTaggar(rubrikniva)
+  const fornamn = (data.firstName || '').trim()
+  const efternamn = (data.lastName || '').trim()
+  const harKontakt = !!(data.email || data.phone || data.location)
 
   return (
     <div
       className="cv-preview"
+      lang="sv"
       style={{
         display: 'flex',
         minHeight: '297mm',
         background: '#FFFFFF',
-        fontFamily: "'Inter', -apple-system, sans-serif",
+        color: TEXT,
+        fontFamily: "'Inter', 'Helvetica Neue', Arial, sans-serif",
       }}
     >
+      <main style={{ flex: 1, minWidth: 0, padding: '60px 52px 52px 34px' }}>
+        <header className="cv-keep" style={{ marginBottom: '32px' }}>
+          <Namn style={{ margin: 0, color: BLACK, textTransform: 'uppercase' }}>
+            {fornamn && efternamn ? (
+              <>
+                <span style={{ display: 'block', fontSize: '19px', fontWeight: 300, letterSpacing: '0.45em', lineHeight: 1.2 }}>
+                  {fornamn}
+                </span>{' '}
+                <span
+                  style={{
+                    display: 'block',
+                    fontSize: efternamnsgrad(efternamn),
+                    fontWeight: 700,
+                    letterSpacing: '0.1em',
+                    lineHeight: 1,
+                    marginTop: '6px',
+                  }}
+                >
+                  {efternamn}
+                </span>
+              </>
+            ) : (
+              <span style={{ display: 'block', fontSize: efternamnsgrad(fullName), fontWeight: 700, letterSpacing: '0.1em', lineHeight: 1 }}>
+                {fullName}
+              </span>
+            )}
+          </Namn>
+          {data.title && (
+            <p
+              style={{
+                fontSize: '11.5px',
+                fontWeight: 500,
+                letterSpacing: '0.28em',
+                textTransform: 'uppercase',
+                color: DAMPAD,
+                margin: '14px 0 0',
+              }}
+            >
+              {data.title}
+            </p>
+          )}
+          <div aria-hidden="true" style={{ height: '1px', background: KANT, marginTop: '22px' }} />
+        </header>
+
+        {data.summary && (
+          <section style={{ marginBottom: '30px' }}>
+            <Sektion style={sektionsrubrik}>Profil</Sektion>
+            <p style={{ fontSize: '12.5px', lineHeight: 1.7, color: TEXT, margin: 0 }}>{data.summary}</p>
+          </section>
+        )}
+
+        {data.workExperience.length > 0 && (
+          <section style={{ marginBottom: '30px' }}>
+            <Sektion style={sektionsrubrik}>Erfarenhet</Sektion>
+            {data.workExperience.map((job) => (
+              <div key={job.id} className="cv-entry" style={{ marginBottom: '20px' }}>
+                <Post style={{ fontSize: '14px', fontWeight: 700, color: BLACK, margin: 0 }}>{job.title}</Post>
+                <p className="cv-datum" style={{ fontSize: '11px', fontWeight: 500, color: DAMPAD, margin: '3px 0 0', letterSpacing: '0.03em' }}>
+                  {[job.company, job.location, periodText(job.startDate, job.endDate, job.current, 'nuvarande')].filter(Boolean).join(' · ')}
+                </p>
+                <Beskrivning text={job.description} style={{ fontSize: '12px', lineHeight: 1.65, color: TEXT, marginTop: '6px' }} />
+              </div>
+            ))}
+          </section>
+        )}
+
+        {data.certificates.length > 0 && (
+          <section className="cv-keep">
+            <Sektion style={sektionsrubrik}>Certifikat</Sektion>
+            {data.certificates.map((cert) => (
+              <p key={cert.id} className="cv-entry" style={{ fontSize: '12px', color: BLACK, margin: '0 0 6px' }}>
+                <span style={{ fontWeight: 600 }}>{cert.name}</span>
+                {cert.issuer && <span style={{ color: DAMPAD }}> · {cert.issuer}</span>}
+                {cert.date && <span className="cv-datum" style={{ color: DAMPAD }}> · {periodText(cert.date)}</span>}
+              </p>
+            ))}
+          </section>
+        )}
+      </main>
+
+      {/* Efter huvudtexten i dokumentet, till vänster på sidan (order: -1).
+          220 px måste stämma med SIDEBAR_CONFIG.rotterdam. */}
       <aside
         style={{
+          order: -1,
           width: '220px',
           flexShrink: 0,
-          padding: '64px 28px 64px 56px',
+          padding: '60px 26px 52px 48px',
           background: '#FFFFFF',
+          borderRight: `1px solid ${KANT}`,
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '28px',
         }}
       >
-        {/* Profilbild eller initialer */}
-        <div className="cv-keep" style={{ marginBottom: '32px', display: 'flex', justifyContent: 'center' }}>
+        <div className="cv-keep" style={{ display: 'flex', justifyContent: 'center' }}>
           {data.profileImage ? (
-            <img
-              src={data.profileImage}
-              alt=""
-              style={{ width: '110px', height: '110px', objectFit: 'cover', borderRadius: '50%' }}
-            />
+            <img src={data.profileImage} alt="" style={{ width: '108px', height: '108px', objectFit: 'cover', borderRadius: '50%' }} />
           ) : (
             <div
+              aria-hidden="true"
               style={{
-                width: '110px',
-                height: '110px',
+                width: '108px',
+                height: '108px',
                 borderRadius: '50%',
-                border: `1px solid #D1D5DB`,
+                border: '1px solid #D1D5DB',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                fontSize: '34px',
+                fontSize: '32px',
                 fontWeight: 300,
-                color: muted,
+                color: DAMPAD,
                 letterSpacing: '0.05em',
               }}
             >
@@ -76,170 +184,71 @@ export function RotterdamTemplate({ data, fullName }: TemplateProps) {
           )}
         </div>
 
-        <section className="cv-keep" style={{ marginBottom: '32px' }}>
-          <h3 style={sectionHeader}>KONTAKT</h3>
-          <div style={{ fontSize: '11px', lineHeight: 1.7, color: '#374151' }}>
-            {data.location && <div>{data.location}</div>}
-            {data.phone && <div>{data.phone}</div>}
-            {data.email && <div style={{ wordBreak: 'break-all' }}>{data.email}</div>}
-          </div>
-        </section>
-
-        {data.links?.length > 0 && (
-          <section className="cv-keep" style={{ marginBottom: '32px' }}>
-            <h3 style={sectionHeader}>{t('cv.links').toUpperCase()}</h3>
-            <div>
-              {data.links.map((link) => (
-                <div key={link.id} className="cv-entry" style={{ marginBottom: '10px' }}>
-                  {link.label && (
-                    <div style={{ fontSize: '11px', fontWeight: 600, color: ink }}>{link.label}</div>
-                  )}
-                  <div style={{ fontSize: '10px', color: muted, wordBreak: 'break-all' }}>{link.url}</div>
-                </div>
-              ))}
-            </div>
-          </section>
-        )}
-
-        {data.skills?.length > 0 && (
-          <section className="cv-keep" style={{ marginBottom: '32px' }}>
-            <h3 style={sectionHeader}>KOMPETENSER</h3>
-            <div style={{ fontSize: '11px', lineHeight: 1.8, color: '#374151' }}>
-              {data.skills.map((skill, i) => (
-                <div key={i}>{getSkillName(skill)}</div>
-              ))}
-            </div>
-          </section>
-        )}
-
-        {data.education?.length > 0 && (
-          <section className="cv-keep" style={{ marginBottom: '32px' }}>
-            <h3 style={sectionHeader}>UTBILDNING</h3>
-            <div>
-              {data.education.map((edu) => (
-                <div key={edu.id} className="cv-entry" style={{ marginBottom: '14px' }}>
-                  <div style={{ fontSize: '11px', fontWeight: 700, color: ink }}>{edu.degree}</div>
-                  <div style={{ fontSize: '10px', color: muted }}>{edu.school}</div>
-                  <div style={{ fontSize: '10px', color: muted }}>
-                    {edu.startDate} - {edu.endDate}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </section>
-        )}
-
-        {data.languages?.length > 0 && (
+        {harKontakt && (
           <section className="cv-keep">
-            <h3 style={sectionHeader}>{t('cv.languages').toUpperCase()}</h3>
-            <div style={{ fontSize: '11px', lineHeight: 1.7, color: '#374151' }}>
-              {data.languages.map((lang) => {
-                const name = lang.language || ('name' in lang ? (lang as { name: string }).name : '')
-                return (
-                  <div key={lang.id} className="cv-entry" style={{ marginBottom: '4px' }}>
-                    <div style={{ fontWeight: 600 }}>{name}</div>
-                    <div style={{ fontSize: '10px', color: muted, fontStyle: 'italic' }}>
-                      {getLanguageLevelDisplay(lang.level)}
-                    </div>
-                  </div>
-                )
-              })}
-            </div>
+            <Sektion style={sektionsrubrik}>Kontakt</Sektion>
+            <ul className="cv-kontakt" style={{ listStyle: 'none', margin: 0, padding: 0, fontSize: '11px', lineHeight: 1.7, color: TEXT }}>
+              {data.location && <li>{data.location}</li>}
+              {data.phone && <li>{data.phone}</li>}
+              {data.email && <li>{data.email}</li>}
+            </ul>
+          </section>
+        )}
+
+        {data.links.length > 0 && (
+          <section className="cv-keep">
+            <Sektion style={sektionsrubrik}>Länkar</Sektion>
+            {data.links.map((link) => (
+              <div key={link.id} className="cv-entry" style={{ marginBottom: '8px' }}>
+                {link.label && <div style={{ fontSize: '11px', fontWeight: 600, color: BLACK }}>{link.label}</div>}
+                <div className="cv-url" style={{ fontSize: '10.5px', color: DAMPAD, lineHeight: 1.4 }}><Url text={link.url} /></div>
+              </div>
+            ))}
+          </section>
+        )}
+
+        {data.skills.length > 0 && (
+          <section>
+            <Sektion style={sektionsrubrik}>Kompetenser</Sektion>
+            <ul style={{ listStyle: 'none', margin: 0, padding: 0, fontSize: '11px', lineHeight: 1.75, color: TEXT }}>
+              {data.skills.map((skill, i) => (
+                <li key={i}>{getSkillName(skill)}</li>
+              ))}
+            </ul>
+          </section>
+        )}
+
+        {data.education.length > 0 && (
+          <section>
+            <Sektion style={sektionsrubrik}>Utbildning</Sektion>
+            {data.education.map((edu) => (
+              <div key={edu.id} className="cv-entry" style={{ marginBottom: '12px' }}>
+                <Post style={{ fontSize: '11.5px', fontWeight: 700, color: BLACK, margin: 0, lineHeight: 1.35 }}>{edu.degree || edu.school}</Post>
+                {edu.degree && <div style={{ fontSize: '10.5px', color: TEXT, marginTop: '1px' }}>{edu.school}</div>}
+                {edu.field && <div style={{ fontSize: '10.5px', color: DAMPAD }}>{edu.field}</div>}
+                <div className="cv-datum" style={{ fontSize: '10.5px', color: DAMPAD }}>
+                  {periodText(edu.startDate, edu.endDate, edu.current)}
+                </div>
+              </div>
+            ))}
+          </section>
+        )}
+
+        {data.languages.length > 0 && (
+          <section className="cv-keep">
+            <Sektion style={sektionsrubrik}>Språk</Sektion>
+            {data.languages.map((lang) => {
+              const name = lang.language || ('name' in lang ? (lang as { name: string }).name : '')
+              return (
+                <div key={lang.id} className="cv-entry" style={{ marginBottom: '5px' }}>
+                  <div style={{ fontSize: '11px', fontWeight: 600, color: BLACK }}>{name}</div>
+                  <div style={{ fontSize: '10.5px', color: DAMPAD, fontStyle: 'italic' }}>{getLanguageLevelDisplay(lang.level)}</div>
+                </div>
+              )
+            })}
           </section>
         )}
       </aside>
-
-      <main style={{ flex: 1, padding: '64px 56px 64px 32px' }}>
-        {/* Stort namn-stamp */}
-        <header className="cv-keep" style={{ marginBottom: '36px' }}>
-          <p style={{ fontSize: '20px', fontWeight: 300, letterSpacing: '0.45em', color: ink, marginBottom: '0px' }}>
-            {firstName || fullName.toUpperCase()}
-          </p>
-          {lastName && (
-            <h1
-              style={{
-                fontSize: '56px',
-                fontWeight: 700,
-                letterSpacing: '0.12em',
-                lineHeight: 0.95,
-                color: ink,
-                marginTop: '6px',
-                wordBreak: 'break-word',
-              }}
-            >
-              {lastName}
-            </h1>
-          )}
-          {data.title && (
-            <p
-              style={{
-                fontSize: '12px',
-                fontWeight: 500,
-                letterSpacing: '0.3em',
-                textTransform: 'uppercase',
-                color: muted,
-                marginTop: '12px',
-              }}
-            >
-              {data.title}
-            </p>
-          )}
-          <div style={{ height: '1px', background: '#E5E7EB', marginTop: '20px' }} />
-        </header>
-
-        {data.summary && (
-          <section style={{ marginBottom: '32px' }}>
-            <h3 style={sectionHeader}>PROFIL</h3>
-            <p style={{ fontSize: '12px', lineHeight: 1.7, color: '#374151' }}>{data.summary}</p>
-          </section>
-        )}
-
-        {data.workExperience?.length > 0 && (
-          <section>
-            <h3 style={sectionHeader}>ERFARENHET</h3>
-            <div>
-              {data.workExperience.map((job) => (
-                <div key={job.id} className="cv-entry" style={{ marginBottom: '24px' }}>
-                  <h4 style={{ fontSize: '14px', fontWeight: 700, color: ink, marginBottom: '2px', wordBreak: 'break-word' }}>
-                    {job.title}
-                  </h4>
-                  <div
-                    style={{
-                      fontSize: '11px',
-                      fontWeight: 500,
-                      color: muted,
-                      marginBottom: '6px',
-                      letterSpacing: '0.04em',
-                    }}
-                  >
-                    {job.company}
-                    {job.location && <span> · {job.location}</span>}
-                    <span> · {job.startDate} – {job.current ? 'Nuvarande' : job.endDate}</span>
-                  </div>
-                  {job.description && (
-                    <p style={{ fontSize: '12px', lineHeight: 1.6, color: '#4B5563' }}>{job.description}</p>
-                  )}
-                </div>
-              ))}
-            </div>
-          </section>
-        )}
-
-        {data.certificates?.length > 0 && (
-          <section className="cv-keep" style={{ marginTop: '8px' }}>
-            <h3 style={sectionHeader}>CERTIFIKAT</h3>
-            <div>
-              {data.certificates.map((cert) => (
-                <div key={cert.id} className="cv-entry" style={{ marginBottom: '8px' }}>
-                  <span style={{ fontSize: '12px', fontWeight: 600, color: ink }}>{cert.name}</span>
-                  {cert.issuer && <span style={{ fontSize: '11px', color: muted }}> · {cert.issuer}</span>}
-                  {cert.date && <span style={{ fontSize: '11px', color: muted }}> · {cert.date}</span>}
-                </div>
-              ))}
-            </div>
-          </section>
-        )}
-      </main>
     </div>
   )
 }

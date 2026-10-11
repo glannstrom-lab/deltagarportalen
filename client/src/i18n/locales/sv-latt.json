@@ -17,19 +17,18 @@
     },
     "saldo": {
       "ingaPass": "Du har inget planerat den här veckan.",
-      "radAnvisat_one": "Du har {{planerade}} av {{mal}} timme med pass den här veckan.",
+      "radAnvisat_one": "Du har {{planerade}} h med pass den här veckan. Målet är {{mal}} timme.",
       "vadRaknas": "Här räknas bara pass som din konsulent har planerat.",
       "vadRaknasJobbsok_one": "Här räknas bara pass som din konsulent har planerat. Att söka jobb själv räknas för sig. Planen säger {{count}} timme i veckan.",
       "vadRaknasJobbsok_other": "Här räknas bara pass som din konsulent har planerat. Att söka jobb själv räknas för sig. Planen säger {{count}} timmar i veckan.",
-      "radAnvisat_other": "Du har {{planerade}} av {{mal}} timmar med pass den här veckan.",
+      "radAnvisat_other": "Du har {{planerade}} h med pass den här veckan. Målet är {{mal}} timmar.",
       "radOver_one": "Du har {{planerade}} timme med pass den här veckan. Det är mer än målet. Målet är {{mal}}.",
       "radOver_other": "Du har {{planerade}} timmar med pass den här veckan. Det är mer än målet. Målet är {{mal}}.",
-      "lasMer": "Så räknas timmarna"
+      "lasMer": "Så räknas timmarna",
+      "narvaroHittills": "Du har varit med {{narvaro}} h hittills."
     },
-    "nastaPass": "Nästa gång: {{titel}}, {{dag}} kl {{tid}}",
     "forraVeckan": "Veckan före",
     "nastaVeckan": "Veckan efter",
-    "veckaRubrik": "Vecka {{fran}} – {{till}}",
     "idag": "i dag",
     "jagArHar": "Jag är här",
     "jobbsok": {
@@ -75,7 +74,7 @@
     },
     "franvaro": {
       "knapp": "Jag kan inte komma",
-      "rubrik": "Varför kan du inte komma? Din konsulent får veta det direkt.",
+      "rubrik": "Varför kan du inte komma?",
       "orsak": {
         "sick": "Jag är sjuk",
         "child_care": "Jag måste ta hand om mitt barn",
@@ -102,7 +101,9 @@
         "period": "Flera dagar",
         "till": "Sista dagen",
         "periodHjalp": "Alla dina pass de dagarna blir anmälda. Också eget jobbsökande. Du kan ta tillbaka ett pass i taget."
-      }
+      },
+      "titel": "Kan du inte komma?",
+      "galler": "Det gäller {{titel}}, {{dag}} klockan {{tid}}. Berätta för din konsulent varför. Det går fort."
     },
     "forklaring": {
       "mal": "Din konsulent har bestämt {{mal}} timmar i veckan. Det är kommunens krav.",
@@ -213,6 +214,76 @@
         }
       },
       "lasMer": "Om din plan"
+    },
+    "forvantas": {
+      "rubrik": "Vad ska jag göra?",
+      "dolj": "Dölj Vad ska jag göra",
+      "vem": {
+        "kommun": "{{namn}} är din konsulent. Hen hjälper dig med din plan. Hen hjälper dig också att hitta ett jobb.",
+        "leverantor": "{{namn}} är din konsulent i Rusta och matcha. Hen hjälper dig att hitta ett jobb eller att börja studera.",
+        "neutral": "{{namn}} är din konsulent. Hen hjälper dig med din plan.",
+        "utanNamn": "Din konsulent hjälper dig med din plan."
+      },
+      "skriv": "Skriv till din konsulent",
+      "genomgang": {
+        "steg": "Steg {{nr}} av {{antal}}",
+        "s1": "Här ser du dina pass. Du ser en dag i taget. Tryck på pilarna för att se en annan vecka.",
+        "s2": "Har du ett pass i dag? Tryck på Jag är här när du har kommit.",
+        "s3": "Kan du inte komma? Tryck på Jag kan inte komma. Då får din konsulent veta det.",
+        "s4": "Har du en fråga? Gå till Min konsulent. Där kan du skriva till din konsulent.",
+        "nasta": "Nästa",
+        "hoppa": "Hoppa över",
+        "klar": "Klar",
+        "visa": "Visa hur sidan fungerar"
+      },
+      "rad": {
+        "komma": {
+          "rubrik": "Kom till dina pass",
+          "text": "Tryck på Jag är här när du har kommit.",
+          "textTimmar_one": "Din plan är {{count}} timme varje vecka. Tryck på Jag är här när du har kommit.",
+          "textTimmar_other": "Din plan är {{count}} timmar varje vecka. Tryck på Jag är här när du har kommit."
+        },
+        "franvaro": {
+          "rubrik": "Säg till om du inte kan komma",
+          "text": "Gör det före passet om du kan. Tryck på Jag kan inte komma. Då får din konsulent veta det."
+        },
+        "jobbsok": {
+          "rubrik": "Sök jobb själv",
+          "text_one": "Din plan är {{count}} timme varje vecka.",
+          "text_other": "Din plan är {{count}} timmar varje vecka."
+        },
+        "rapport": {
+          "rubrik": "Skicka din aktivitetsrapport",
+          "text": "Skicka den till Arbetsförmedlingen i början av varje månad. Det gör du själv."
+        }
+      }
+    },
+    "mer": {
+      "rubrik": "Mer om din vecka",
+      "planText": "Var du är, vem som bestämde det och vad som räknas.",
+      "jobbsokText": "Det du har gjort i Jobin.",
+      "intygText": "Ladda ner ett papper om dina pass."
+    },
+    "nasta": {
+      "idag": "I dag",
+      "idagText": "Tryck på Jag är här när du har kommit.",
+      "nastaPass": "Nästa pass",
+      "nar": "{{dag}} klockan {{fran}}–{{till}}",
+      "nastaPassText": "Du behöver inte göra något förrän då. Kan du inte komma? Säg till vid passet längre ner.",
+      "mote": "Nästa möte",
+      "moteMed": "Möte med {{namn}}",
+      "ingetEtikett": "Den här veckan",
+      "inget": "Det finns inget mer den här veckan.",
+      "ingetText": "Undrar du något?",
+      "tillbaka": "Tillbaka"
+    },
+    "passRubrik": "Dina pass",
+    "remsa": {
+      "rubrik": "Dina dagar, måndag till fredag",
+      "dennaVecka": "Den här veckan",
+      "veckaNr": "Vecka {{nr}}",
+      "tillbakaIdag": "Till den här veckan",
+      "anmald": "du har sagt att du inte kan komma"
     }
   },
   "minVardagHub": {
@@ -1003,7 +1074,6 @@
     "subtitle": "Skriv och prata med {{name}}",
     "subtitleNoConsultant": "Du har ingen konsulent än",
     "noConsultant": "Du har ingen konsulent än",
-    "noConsultantDesc": "Du har ingen konsulent än. Skriv till oss om du behöver hjälp.",
     "noConsultantFullDesc": "När du har en konsulent kan ni hålla kontakt här. Ni kan boka möten och skicka frågor. Vill du ha en konsulent? Skriv till oss. Vi svarar dig.",
     "noConsultantCta": "Skriv till oss",
     "noConsultantMailSubject": "Jag vill ha en konsulent i Jobin",
@@ -1030,7 +1100,6 @@
       "submitting": "Tar bort …",
       "confirmButton": "Ja, ta bort kopplingen"
     },
-    "contactInfo": "Så når du din konsulent",
     "consultant": {
       "yourConsultant": "Din konsulent"
     },
@@ -1083,18 +1152,18 @@
       "history": "Tidigare meddelanden",
       "writeMessage": "Skriv ett meddelande",
       "sendMessage": "Skicka",
-      "pressEnterToSend": "Tryck på Enter för att skicka"
+      "pressEnterToSend": "Tryck på Enter för att skicka",
+      "visaAldre_one": "Visa {{count}} gammalt meddelande",
+      "visaAldre_other": "Visa {{count}} gamla meddelanden"
     },
     "goals": {
       "completed": "Klara",
       "inProgress": "Du jobbar med det",
       "notStarted": "Inte börjat",
       "agreedGoals": "Era mål",
-      "deadline": "Klart senast",
-      "greatJob": "Bra! Du har klarat {{count}} av era mål."
+      "deadline": "Klart senast"
     },
     "quickActions": {
-      "title": "Gör snabbt",
       "bookMeeting": "Boka ett möte",
       "sendEmail": "Skicka e-post",
       "call": "Ring"
@@ -1102,6 +1171,20 @@
     "email": {
       "bookingSubject": "Jag vill boka ett möte",
       "bookingBody": "Hej {{name}},\n\nJag vill boka ett möte.\n\nHälsningar"
+    },
+    "kontakt": {
+      "skriv": "Skriv"
+    },
+    "mer": {
+      "rubrik": "Mer om dig och {{namn}}",
+      "rubrikUtanNamn": "Mer om dig och din konsulent",
+      "mal": "Era mål",
+      "malText_one": "{{count}} mål som ni har bestämt",
+      "malText_other": "{{count}} mål som ni har bestämt",
+      "serNamn": "Det här ser {{namn}}",
+      "serText": "Vad du delar, och hur du ändrar det.",
+      "lasloggText": "När din konsulent tittar på din sida.",
+      "revokeText": "Om du inte vill ha kvar din konsulent."
     }
   },
   "common": {

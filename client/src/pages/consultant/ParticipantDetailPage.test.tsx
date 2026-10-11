@@ -103,6 +103,11 @@ const mockUser = { id: 'consultant-1', email: 'consultant@example.com' }
 let getUserMock: ReturnType<typeof vi.fn>
 let fromMock: ReturnType<typeof makeFromMock>
 
+// Meddelandedialogen hämtar en egen deltagarlista; här räcker att den öppnas förvald.
+vi.mock('@/components/consultant/GroupMessageDialog', () => ({
+  GroupMessageDialog: ({ isOpen, preselectedIds }: { isOpen: boolean; preselectedIds?: string[] }) =>
+    isOpen ? <div role="dialog" data-mottagare={preselectedIds?.join(',')}>Meddelande</div> : null,
+}))
 vi.mock('@/lib/supabase', () => ({
   supabase: {
     auth: {
@@ -269,6 +274,23 @@ describe('ParticipantDetailPage — KA5: möte och mål kan skapas från deltaga
     })
   })
 
+  // Slipningen 2026-10-11: meddelande och samtal nås från deltagarens sida, och
+  // e-posten är en länk. Mutation: ta bort knappen → faller.
+  it('har "Skicka meddelande" som öppnar en dialog, och e-posten som mailto-länk', async () => {
+    const anna = makeParticipant('p1', 'Anna', 'Andersson')
+    fromMock = makeFromMock({
+      consultant_dashboard_participants: () => Promise.resolve({ data: anna, error: null }),
+      consultant_goals: emptyGoals,
+      consultant_journal: emptyJournal,
+    })
+    renderAt('/consultant/participants/p1')
+    await screen.findByText('Anna Andersson')
+    expect(screen.getByRole('button', { name: 'Logga samtal' })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: anna.email as string }).getAttribute('href')).toBe(`mailto:${anna.email}`)
+    fireEvent.click(screen.getByRole('button', { name: 'Skicka meddelande' }))
+    expect((await screen.findByRole('dialog')).getAttribute('data-mottagare')).toBe('p1')
+  })
+
   // AG3-rest (2026-09-02): knappen låg tidigare på analysfliken, där
   // konsulenten fick söka fram samma person hon just tittade på.
   it('öppnar PlacementDialog förvald med rätt deltagare via "Registrera placering"', async () => {
@@ -282,7 +304,9 @@ describe('ParticipantDetailPage — KA5: möte och mål kan skapas från deltaga
     renderAt('/consultant/participants/p1')
     await screen.findByText('Anna Andersson')
 
-    fireEvent.click(screen.getByRole('button', { name: /Registrera placering/i }))
+    // Omtaget 2026-10-11: "Registrera placering" ligger i huvudets Mer-meny.
+    fireEvent.click(screen.getByRole('button', { name: 'Fler åtgärder' }))
+    fireEvent.click(screen.getByRole('menuitem', { name: /Registrera placering/i }))
 
     // Dialogen hoppar över deltagarsökningen och står direkt på formuläret,
     // med namnet synligt — sidhuvudet plus dialogen ger minst två träffar.

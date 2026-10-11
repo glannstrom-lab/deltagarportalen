@@ -13,6 +13,8 @@ export type PassIdag = Pick<
 > & {
   absence_reason?: string | null
   absence_note?: string | null
+  /** Hämtas sedan 2026-10-11 så att gruppnärvaron kan hoppa över eget jobbsökande. */
+  activity_type?: ActivitySession['activity_type']
 }
 
 const ORSAK: Record<string, string> = {
@@ -20,6 +22,12 @@ const ORSAK: Record<string, string> = {
   child_care: 'vård av barn',
   authority_meeting: 'möte hos en myndighet',
   other: 'annat',
+}
+
+/** Deltagarens anmälningsorsak i ord ("sjuk", "vård av barn"). Okänd orsak står som den är. */
+export function orsakText(orsak: string | null | undefined): string {
+  if (!orsak) return 'ingen orsak angiven'
+  return ORSAK[orsak] ?? orsak
 }
 
 export const NARVARO_ETIKETT: Record<Attendance, string> = {
@@ -82,7 +90,7 @@ export async function hamtaDagensPass(datum: string = idagISO()): Promise<PassId
 
   const { data, error } = await supabase
     .from('activity_sessions')
-    .select('id, participant_id, plan_id, date, start_time, end_time, title, attendance, self_checkin_at, absence_reason, absence_note')
+    .select('id, participant_id, plan_id, date, start_time, end_time, title, attendance, self_checkin_at, absence_reason, absence_note, activity_type')
     .eq('date', datum)
     .in('plan_id', planIds)
     .order('start_time', { ascending: true })

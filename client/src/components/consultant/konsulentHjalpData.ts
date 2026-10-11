@@ -12,6 +12,12 @@ export const KONSULENT_HJALP: { rubrik: string; poster: Post[] }[] = [
     rubrik: 'Dagligt arbete',
     poster: [
       {
+        // KomIgangGuide.tsx — överst på Översikt; stegen bockas av ur datan (komIgangSteg.ts)
+        fraga: 'Var börjar jag?',
+        svar: 'Överst på Översikt finns guiden Så kommer du igång. Den visar stegen för din roll, och ett steg bockas av när det finns i Jobin — till exempel när din första deltagare tackat ja. Har du stängt guiden öppnar du den igen med knappen Så kommer du igång.',
+        lank: { till: '/consultant', text: 'Gå till Översikt' },
+      },
+      {
         // DagensPass.tsx (rubrik "Dagens pass", länk "Närvaro per pass" → /consultant/pass/grupp)
         fraga: 'Hur markerar jag närvaro på dagens pass?',
         svar: 'Under Översikt ligger Dagens pass. Där sätter du närvaro för varje deltagare på passet. Vill du markera flera på en gång öppnar du Närvaro per pass.',

@@ -19,7 +19,6 @@
 
 import { useQuery } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
-import { Card } from '@/components/ui/Card'
 import { MapPin, Phone } from '@/components/ui/icons'
 import { minPraktikApi, type MinPraktik, type PraktikTyp } from '@/services/minPraktikApi'
 import type { PlanensRegelverk } from './planensRegelverk'
@@ -56,15 +55,13 @@ export function MinPlan({ regelverk, orgNamn }: Props) {
         : null
 
   return (
-    <Card className="p-5 space-y-3" aria-labelledby="min-plan-rubrik">
-      <h2 id="min-plan-rubrik" className="text-base font-semibold text-stone-900 dark:text-stone-100">
-        {t('minVecka.plan.rubrik', 'Din plan')}
-      </h2>
+    // Omtaget steg 6: rubriken "Din plan" står i raden som fälls ut (MerRad i Min vecka).
+    <div className="space-y-3">
 
-      {hos && <p className="text-stone-800 dark:text-stone-200">{hos}</p>}
+      {hos && <p className="text-j-blak">{hos}</p>}
 
       {praktik.isError && (
-        <p className="text-sm text-stone-600 dark:text-stone-400">
+        <p className="text-[0.9375rem] text-j-blak-2">
           {t('minVecka.plan.praktik.fel', 'Din arbetsplats kunde inte hämtas just nu. Fråga din konsulent om du undrar något.')}
         </p>
       )}
@@ -75,17 +72,17 @@ export function MinPlan({ regelverk, orgNamn }: Props) {
       <LasMer etikett={t('minVecka.plan.lasMer', 'Om din plan')}>
         {regelverk === 'leverantor' && (
           <>
-            <p className="text-sm text-stone-700 dark:text-stone-300">
+            <p className="text-[0.9375rem] text-j-blak-2">
               {t('minVecka.plan.leverantor.beslut', 'Det är Arbetsförmedlingen som har bestämt att du ska vara med i Rusta och matcha. Frågor om din ersättning ställer du till Arbetsförmedlingen.')}
             </p>
             <div>
-              <h3 className="text-sm font-semibold text-stone-800 dark:text-stone-200">
+              <h4 className="text-[0.9375rem] font-semibold text-j-blak">
                 {t('minVecka.plan.rapport.rubrik', 'Aktivitetsrapporten')}
-              </h3>
-              <p className="text-sm text-stone-700 dark:text-stone-300">
+              </h4>
+              <p className="text-[0.9375rem] text-j-blak-2">
                 {t('minVecka.plan.rapport.text', 'Du lämnar din aktivitetsrapport till Arbetsförmedlingen som vanligt, i början av varje månad för månaden innan. Din konsulent här kan hjälpa dig, men det är du som skickar in den.')}
               </p>
-              <a href="/guider/aktivitetsrapport-guide/" className="text-sm underline underline-offset-2 text-[var(--c-text)]">
+              <a href="/guider/aktivitetsrapport-guide/" className="text-[0.9375rem] underline underline-offset-2 text-[var(--c-text)]">
                 {t('minVecka.plan.rapport.lank', 'Så gör du med aktivitetsrapporten')}
               </a>
             </div>
@@ -93,18 +90,18 @@ export function MinPlan({ regelverk, orgNamn }: Props) {
         )}
 
         {regelverk === 'kommun' && (
-          <p className="text-sm text-stone-700 dark:text-stone-300">
+          <p className="text-[0.9375rem] text-j-blak-2">
             {t('minVecka.plan.kommun.beslut', 'Planen hör ihop med ditt försörjningsstöd. Det är socialnämnden i kommunen som beslutar om försörjningsstöd. Frågor om pengar ställer du till din handläggare där.')}
           </p>
         )}
 
-        <p className="text-sm text-stone-700 dark:text-stone-300">
+        <p className="text-[0.9375rem] text-j-blak-2">
           {regelverk === 'leverantor'
             ? t('minVecka.plan.raknas.leverantor', 'Det som räknas här är passen i din plan. Din konsulent markerar när du har varit där. Ditt eget jobbsökande skriver du själv i aktivitetsrapporten.')
             : t('minVecka.plan.raknas.vanlig', 'Det som räknas här är passen i din plan. Din konsulent markerar när du har varit där.')}
         </p>
       </LasMer>
-    </Card>
+    </div>
   )
 }
 
@@ -115,21 +112,21 @@ function Praktikplats({ plats }: { plats: MinPraktik }) {
     .join(' · ')
   const sjuk = plats.sick_call_instructions?.trim()
   return (
-    <div className="rounded-lg border border-stone-200 dark:border-stone-700 p-3 space-y-1">
-      <h3 className="text-sm font-semibold text-stone-800 dark:text-stone-200">{t(PRAKTIK_RUBRIK[plats.placement_type] ?? PRAKTIK_RUBRIK.praktik)}</h3>
-      <p className="text-stone-900 dark:text-stone-100">
+    <div className="rounded-j-s border border-j-linje p-3 space-y-1">
+      <h4 className="text-[0.9375rem] font-semibold text-j-blak">{t(PRAKTIK_RUBRIK[plats.placement_type] ?? PRAKTIK_RUBRIK.praktik)}</h4>
+      <p className="text-j-blak">
         {plats.company_name}
         {plats.occupation ? ` · ${plats.occupation}` : ''}
       </p>
       {plats.address && (
-        <p className="flex items-center gap-1 text-sm text-stone-600 dark:text-stone-400">
+        <p className="flex items-center gap-1 text-[0.9375rem] text-j-blak-2">
           <MapPin className="w-4 h-4" aria-hidden="true" />
           {plats.address}
         </p>
       )}
-      {tider && <p className="text-sm text-stone-600 dark:text-stone-400">{tider}</p>}
+      {tider && <p className="text-[0.9375rem] text-j-blak-2">{tider}</p>}
       {plats.contact_name && (
-        <p className="text-sm text-stone-700 dark:text-stone-300">
+        <p className="text-[0.9375rem] text-j-blak-2">
           {t('minVecka.plan.praktik.kontakt', { defaultValue: 'Din kontakt på arbetsplatsen: {{namn}}', namn: plats.contact_name })}
           {plats.contact_phone && (
             <>
@@ -143,13 +140,13 @@ function Praktikplats({ plats }: { plats: MinPraktik }) {
         </p>
       )}
       {(sjuk || plats.sick_call_phone) && (
-        <p className="text-sm text-stone-700 dark:text-stone-300">
+        <p className="text-[0.9375rem] text-j-blak-2">
           {sjuk
             ? t('minVecka.plan.praktik.sjuk', { defaultValue: 'Om du blir sjuk: {{text}}', text: sjuk })
             : t('minVecka.plan.praktik.sjukRing', { defaultValue: 'Om du blir sjuk: ring {{tel}}.', tel: plats.sick_call_phone })}
         </p>
       )}
-      <p className="text-xs text-stone-600 dark:text-stone-400">
+      <p className="text-[0.9375rem] text-j-blak-2">
         {t('minVecka.plan.praktik.raknas', 'Tiden på arbetsplatsen räknas när den ligger som pass i din vecka här nedanför.')}
       </p>
     </div>

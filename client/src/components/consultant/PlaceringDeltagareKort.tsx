@@ -16,9 +16,10 @@
  * fyller ingen funktion på översikten; "Registrera placering" finns i rubriken).
  */
 import { useState } from 'react'
-import { Briefcase } from '@/components/ui/icons'
-import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
+import { StatusChip } from '@/components/ui/StatusChip'
+import type { Status } from '@/components/ui/kvarterStatus'
+import { SpaltYta } from './SpaltYta'
 import type { Placement } from '@/services/consultantService'
 import {
   PLACERINGSTYP_ETIKETT,
@@ -41,6 +42,7 @@ export type PlaceringarLage =
   | { status: 'klart'; placeringar: Placement[] }
 
 const LAGE_TEXT = { kommande: 'Kommande', pagaende: 'Pågående', avslutad: 'Avslutad' } as const
+const LAGE_STATUS: Record<keyof typeof LAGE_TEXT, Status> = { kommande: 'planerat', pagaende: 'narvarande', avslutad: 'planerat' }
 
 /** RR25: ersättningens status för en gjord uppföljning, med nästa steg. */
 function Betalrad({ p, vilken, onAndrad }: { p: Placement; vilken: Uppfoljning; onAndrad: () => void }) {
@@ -59,12 +61,12 @@ function Betalrad({ p, vilken, onAndrad }: { p: Placement; vilken: Uppfoljning; 
   }
   return (
     <span className="block text-xs mt-1" data-testid={`betalstatus-${vilken}`}>
-      <span className="text-stone-600 dark:text-stone-300">Ersättning: {BETALSTATUS_ETIKETT[status]}{datum && status !== 'vantar' ? ` ${langtDatum(new Date(datum).toLocaleDateString('sv-SE', { timeZone: 'Europe/Stockholm' }))}` : ''}</span>
+      <span className="text-[var(--j-blak-2)]">Ersättning: {BETALSTATUS_ETIKETT[status]}{datum && status !== 'vantar' ? ` ${langtDatum(new Date(datum).toLocaleDateString('sv-SE', { timeZone: 'Europe/Stockholm' }))}` : ''}</span>
       {nasta.steg !== null && (
-        <button type="button" className="ml-2 underline text-stone-700 dark:text-stone-200" disabled={sparar} onClick={() => void ta()}>{nasta.knapp}</button>
+        <button type="button" className="ml-2 font-semibold underline underline-offset-2 text-[var(--j-gran-text)] disabled:opacity-60" disabled={sparar} onClick={() => void ta()}>{nasta.knapp}</button>
       )}
-      {nasta.steg === null && nasta.skal && <span className="block text-stone-500 dark:text-stone-400">{nasta.skal}</span>}
-      {fel && <span role="alert" className="block text-rose-700 dark:text-rose-300">{fel}</span>}
+      {nasta.steg === null && nasta.skal && <span className="block text-[var(--j-blak-3)]">{nasta.skal}</span>}
+      {fel && <span role="alert" className="block text-[var(--s-ogiltig-text)]">{fel}</span>}
     </span>
   )
 }
@@ -92,15 +94,17 @@ function UppfoljningRad({ p, vilken, idag, onRegistrera, onBetalstatusAndrad }: 
   }
 
   return (
-    <li className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 py-2 border-t border-stone-100 dark:border-stone-800 first:border-t-0">
-      <p className="text-sm text-stone-700 dark:text-stone-200">
-        <span className="font-medium">{rubrik}:</span> {text}
+    <li className="grid gap-2 py-2.5 border-t border-[var(--j-linje)] first:border-t-0">
+      <p className="m-0 text-sm text-[var(--j-blak-2)]">
+        <span className="font-semibold text-[var(--j-blak)]">{rubrik}:</span> {text}
         {RESULTAT_MSFA_FINNS && onBetalstatusAndrad && <Betalrad p={p} vilken={vilken} onAndrad={onBetalstatusAndrad} />}
       </p>
       {!gjord && besked.tillaten && (
-        <Button size="sm" variant="outline" onClick={() => onRegistrera(p, vilken)}>
-          Registrera {vilken === '3m' ? '3-mån' : '6-mån'}
-        </Button>
+        <div>
+          <Button ton="kvarter" variant="secondary" size="sm" onClick={() => onRegistrera(p, vilken)}>
+            Registrera {vilken === '3m' ? '3-mån' : '6-mån'}
+          </Button>
+        </div>
       )}
     </li>
   )
@@ -117,44 +121,38 @@ export function PlaceringDeltagareKort({ lage, onForsokIgen, onRegistrera, onBet
   if (lage.status === 'laddar') return null
   if (lage.status === 'fel') {
     return (
-      <Card className="p-5 lg:col-span-2">
-        <p role="alert" className="text-sm text-rose-700 dark:text-rose-300">
-          Placeringarna kunde inte hämtas. <button type="button" className="underline" onClick={onForsokIgen}>Försök igen</button>
+      <SpaltYta ikon="jobb" rubrik="Placering och uppföljning">
+        <p role="alert" className="m-0 text-sm text-[var(--s-ogiltig-text)]">
+          Placeringarna kunde inte hämtas. <button type="button" className="font-semibold underline underline-offset-2" onClick={onForsokIgen}>Försök igen</button>
         </p>
-      </Card>
+      </SpaltYta>
     )
   }
   if (lage.placeringar.length === 0) return null
 
   return (
-    <Card className="p-5 lg:col-span-2">
-      <div className="flex items-center gap-2 mb-3">
-        <Briefcase className="w-5 h-5 text-stone-500" aria-hidden="true" />
-        <h3 className="font-semibold text-stone-900 dark:text-stone-100">Placering och uppföljning</h3>
-      </div>
-      <ul className="space-y-4">
+    <SpaltYta ikon="jobb" rubrik="Placering och uppföljning" testId="placering-kort">
+      <ul className="m-0 p-0 list-none grid gap-4">
         {lage.placeringar.map((p) => {
           const pl = placeringLage(p, idag)
           const omf = omfattningText(p)
           return (
-            <li key={p.id} className="rounded-xl border border-stone-200 dark:border-stone-700 p-4">
+            <li key={p.id} className="grid gap-1 border-t border-[var(--j-linje)] pt-3 first:border-t-0 first:pt-0">
               <div className="flex flex-wrap items-center gap-2">
-                <p className="font-medium text-stone-900 dark:text-stone-100">
+                <p className="m-0 font-semibold text-[var(--j-blak)]">
                   {p.employer_name}{p.job_title ? ` · ${p.job_title}` : ''}
                 </p>
-                <span className="text-xs px-2 py-0.5 rounded-full bg-stone-100 text-stone-700 dark:bg-stone-800 dark:text-stone-300">
-                  {LAGE_TEXT[pl]}
-                </span>
+                <StatusChip status={LAGE_STATUS[pl]}>{LAGE_TEXT[pl]}</StatusChip>
               </div>
-              <p className="text-sm text-stone-600 dark:text-stone-300 mt-1">
+              <p className="m-0 text-sm text-[var(--j-blak-2)]">
                 {PLACERINGSTYP_ETIKETT[(p.placement_type ?? 'permanent') as PlaceringTyp] ?? p.placement_type}
                 {p.start_date ? ` · start ${langtDatum(p.start_date)}` : ' · startdatum saknas'}
                 {p.end_date ? ` · slut ${langtDatum(p.end_date)}` : ''}
                 {omf ? ` · ${omf}` : ''}
                 {p.outcome_level ? ` · nivå ${p.outcome_level}` : ''}
               </p>
-              {p.notes && <p className="text-xs text-stone-500 dark:text-stone-400 mt-1 whitespace-pre-wrap">{p.notes}</p>}
-              <ul className="mt-3" aria-label={`Uppföljning av placeringen hos ${p.employer_name}`}>
+              {p.notes && <p className="m-0 text-xs text-[var(--j-blak-3)] whitespace-pre-wrap">{p.notes}</p>}
+              <ul className="m-0 mt-2 p-0 list-none" aria-label={`Uppföljning av placeringen hos ${p.employer_name}`}>
                 <UppfoljningRad p={p} vilken="3m" idag={idag} onRegistrera={onRegistrera} onBetalstatusAndrad={onBetalstatusAndrad} />
                 <UppfoljningRad p={p} vilken="6m" idag={idag} onRegistrera={onRegistrera} onBetalstatusAndrad={onBetalstatusAndrad} />
               </ul>
@@ -162,6 +160,6 @@ export function PlaceringDeltagareKort({ lage, onForsokIgen, onRegistrera, onBet
           )
         })}
       </ul>
-    </Card>
+    </SpaltYta>
   )
 }

@@ -39,6 +39,33 @@ import { navHubs, adminNavItems, consultantNavItems } from '@/components/layout/
 import { cn } from '@/lib/utils'
 import { matchar, poang, type PalettMal } from '@/lib/palettMatchning'
 import { PALETT_OPPNA } from '@/lib/palettEvent'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { CONSULTANT_PARTICIPANTS_QUERY_KEY, fetchCachedConsultantParticipants } from '@/pages/consultant/consultantParticipantsQuery'
+
+/**
+ * Konsulentens egna deltagare som mål (slipningen 2026-10-11, kommunfynd B3).
+ * Egen komponent som bara monteras när paletten är öppen för en konsulent: inget
+ * hämtas förrän den behövs, och skalet (Layout) behöver ingen React Query för
+ * att rita en stängd palett. Samma cache som deltagarlistan; vid fel inga namn.
+ */
+function KonsulentDeltagare({ onMal }: { onMal: (mal: PalettMal[]) => void }) {
+  const queryClient = useQueryClient()
+  const q = useQuery({
+    queryKey: CONSULTANT_PARTICIPANTS_QUERY_KEY,
+    queryFn: () => fetchCachedConsultantParticipants(queryClient),
+    staleTime: 30_000,
+  })
+  useEffect(() => {
+    const ut: PalettMal[] = []
+    for (const d of q.data ?? []) {
+      const rad = d as { participant_id: string; first_name?: string | null; last_name?: string | null; email?: string | null }
+      const namn = `${rad.first_name ?? ''} ${rad.last_name ?? ''}`.trim() || rad.email || ''
+      if (namn) ut.push({ path: `/consultant/participants/${rad.participant_id}`, label: namn, grupp: 'Dina deltagare' })
+    }
+    onMal(ut)
+  }, [q.data, onMal])
+  return null
+}
 
 export default function CommandPalette() {
   const { t } = useTranslation()
@@ -65,6 +92,14 @@ export default function CommandPalette() {
     activeRole === 'CONSULTANT' || activeRole === 'ARBETSTERAPEUT' || isAdmin
 
   /**
+   * Slipningen 2026-10-11 (kommunfynd B3): "var var Anna nu igen" är konsulentens
+   * vanligaste fråga, och paletten svarade "0 träffar". Egna deltagare är mål —
+   * samma cache som deltagarlistan (RLS avgör urvalet), hämtad först när paletten
+   * öppnas. Ett hämtfel ger bara sidorna, aldrig påhittade namn.
+   */
+  const [deltagarMal, setDeltagarMal] = useState<PalettMal[]>([])
+
+  /**
    * Målen byggs ur navHubs — samma källa som sidomenyn och bottennavet.
    * Att bygga en egen lista här hade varit den klassiska buggen: två listor
    * som glider isär, och en palett som skickar folk till sidor som tagits bort.
@@ -85,6 +120,9 @@ export default function CommandPalette() {
       for (const item of consultantNavItems) {
         ut.push({ path: item.path, label: t(item.labelKey), grupp: t('nav.groups.consultant', 'Konsulent') })
       }
+      // Konsulentvyn översätts inte (DESIGN.md §2) — svenska literaler.
+      ut.push({ path: '/consultant/pass/grupp', label: 'Närvaro per pass (gruppnärvaro)', grupp: t('nav.groups.consultant', 'Konsulent') })
+      ut.push(...deltagarMal)
     }
     if (isAdmin) {
       for (const item of adminNavItems) {
@@ -97,7 +135,7 @@ export default function CommandPalette() {
     // en deterministisk lista än en som beror på ordningen av en slump.
     const sedda = new Set<string>()
     return ut.filter((m) => (sedda.has(m.path) ? false : (sedda.add(m.path), true)))
-  }, [t, isConsultant, isAdmin])
+  }, [t, isConsultant, isAdmin, deltagarMal])
 
   const traffar = useMemo(() => {
     return mal
@@ -197,6 +235,7 @@ export default function CommandPalette() {
         if (e.target === e.currentTarget) setOpen(false)
       }}
     >
+      {isConsultant && activeRole !== 'SUPERADMIN' && <KonsulentDeltagare onMal={setDeltagarMal} />}
       <div
         ref={panelRef}
         role="dialog"
@@ -244,7 +283,9 @@ export default function CommandPalette() {
               {t('palette.empty', 'Ingenting matchade det du skrev.')}
             </p>
             <p className="mt-1 text-xs text-stone-500 dark:text-stone-400">
-              {t('palette.emptyHint', 'Prova ett kortare ord — till exempel "cv" eller "brev".')}
+              {isConsultant
+                ? 'Prova ett kortare ord — ett förnamn, eller till exempel ”närvaro”.'
+                : t('palette.emptyHint', 'Prova ett kortare ord — till exempel "cv" eller "brev".')}
             </p>
           </div>
         ) : (

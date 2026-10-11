@@ -1,93 +1,91 @@
-import { describe, it, expect, vi } from 'vitest'
-import { render, screen, fireEvent } from '@testing-library/react'
-import { MemoryRouter } from 'react-router-dom'
+/**
+ * MinDagSection — skalet för konsulentens Min dag (omtaget "Kvarter", steg 3).
+ *
+ * Ärligheten är det som testas: under laddning påstås ingenting om dagen, vid
+ * läsfel står en rad om felet och aldrig tomläget, och tomläget (bilden
+ * "Klart för i dag") visas bara när allt verkligen är tomt.
+ *
+ * Motprov (kört): ta bort `!fel` ur `visaTomt` → "läsfel är aldrig allt klart" faller.
+ */
+import { describe, it, expect, vi, afterEach } from 'vitest'
+import { render, screen, cleanup, fireEvent } from '@testing-library/react'
 import { MinDagSection } from './MinDagSection'
+import { halsning, sakerIDag } from './minDagText'
 
-vi.mock('react-i18next', () => ({
-  useTranslation: () => ({
-    t: (k: string, o?: Record<string, unknown>) => (o?.count !== undefined ? `${k}:${o.count}` : k),
-  }),
-}))
+afterEach(() => cleanup())
 
-const tom = { meetings: [], deadlines: [] }
+const MORGON = new Date(2026, 9, 13, 8, 12)
+const KVALL = new Date(2026, 9, 13, 17, 40)
 
-describe('MinDagSection — F12 Logga kontakt och PG24 kontaktstatus', () => {
-  it('"Logga kontakt" anropar onLogContact för en ej kontaktad deltagare', () => {
-    const onLogContact = vi.fn()
-    render(
-      <MemoryRouter>
-        <MinDagSection
-          {...tom}
-          contacts={[{ participantId: 'p1', participantName: 'Dana', reason: 'no_contact', daysSinceContact: null }]}
-          onMessage={() => {}}
-          onLogContact={onLogContact}
-        />
-      </MemoryRouter>
-    )
-    fireEvent.click(screen.getByRole('button', { name: /myDay\.logContact/ }))
-    expect(onLogContact).toHaveBeenCalledWith('p1')
+function rita(props: Partial<Parameters<typeof MinDagSection>[0]> = {}) {
+  return render(
+    <MinDagSection lage="klart" fornamn="Karin" antalSaker={4} tomt={false} nu={MORGON} {...props}>
+      <div data-testid="innehall">listan</div>
+    </MinDagSection>,
+  )
+}
+
+describe('MinDagSection', () => {
+  it('hälsar med namn och datum, och säger hur många saker dagen har', () => {
+    rita()
+    expect(screen.getByRole('heading', { level: 2, name: 'God morgon, Karin' })).toBeInTheDocument()
+    // Stor bokstav bara först, inte på månaden (drift 2026-09-22).
+    expect(screen.getByText(/^[A-ZÅÄÖ][a-zåäö]+ 13 oktober$/)).toBeInTheDocument()
+    expect(screen.getByTestId('mindag-antal')).toHaveTextContent('Fyra saker i dag. Det som brådskar står först.')
+    expect(screen.getByTestId('innehall')).toBeInTheDocument()
   })
 
-  it('utan onLogContact finns ingen Logga kontakt-knapp; inaktiv deltagare får den aldrig', () => {
-    render(
-      <MemoryRouter>
-        <MinDagSection
-          {...tom}
-          contacts={[{ participantId: 'p2', participantName: 'Omar', reason: 'inactive' }]}
-          onMessage={() => {}}
-          onLogContact={vi.fn()}
-        />
-      </MemoryRouter>
-    )
-    expect(screen.queryByRole('button', { name: /myDay\.logContact/ })).toBeNull()
+  it('under laddning: ingen räkning, inget innehåll, inget tomläge', () => {
+    rita({ lage: 'laddar', antalSaker: null, tomt: true })
+    expect(screen.getByTestId('mindag-antal')).toHaveTextContent('Hämtar din dag')
+    expect(screen.queryByTestId('innehall')).not.toBeInTheDocument()
+    expect(screen.queryByTestId('mindag-tomt')).not.toBeInTheDocument()
   })
 
-  it('PG24: aldrig kontaktad säger "Aldrig kontaktad", inte "7+ dagar"; annars dagar', () => {
-    render(
-      <MemoryRouter>
-        <MinDagSection
-          {...tom}
-          contacts={[
-            { participantId: 'p1', participantName: 'Dana', reason: 'no_contact', daysSinceContact: null },
-            { participantId: 'p3', participantName: 'Lisa', reason: 'no_contact', daysSinceContact: 12 },
-          ]}
-          onMessage={() => {}}
-        />
-      </MemoryRouter>
-    )
-    expect(screen.getByText('consultant.participants.neverContacted')).toBeTruthy()
-    expect(screen.getByText('consultant.alerts.noContactDays:12')).toBeTruthy()
-    expect(screen.queryByText('consultant.alerts.noContact')).toBeNull()
+  it('läsfel är aldrig "allt klart" — en rad om felet, inget tomläge', () => {
+    rita({ fel: 'Möten och frånvaro kunde inte hämtas', tomt: true, antalSaker: null })
+    expect(screen.getByRole('alert')).toHaveTextContent('Möten och frånvaro kunde inte hämtas')
+    expect(screen.queryByTestId('mindag-tomt')).not.toBeInTheDocument()
+    expect(screen.queryByText(/Allt för i dag är gjort/)).not.toBeInTheDocument()
   })
 
-  it('F9: pass-slotten ritas överst även när resten av Min dag är tom', () => {
-    render(
-      <MemoryRouter>
-        <MinDagSection {...tom} contacts={[]} onMessage={() => {}} pass={<div data-testid="pass">Dagens pass</div>} />
-      </MemoryRouter>
-    )
-    expect(screen.getByTestId('pass')).toBeTruthy()
-    expect(screen.getByText('consultant.overview.myDay.allClear')).toBeTruthy()
+  it('tomläget har bilden och en handling, och ersätter listan', () => {
+    const onSeAlla = vi.fn()
+    rita({ tomt: true, antalSaker: 0, onSeAlla, nu: KVALL })
+    const tomt = screen.getByTestId('mindag-tomt')
+    expect(tomt.querySelector('img')).toHaveAttribute('src', '/kontor/klart-900.webp')
+    expect(screen.getByRole('heading', { name: 'Allt för i dag är gjort' })).toBeInTheDocument()
+    expect(screen.queryByTestId('innehall')).not.toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: 'Se alla deltagare' }))
+    expect(onSeAlla).toHaveBeenCalled()
+  })
+
+  it('snabbåtgärderna ligger i Mer-menyn, inte som fem knappar', () => {
+    rita({ meny: [{ etikett: 'Bjud in deltagare', onClick: vi.fn() }, { etikett: 'Boka möte', onClick: vi.fn() }] })
+    expect(screen.getByRole('button', { name: 'Mer' })).toHaveAttribute('aria-haspopup')
+    expect(screen.queryByRole('button', { name: 'Bjud in deltagare' })).not.toBeInTheDocument()
+  })
+
+  it('veckan i en mening och leverantörens vecka mot avtalet visas bara när de finns', () => {
+    rita({ veckan: 'Alla tre deltagare med pass den här veckan har varit på alla sina.', avtal: ['1 utan fysiskt möte'] })
+    expect(screen.getByTestId('mindag-veckan')).toHaveTextContent('Alla tre deltagare')
+    expect(screen.getByLabelText('Veckan mot avtalet')).toHaveTextContent('1 utan fysiskt möte')
+    cleanup()
+    rita()
+    expect(screen.queryByTestId('mindag-veckan')).not.toBeInTheDocument()
+    expect(screen.queryByLabelText('Veckan mot avtalet')).not.toBeInTheDocument()
   })
 })
 
-describe('MinDagSection — datumet', () => {
-  // `capitalize` versaliserade varje ord: "Tisdag 22 September". Svenska har
-  // liten bokstav på månaden. Mutation: lägg tillbaka `capitalize` och ta bort
-  // versaliseringen i koden → testet faller.
-  it('har stor bokstav bara först, inte på månaden', () => {
-    vi.useFakeTimers()
-    vi.setSystemTime(new Date(2026, 8, 22, 10, 0))
-    try {
-      render(
-        <MemoryRouter>
-          <MinDagSection meetings={[]} deadlines={[]} contacts={[]} onMessage={vi.fn()} />
-        </MemoryRouter>
-      )
-      const rad = screen.getByText(/— Tisdag 22 september/)
-      expect(rad.className).not.toMatch(/\bcapitalize\b/)
-    } finally {
-      vi.useRealTimers()
-    }
+describe('hälsning och antal', () => {
+  it('God morgon före tio, God kväll från fem, annars Hej', () => {
+    expect(halsning(new Date(2026, 9, 13, 7))).toBe('God morgon')
+    expect(halsning(new Date(2026, 9, 13, 13))).toBe('Hej')
+    expect(halsning(new Date(2026, 9, 13, 18))).toBe('God kväll')
+  })
+  it('ord upp till tolv, singular för en', () => {
+    expect(sakerIDag(1)).toBe('En sak i dag.')
+    expect(sakerIDag(12)).toBe('Tolv saker i dag.')
+    expect(sakerIDag(14)).toBe('14 saker i dag.')
   })
 })

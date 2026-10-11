@@ -5,7 +5,7 @@
  * Inbjudan sparas i `invitations`, och mejlet skickas sedan av edge-funktionen
  * `send-invite-email`. Gick mejlet fel (icke-2xx, nätverksfel, ingen session)
  * loggades det bara som `console.warn` — och dialogen sa ändå "Anna har fått en
- * inbjudan via email." Konsulenten väntade på en deltagare som aldrig fått
+ * inbjudan via e-post." Konsulenten väntade på en deltagare som aldrig fått
  * något. Rättelsen säger som det är, och stänger inte av sig själv i det läget.
  */
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
@@ -51,15 +51,15 @@ async function skickaInbjudan() {
 }
 
 describe('InviteParticipantDialog — mejlutfallet', () => {
-  it('när mejlet gick iväg: "fått en inbjudan via email"', async () => {
+  it('när mejlet gick iväg: "fått en inbjudan via e-post"', async () => {
     await skickaInbjudan()
-    expect(await screen.findByText(/har fått en inbjudan via email/)).toBeInTheDocument()
+    expect(await screen.findByText(/har fått en inbjudan via e-post/)).toBeInTheDocument()
   })
 
   it('när mejlet INTE gick iväg: säger det, och lovar inget mejl', async () => {
     fetchOk = false
     await skickaInbjudan()
     expect(await screen.findByText(/mejlet kunde inte skickas/i)).toBeInTheDocument()
-    expect(screen.queryByText(/har fått en inbjudan via email/)).not.toBeInTheDocument()
+    expect(screen.queryByText(/har fått en inbjudan via e-post/)).not.toBeInTheDocument()
   })
 })

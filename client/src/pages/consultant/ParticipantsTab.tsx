@@ -1,42 +1,49 @@
 /**
- * ParticipantsTab - Enhanced Participant List with Bulk Actions
- * Full participant management with filtering, search, and bulk operations
+ * ParticipantsTab — deltagarlistan, en rad per människa (omtaget "Kvarter",
+ * steg 4, 2026-10-11).
+ *
+ * Förslagets principer: "Personen är enheten" (en rad om Jonas, inte tre kort),
+ * "Ord före siffror" ("Läget" är en mening) och "Lugn täthet" (raka rader på EN
+ * yta — inga kort i kort). Det som stod i rutor förut (CV-procent, sparade
+ * jobb, antal anteckningar) står kvar på deltagarsidan, där det hör hemma.
+ *
+ * Läget och veckoremsan härleds i lib/deltagarlage.ts ur planen och veckans
+ * pass — bara det datan bär. Under laddning står kontakten (som redan finns),
+ * aldrig ett påstående om veckan; vid läsfel står en rad om felet.
+ *
+ * Kryssrutorna för massåtgärder (BulkActionsDialog) ligger bakom "Välj flera":
+ * de används några gånger i månaden och ska inte ta plats varje dag.
+ *
+ * Möteskadensen är Rusta och matcha-avtalets regel och visas bara när
+ * `useOrgTypVisning().visaAvtalskrav` (slipningen 2026-10-11).
+ *
+ * KA2 (2026-08-31): sök, filter och sortering lever i URL:en (q/filter/status/
+ * sort) så att de överlever navigering till en deltagare och tillbaka.
+ *
+ * Konsulentvyn är svensk med flit (DESIGN.md §2).
  */
 
-import { useState, useEffect, useMemo } from 'react'
-import { Link, useSearchParams } from 'react-router-dom'
-import { useTranslation } from 'react-i18next'
-import {
-  Users,
-  Search,
-  Grid3X3,
-  List,
-  ChevronRight,
-  FileText,
-  Briefcase,
-  MessageSquare,
-  Mail,
-  Download,
-  Tag,
-  UserPlus,
-  SortAsc,
-  SortDesc,
-  X,
-  Check,
-  UserCheck,
-  Clock,
-} from '@/components/ui/icons'
+import { useCallback, useMemo, useState, type ReactNode } from 'react'
+import { useNavigate, useSearchParams } from 'react-router-dom'
+import { useQuery } from '@tanstack/react-query'
 import { useConsultantParticipants } from './consultantParticipantsQuery'
-import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
+import { PersonRad } from '@/components/ui/PersonRad'
+import { Veckoremsa } from '@/components/ui/Veckoremsa'
+import { KvarterIkon } from '@/components/ui/icons/kvarter/KvarterIkon'
+import { KVARTER_FOKUS, statusFarg, type Status } from '@/components/ui/kvarterStatus'
 import { LoadingState, ErrorState } from '@/components/ui/LoadingState'
 import { EmptyState } from '@/components/ui/EmptyState'
+import { Users, Search } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 import { BulkActionsDialog } from '@/components/consultant/BulkActionsDialog'
 import { InviteParticipantDialog } from '@/components/consultant/InviteParticipantDialog'
-import { getTagLabel, getTagColorClasses } from '@/components/consultant/participantTags'
+import { useOrgTypVisning } from '@/components/consultant/useRegelverk'
+import { getTagLabel } from '@/components/consultant/participantTags'
 import { senasteKontakt } from '@/services/senasteKontakt'
+import { formatLocalDate } from '@/services/aktivitetSchema'
 import { hamtaMotenForKonsulent, kadens as raknaKadens, kadensText, KADENS_REGEL, type Kadens, type KadensLage } from '@/services/moteskadens'
+import { DYGN_MS, deltagarLage, hamtaVeckansUnderlag, kontaktText, type DeltagarLage } from '@/lib/deltagarlage'
 
 interface Participant {
   participant_id: string
@@ -61,52 +68,58 @@ interface Participant {
   tags: string[] | null
 }
 
-type SortField = 'name' | 'status' | 'ats_score' | 'last_contact' | 'priority'
-type SortOrder = 'asc' | 'desc'
+type SortField = 'lage' | 'name' | 'last_contact' | 'status' | 'priority'
+type Snabbfilter = 'all' | 'attention' | 'franvaro' | 'utan-plan'
+type StatusFilter = 'all' | Participant['status']
+type BulkTyp = 'message' | 'tag' | 'export' | 'status'
 
-const DYGN_MS = 24 * 60 * 60 * 1000
+const SORTERINGAR: readonly SortField[] = ['lage', 'name', 'last_contact', 'status', 'priority']
+const STATUSAR: readonly Participant['status'][] = ['ACTIVE', 'ON_HOLD', 'INACTIVE', 'COMPLETED']
 
-/**
- * Kalenderdagar (lokal tid) mellan ett datum och `nu`. "Igår" betyder
- * föregående kalenderdag, inte "24–48 timmar sedan": en kontakt i går 20:00
- * läst i dag 08:00 är 1 dag, inte 0. Math.round tar sommartidens 23/25-
- * timmarsdygn.
- */
-function kalenderdagarSedan(iso: string, nu: number): number {
-  const idag = new Date(nu); idag.setHours(0, 0, 0, 0)
-  const dag = new Date(iso); dag.setHours(0, 0, 0, 0)
-  return Math.max(0, Math.round((idag.getTime() - dag.getTime()) / DYGN_MS))
+const STATUS_ORD: Record<Participant['status'], string> = {
+  ACTIVE: 'Aktiv',
+  ON_HOLD: 'Pausad',
+  INACTIVE: 'Inaktiv',
+  COMPLETED: 'Avslutad',
 }
 
+const STATUS_PLURAL: Record<Participant['status'], string> = {
+  ACTIVE: 'Aktiva',
+  ON_HOLD: 'Pausade',
+  INACTIVE: 'Inaktiva',
+  COMPLETED: 'Avslutade',
+}
+
+/** Det som väntar på konsulenten först. Ingen status = inget väntar. */
+const LAGE_ORDNING: Record<Status, number> = { ogiltig: 0, vantar: 1, sjuk: 2, giltig: 3, planerat: 4, narvarande: 5 }
+
+function behoverKontakt(p: Participant, nu: number): boolean {
+  return !p.last_contact_at || new Date(p.last_contact_at).getTime() < nu - 7 * DYGN_MS
+}
+
+const fullNamn = (p: Participant) => `${p.first_name ?? ''} ${p.last_name ?? ''}`.trim() || p.email
+
 export function ParticipantsTab() {
-  const { t } = useTranslation()
-  // "Nu" fångas en gång per montering (react-hooks/purity: Date.now() i
-  // renderingen gav ett nytt svar vid varje omrendering). Listan hämtas också
+  const navigate = useNavigate()
+  // Slipningen 2026-10-11: möteskadensen är Rusta och matcha-avtalets regel —
+  // chipet visas inte för en konsulent som bara arbetar i kommun.
+  const kundtyp = useOrgTypVisning()
+  // "Nu" fångas en gång per montering (react-hooks/purity). Listan hämtas också
   // vid montering, så tid och data är samma ögonblicksbild.
   const [nu] = useState(() => Date.now())
+  const idag = formatLocalDate(new Date(nu))
+  const klockan = new Date(nu).toTimeString().slice(0, 5)
   const [searchParams, setSearchParams] = useSearchParams()
 
-  // KA2 (2026-08-31): sök, sortering, vy och filter lever i URL:en (q/sort/dir/view/filter)
-  // så att de överlever navigering till en deltagare och tillbaka. OBS: `ParticipantDetailPage`
-  // (annan agents fil) har en HÅRDKODAD "tillbaka"-länk till `/consultant/participants` — den
-  // bär i dag INTE med sig den här querysträngen. Ska tillbaka-navigeringen återställa
-  // sök/filter/sortering måste den länken bytas mot en dynamisk länk som inkluderar
-  // `location.search`, eller så måste den här sidan läsa `location.state`/`document.referrer`.
-  // KK4: delad hämtning — se consultantParticipantsQuery.ts. `loading`/`error`
-  // härleds ur react-querys eget tillstånd i stället för lokal state.
+  // KK4: delad hämtning — se consultantParticipantsQuery.ts.
   const {
     data: participantsData,
     isLoading: loading,
     error: participantsError,
     refetch: fetchParticipants,
   } = useConsultantParticipants()
-  // useMemo (inte bara `?? []`) så referensen är stabil mellan renders när
-  // participantsData inte ändrats — annars ändras `filteredParticipants`s
-  // beroende (participants) varje render och useMemo där gör ingen nytta.
-  // RK14 (rollspelet 2026-09-27): "senaste kontakt" räknades bara ur
-  // last_contact_at, som enbart massåtgärden "Logga kontakt" skriver. En
-  // journalanteckning (vyns last_note_date) är också en kontakt — det senaste
-  // av de två används för text, sortering och "Behöver kontakt".
+  // RK14: en journalanteckning (vyns last_note_date) är också en kontakt — det
+  // senaste av de två används för text, sortering och "Behöver kontakt".
   const participants = useMemo(
     () => ((participantsData ?? []) as unknown as Participant[]).map((p) => {
       const senaste = senasteKontakt({ last_contact_at: p.last_contact_at, last_note_date: p.last_note_date })
@@ -115,34 +128,47 @@ export function ParticipantsTab() {
     [participantsData]
   )
   // KS7: ett misslyckat anrop ska visa ett eget felläge — aldrig samma tomma
-  // lista som en konsulent utan deltagare (se EmptyState-grenarna nedan).
+  // lista som en konsulent utan deltagare.
   const error = participantsError
     ? 'Deltagarlistan kunde inte hämtas. Kontrollera anslutningen och försök igen.'
     : null
+
+  // Veckans plan och pass. Egen nyckel, en form, en ägare.
+  const veckaQ = useQuery({
+    queryKey: ['deltagarlistans-vecka', idag],
+    queryFn: () => hamtaVeckansUnderlag(idag),
+    enabled: participants.length > 0,
+    staleTime: 30_000,
+  })
+  const underlag = veckaQ.data
+
+  // RM3: möteskadens — 14 dagar individuellt, 28 dagar fysiskt. Bara för leverantörer.
+  const kadensQ = useQuery({
+    queryKey: ['deltagarlistans-moteskadens'],
+    queryFn: async () => raknaKadens(await hamtaMotenForKonsulent(), new Date()),
+    enabled: participants.length > 0 && !!kundtyp?.visaAvtalskrav,
+    staleTime: 30_000,
+  })
+  const kadensPerDeltagare: Map<string, Kadens> | undefined = kadensQ.data
+
+  const legacyFilter = searchParams.get('filter')
   const [searchQuery, setSearchQueryState] = useState(() => searchParams.get('q') || '')
-  const [filterStatus, setFilterStatusState] = useState<string>(() => searchParams.get('filter') || 'all')
-  const [view, setViewState] = useState<'grid' | 'list'>(() => (searchParams.get('view') === 'list' ? 'list' : 'grid'))
-  const [sortField, setSortFieldState] = useState<SortField>(() => (searchParams.get('sort') as SortField) || 'priority')
-  const [sortOrder, setSortOrderState] = useState<SortOrder>(() => (searchParams.get('dir') as SortOrder) || 'desc')
+  const [snabbfilter, setSnabbfilterState] = useState<Snabbfilter>(() =>
+    legacyFilter === 'attention' || legacyFilter === 'franvaro' || legacyFilter === 'utan-plan' ? legacyFilter : 'all')
+  const [statusFilter, setStatusFilterState] = useState<StatusFilter>(() => {
+    const s = searchParams.get('status') || legacyFilter
+    return STATUSAR.includes(s as Participant['status']) ? (s as Participant['status']) : 'all'
+  })
+  const [sortField, setSortFieldState] = useState<SortField>(() => {
+    const s = searchParams.get('sort') as SortField
+    return SORTERINGAR.includes(s) ? s : 'lage'
+  })
+  const [valjer, setValjer] = useState(false)
   const [selectedParticipants, setSelectedParticipants] = useState<string[]>([])
-  const [showBulkActions, setShowBulkActions] = useState(false)
-  const [bulkActionType, setBulkActionType] = useState<'message' | 'tag' | 'export' | 'status' | null>(null)
-  // RM3: möteskadens — 14 dagar individuellt, 28 dagar fysiskt. Hämtas en gång
-  // när listan finns; `undefined` = inte hämtat än (ingen chip), Map = klart,
-  // `kadensFel` = en rad ovanför listan. Aldrig 0 som falskt tal (kadensText).
-  const [kadensPerDeltagare, setKadensPerDeltagare] = useState<Map<string, Kadens> | undefined>(undefined)
-  const [kadensFel, setKadensFel] = useState<string | null>(null)
-  useEffect(() => {
-    if (loading || participants.length === 0) return
-    let aktiv = true
-    hamtaMotenForKonsulent()
-      .then((moten) => { if (aktiv) { setKadensPerDeltagare(raknaKadens(moten, new Date())); setKadensFel(null) } })
-      .catch((err: unknown) => { if (aktiv) { console.warn('Möteskadens kunde inte hämtas', err); setKadensFel('Mötesdatum kunde inte hämtas — kadensen visas inte.') } })
-    return () => { aktiv = false }
-  }, [loading, participants.length])
+  const [bulkActionType, setBulkActionType] = useState<BulkTyp | null>(null)
   const [showInviteDialog, setShowInviteDialog] = useState(false)
 
-  /** Uppdaterar en eller flera URL-parametrar utan att tappa de andra (replace, ingen historik-spam). */
+  /** Uppdaterar URL-parametrar utan att tappa de andra (replace, ingen historik-spam). */
   const updateSearchParams = (updates: Record<string, string | null>) => {
     setSearchParams(prev => {
       const next = new URLSearchParams(prev)
@@ -158,32 +184,47 @@ export function ParticipantsTab() {
     setSearchQueryState(value)
     updateSearchParams({ q: value || null })
   }
-  const setFilterStatus = (value: string) => {
-    setFilterStatusState(value)
+  const setSnabbfilter = (value: Snabbfilter) => {
+    setSnabbfilterState(value)
     updateSearchParams({ filter: value !== 'all' ? value : null })
   }
-  const setView = (value: 'grid' | 'list') => {
-    setViewState(value)
-    updateSearchParams({ view: value !== 'grid' ? value : null })
+  const setStatusFilter = (value: StatusFilter) => {
+    setStatusFilterState(value)
+    updateSearchParams({ status: value !== 'all' ? value : null })
   }
   const setSortField = (value: SortField) => {
     setSortFieldState(value)
-    updateSearchParams({ sort: value !== 'priority' ? value : null })
-  }
-  const setSortOrder = (value: SortOrder) => {
-    setSortOrderState(value)
-    updateSearchParams({ dir: value !== 'desc' ? value : null })
+    updateSearchParams({ sort: value !== 'lage' ? value : null })
   }
 
-  useEffect(() => {
-    setShowBulkActions(selectedParticipants.length > 0)
-  }, [selectedParticipants])
+  // Läget per deltagare — bara när veckans underlag finns.
+  const lageFor = useMemo(() => {
+    const karta = new Map<string, DeltagarLage>()
+    if (!underlag) return karta
+    for (const p of participants) {
+      karta.set(p.participant_id, deltagarLage({ participantId: p.participant_id, underlag, idag, klockan }))
+    }
+    return karta
+  }, [participants, underlag, idag, klockan])
+  // En konsulent som inte använder aktivitetsplaner (t.ex. bara Rusta och matcha)
+  // ska inte få "Ingen aktivitetsplan" på varje rad.
+  const anvanderPlaner = !!underlag && underlag.planer.length > 0
 
-  // Filter and sort participants
+  const matcharSnabbfilter = useCallback((p: Participant, f: Snabbfilter): boolean => {
+    if (f === 'attention') return behoverKontakt(p, nu)
+    const l = lageFor.get(p.participant_id)
+    if (f === 'franvaro') return !!l?.franvaroIVeckan
+    if (f === 'utan-plan') return p.status === 'ACTIVE' && !!l?.utanPlan
+    return true
+  }, [lageFor, nu])
+
+  const iStatus = useMemo(
+    () => (statusFilter === 'all' ? participants : participants.filter((p) => p.status === statusFilter)),
+    [participants, statusFilter],
+  )
+
   const filteredParticipants = useMemo(() => {
-    let result = [...participants]
-
-    // Search filter
+    let result = [...iStatus]
     if (searchQuery) {
       const query = searchQuery.toLowerCase()
       result = result.filter(p =>
@@ -192,677 +233,351 @@ export function ParticipantsTab() {
         p.email.toLowerCase().includes(query)
       )
     }
+    result = result.filter((p) => matcharSnabbfilter(p, snabbfilter))
 
-    // Status filter
-    if (filterStatus === 'attention') {
-      const sevenDaysAgo = new Date(nu - 7 * DYGN_MS)
-      result = result.filter(p =>
-        !p.last_contact_at || new Date(p.last_contact_at) < sevenDaysAgo
-      )
-    } else if (filterStatus !== 'all') {
-      result = result.filter(p => p.status === filterStatus)
-    }
-
-    // Sort
+    const namnJmf = (a: Participant, b: Participant) => fullNamn(a).localeCompare(fullNamn(b), 'sv')
     result.sort((a, b) => {
-      let comparison = 0
+      let c = 0
       switch (sortField) {
+        case 'lage': {
+          const la = lageFor.get(a.participant_id)?.status
+          const lb = lageFor.get(b.participant_id)?.status
+          c = (la ? LAGE_ORDNING[la] : 9) - (lb ? LAGE_ORDNING[lb] : 9) || b.priority - a.priority
+          break
+        }
         case 'name':
-          comparison = `${a.first_name} ${a.last_name}`.localeCompare(`${b.first_name} ${b.last_name}`)
+          c = 0
           break
         case 'status':
-          comparison = a.status.localeCompare(b.status)
-          break
-        case 'ats_score':
-          comparison = (a.ats_score || 0) - (b.ats_score || 0)
+          c = a.status.localeCompare(b.status)
           break
         case 'last_contact':
-          comparison = new Date(a.last_contact_at || 0).getTime() - new Date(b.last_contact_at || 0).getTime()
+          c = new Date(a.last_contact_at || 0).getTime() - new Date(b.last_contact_at || 0).getTime()
           break
         case 'priority':
-          comparison = a.priority - b.priority
+          c = b.priority - a.priority
           break
       }
-      return sortOrder === 'asc' ? comparison : -comparison
+      // En riktning per ordning: det som väntar, A–Ö, äldst kontakt, högst prioritet.
+      return c || namnJmf(a, b)
     })
-
     return result
-  }, [participants, searchQuery, filterStatus, sortField, sortOrder, nu])
+  }, [iStatus, searchQuery, snabbfilter, sortField, lageFor, matcharSnabbfilter])
 
-  const allSelected = filteredParticipants.length > 0 && selectedParticipants.length === filteredParticipants.length
+  const antal = (f: Snabbfilter) => iStatus.filter((p) => matcharSnabbfilter(p, f)).length
+
+  const allSelected = filteredParticipants.length > 0 && filteredParticipants.every((p) => selectedParticipants.includes(p.participant_id))
   const someSelected = selectedParticipants.length > 0 && !allSelected
 
   const toggleSelectAll = () => {
-    if (selectedParticipants.length === filteredParticipants.length) {
-      setSelectedParticipants([])
-    } else {
-      setSelectedParticipants(filteredParticipants.map(p => p.participant_id))
-    }
+    setSelectedParticipants(allSelected ? [] : filteredParticipants.map(p => p.participant_id))
   }
-
   const toggleSelect = (id: string) => {
-    setSelectedParticipants(prev =>
-      prev.includes(id) ? prev.filter(p => p !== id) : [...prev, id]
-    )
+    setSelectedParticipants(prev => prev.includes(id) ? prev.filter(p => p !== id) : [...prev, id])
   }
-
-  const handleBulkAction = (action: 'message' | 'export' | 'tag' | 'status') => {
-    setBulkActionType(action)
+  const avslutaVal = () => {
+    setValjer(false)
+    setSelectedParticipants([])
   }
 
   const handleBulkActionComplete = () => {
     setSelectedParticipants([])
-    fetchParticipants() // Refresh data
+    fetchParticipants()
   }
 
-  // Get selected participant data for the dialog
-  const selectedParticipantData = participants.filter(p =>
-    selectedParticipants.includes(p.participant_id)
-  )
-
-  const getInitials = (p: Participant) => {
-    return `${p.first_name?.[0] || ''}${p.last_name?.[0] || ''}`.toUpperCase() || p.email[0].toUpperCase()
-  }
-
-  const getStatusBadge = (status: string) => {
-    const badges = {
-      ACTIVE: { label: t('consultant.participants.status.active'), color: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300' },
-      INACTIVE: { label: t('consultant.participants.status.inactive'), color: 'bg-stone-100 text-stone-800 dark:bg-stone-700 dark:text-stone-300' },
-      COMPLETED: { label: t('consultant.participants.status.completed'), color: 'bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-300' },
-      ON_HOLD: { label: t('consultant.participants.status.onHold'), color: 'bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300' },
-    }
-    return badges[status as keyof typeof badges] || badges.INACTIVE
-  }
-
-  const getPriorityBadge = (priority: number) => {
-    if (priority === 2) return { label: t('consultant.participants.priority.critical'), color: 'bg-rose-100 text-rose-800 dark:bg-rose-900/40 dark:text-rose-300' }
-    if (priority === 1) return { label: t('consultant.participants.priority.high'), color: 'bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300' }
-    return null
-  }
-
-  const getLastContactText = (date: string | null) => {
-    if (!date) return t('consultant.participants.neverContacted')
-    const days = kalenderdagarSedan(date, nu)
-    if (days === 0) return t('common.today')
-    if (days === 1) return t('consultant.participants.yesterday')
-    if (days < 7) return t('consultant.participants.daysAgo', { count: days })
-    return t('consultant.participants.weeksAgo', { count: Math.floor(days / 7) })
-  }
-
-  const isOverdue = (date: string | null) => {
-    if (!date) return true
-    return new Date(date) < new Date(nu - 7 * DYGN_MS)
-  }
-
-  // RM3-chipen. Lugn färgsättning: snart = amber, över = rosa, inget/ok = neutral.
-  const KADENS_KLASS: Record<KadensLage, string> = {
-    ok: 'bg-stone-100 text-stone-600 dark:bg-stone-800 dark:text-stone-300',
-    inget: 'bg-stone-100 text-stone-500 dark:bg-stone-800 dark:text-stone-400',
-    snart: 'bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300',
-    over: 'bg-rose-100 text-rose-800 dark:bg-rose-900/40 dark:text-rose-300',
-  }
-  const KadensChip = ({ participantId }: { participantId: string }) => {
-    if (kadensPerDeltagare === undefined) return null
-    const k = kadensPerDeltagare.get(participantId)
-    const laget: KadensLage = k?.laget ?? 'inget'
-    return (
-      <span
-        // RR12: chipet klipptes på 390 px ("inget fysiskt ä…") — radbryt på mobil.
-        // RR23: regeln i tooltip OCH för skärmläsare (title läses inte alltid upp).
-        className={cn('inline-flex items-center rounded-full px-2 py-0.5 text-xs whitespace-normal sm:whitespace-nowrap', KADENS_KLASS[laget])}
-        data-testid="kadens-chip"
-        data-lage={laget}
-        title={KADENS_REGEL}
-      >
-        {kadensText(k)}
-        <span className="sr-only"> — {KADENS_REGEL}</span>
-      </span>
-    )
-  }
+  const selectedParticipantData = participants.filter(p => selectedParticipants.includes(p.participant_id))
 
   if (loading) {
     return <LoadingState fullHeight />
   }
 
-  // KS7: eget felläge — skiljer sig i UTSEENDE, inte bara i text, från de
-  // två EmptyState-grenarna längre ned ("inga deltagare" / "inga sökträffar").
+  // KS7: eget felläge — skiljer sig i utseende, inte bara i text, från tomlägena.
   if (error) {
     return (
-      <Card className="p-8">
-        <ErrorState
-          title="Deltagarna kunde inte hämtas"
-          message={error}
-          onRetry={fetchParticipants}
-        />
-      </Card>
+      <div className="p-8 bg-[var(--j-kort)] border border-[var(--j-linje)] rounded-[var(--j-r-m)]">
+        <ErrorState title="Deltagarna kunde inte hämtas" message={error} onRetry={fetchParticipants} />
+      </div>
     )
   }
 
+  const faltKlass = cn(
+    'min-h-[44px] rounded-[var(--j-r-s)] border border-[var(--j-linje-2)] bg-[var(--j-kort)] text-[var(--j-blak)] text-[0.9375rem]',
+    KVARTER_FOKUS,
+  )
+
+  const snabbval: Array<{ id: Snabbfilter; etikett: string; kraverVecka: boolean }> = [
+    { id: 'all', etikett: 'Alla', kraverVecka: false },
+    { id: 'attention', etikett: 'Behöver kontakt', kraverVecka: false },
+    { id: 'franvaro', etikett: 'Frånvaro i veckan', kraverVecka: true },
+    { id: 'utan-plan', etikett: 'Utan plan', kraverVecka: true },
+  ]
+
   return (
-    <div className="space-y-4">
-      {/* Toolbar */}
-      <Card className="p-4">
-        <div className="flex flex-col sm:flex-row gap-4">
-          {/* Search */}
-          <div className="flex-1 relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-600" />
+    <div className={cn('grid gap-4 text-[var(--j-blak)]', valjer && 'pb-40 lg:pb-24')}>
+      {/* Huvud: rubrik och den enda primärknappen */}
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <h2 className="m-0 font-rubrik text-[1.375rem] sm:text-[1.6rem] leading-tight font-bold">Dina deltagare</h2>
+        <Button ton="kvarter" variant="primary" onClick={() => setShowInviteDialog(true)} leftIcon={<KvarterIkon namn="deltagare" size={20} />}>
+          Bjud in deltagare
+        </Button>
+      </div>
+
+      {/* Sök, status och sortering — lugnt, på en rad */}
+      <div className="grid grid-cols-2 gap-2 sm:grid-cols-[minmax(0,1fr)_auto_auto] items-end">
+        <label className="col-span-2 sm:col-span-1 grid gap-1 text-[0.8125rem] font-semibold text-[var(--j-blak-2)]">
+          <span className="sr-only">Sök</span>
+          <span className="relative">
+            <KvarterIkon namn="sok" size={20} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--j-blak-3)] pointer-events-none" />
             <input
-              type="text"
-              placeholder={t('consultant.participants.searchPlaceholder')}
+              type="search"
+              placeholder="Sök på namn eller e-post"
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
-              className={cn(
-                'w-full pl-10 pr-4 py-2.5 rounded-xl',
-                'bg-stone-100 dark:bg-stone-800',
-                'border-2 border-transparent',
-                'focus:border-[var(--c-solid)] focus:bg-white dark:focus:bg-stone-900',
-                'text-stone-900 dark:text-stone-100',
-                'placeholder:text-stone-600',
-                'transition-all duration-200'
-              )}
+              className={cn(faltKlass, 'w-full pl-10 pr-3 placeholder:text-[var(--j-blak-3)]')}
             />
-          </div>
-
-          {/* Filters */}
-          <div className="flex items-center gap-2">
-            <select
-              value={filterStatus}
-              onChange={e => setFilterStatus(e.target.value)}
-              className={cn(
-                'px-4 py-2.5 rounded-xl',
-                'bg-stone-100 dark:bg-stone-800',
-                'border-2 border-transparent',
-                'focus:border-[var(--c-solid)]',
-                'text-stone-900 dark:text-stone-100'
-              )}
-            >
-              <option value="all">{t('consultant.participants.filter.all')}</option>
-              <option value="ACTIVE">{t('consultant.participants.filter.active')}</option>
-              <option value="INACTIVE">{t('consultant.participants.filter.inactive')}</option>
-              <option value="ON_HOLD">{t('consultant.participants.filter.onHold')}</option>
-              <option value="COMPLETED">{t('consultant.participants.filter.completed')}</option>
-              <option value="attention">{t('consultant.participants.filter.needsAttention')}</option>
-            </select>
-
-            {/* Sort */}
-            <div className="flex items-center gap-1 border-l border-stone-200 dark:border-stone-700 pl-2">
-              <select
-                value={sortField}
-                onChange={e => setSortField(e.target.value as SortField)}
-                className={cn(
-                  'px-3 py-2.5 rounded-xl',
-                  'bg-stone-100 dark:bg-stone-800',
-                  'border-2 border-transparent',
-                  'text-stone-900 dark:text-stone-100',
-                  'text-sm'
-                )}
-              >
-                <option value="priority">{t('consultant.participants.sort.priority')}</option>
-                <option value="name">{t('consultant.participants.sort.name')}</option>
-                <option value="ats_score">{t('consultant.participants.sort.cvScore')}</option>
-                <option value="last_contact">{t('consultant.participants.sort.lastContact')}</option>
-                <option value="status">{t('consultant.participants.sort.status')}</option>
-              </select>
-              <button
-                onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
-                aria-label={sortOrder === 'asc'
-                  ? t('consultant.participants.sort.setDescending', 'Sortera fallande')
-                  : t('consultant.participants.sort.setAscending', 'Sortera stigande')}
-                className="p-2.5 rounded-xl bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 transition-colors"
-              >
-                {sortOrder === 'asc' ? (
-                  <SortAsc className="w-5 h-5 text-stone-500 dark:text-stone-400" />
-                ) : (
-                  <SortDesc className="w-5 h-5 text-stone-500 dark:text-stone-400" />
-                )}
-              </button>
-            </div>
-
-            {/* View Toggle */}
-            <div className="flex items-center gap-1 border-l border-stone-200 dark:border-stone-700 pl-2">
-              <button
-                onClick={() => setView('grid')}
-                aria-label={t('consultant.participants.view.grid', 'Rutnätsvy')}
-                aria-pressed={view === 'grid'}
-                className={cn(
-                  'p-2.5 rounded-xl transition-colors',
-                  view === 'grid'
-                    ? 'bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40 text-[var(--c-text)] dark:text-[var(--c-solid)]'
-                    : 'bg-stone-100 dark:bg-stone-800 text-stone-500 dark:text-stone-400 hover:text-stone-600 dark:hover:text-stone-300'
-                )}
-              >
-                <Grid3X3 className="w-5 h-5" />
-              </button>
-              <button
-                onClick={() => setView('list')}
-                aria-label={t('consultant.participants.view.list', 'Listvy')}
-                aria-pressed={view === 'list'}
-                className={cn(
-                  'p-2.5 rounded-xl transition-colors',
-                  view === 'list'
-                    ? 'bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40 text-[var(--c-text)] dark:text-[var(--c-solid)]'
-                    : 'bg-stone-100 dark:bg-stone-800 text-stone-500 dark:text-stone-400 hover:text-stone-600 dark:hover:text-stone-300'
-                )}
-              >
-                <List className="w-5 h-5" />
-              </button>
-            </div>
-
-            {/* Add Participant Button */}
-            <Button className="ml-2" onClick={() => setShowInviteDialog(true)}>
-              <UserPlus className="w-4 h-4 mr-2" />
-              {t('consultant.participants.invite')}
-            </Button>
-          </div>
-        </div>
-      </Card>
-
-      {kadensFel && (
-        <p role="alert" className="text-sm text-red-700 dark:text-red-300">{kadensFel}</p>
-      )}
-
-      {/* Bulk Actions Bar */}
-      {showBulkActions && (
-        <Card className="p-3 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/20 border-[var(--c-accent)] dark:border-[var(--c-accent)]">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <button aria-label="Avmarkera alla"
-                onClick={() => setSelectedParticipants([])}
-                className="p-1.5 hover:bg-[var(--c-bg)] dark:hover:bg-[var(--c-bg)]/40 rounded-lg transition-colors"
-              >
-                <X className="w-5 h-5 text-[var(--c-solid)] dark:text-[var(--c-solid)]" />
-              </button>
-              <span className="font-medium text-[var(--c-text)] dark:text-[var(--c-solid)]">
-                {t('consultant.participants.selectedCount', { count: selectedParticipants.length })}
-              </span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => handleBulkAction('message')}
-              >
-                <Mail className="w-4 h-4 mr-1.5" />
-                {t('consultant.participants.bulk.sendMessage')}
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => handleBulkAction('tag')}
-              >
-                <Tag className="w-4 h-4 mr-1.5" />
-                {t('consultant.participants.bulk.addTag')}
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => handleBulkAction('status')}
-              >
-                <UserCheck className="w-4 h-4 mr-1.5" />
-                {t('consultant.participants.bulk.changeStatus')}
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => handleBulkAction('export')}
-              >
-                <Download className="w-4 h-4 mr-1.5" />
-                {t('consultant.participants.bulk.export')}
-              </Button>
-            </div>
-          </div>
-        </Card>
-      )}
-
-      {/* Results Count */}
-      <div className="flex items-center justify-between px-1">
-        <p className="text-sm text-stone-500 dark:text-stone-400">
-          {t('consultant.participants.showingCount', { shown: filteredParticipants.length, total: participants.length })}
-        </p>
-        {filteredParticipants.length > 0 && (
-          <button
-            onClick={toggleSelectAll}
-            className="text-sm text-[var(--c-text)] dark:text-[var(--c-solid)] hover:text-[var(--c-solid)] dark:hover:text-[var(--c-text)] font-medium"
+          </span>
+        </label>
+        <div className="grid gap-1 min-w-0 text-[0.8125rem] font-semibold text-[var(--j-blak-2)]">
+          <label htmlFor="deltagarlista-status">Visa</label>
+          <select
+            id="deltagarlista-status"
+            value={statusFilter}
+            onChange={e => setStatusFilter(e.target.value as StatusFilter)}
+            className={cn(faltKlass, 'w-full px-3')}
           >
-            {selectedParticipants.length === filteredParticipants.length
-              ? t('consultant.participants.deselectAll')
-              : t('consultant.participants.selectAll')}
+            <option value="all">Alla statusar</option>
+            {STATUSAR.map((s) => <option key={s} value={s}>{STATUS_PLURAL[s]}</option>)}
+          </select>
+        </div>
+        <div className="grid gap-1 min-w-0 text-[0.8125rem] font-semibold text-[var(--j-blak-2)]">
+          <label htmlFor="deltagarlista-sortering">Ordning</label>
+          <select
+              id="deltagarlista-sortering"
+              value={sortField}
+              onChange={e => setSortField(e.target.value as SortField)}
+              className={cn(faltKlass, 'w-full px-3')}
+            >
+              <option value="lage">Väntar först</option>
+              <option value="name">Namn</option>
+              <option value="last_contact">Längst sedan kontakt</option>
+              <option value="priority">Prioritet</option>
+              <option value="status">Status</option>
+            </select>
+        </div>
+      </div>
+
+      {/* Snabbfilter — bara det datan redan stödjer */}
+      <div role="group" aria-label="Snabbfilter" className="flex flex-wrap gap-2">
+        {snabbval
+          .filter((s) => !s.kraverVecka || (underlag && (s.id !== 'utan-plan' || anvanderPlaner)))
+          .map((s) => {
+            const valt = snabbfilter === s.id
+            return (
+              <button
+                key={s.id}
+                type="button"
+                aria-pressed={valt}
+                onClick={() => setSnabbfilter(s.id)}
+                className={cn(
+                  'inline-flex items-center gap-2 min-h-[44px] sm:min-h-[36px] px-3.5 rounded-full border text-[0.875rem] font-semibold',
+                  valt
+                    ? 'bg-[var(--j-gran)] border-[var(--j-gran)] text-[var(--j-pa-gran)]'
+                    : 'bg-[var(--j-kort)] border-[var(--j-linje-2)] text-[var(--j-blak-2)] hover:bg-[var(--j-sankt)]',
+                  KVARTER_FOKUS,
+                )}
+              >
+                {valt ? <KvarterIkon namn="bock" size={16} /> : null}
+                {s.etikett}
+                <span className={cn('tabular-nums', valt ? '' : 'text-[var(--j-blak-3)]')}>{antal(s.id)}</span>
+              </button>
+            )
+          })}
+      </div>
+
+      {veckaQ.isError && (
+        <p role="alert" className="m-0 text-[0.9375rem] text-[var(--s-ogiltig-text)]">
+          Veckans pass kunde inte hämtas — läget och veckan visas inte.{' '}
+          <button type="button" onClick={() => void veckaQ.refetch()} className={cn('underline font-semibold rounded-[var(--j-r-s)]', KVARTER_FOKUS)}>
+            Försök igen
           </button>
+        </p>
+      )}
+      {kadensQ.isError && (
+        <p role="alert" className="m-0 text-[0.9375rem] text-[var(--s-ogiltig-text)]">Mötesdatum kunde inte hämtas — kadensen visas inte.</p>
+      )}
+
+      {/* Antal och "Välj flera" */}
+      <div className="flex flex-wrap items-center justify-between gap-2 min-h-[44px]">
+        <p className="m-0 text-[0.875rem] text-[var(--j-blak-2)]">
+          Visar {filteredParticipants.length} av {participants.length} deltagare
+        </p>
+        {participants.length > 0 && (
+          valjer ? (
+            <Button ton="kvarter" variant="tertiary" size="sm" onClick={avslutaVal}>Klar med val</Button>
+          ) : (
+            <Button ton="kvarter" variant="tertiary" size="sm" onClick={() => setValjer(true)} leftIcon={<KvarterIkon namn="bock" size={18} />}>
+              Välj flera
+            </Button>
+          )
         )}
       </div>
 
-      {/* Participant List */}
+      {/* Listan */}
       {filteredParticipants.length === 0 ? (
         participants.length === 0 ? (
-          // Inga deltagare alls — helt annan situation än "inga sökträffar" (KA1).
-          <Card className="p-0 overflow-hidden">
+          <div className="bg-[var(--j-kort)] border border-[var(--j-linje)] rounded-[var(--j-r-m)] overflow-hidden">
             <EmptyState
               icon={Users}
-              title={t('consultant.participants.noParticipants', 'Inga deltagare ännu')}
-              description={t(
-                'consultant.participants.noParticipantsDesc',
-                'Du har inte tilldelat några deltagare ännu.'
-              )}
-              action={{
-                label: t('consultant.participants.inviteFirst', 'Bjud in din första deltagare'),
-                onClick: () => setShowInviteDialog(true),
-              }}
+              title="Inga deltagare ännu"
+              description="Du har inte tilldelat några deltagare ännu."
+              action={{ label: 'Bjud in din första deltagare', onClick: () => setShowInviteDialog(true) }}
             />
-          </Card>
+          </div>
         ) : (
-          // Sökning/filter gav noll träffar — annan CTA än ovan.
-          <Card className="p-0 overflow-hidden">
+          <div className="bg-[var(--j-kort)] border border-[var(--j-linje)] rounded-[var(--j-r-m)] overflow-hidden">
             <EmptyState
               icon={Search}
-              title={t('consultant.participants.noResults')}
-              description={t('consultant.participants.tryDifferentFilters')}
+              title="Ingen deltagare matchar"
+              description="Prova ett annat namn eller ta bort filtret."
               action={{
-                label: t('consultant.participants.clearFilters'),
+                label: 'Visa alla',
                 variant: 'outline',
                 onClick: () => {
                   setSearchQuery('')
-                  setFilterStatus('all')
+                  setSnabbfilter('all')
+                  setStatusFilter('all')
                 },
               }}
             />
-          </Card>
+          </div>
         )
-      ) : view === 'grid' ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-          {filteredParticipants.map(p => {
-            const statusBadge = getStatusBadge(p.status)
-            const priorityBadge = getPriorityBadge(p.priority)
-            const isSelected = selectedParticipants.includes(p.participant_id)
+      ) : (
+        <ul
+          aria-label="Deltagare"
+          className="list-none m-0 p-0 bg-[var(--j-kort)] border border-[var(--j-linje)] rounded-[var(--j-r-m)] overflow-hidden"
+        >
+          {filteredParticipants.map((p) => {
+            const namn = fullNamn(p)
+            const lage = lageFor.get(p.participant_id)
+            const visaVecka = !!lage && (anvanderPlaner || !!lage.dagar)
+            const kontakt = kontaktText(p.last_contact_at, nu)
+
+            const detaljer: string[] = []
+            if (lage && visaVecka) {
+              if (lage.tillagg) detaljer.push(lage.tillagg)
+              if (lage.plan) detaljer.push(lage.plan)
+              detaljer.push(kontakt)
+            }
+            if (p.status !== 'ACTIVE') detaljer.push(STATUS_ORD[p.status])
+            if (p.priority === 2) detaljer.push('Prioritet kritisk')
+            else if (p.priority === 1) detaljer.push('Prioritet hög')
+            for (const tagg of p.tags ?? []) detaljer.push(getTagLabel(tagg))
+
+            // Utan veckans underlag (laddar, fel eller inga planer) bär kontakten meningen.
+            const mening = lage && visaVecka ? lage.lage : kontakt
+
+            const mitten: ReactNode[] = []
+            if (lage?.dagar && visaVecka) {
+              mitten.push(
+                <span key="vecka" className="grid gap-1">
+                  <Veckoremsa dagar={lage.dagar} rubrik={`${namn}s vecka`} idag={idag} />
+                </span>,
+              )
+            }
+            if (lage?.nasta && visaVecka) {
+              mitten.push(
+                // På mobil hamnar "Nästa" under remsan och Öppna; på dator i en egen kolumn.
+                <span key="nasta" className="order-last sm:order-none basis-full sm:basis-auto text-[0.8125rem] leading-5 text-[var(--j-blak-2)] sm:w-40">
+                  <span className="sr-only">Nästa pass: </span>{lage.nasta}
+                </span>,
+              )
+            } else if (lage?.dagar && visaVecka) {
+              // Håller remsan i samma kolumn på dator när det inte finns något nästa pass.
+              mitten.push(<span key="nasta" aria-hidden="true" className="hidden sm:block sm:w-40" />)
+            }
+            if (kundtyp?.visaAvtalskrav && kadensPerDeltagare) {
+              mitten.push(
+                <span key="kadens" className="order-last sm:order-none basis-full sm:basis-auto">
+                  <KadensChip k={kadensPerDeltagare.get(p.participant_id)} />
+                </span>,
+              )
+            }
+
+            const rad = (
+              <PersonRad
+                som="div"
+                className={valjer ? 'border-b-0 flex-1 min-w-0 pl-1 sm:pl-1' : 'border-b-0'}
+                namn={namn}
+                lage={mening}
+                detalj={detaljer.join(' · ') || undefined}
+                fler={lage && visaVecka ? lage.fler : undefined}
+                bildUrl={p.avatar_url}
+                onOppna={() => navigate(`/consultant/participants/${p.participant_id}`)}
+                mitten={mitten.length > 0 ? <>{mitten}</> : undefined}
+                handling={{ etikett: 'Öppna', variant: 'tertiary', onClick: () => navigate(`/consultant/participants/${p.participant_id}`) }}
+              />
+            )
 
             return (
-              <Card
+              <li
                 key={p.participant_id}
+                data-testid="deltagarrad"
                 className={cn(
-                  'relative overflow-hidden transition-all duration-200',
-                  isSelected && 'ring-2 ring-[var(--c-solid)]'
+                  'border-b border-[var(--j-linje)] last:border-b-0',
+                  valjer && 'flex items-center pl-3 sm:pl-[18px]',
+                  valjer && selectedParticipants.includes(p.participant_id) && 'bg-[var(--j-gran-mjuk)]',
                 )}
               >
-                {/* Selection Checkbox */}
-                <button
-                  onClick={() => toggleSelect(p.participant_id)}
-                  role="checkbox"
-                  aria-checked={isSelected}
-                  aria-label={t('consultant.participants.selectParticipant', {
-                    firstName: p.first_name,
-                    lastName: p.last_name,
-                  })}
-                  className={cn(
-                    'absolute top-4 left-4 w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-all',
-                    isSelected
-                      ? 'bg-[var(--c-solid)] border-[var(--c-solid)] text-[var(--c-on-solid)]'
-                      : 'border-stone-300 dark:border-stone-600 hover:border-[var(--c-solid)]/60'
-                  )}
-                >
-                  {isSelected && <Check className="w-4 h-4" aria-hidden="true" />}
-                </button>
-
-                <Link
-                  to={`/consultant/participants/${p.participant_id}`}
-                  className="block p-5"
-                >
-                  <div className="flex items-start justify-between mb-4">
-                    <div className="flex items-center gap-3 pl-8">
-                      <div className="w-12 h-12 rounded-full bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40 flex items-center justify-center text-[var(--c-text)] dark:text-[var(--c-solid)] font-semibold">
-                        {getInitials(p)}
-                      </div>
-                      <div>
-                        <h3 className="font-semibold text-stone-900 dark:text-stone-100">
-                          {p.first_name} {p.last_name}
-                        </h3>
-                        <p className="text-sm text-stone-500 dark:text-stone-400">
-                          {p.email}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Badges */}
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    <span className={cn('px-2.5 py-1 rounded-full text-xs font-medium', statusBadge.color)}>
-                      {statusBadge.label}
-                    </span>
-                    {priorityBadge && (
-                      <span className={cn('px-2.5 py-1 rounded-full text-xs font-medium', priorityBadge.color)}>
-                        {priorityBadge.label}
-                      </span>
-                    )}
-                    {(p.tags || []).slice(0, 3).map(tagId => (
-                      <span key={tagId} className={cn('px-2.5 py-1 rounded-full text-xs font-medium', getTagColorClasses(tagId))}>
-                        {getTagLabel(tagId)}
-                      </span>
-                    ))}
-                    {(p.tags?.length || 0) > 3 && (
-                      <span className="px-2.5 py-1 rounded-full text-xs font-medium bg-stone-100 text-stone-600 dark:bg-stone-800 dark:text-stone-400">
-                        +{(p.tags?.length || 0) - 3}
-                      </span>
-                    )}
-                  </div>
-
-                  {/* Stats Grid */}
-                  <div className="grid grid-cols-3 gap-3 mb-4">
-                    <div className="text-center p-3 bg-stone-50 dark:bg-stone-800 rounded-xl">
-                      <FileText className="w-5 h-5 text-stone-500 dark:text-stone-400 mx-auto mb-1" />
-                      <p className="text-sm font-medium text-stone-900 dark:text-stone-100">
-                        {p.has_cv ? (p.ats_score ? `${p.ats_score}%` : t('common.yes')) : '—'}
-                      </p>
-                      <p className="text-xs text-stone-500">CV</p>
-                    </div>
-                    <div className="text-center p-3 bg-stone-50 dark:bg-stone-800 rounded-xl">
-                      <Briefcase className="w-5 h-5 text-stone-500 dark:text-stone-400 mx-auto mb-1" />
-                      <p className="text-sm font-medium text-stone-900 dark:text-stone-100">
-                        {p.saved_jobs_count}
-                      </p>
-                      <p className="text-xs text-stone-500">{t('consultant.participants.jobs')}</p>
-                    </div>
-                    <div className="text-center p-3 bg-stone-50 dark:bg-stone-800 rounded-xl">
-                      <MessageSquare className="w-5 h-5 text-stone-500 dark:text-stone-400 mx-auto mb-1" />
-                      <p className="text-sm font-medium text-stone-900 dark:text-stone-100">
-                        {p.notes_count}
-                      </p>
-                      <p className="text-xs text-stone-500">{t('consultant.participants.notes')}</p>
-                    </div>
-                  </div>
-
-                  {/* Footer */}
-                  <div className="flex items-center justify-between pt-3 border-t border-stone-100 dark:border-stone-800">
-                    <span className={cn(
-                      'flex items-center gap-1.5 text-sm',
-                      isOverdue(p.last_contact_at) ? 'text-amber-600' : 'text-stone-500'
-                    )}>
-                      <Clock className="w-4 h-4" />
-                      {getLastContactText(p.last_contact_at)}
-                    </span>
-                    <ChevronRight className="w-5 h-5 text-stone-400 dark:text-stone-500" />
-                  </div>
-                  <div className="pt-2">
-                    <KadensChip participantId={p.participant_id} />
-                  </div>
-                </Link>
-              </Card>
+                {valjer ? (
+                  <Kryssruta
+                    checked={selectedParticipants.includes(p.participant_id)}
+                    onToggle={() => toggleSelect(p.participant_id)}
+                    etikett={`Välj ${namn}`}
+                  />
+                ) : null}
+                {rad}
+              </li>
             )
           })}
-        </div>
-      ) : (
-        <Card className="overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="bg-stone-50 dark:bg-stone-700 border-b border-stone-200 dark:border-stone-600">
-                  <th className="px-4 py-3 text-left" scope="col">
-                    <button
-                      onClick={toggleSelectAll}
-                      role="checkbox"
-                      aria-checked={allSelected ? true : someSelected ? 'mixed' : false}
-                      aria-label={allSelected
-                        ? t('consultant.participants.deselectAll')
-                        : t('consultant.participants.selectAll')}
-                      className={cn(
-                        'w-5 h-5 rounded border-2 flex items-center justify-center transition-all',
-                        allSelected
-                          ? 'bg-[var(--c-solid)] border-[var(--c-solid)] text-[var(--c-on-solid)]'
-                          : 'border-stone-300 dark:border-stone-600'
-                      )}
-                    >
-                      {allSelected && <Check className="w-3 h-3" aria-hidden="true" />}
-                    </button>
-                  </th>
-                  <th
-                    className="px-4 py-3 text-left text-xs font-semibold text-stone-600 dark:text-stone-300 uppercase tracking-wider"
-                    scope="col"
-                    aria-sort={sortField === 'name' ? (sortOrder === 'asc' ? 'ascending' : 'descending') : undefined}
-                  >
-                    {t('consultant.participants.table.name')}
-                  </th>
-                  <th
-                    className="px-4 py-3 text-left text-xs font-semibold text-stone-600 dark:text-stone-300 uppercase tracking-wider"
-                    scope="col"
-                    aria-sort={sortField === 'status' ? (sortOrder === 'asc' ? 'ascending' : 'descending') : undefined}
-                  >
-                    {t('consultant.participants.table.status')}
-                  </th>
-                  <th
-                    className="px-4 py-3 text-left text-xs font-semibold text-stone-600 dark:text-stone-300 uppercase tracking-wider"
-                    scope="col"
-                    aria-sort={sortField === 'ats_score' ? (sortOrder === 'asc' ? 'ascending' : 'descending') : undefined}
-                  >
-                    {t('consultant.participants.table.cv')}
-                  </th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-stone-600 dark:text-stone-300 uppercase tracking-wider" scope="col">
-                    {t('consultant.participants.table.savedJobs')}
-                  </th>
-                  <th
-                    className="px-4 py-3 text-left text-xs font-semibold text-stone-600 dark:text-stone-300 uppercase tracking-wider"
-                    scope="col"
-                    aria-sort={sortField === 'last_contact' ? (sortOrder === 'asc' ? 'ascending' : 'descending') : undefined}
-                  >
-                    {t('consultant.participants.table.lastContact')}
-                  </th>
-                  <th className="px-4 py-3 text-right text-xs font-semibold text-stone-600 dark:text-stone-300 uppercase tracking-wider" scope="col">
-                    {t('consultant.participants.table.actions')}
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-stone-100 dark:divide-stone-800">
-                {filteredParticipants.map(p => {
-                  const statusBadge = getStatusBadge(p.status)
-                  const priorityBadge = getPriorityBadge(p.priority)
-                  const isSelected = selectedParticipants.includes(p.participant_id)
-
-                  return (
-                    <tr
-                      key={p.participant_id}
-                      className={cn(
-                        'hover:bg-stone-50 dark:hover:bg-stone-800/50 transition-colors',
-                        isSelected && 'bg-[var(--c-bg)]/40 dark:bg-[var(--c-bg)]/15'
-                      )}
-                    >
-                      <td className="px-4 py-4">
-                        <button
-                          onClick={() => toggleSelect(p.participant_id)}
-                          role="checkbox"
-                          aria-checked={isSelected}
-                          aria-label={t('consultant.participants.selectParticipant', {
-                            firstName: p.first_name,
-                            lastName: p.last_name,
-                          })}
-                          className={cn(
-                            'w-5 h-5 rounded border-2 flex items-center justify-center transition-all',
-                            isSelected
-                              ? 'bg-[var(--c-solid)] border-[var(--c-solid)] text-white'
-                              : 'border-stone-300 dark:border-stone-600 hover:border-[var(--c-solid)]/60'
-                          )}
-                        >
-                          {isSelected && <Check className="w-3 h-3" aria-hidden="true" />}
-                        </button>
-                      </td>
-                      <td className="px-4 py-4">
-                        <Link
-                          to={`/consultant/participants/${p.participant_id}`}
-                          className="flex items-center gap-3"
-                        >
-                          <div className="w-10 h-10 rounded-full bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40 flex items-center justify-center text-[var(--c-text)] dark:text-[var(--c-solid)] font-medium">
-                            {getInitials(p)}
-                          </div>
-                          <div>
-                            <p className="font-medium text-stone-900 dark:text-stone-100">
-                              {p.first_name} {p.last_name}
-                            </p>
-                            <p className="text-sm text-stone-500 dark:text-stone-400">
-                              {p.email}
-                            </p>
-                          </div>
-                        </Link>
-                      </td>
-                      <td className="px-4 py-4">
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <span className={cn('px-2.5 py-1 rounded-full text-xs font-medium', statusBadge.color)}>
-                            {statusBadge.label}
-                          </span>
-                          {priorityBadge && (
-                            <span className={cn('px-2.5 py-1 rounded-full text-xs font-medium', priorityBadge.color)}>
-                              {priorityBadge.label}
-                            </span>
-                          )}
-                          {(p.tags || []).slice(0, 2).map(tagId => (
-                            <span key={tagId} className={cn('px-2.5 py-1 rounded-full text-xs font-medium', getTagColorClasses(tagId))}>
-                              {getTagLabel(tagId)}
-                            </span>
-                          ))}
-                          {(p.tags?.length || 0) > 2 && (
-                            <span className="px-2.5 py-1 rounded-full text-xs font-medium bg-stone-100 text-stone-600 dark:bg-stone-800 dark:text-stone-400">
-                              +{(p.tags?.length || 0) - 2}
-                            </span>
-                          )}
-                        </div>
-                      </td>
-                      <td className="px-4 py-4 text-sm text-stone-600 dark:text-stone-400">
-                        {p.has_cv ? (
-                          <span className={cn(
-                            'font-medium',
-                            (p.ats_score || 0) >= 70 ? 'text-emerald-600' :
-                            (p.ats_score || 0) >= 50 ? 'text-amber-600' : 'text-stone-600'
-                          )}>
-                            {p.ats_score ? `${p.ats_score}/100` : t('common.yes')}
-                          </span>
-                        ) : '—'}
-                      </td>
-                      <td className="px-4 py-4 text-sm text-stone-600 dark:text-stone-400">
-                        {p.saved_jobs_count}
-                      </td>
-                      <td className="px-4 py-4">
-                        <span className={cn(
-                          'text-sm',
-                          isOverdue(p.last_contact_at) ? 'text-amber-600' : 'text-stone-500'
-                        )}>
-                          {getLastContactText(p.last_contact_at)}
-                        </span>
-                        <div className="mt-1">
-                          <KadensChip participantId={p.participant_id} />
-                        </div>
-                      </td>
-                      <td className="px-4 py-4 text-right">
-                        <Link
-                          to={`/consultant/participants/${p.participant_id}`}
-                          className="text-[var(--c-text)] dark:text-[var(--c-solid)] hover:text-[var(--c-solid)] dark:hover:text-[var(--c-text)] text-sm font-medium"
-                        >
-                          {t('common.view')}
-                        </Link>
-                      </td>
-                    </tr>
-                  )
-                })}
-              </tbody>
-            </table>
-          </div>
-        </Card>
+        </ul>
       )}
 
-      {/* Bulk Actions Dialog */}
+      {/* Massåtgärder — fäst mot skärmens nederkant så att de syns medan man bockar i
+          längre ned (ovanför bottenmenyn på mobil). Listan får luft under sig. */}
+      {valjer && (
+        <div
+          role="region"
+          aria-label="Massåtgärder"
+          className="fixed left-4 right-4 bottom-[72px] lg:left-auto lg:right-8 lg:bottom-6 lg:max-w-[760px] z-30 flex flex-wrap items-center gap-2 px-4 py-3 rounded-[var(--j-r-m)] border border-[var(--j-gran)] bg-[var(--j-kort)] shadow-[var(--j-skugga)]"
+        >
+          <Kryssruta
+            checked={allSelected ? true : someSelected ? 'mixed' : false}
+            onToggle={toggleSelectAll}
+            etikett={allSelected ? 'Avmarkera alla' : 'Markera alla'}
+          />
+          <span className="font-semibold text-[var(--j-gran-text)] mr-auto" aria-live="polite">
+            {selectedParticipants.length === 0 ? 'Inga valda än' : `${selectedParticipants.length} valda`}
+          </span>
+          {([
+            ['message', 'Skicka meddelande'],
+            ['tag', 'Lägg till tagg'],
+            ['status', 'Ändra status'],
+            ['export', 'Exportera'],
+          ] as Array<[BulkTyp, string]>).map(([typ, etikett]) => (
+            <Button
+              key={typ}
+              ton="kvarter"
+              variant={typ === 'message' ? 'secondary' : 'tertiary'}
+              size="sm"
+              disabled={selectedParticipants.length === 0}
+              onClick={() => setBulkActionType(typ)}
+            >
+              {etikett}
+            </Button>
+          ))}
+        </div>
+      )}
+
       {bulkActionType && (
         <BulkActionsDialog
           isOpen={!!bulkActionType}
@@ -883,5 +598,51 @@ export function ParticipantsTab() {
         }}
       />
     </div>
+  )
+}
+
+/** En kryssruta med 44 px tryckyta, role="checkbox" (KT2). */
+function Kryssruta({ checked, onToggle, etikett }: { checked: boolean | 'mixed'; onToggle: () => void; etikett: string }) {
+  const pa = checked === true
+  return (
+    <button
+      type="button"
+      role="checkbox"
+      aria-checked={checked}
+      aria-label={etikett}
+      onClick={onToggle}
+      className={cn('flex-none w-11 h-11 grid place-items-center rounded-[var(--j-r-s)]', KVARTER_FOKUS)}
+    >
+      <span
+        aria-hidden="true"
+        className={cn(
+          'w-6 h-6 rounded-md border-2 grid place-items-center',
+          pa || checked === 'mixed'
+            ? 'bg-[var(--j-gran)] border-[var(--j-gran)] text-[var(--j-pa-gran)]'
+            : 'bg-[var(--j-kort)] border-[var(--j-linje-2)]',
+        )}
+      >
+        {pa ? <KvarterIkon namn="bock" size={16} strokeWidth={2.25} /> : checked === 'mixed' ? <KvarterIkon namn="streck" size={16} /> : null}
+      </span>
+    </button>
+  )
+}
+
+/** RM3-chipet: möteskadensen i ord, med regeln för skärmläsare (RR23). */
+function KadensChip({ k }: { k: Kadens | undefined }) {
+  const laget: KadensLage = k?.laget ?? 'inget'
+  const farg = laget === 'over' ? statusFarg('ogiltig') : laget === 'snart' ? statusFarg('vantar') : null
+  return (
+    <span
+      // RR12: chipet klipptes på 390 px — radbryt i stället.
+      className="inline-flex items-center rounded-full px-2.5 py-[3px] text-[0.8125rem] leading-5 font-semibold whitespace-normal bg-[var(--j-sankt)] text-[var(--j-blak-2)]"
+      style={farg ? { backgroundColor: farg.bg, color: farg.text } : undefined}
+      data-testid="kadens-chip"
+      data-lage={laget}
+      title={KADENS_REGEL}
+    >
+      {kadensText(k)}
+      <span className="sr-only"> — {KADENS_REGEL}</span>
+    </span>
   )
 }

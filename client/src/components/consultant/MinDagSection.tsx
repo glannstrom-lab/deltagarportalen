@@ -1,286 +1,210 @@
 /**
- * MinDagSection — konsulentens prioriterade dagsvy i OverviewTab.
- * Svarar på frågan "vem behöver mig idag?": dagens möten med förberedelse
- * (senaste journalanteckning), måldeadlines inom 7 dagar och deltagare
- * som behöver kontakt — varje rad klickbar till handling.
+ * MinDagSection — konsulentens Översikt som EN vy (omtaget "Kvarter", steg 3, 2026-10-11).
+ *
+ * Mikael: "så fort ett motstånd eller okunskap finns så kommer de lägga bort
+ * sina telefoner och datorer." Förslaget svarar med en fråga per sida — här
+ * "Vad ska jag göra nu?" — och en ordning:
+ *
+ *   1. Kontoret som scen, datum och hälsning, "N saker i dag".
+ *   2. ETT nästa steg (NastaSteg) — eller, för en ny konsulent, Kom igång.
+ *   3. En rad per människa (PersonRad), det mest brådskande först.
+ *   4. Dagens pass; i sidospalten veckan i en mening (och mot avtalet) och Kom igång.
+ *   5. Tomläget med bilden "Klart för i dag" — bara när allt verkligen är tomt.
+ *
+ * Tidigare Min dag (möten, mål, kontakter), Kräver uppmärksamhet och
+ * snabbåtgärderna är ihopslagna: punkterna står i personraderna, och
+ * snabbåtgärderna i Mer-menyn bredvid hälsningen. Nyckeltal, Målöversikt och
+ * Senaste aktivitet finns under Rapporter (OversiktSiffror).
+ *
+ * Tre lägen, aldrig ett påstående utan underlag: under laddning står scenen och
+ * hälsningen men inget nästa steg och ingen räkning; vid läsfel en rad om felet
+ * — aldrig "allt klart".
+ *
+ * Konsulentvyn översätts inte (DESIGN.md §2) — svenska literaler med flit.
  */
 
-import { Link } from 'react-router-dom'
-import { useTranslation } from 'react-i18next'
-import {
-  Calendar,
-  Target,
-  Clock,
-  MessageSquare,
-  ChevronRight,
-  CheckCircle,
-  Video,
-  Phone,
-  MapPin,
-  AlertTriangle,
-} from '@/components/ui/icons'
-import { Card } from '@/components/ui/Card'
-import { cn } from '@/lib/utils'
-import { kontaktText } from '@/lib/kontaktText'
+import type { ReactNode } from 'react'
+import { MerMeny, type MerMenyVal } from '@/components/ui/MerMeny'
+import { Button } from '@/components/ui/Button'
+import { KvarterIkon } from '@/components/ui/icons/kvarter/KvarterIkon'
+import { halsning, sakerIDag } from './minDagText'
 
-export interface MyDayMeeting {
-  id: string
-  participantId: string
-  participantName: string
-  scheduledAt: string
-  meetingType: string | null
-  meetingLink: string | null
-  latestNote: { content: string; category: string; createdAt: string } | null
-}
-
-export interface MyDayDeadline {
-  goalId: string
-  goalTitle: string
-  participantId: string
-  participantName: string
-  deadline: string
-  daysLeft: number
-}
-
-export interface MyDayContact {
-  participantId: string
-  participantName: string
-  reason: 'no_contact' | 'inactive'
-  /** PG24: dagar sedan senaste kontakt, null = aldrig kontaktad. Samma regel som deltagarkortet. */
-  daysSinceContact?: number | null
-}
+export type MinDagLage = 'laddar' | 'klart'
 
 interface MinDagSectionProps {
-  meetings: MyDayMeeting[]
-  deadlines: MyDayDeadline[]
-  contacts: MyDayContact[]
-  onMessage: (participantId: string) => void
-  /** F12: logga en kontakt som skett utanför portalen (telefon/möte) — tar bort varningen. */
-  onLogContact?: (participantId: string) => void | Promise<void>
-  /** F9: dagens pass (DagensPass) — ritas överst, oavsett om resten är tomt. */
-  pass?: React.ReactNode
+  lage: MinDagLage
+  /** Konsulentens förnamn — "God morgon, Karin". Null → bara hälsningen. */
+  fornamn: string | null
+  /** Antal saker i dag (personer + pass att markera). Null när det inte går att veta. */
+  antalSaker: number | null
+  /** En rad om ett delvis läsfel (t.ex. passen kunde inte hämtas). Stänger av tomläget. */
+  fel?: string | null
+  /** Nästa steg + listan per person (BradskandeIdag), eller Kom igång för en ny konsulent. */
+  children?: ReactNode
+  /** Dagens pass (DagensPass). */
+  pass?: ReactNode
+  /** "Veckan i en mening" — null visas inte. */
+  veckan?: string | null
+  /** Leverantörens vecka mot avtalet (leverantorSammanfattning) — bara för leverantörer. */
+  avtal?: readonly string[] | null
+  /** Allt är tomt: inga punkter, inga pass att markera, inga pass i dag. */
+  tomt: boolean
+  /** Handling i tomläget, t.ex. "Se alla deltagare". */
+  onSeAlla?: () => void
+  /** Snabbåtgärderna (bjud in, gruppmeddelande, boka möte …). */
+  meny?: readonly MerMenyVal[]
+  /** Under listan i huvudspalten, t.ex. handläggarens underlag. */
+  efter?: ReactNode
+  /** I sidospalten under veckan, t.ex. Kom igång för den som redan har deltagare. */
+  sido?: ReactNode
+  /** För tester: tiden "nu". */
+  nu?: Date
 }
 
-
-const meetingTypeIcons: Record<string, React.ElementType> = {
-  video: Video,
-  phone: Phone,
-  physical: MapPin,
+function datumText(nu: Date): string {
+  // Stor bokstav bara först ("Måndag 13 oktober"), inte på månaden.
+  const d = nu.toLocaleDateString('sv-SE', { weekday: 'long', day: 'numeric', month: 'long' })
+  return d.charAt(0).toUpperCase() + d.slice(1)
 }
 
-function SectionHeading({ icon: Icon, label, count }: { icon: React.ElementType; label: string; count: number }) {
+function Scen({ src, srcSet, className }: { src: string; srcSet: string; className?: string }) {
   return (
-    <div className="flex items-center gap-2 mb-2">
-      <Icon className="w-4 h-4 text-stone-500 dark:text-stone-400" aria-hidden="true" />
-      <h4 className="text-sm font-semibold text-stone-700 dark:text-stone-300">{label}</h4>
-      <span className="text-xs text-stone-500 dark:text-stone-400">({count})</span>
-    </div>
+    <img
+      src={src}
+      srcSet={srcSet}
+      sizes="(min-width: 1024px) 1100px, 100vw"
+      alt=""
+      decoding="async"
+      className={className}
+    />
   )
 }
 
-export function MinDagSection({ meetings, deadlines, contacts, onMessage, onLogContact, pass }: MinDagSectionProps) {
-  const { t } = useTranslation()
-
-  const isEmpty = meetings.length === 0 && deadlines.length === 0 && contacts.length === 0
-
-  // Stor bokstav bara först ("Tisdag 22 september"). CSS-klassen `capitalize`
-  // versaliserade varje ord, även månaden — "Tisdag 22 September" (drift 2026-09-22).
-  const datum = new Date().toLocaleDateString('sv-SE', {
-    weekday: 'long',
-    day: 'numeric',
-    month: 'long',
-  })
-  const today = datum.charAt(0).toUpperCase() + datum.slice(1)
+export function MinDagSection({
+  lage,
+  fornamn,
+  antalSaker,
+  fel,
+  children,
+  pass,
+  veckan,
+  avtal,
+  tomt,
+  onSeAlla,
+  meny = [],
+  efter,
+  sido,
+  nu = new Date(),
+}: MinDagSectionProps) {
+  const visaTomt = lage === 'klart' && tomt && !fel
+  const eftermiddag = nu.getHours() >= 12
 
   return (
-    <Card>
-      <div className="p-4 sm:p-5 border-b border-stone-200 dark:border-stone-700">
-        <div className="flex items-center gap-2">
-          <Clock className="w-5 h-5 text-amber-600 dark:text-amber-400" aria-hidden="true" />
-          <h3 className="font-semibold text-stone-900 dark:text-stone-100">
-            {t('consultant.overview.myDay.title')}
-          </h3>
-          <span className="text-sm text-stone-500 dark:text-stone-400">— {today}</span>
+    <div className="grid gap-5 sm:gap-6 font-text text-j-blak" data-testid="min-dag">
+      {/* Kontoret som scen. Dekorativ: hälsningen bär innehållet. */}
+      <div className="relative">
+        <div className="overflow-hidden rounded-j-l bg-j-sankt">
+          <Scen
+            src="/kontor/kontoret-1280.webp"
+            srcSet="/kontor/kontoret-720.webp 720w, /kontor/kontoret-1280.webp 1280w"
+            className="block w-full h-[150px] sm:h-[200px] lg:h-[236px] object-cover object-[62%_58%] dark:brightness-[0.82]"
+          />
+        </div>
+
+        <div className="relative mx-0 sm:mx-5 -mt-6 sm:-mt-14 bg-j-kort border border-j-linje rounded-j-m shadow-j px-4 py-4 sm:px-6 sm:py-5 flex items-start justify-between gap-3">
+          <div className="min-w-0">
+            <p className="text-[0.8125rem] font-semibold uppercase tracking-[0.08em] text-j-blak-3">{datumText(nu)}</p>
+            <h2 className="mt-1 font-rubrik text-[1.75rem] sm:text-[2rem] leading-[1.1] font-bold text-j-blak">
+              {halsning(nu)}{fornamn ? `, ${fornamn}` : ''}
+            </h2>
+            <p className="mt-1.5 text-[0.9375rem] text-j-blak-2" role="status" aria-live="polite" data-testid="mindag-antal">
+              {lage === 'laddar'
+                ? 'Hämtar din dag …'
+                : fel
+                  ? 'Allt kunde inte hämtas. Det som syns stämmer, men något kan saknas.'
+                  : antalSaker === null
+                    ? null
+                    : antalSaker === 0
+                      ? 'Inget väntar på dig just nu.'
+                      : `${sakerIDag(antalSaker)} Det som brådskar står först.`}
+            </p>
+          </div>
+          {meny.length > 0 && <MerMeny val={meny} etikett="Mer" className="shrink-0 -mr-2" />}
         </div>
       </div>
 
-      {pass && <div className="px-4 sm:px-5 pt-4 sm:pt-5">{pass}</div>}
-
-      {isEmpty ? (
-        <div className="p-8 text-center">
-          <CheckCircle className="w-12 h-12 text-emerald-500 mx-auto mb-3" aria-hidden="true" />
-          <p className="font-medium text-stone-900 dark:text-stone-100">
-            {t('consultant.overview.myDay.allClear')}
-          </p>
-          <p className="text-sm text-stone-500 dark:text-stone-400 mt-1">
-            {t('consultant.overview.myDay.allClearDesc')}
-          </p>
-        </div>
-      ) : (
-        <div className="p-4 sm:p-5 grid grid-cols-1 lg:grid-cols-3 gap-5">
-          {/* Dagens möten med förberedelse */}
-          <div>
-            <SectionHeading
-              icon={Calendar}
-              label={t('consultant.overview.myDay.todaysMeetings')}
-              count={meetings.length}
-            />
-            {meetings.length === 0 ? (
-              <p className="text-sm text-stone-500 dark:text-stone-400">
-                {t('consultant.overview.myDay.noMeetingsToday')}
-              </p>
-            ) : (
-              <ul className="space-y-2">
-                {meetings.map(m => {
-                  const TypeIcon = meetingTypeIcons[m.meetingType || ''] || Calendar
-                  return (
-                    <li key={m.id} className="p-3 rounded-xl bg-stone-50 dark:bg-stone-800">
-                      <div className="flex items-center justify-between gap-2">
-                        <Link
-                          to={`/consultant/participants/${m.participantId}`}
-                          className="font-medium text-stone-900 dark:text-stone-100 hover:underline truncate"
-                        >
-                          {m.participantName}
-                        </Link>
-                        <span className="flex items-center gap-1 text-sm font-medium text-stone-700 dark:text-stone-300 flex-shrink-0">
-                          <TypeIcon className="w-4 h-4 text-stone-500" aria-hidden="true" />
-                          {new Date(m.scheduledAt).toLocaleTimeString('sv-SE', { hour: '2-digit', minute: '2-digit' })}
-                        </span>
-                      </div>
-                      {m.latestNote ? (
-                        <p className="text-xs text-stone-500 dark:text-stone-400 mt-1.5 line-clamp-2">
-                          <span className="font-medium">{t('consultant.overview.myDay.latestNote')}:</span>{' '}
-                          {m.latestNote.content}
-                        </p>
-                      ) : (
-                        <p className="text-xs text-stone-400 dark:text-stone-500 mt-1.5">
-                          {t('consultant.overview.myDay.noNotes')}
-                        </p>
-                      )}
-                      <div className="flex items-center gap-3 mt-2">
-                        <button
-                          onClick={() => onMessage(m.participantId)}
-                          className="text-xs font-medium text-amber-600 dark:text-amber-400 hover:underline flex items-center gap-1"
-                        >
-                          <MessageSquare className="w-3 h-3" aria-hidden="true" />
-                          {t('consultant.overview.myDay.sendMessage')}
-                        </button>
-                        {m.meetingLink && (
-                          <a
-                            href={m.meetingLink}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-xs font-medium text-amber-600 dark:text-amber-400 hover:underline"
-                          >
-                            {t('consultant.overview.myDay.joinMeeting')}
-                          </a>
-                        )}
-                      </div>
-                    </li>
-                  )
-                })}
-              </ul>
-            )}
-          </div>
-
-          {/* Måldeadlines inom 7 dagar */}
-          <div>
-            <SectionHeading
-              icon={Target}
-              label={t('consultant.overview.myDay.deadlines')}
-              count={deadlines.length}
-            />
-            {deadlines.length === 0 ? (
-              <p className="text-sm text-stone-500 dark:text-stone-400">
-                {t('consultant.overview.myDay.noDeadlines')}
-              </p>
-            ) : (
-              <ul className="space-y-2">
-                {deadlines.map(d => (
-                  <li key={d.goalId}>
-                    <Link
-                      to={`/consultant/participants/${d.participantId}`}
-                      className="block p-3 rounded-xl bg-stone-50 dark:bg-stone-800 hover:bg-stone-100 dark:hover:bg-stone-700 transition-colors"
-                    >
-                      <p className="font-medium text-stone-900 dark:text-stone-100 text-sm truncate">
-                        {d.goalTitle}
-                      </p>
-                      <div className="flex items-center justify-between mt-1">
-                        <span className="text-xs text-stone-500 dark:text-stone-400 truncate">
-                          {d.participantName}
-                        </span>
-                        <span className={cn(
-                          'text-xs font-medium flex-shrink-0',
-                          d.daysLeft < 0 ? 'text-rose-600' : d.daysLeft <= 2 ? 'text-amber-600' : 'text-stone-500'
-                        )}>
-                          {d.daysLeft < 0
-                            ? t('consultant.overview.myDay.overdue', { count: Math.abs(d.daysLeft) })
-                            : d.daysLeft === 0
-                              ? t('consultant.overview.myDay.dueToday')
-                              : t('consultant.overview.myDay.daysLeft', { count: d.daysLeft })}
-                        </span>
-                      </div>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
-
-          {/* Deltagare som behöver kontakt */}
-          <div>
-            <SectionHeading
-              icon={AlertTriangle}
-              label={t('consultant.overview.myDay.needsContact')}
-              count={contacts.length}
-            />
-            {contacts.length === 0 ? (
-              <p className="text-sm text-stone-500 dark:text-stone-400">
-                {t('consultant.overview.myDay.noContactsNeeded')}
-              </p>
-            ) : (
-              <ul className="space-y-2">
-                {contacts.map(c => (
-                  <li key={c.participantId} className="p-3 rounded-xl bg-stone-50 dark:bg-stone-800">
-                    <div className="flex items-center justify-between gap-2">
-                      <Link
-                        to={`/consultant/participants/${c.participantId}`}
-                        className="font-medium text-stone-900 dark:text-stone-100 hover:underline truncate text-sm"
-                      >
-                        {c.participantName}
-                      </Link>
-                      <ChevronRight className="w-4 h-4 text-stone-400 flex-shrink-0" aria-hidden="true" />
-                    </div>
-                    <p className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">
-                      {c.reason === 'no_contact'
-                        ? kontaktText(t, c.daysSinceContact)
-                        : t('consultant.alerts.inactive')}
-                    </p>
-                    <div className="flex flex-wrap gap-3 mt-2">
-                      <button
-                        onClick={() => onMessage(c.participantId)}
-                        className="text-xs font-medium text-amber-600 dark:text-amber-400 hover:underline flex items-center gap-1"
-                      >
-                        <MessageSquare className="w-3 h-3" aria-hidden="true" />
-                        {t('consultant.overview.myDay.sendMessage')}
-                      </button>
-                      {onLogContact && c.reason === 'no_contact' && (
-                        <button
-                          onClick={() => void onLogContact(c.participantId)}
-                          className="text-xs font-medium text-stone-700 dark:text-stone-300 hover:underline flex items-center gap-1"
-                        >
-                          <CheckCircle className="w-3 h-3" aria-hidden="true" />
-                          {t('consultant.overview.myDay.logContact')}
-                        </button>
-                      )}
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
-        </div>
+      {fel && (
+        <p role="alert" className="flex items-start gap-2 px-4 py-3 rounded-j-m bg-[var(--s-ogiltig-bg)] text-[var(--s-ogiltig-text)] text-[0.9375rem]">
+          <KvarterIkon namn="varning" size={20} ton="ogiltig" className="shrink-0 mt-0.5" />
+          <span>{fel}</span>
+        </p>
       )}
-    </Card>
+
+      <div className="grid gap-5 sm:gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(280px,340px)] lg:items-start">
+        <div className="grid gap-5 sm:gap-6 min-w-0">
+          {lage === 'laddar' ? (
+            // Under laddning påstås ingenting om dagen — ingen tom lista, inget nästa steg.
+            <div className="h-24 rounded-j-m bg-j-kort border border-j-linje animate-pulse motion-reduce:animate-none" aria-hidden="true" />
+          ) : visaTomt ? (
+            <section aria-labelledby="mindag-klart" data-testid="mindag-tomt" className="overflow-hidden rounded-j-m bg-j-kort border border-j-linje shadow-j">
+              <Scen
+                src="/kontor/klart-900.webp"
+                srcSet="/kontor/klart-600.webp 600w, /kontor/klart-900.webp 900w"
+                className="block w-full h-[170px] sm:h-[220px] object-cover object-[50%_60%] dark:brightness-[0.82]"
+              />
+              <div className="p-5 sm:p-6 grid gap-2">
+                <p className="text-[0.8125rem] font-bold uppercase tracking-[0.08em] text-j-gran-text">
+                  {eftermiddag ? 'Bra jobbat i dag' : 'Lugn start'}
+                </p>
+                <h2 id="mindag-klart" className="font-rubrik text-[1.375rem] sm:text-[1.5rem] leading-[1.15] font-bold">
+                  {eftermiddag ? 'Allt för i dag är gjort' : 'Inget väntar på dig just nu'}
+                </h2>
+                <p className="text-[0.9375rem] text-j-blak-2">
+                  Ingen väntar på svar, ingen frånvaro saknar en rad och inget pass i dag behöver markeras.
+                </p>
+                {onSeAlla && (
+                  <div className="mt-2">
+                    <Button ton="kvarter" variant="primary" onClick={onSeAlla} className="w-full sm:w-auto">
+                      Se alla deltagare
+                    </Button>
+                  </div>
+                )}
+              </div>
+            </section>
+          ) : (
+            children
+          )}
+          {/* Dagens pass i huvudspalten: raderna behöver bredden (tid, namn, knapp). */}
+          {lage === 'klart' && pass && !visaTomt && (
+            <div className="bg-j-kort border border-j-linje rounded-j-m px-4 sm:px-5 pt-4 pb-1">{pass}</div>
+          )}
+          {lage === 'klart' && efter}
+        </div>
+
+        {lage === 'klart' && (veckan || (avtal && avtal.length > 0) || sido) && (
+          <aside className="grid gap-5 sm:gap-6 min-w-0" aria-label="Veckan">
+            {avtal && avtal.length > 0 && (
+              <section className="bg-j-kort border border-j-linje rounded-j-m p-4 sm:p-5 grid gap-2">
+                <h2 className="text-[0.8125rem] font-bold uppercase tracking-[0.08em] text-j-blak-3">
+                  Veckan mot avtalet
+                </h2>
+                <ul aria-label="Veckan mot avtalet" className="grid gap-1 text-[0.9375rem] text-j-blak">
+                  {avtal.map((rad) => <li key={rad}>{rad}</li>)}
+                </ul>
+              </section>
+            )}
+            {veckan && (
+              <section aria-labelledby="mindag-veckan" className="bg-j-kort border border-j-linje rounded-j-m p-4 sm:p-5 grid gap-1.5">
+                <h2 id="mindag-veckan" className="text-[0.8125rem] font-bold uppercase tracking-[0.08em] text-j-blak-3">
+                  Veckan i en mening
+                </h2>
+                <p className="text-[0.9375rem] leading-[1.45] text-j-blak" data-testid="mindag-veckan">{veckan}</p>
+              </section>
+            )}
+            {sido}
+          </aside>
+        )}
+      </div>
+    </div>
   )
 }

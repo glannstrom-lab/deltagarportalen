@@ -1,34 +1,34 @@
 /**
- * ParticipantDetailPage - Detailed View for a Single Participant
- * Profile, progress tracker, goals, journal, and communication
+ * ParticipantDetailPage — konsulentens sida för en deltagare.
+ *
+ * Omtaget "Kvarter", steg 5 (2026-10-11): förslaget "Deltagarsidan: plan och
+ * närvaro som en vecka, inte som rutor".
+ *   - Huvudet: namn, läget i en mening (deltagarLaget.ts), Skicka meddelande
+ *     som EN primärknapp, Boka möte och Logga samtal ramade, resten i Mer.
+ *   - Översikt: veckan först (också på mobilen), sedan mål och anteckning;
+ *     möten, placering och "Om deltagaren" (CV-poäng, sparade jobb) i spalten.
+ *   - Aktivitet: planen som en vecka med närvaron på raden, och en högerspalt
+ *     per kundtyp (kommun: underlag till handläggaren; Rusta och matcha:
+ *     mötesklockan, avvikelser till Arbetsförmedlingen, placering).
+ *   - Flikarna är kvar, lugnare. `?flik=` fungerar som förut (Kom igång-guiden).
+ *
+ * Planen hämtas EN gång här (useAktivitetsplan) och delas av huvudet,
+ * Översikt och Aktivitet. Konsulentvyn översätts inte (DESIGN.md §2): nya
+ * texter är svenska literaler; befintliga nycklar läses som förut.
  */
 
 import { useState, useEffect, useRef } from 'react'
-import { useParams, Link, useNavigate } from 'react-router-dom'
+import { useParams, Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import {
-  ArrowLeft,
-  Mail,
-  Phone,
-  Calendar,
-  FileText,
-  Briefcase,
-  Target,
-  MessageSquare,
-  Clock,
-  MoreVertical,
-  Plus,
-  AlertTriangle,
-  CheckCircle,
-  Activity,
-  Send,
-  Sparkles,
-} from '@/components/ui/icons'
+import { ArrowLeft, Plus, Target } from '@/components/ui/icons'
 import { supabase } from '@/lib/supabase'
-import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { LoadingState } from '@/components/ui/LoadingState'
 import { EmptyState } from '@/components/ui/EmptyState'
+import { MerMeny, type MerMenyVal } from '@/components/ui/MerMeny'
+import { StatusChip } from '@/components/ui/StatusChip'
+import { KvarterIkon } from '@/components/ui/icons/kvarter/KvarterIkon'
+import { KVARTER_FOKUS, type Status } from '@/components/ui/kvarterStatus'
 import { ReportDraftDialog } from '@/components/consultant/ReportDraftDialog'
 import { GoalCreationDialog } from '@/components/consultant/GoalCreationDialog'
 import { orgApi } from '@/services/orgApi'
@@ -39,7 +39,13 @@ import type { Avsnitt } from '@/services/laslogg'
 import { journalKolumner, journalMetaFranRad, type JournalSolFalt } from '@/services/journalSol'
 import { laslogg } from '@/services/laslogg'
 import { AktivitetsplanSektion } from '@/components/consultant/AktivitetsplanSektion'
+import { useAktivitetsplan } from '@/components/consultant/aktivitetsplan/useAktivitetsplan'
+import { VeckanKort } from '@/components/consultant/aktivitetsplan/VeckanKort'
+import { SpaltYta } from '@/components/consultant/SpaltYta'
 import { Tidslinje } from '@/components/consultant/Tidslinje'
+import { useRegelverk } from '@/components/consultant/useRegelverk'
+import { Motesklocka } from '@/components/consultant/Motesklocka'
+import { motesklocka } from '@/components/consultant/motesklockaRegel'
 import { useOrgAiSparr } from '@/hooks/useOrgAiSparr'
 import { useAuthStore } from '@/stores/authStore'
 import { useConfirmDialog } from '@/components/ui/ConfirmDialog'
@@ -48,14 +54,18 @@ import { cn } from '@/lib/utils'
 import { flikEfterTangent } from './flikTangenter'
 import { notifications } from '@/lib/toast'
 import { MotesKort, type MotenLage } from '@/components/consultant/MotesKort'
+import { GroupMessageDialog } from '@/components/consultant/GroupMessageDialog'
+import { langtDatum } from '@/components/consultant/aktivitetEtiketter'
 import { PlaceringDeltagareKort, type PlaceringarLage } from '@/components/consultant/PlaceringDeltagareKort'
 import { ResultatUppfoljningDialog } from '@/components/consultant/ResultatUppfoljningDialog'
 import { forvaldMotestyp, hamtaMotenForDeltagare, kadensForMoten } from '@/services/moteskadens'
 import { KONTAKT_KALLA_TEXT, kontaktAlderText, senasteKontakt } from '@/services/senasteKontakt'
 import { placeringRubrik } from '@/services/placeringUtfall'
-import { formatLocalDate } from '@/services/aktivitetSchema'
+import { formatLocalDate, veckosaldo } from '@/services/aktivitetSchema'
 import type { Placement } from '@/services/consultantService'
 import type { Uppfoljning } from './placeringsmatt'
+import { DeltagarHuvud } from './DeltagarHuvud'
+import { deltagarLaget, type LagetMoten, type LagetPlan } from './deltagarLaget'
 
 import { anvandareFranSession } from '@/lib/anvandareFranSession'
 interface Participant {
@@ -87,66 +97,31 @@ interface Goal {
   description: string
   status: 'NOT_STARTED' | 'IN_PROGRESS' | 'COMPLETED' | 'BLOCKED'
   priority: 'HIGH' | 'MEDIUM' | 'LOW'
-  deadline: string
+  /** null = inget slutdatum. Förr fick ett sådant mål en påhittad deadline 30 dagar fram (slipningen 2026-10-11). */
+  deadline: string | null
   progress: number
   /** KS2 b: vem som skapade målet; skiljer sig från den inloggade efter en överlämning. */
   consultantId?: string
   authorName?: string
 }
 
+/** En yta på sidan: kort-färg, en linje, stor rundning. Platt — inga kort i kort. */
+const YTA = 'bg-[var(--j-kort)] border border-[var(--j-linje)] rounded-[var(--j-r-l)] text-[var(--j-blak)]'
 
-// Status Badge Component
-function StatusBadge({ status, t }: { status: string; t: (key: string) => string }) {
-  const badges = {
-    ACTIVE: { label: t('consultant.participants.status.active'), color: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300' },
-    INACTIVE: { label: t('consultant.participants.status.inactive'), color: 'bg-stone-100 text-stone-800 dark:bg-stone-700 dark:text-stone-300' },
-    COMPLETED: { label: t('consultant.participants.status.completed'), color: 'bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-300' },
-    ON_HOLD: { label: t('consultant.participants.status.onHold'), color: 'bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300' },
-  }
-  const badge = badges[status as keyof typeof badges] || badges.INACTIVE
-
-  return (
-    <span className={cn('px-3 py-1 rounded-full text-sm font-medium', badge.color)}>
-      {badge.label}
-    </span>
-  )
+const MAL_STATUS: Record<Goal['status'], { status: Status; nyckel: string }> = {
+  NOT_STARTED: { status: 'planerat', nyckel: 'consultant.participantDetail.goalStatus.notStarted' },
+  IN_PROGRESS: { status: 'giltig', nyckel: 'consultant.participantDetail.goalStatus.inProgress' },
+  COMPLETED: { status: 'narvarande', nyckel: 'consultant.participantDetail.goalStatus.completed' },
+  BLOCKED: { status: 'ogiltig', nyckel: 'consultant.participantDetail.goalStatus.blocked' },
 }
 
-// Quick Stat Card
-function QuickStat({
-  icon: Icon,
-  label,
-  value,
-  status,
-  detalj,
-}: {
-  icon: React.ElementType
-  label: string
-  value: string | number
-  status?: 'good' | 'warning' | 'bad'
-  /** RK14: en rad under talet, t.ex. varifrån "senaste kontakt" kommer. */
-  detalj?: string
-}) {
-  const statusColors = {
-    good: 'text-emerald-600',
-    warning: 'text-amber-600',
-    bad: 'text-rose-600',
-    undefined: 'text-stone-900 dark:text-stone-100',
-  }
-
-  return (
-    <div className="text-center p-4 bg-stone-50 dark:bg-stone-800 rounded-xl">
-      <Icon className="w-6 h-6 text-stone-500 dark:text-stone-400 mx-auto mb-2" />
-      <p className={cn(typeof value === 'string' && value.length > 4 ? 'text-lg' : 'text-2xl', 'font-bold', statusColors[status || 'undefined'])}>
-        {value}
-      </p>
-      <p className="text-xs text-stone-500 dark:text-stone-400 mt-1">{label}</p>
-      {detalj && <p className="text-xs text-stone-500 dark:text-stone-400">{detalj}</p>}
-    </div>
-  )
+const PRIORITET_NYCKEL: Record<Goal['priority'], string> = {
+  HIGH: 'consultant.participantDetail.priority.high',
+  MEDIUM: 'consultant.participantDetail.priority.medium',
+  LOW: 'consultant.participantDetail.priority.low',
 }
 
-// Goal Card Component
+// Ett mål — en rad, inte ett kort i ett kort. Åtgärderna i Mer-menyn (PG17: "Ta bort" sist).
 function GoalCard({
   goal,
   onEdit,
@@ -164,153 +139,54 @@ function GoalCard({
   readOnly?: boolean
   t: (key: string) => string
 }) {
-  // Åtgärdsmenyn var tidigare en död knapp utan onClick — nu kopplad.
-  const [showMenu, setShowMenu] = useState(false)
-  const statusColors = {
-    NOT_STARTED: 'bg-stone-100 text-stone-600',
-    IN_PROGRESS: 'bg-blue-100 text-blue-600',
-    COMPLETED: 'bg-emerald-100 text-emerald-600',
-    BLOCKED: 'bg-rose-100 text-rose-600',
-  }
-
-  const priorityColors = {
-    HIGH: 'text-rose-600',
-    MEDIUM: 'text-amber-600',
-    LOW: 'text-stone-500',
-  }
-
-  const isOverdue = new Date(goal.deadline) < new Date() && goal.status !== 'COMPLETED'
+  const isOverdue = goal.deadline !== null && new Date(goal.deadline) < new Date() && goal.status !== 'COMPLETED'
+  const status = MAL_STATUS[goal.status]
+  const val: MerMenyVal[] = [
+    {
+      etikett: goal.status === 'NOT_STARTED' ? t('consultant.participantDetail.markInProgress') : t('consultant.participantDetail.markNotStarted'),
+      ikon: 'uppfoljning',
+      onClick: () => onEdit(goal),
+    },
+    ...(goal.status !== 'COMPLETED'
+      ? [{ etikett: t('consultant.participantDetail.markComplete'), ikon: 'klart' as const, onClick: () => onComplete(goal.id) }]
+      : []),
+    ...(onDelete ? [{ etikett: t('consultant.participantDetail.deleteGoal'), ikon: 'kryss' as const, farlig: true, onClick: () => onDelete(goal.id) }] : []),
+  ]
 
   return (
-    <div className={cn(
-      'p-4 rounded-xl border-2 transition-colors',
-      isOverdue ? 'border-rose-200 bg-rose-50/50 dark:border-rose-800 dark:bg-rose-900/10' : 'border-stone-200 dark:border-stone-700'
-    )}>
-      <div className="flex items-start justify-between mb-3">
-        <div className="flex-1">
-          <div className="flex items-center gap-2 mb-1">
-            <h4 className="font-medium text-stone-900 dark:text-stone-100">
-              {goal.title}
-            </h4>
-            {isOverdue && (
-              <AlertTriangle className="w-4 h-4 text-rose-600" />
-            )}
-          </div>
-          <p className="text-sm text-stone-500 dark:text-stone-400 line-clamp-2">
-            {goal.description}
-          </p>
+    <li className="grid gap-2.5 py-4 border-b border-[var(--j-linje)] last:border-b-0">
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0 grid gap-1">
+          <h4 className="m-0 text-base font-semibold text-[var(--j-blak)]">{goal.title}</h4>
+          {goal.description && <p className="m-0 text-sm text-[var(--j-blak-2)] line-clamp-2">{goal.description}</p>}
           {readOnly && (
-            <p
-              className="text-xs text-stone-500 dark:text-stone-400 mt-1"
-              title={t('consultant.handover.readOnlyHint')}
-            >
+            <p className="m-0 text-xs text-[var(--j-blak-3)]" title={t('consultant.handover.readOnlyHint')}>
               {t('consultant.handover.createdBy')} {goal.authorName ?? t('consultant.handover.formerConsultant')}
             </p>
           )}
         </div>
-        {!readOnly && (
-        <div className="relative">
-          <button
-            onClick={() => setShowMenu(v => !v)}
-            aria-label={t('consultant.participantDetail.goalActions')}
-            aria-haspopup="menu"
-            aria-expanded={showMenu}
-            className="p-1 hover:bg-stone-100 dark:hover:bg-stone-700 rounded-lg"
-          >
-            <MoreVertical className="w-4 h-4 text-stone-600" aria-hidden="true" />
-          </button>
-          {showMenu && (
-            <>
-              <button
-                type="button"
-                aria-hidden="true"
-                tabIndex={-1}
-                onClick={() => setShowMenu(false)}
-                className="fixed inset-0 z-10 cursor-default"
-              />
-              <div
-                role="menu"
-                className="absolute right-0 top-8 z-20 w-56 py-1 bg-white dark:bg-stone-800 rounded-xl shadow-lg border border-stone-200 dark:border-stone-700"
-              >
-                <button
-                  role="menuitem"
-                  onClick={() => { setShowMenu(false); onEdit(goal) }}
-                  className="w-full px-4 py-2 text-left text-sm text-stone-700 dark:text-stone-200 hover:bg-stone-50 dark:hover:bg-stone-700"
-                >
-                  {goal.status === 'NOT_STARTED'
-                    ? t('consultant.participantDetail.markInProgress')
-                    : t('consultant.participantDetail.markNotStarted')}
-                </button>
-                {goal.status !== 'COMPLETED' && (
-                  <button
-                    role="menuitem"
-                    onClick={() => { setShowMenu(false); onComplete(goal.id) }}
-                    className="w-full px-4 py-2 text-left text-sm text-stone-700 dark:text-stone-200 hover:bg-stone-50 dark:hover:bg-stone-700"
-                  >
-                    {t('consultant.participantDetail.markComplete')}
-                  </button>
-                )}
-                {onDelete && (
-                  <button
-                    role="menuitem"
-                    onClick={() => { setShowMenu(false); onDelete(goal.id) }}
-                    className="w-full px-4 py-2 text-left text-sm text-rose-700 dark:text-rose-300 hover:bg-stone-50 dark:hover:bg-stone-700"
-                  >
-                    {t('consultant.participantDetail.deleteGoal')}
-                  </button>
-                )}
-              </div>
-            </>
-          )}
-        </div>
-        )}
+        {!readOnly && <MerMeny baraIkon etikett={t('consultant.participantDetail.goalActions')} val={val} />}
       </div>
-
-      <div className="flex items-center gap-3 mb-3">
-        <span className={cn('px-2 py-0.5 rounded text-xs font-medium', statusColors[goal.status])}>
-          {goal.status === 'NOT_STARTED' ? t('consultant.participantDetail.goalStatus.notStarted') :
-           goal.status === 'IN_PROGRESS' ? t('consultant.participantDetail.goalStatus.inProgress') :
-           goal.status === 'COMPLETED' ? t('consultant.participantDetail.goalStatus.completed') : t('consultant.participantDetail.goalStatus.blocked')}
-        </span>
-        <span className={cn('text-xs font-medium', priorityColors[goal.priority])}>
-          {goal.priority === 'HIGH' ? t('consultant.participantDetail.priority.high') :
-           goal.priority === 'MEDIUM' ? t('consultant.participantDetail.priority.medium') : t('consultant.participantDetail.priority.low')}
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-[0.8125rem] text-[var(--j-blak-3)]">
+        <StatusChip status={status.status}>{t(status.nyckel)}</StatusChip>
+        <span>{t(PRIORITET_NYCKEL[goal.priority])}</span>
+        <span className={cn(isOverdue && 'font-semibold text-[var(--s-ogiltig-text)]')}>
+          {goal.deadline
+            ? <>{t('consultant.participantDetail.deadline')}: {langtDatum(goal.deadline.slice(0, 10))}{isOverdue ? ' · passerad' : ''}</>
+            : 'Inget slutdatum'}
         </span>
       </div>
-
-      {/* Progress Bar */}
-      <div className="mb-3">
-        <div className="flex items-center justify-between text-xs mb-1">
-          <span className="text-stone-500">{t('common.progress')}</span>
-          <span className="font-medium text-stone-700 dark:text-stone-300">{goal.progress}%</span>
+      <div className="flex items-center gap-3">
+        <div
+          className="flex-1 h-2 rounded-full bg-[var(--j-sankt)] overflow-hidden"
+          role="img"
+          aria-label={`${t('common.progress')} ${goal.progress} %`}
+        >
+          <div className="h-full rounded-full bg-[var(--j-gran)]" style={{ width: `${goal.progress}%` }} />
         </div>
-        <div className="h-2 bg-stone-200 dark:bg-stone-700 rounded-full overflow-hidden">
-          <div
-            className={cn(
-              'h-full rounded-full transition-all',
-              goal.status === 'COMPLETED' ? 'bg-emerald-500' : 'bg-[var(--c-solid)]'
-            )}
-            style={{ width: `${goal.progress}%` }}
-          />
-        </div>
+        <span className="text-[0.8125rem] font-semibold tabular-nums text-[var(--j-blak-2)]">{goal.progress} %</span>
       </div>
-
-      <div className="flex items-center justify-between">
-        <span className={cn(
-          'text-xs',
-          isOverdue ? 'text-rose-600 font-medium' : 'text-stone-500'
-        )}>
-          <Clock className="w-3 h-3 inline mr-1" />
-          {t('consultant.participantDetail.deadline')}: {new Date(goal.deadline).toLocaleDateString('sv-SE')}
-        </span>
-        {goal.status !== 'COMPLETED' && (
-          <Button size="sm" variant="ghost" onClick={() => onComplete(goal.id)}>
-            <CheckCircle className="w-4 h-4 mr-1" />
-            {t('consultant.participantDetail.markComplete')}
-          </Button>
-        )}
-      </div>
-    </div>
+    </li>
   )
 }
 
@@ -330,14 +206,22 @@ export function ParticipantDetailPage() {
   const [currentUserId, setCurrentUserId] = useState<string | null>(null)
   const kollegaNamnRef = useRef<Record<string, string>>({})
   const [journalLoadError, setJournalLoadError] = useState<string | null>(null)
-  const [activeTab, setActiveTab] = useState<'overview' | 'aktivitet' | 'goals' | 'journal' | 'timeline'>('overview')
+  // Kom igång-guiden (2026-10-11) länkar hit med ?flik=aktivitet / ?flik=journal,
+  // så knappen "Öppna Journal" landar på journalen och inte på översikten.
+  const [sokParametrar] = useSearchParams()
+  const [activeTab, setActiveTab] = useState<'overview' | 'aktivitet' | 'goals' | 'journal' | 'timeline'>(() => {
+    const flik = sokParametrar.get('flik')
+    return flik === 'aktivitet' || flik === 'journal' || flik === 'goals' || flik === 'timeline' ? flik : 'overview'
+  })
   const deltagarFlikar = [
-    { id: 'overview', label: t('consultant.participantDetail.tabs.overview'), icon: Activity },
+    { id: 'overview', label: t('consultant.participantDetail.tabs.overview') },
     // Konsulentvyn översätts inte (DESIGN.md §2) — svenskt literal med flit, ingen sv.json-nyckel.
-    { id: 'aktivitet', label: 'Aktivitet', icon: Calendar },
-    { id: 'goals', label: t('consultant.participantDetail.tabs.goals'), icon: Target },
-    { id: 'journal', label: t('consultant.participantDetail.tabs.journal'), icon: MessageSquare },
-    { id: 'timeline', label: t('consultant.participantDetail.tabs.timeline'), icon: Clock },
+    // Fliken heter "Aktivitet" (inte förslagets "Plan och närvaro") så länge Kom igång-guidens
+    // texter (komIgangSteg.ts) säger "fliken Aktivitet".
+    { id: 'aktivitet', label: 'Aktivitet' },
+    { id: 'goals', label: t('consultant.participantDetail.tabs.goals') },
+    { id: 'journal', label: t('consultant.participantDetail.tabs.journal') },
+    { id: 'timeline', label: t('consultant.participantDetail.tabs.timeline') },
   ] as const
   const [newNote, setNewNote] = useState('')
   const [showReportDraft, setShowReportDraft] = useState(false)
@@ -350,6 +234,8 @@ export function ParticipantDetailPage() {
   const aiAv = orgAiSparr != null || egenAiAv
   const { confirm } = useConfirmDialog()
   const [showMeetingDialog, setShowMeetingDialog] = useState(false)
+  const [showMessageDialog, setShowMessageDialog] = useState(false)
+  const [loggarSamtal, setLoggarSamtal] = useState(false)
   const [showPlacementDialog, setShowPlacementDialog] = useState(false)
   // RR11: deltagarens möten — för mötesrutan, förvald mötestyp och RK14.
   const [motenLage, setMotenLage] = useState<MotenLage>({ status: 'laddar' })
@@ -360,6 +246,15 @@ export function ParticipantDetailPage() {
   const [uppfoljning, setUppfoljning] = useState<{ placering: Placement; vilken: Uppfoljning } | null>(null)
   // RK14: senaste meddelandet åt något håll; null = inga eller inte hämtat.
   const [senasteMeddelande, setSenasteMeddelande] = useState<string | null>(null)
+  // Omtaget steg 5: planen hämtas här EN gång och delas av huvudet (läget,
+  // Mer-menyn), Översikt (veckan) och Aktivitet-fliken.
+  const planStyrning = useAktivitetsplan(
+    participantId ?? '',
+    participant ? `${participant.first_name ?? ''} ${participant.last_name ?? ''}`.trim() : '',
+    !!participantId,
+  )
+  // Kundtypen när det inte finns någon plan att läsa den ur (null medan medlemskapen laddar).
+  const kundRegelverk = useRegelverk()
 
   // Hämtningarna skriver tillstånd först efter await — laddar-läget sätts av
   // den som begär en ny omgång (samma mönster som AktivitetsplanSektion).
@@ -393,6 +288,19 @@ export function ParticipantDetailPage() {
 
   const laddaOmMoten = () => { setMotenLage({ status: 'laddar' }); setMotenOmgang((n) => n + 1) }
   const laddaOmPlaceringar = () => { setPlaceringarLage({ status: 'laddar' }); setPlaceringOmgang((n) => n + 1) }
+  // Samtal utanför portalen loggas med ett klick — samma logContact som Min dag (F12).
+  const loggaSamtal = async () => {
+    if (!participant) return
+    setLoggarSamtal(true)
+    try {
+      await consultantService.logContact(participant.participant_id)
+      notifications.success('Samtalet är loggat som kontakt')
+    } catch (err) {
+      notifications.error(err instanceof Error ? err.message : 'Samtalet kunde inte loggas')
+    } finally {
+      setLoggarSamtal(false)
+    }
+  }
 
   // KV1/KK1: håller reda på VILKEN deltagare som senast begärdes. Varje
   // asynkron etapp i fetchParticipantData jämför mot den här innan den
@@ -493,7 +401,7 @@ export function ParticipantDetailPage() {
           description: g.description || '',
           status: g.status,
           priority: g.priority,
-          deadline: g.deadline || new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+          deadline: g.deadline ?? null,
           progress: g.progress || 0,
           consultantId: g.consultant_id,
           authorName: kollegaNamnRef.current[g.consultant_id],
@@ -576,7 +484,7 @@ export function ParticipantDetailPage() {
         description: g.description || '',
         status: g.status,
         priority: g.priority,
-        deadline: g.deadline || new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+        deadline: g.deadline ?? null,
         progress: g.progress || 0,
         consultantId: g.consultant_id,
         authorName: kollegaNamnRef.current[g.consultant_id],
@@ -852,14 +760,14 @@ export function ParticipantDetailPage() {
   // som en tidigare deltagares kvarblivna uppgifter (KV1).
   if (error) {
     return (
-      <div className="text-center py-12" role="alert">
-        <AlertTriangle className="w-10 h-10 mx-auto text-rose-500 mb-3" aria-hidden="true" />
-        <p className="text-stone-700 dark:text-stone-200 font-medium">{error}</p>
-        <div className="flex items-center justify-center gap-3 mt-4">
-          <Button variant="outline" onClick={() => fetchParticipantData(participantId)}>
+      <div className="text-center py-12 text-[var(--j-blak)]" role="alert">
+        <KvarterIkon namn="varning" size={40} ton="ogiltig" className="mx-auto mb-3" />
+        <p className="font-semibold">{error}</p>
+        <div className="flex flex-wrap items-center justify-center gap-3 mt-4">
+          <Button ton="kvarter" variant="secondary" onClick={() => fetchParticipantData(participantId)}>
             {t('consultant.analytics.tryAgain', 'Försök igen')}
           </Button>
-          <Button variant="ghost" onClick={() => navigate('/consultant/participants')}>
+          <Button ton="kvarter" variant="tertiary" onClick={() => navigate('/consultant/participants')}>
             {t('consultant.participantDetail.backToParticipants')}
           </Button>
         </div>
@@ -870,8 +778,8 @@ export function ParticipantDetailPage() {
   if (!participant) {
     return (
       <div className="text-center py-12">
-        <p className="text-stone-500">{t('consultant.participantDetail.notFound')}</p>
-        <Button variant="outline" className="mt-4" onClick={() => navigate('/consultant/participants')}>
+        <p className="text-[var(--j-blak-2)]">{t('consultant.participantDetail.notFound')}</p>
+        <Button ton="kvarter" variant="secondary" className="mt-4" onClick={() => navigate('/consultant/participants')}>
           {t('consultant.participantDetail.backToParticipants')}
         </Button>
       </div>
@@ -885,7 +793,6 @@ export function ParticipantDetailPage() {
     moten: motenLage.status === 'klart' ? motenLage.moten : [],
     senasteMeddelande,
   })
-  const kontaktDagar = kontakt ? Math.floor((Date.now() - new Date(kontakt.at).getTime()) / (24 * 60 * 60 * 1000)) : null
   // RR11: mötestypen dialogen föreslår, ur samma kadens som deltagarlistans chip.
   const kadens = motenLage.status === 'klart' ? kadensForMoten(motenLage.moten, new Date()) : undefined
   const forvaldTyp = forvaldMotestyp(kadens)
@@ -896,128 +803,83 @@ export function ParticipantDetailPage() {
   const placeringsrad = placeringarLage.status === 'klart' ? placeringRubrik(placeringarLage.placeringar, formatLocalDate(new Date())) : null
 
   const aktivaMal = goals.filter(g => g.status !== 'COMPLETED')
+  const fullNamn = `${participant.first_name ?? ''} ${participant.last_name ?? ''}`.trim() || participant.email
 
-  const getInitials = () => {
-    return `${participant.first_name?.[0] || ''}${participant.last_name?.[0] || ''}`.toUpperCase() ||
-      participant.email[0].toUpperCase()
-  }
+  // Läget i en mening — bara när allt den bygger på är inläst (deltagarLaget.ts).
+  const planLage = planStyrning.lage
+  const idagText = formatLocalDate(new Date())
+  const lagetPlan: LagetPlan = planLage.status === 'laddar'
+    ? { status: 'laddar' }
+    : planLage.status === 'fel'
+      ? { status: 'fel' }
+      : {
+          status: 'klart',
+          plan: planLage.plan,
+          ogiltigaIVeckan: planLage.plan ? veckosaldo(planLage.sessions, idagText).antalOgiltigFranvaro : 0,
+        }
+  const lagetMoten: LagetMoten = motenLage.status === 'klart' && kadens
+    ? { status: 'klart', kadens }
+    : motenLage.status === 'fel' ? { status: 'fel' } : { status: 'laddar' }
+  const laget = deltagarLaget({
+    regelverk: planLage.status === 'klart' && planLage.plan ? planStyrning.regelverk : kundRegelverk,
+    plan: lagetPlan,
+    moten: lagetMoten,
+    placeringsrad: placeringarLage.status === 'laddar' ? undefined : placeringsrad,
+    kontakt,
+    idag: new Date(),
+  })
+  const harPlan = planLage.status === 'klart' && !!planLage.plan && planLage.plan.status !== 'ended'
+  const goalReadOnly = (goal: Goal) => !!goal.consultantId && !!currentUserId && goal.consultantId !== currentUserId
+
+  const placeringKort = (
+    <PlaceringDeltagareKort
+      lage={placeringarLage}
+      onForsokIgen={laddaOmPlaceringar}
+      onRegistrera={(placering, vilken) => setUppfoljning({ placering, vilken })}
+      onBetalstatusAndrad={laddaOmPlaceringar}
+    />
+  )
 
   return (
-    <div className="space-y-6">
-      {/* Back Button */}
+    <div className="grid gap-5 sm:gap-6 text-[var(--j-blak)]">
       <Link
         to="/consultant/participants"
-        className="inline-flex items-center gap-2 text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100 transition-colors"
+        className={cn('inline-flex items-center gap-2 justify-self-start text-sm font-semibold text-[var(--j-blak-2)] hover:text-[var(--j-blak)] rounded-[var(--j-r-s)] min-h-[44px] sm:min-h-0', KVARTER_FOKUS)}
       >
-        <ArrowLeft className="w-4 h-4" />
+        <ArrowLeft className="w-4 h-4" aria-hidden="true" />
         {t('consultant.participantDetail.backToParticipants')}
       </Link>
 
-      {/* Header */}
-      <Card className="p-6">
-        <div className="flex flex-col sm:flex-row sm:items-start gap-6">
-          {/* Avatar */}
-          <div className="w-20 h-20 rounded-2xl bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40 flex items-center justify-center text-2xl font-bold text-[var(--c-text)] dark:text-[var(--c-solid)] flex-shrink-0">
-            {getInitials()}
-          </div>
+      <DeltagarHuvud
+        namn={fullNamn}
+        bildUrl={participant.avatar_url}
+        epost={participant.email}
+        telefon={participant.phone}
+        status={participant.status}
+        placeringsrad={placeringsrad}
+        laget={laget}
 
-          {/* Info */}
-          <div className="flex-1">
-            {/* RK17 (rollspelet 2026-09-27): på 390 px klipptes "Boka möte"
-                utanför skärmen — raden radbryts nu under namnet på mobil. */}
-            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
-              <div className="min-w-0">
-                <h1 className="text-2xl font-bold text-stone-900 dark:text-stone-100">
-                  {participant.first_name} {participant.last_name}
-                </h1>
-                <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-2 text-stone-500 dark:text-stone-400">
-                  <span className="flex items-center gap-1 min-w-0 break-all">
-                    <Mail className="w-4 h-4" />
-                    {participant.email}
-                  </span>
-                  {participant.phone && (
-                    <span className="flex items-center gap-1">
-                      <Phone className="w-4 h-4" />
-                      {participant.phone}
-                    </span>
-                  )}
-                </div>
-              </div>
-              <div className="flex flex-wrap items-center gap-2 sm:justify-end" data-testid="deltagare-atgarder">
-                <StatusBadge status={participant.status} t={t} />
-                {placeringsrad && (
-                  <span className="px-3 py-1 rounded-full text-sm font-medium bg-sky-100 text-sky-900 dark:bg-sky-900/40 dark:text-sky-100" data-testid="placering-status">
-                    {placeringsrad}
-                  </span>
-                )}
-                <Button variant="outline" size="sm" onClick={() => setShowMeetingDialog(true)}>
-                  <Calendar className="w-4 h-4 mr-1" />
-                  {t('consultant.communication.bookMeeting', 'Boka möte')}
-                </Button>
-                {/* AG3-rest (2026-09-02): knappen låg på analysfliken, där
-                    konsulenten fick söka fram samma person hon just lämnat.
-                    En placering blir av när hon står på deltagarens sida. */}
-                <Button variant="outline" size="sm" onClick={() => setShowPlacementDialog(true)}>
-                  <Briefcase className="w-4 h-4 mr-1" aria-hidden="true" />
-                  Registrera placering
-                </Button>
-              </div>
-            </div>
+        loggarSamtal={loggarSamtal}
+        onMeddelande={() => setShowMessageDialog(true)}
+        onBokaMote={() => setShowMeetingDialog(true)}
+        onLoggaSamtal={() => void loggaSamtal()}
+        // AG3-rest: en placering blir av när konsulenten står på deltagarens sida.
+        onRegistreraPlacering={() => setShowPlacementDialog(true)}
+        plan={planLage.status === 'klart' ? {
+          harPlan,
+          pdfLaddar: planStyrning.pdfLaddar,
+          onPdf: () => void planStyrning.laddaNerPdf(),
+          onAvsluta: () => void planStyrning.avslutaPlan(),
+        } : null}
+      />
 
-            {/* Quick Stats */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-6">
-              <QuickStat
-                icon={FileText}
-                label={t('consultant.participantDetail.cvScore')}
-                value={participant.ats_score ? `${participant.ats_score}%` : '—'}
-                // RR6: en placerad deltagare flaggas inte rött för att CV saknas.
-                status={
-                  placeringsrad ? undefined :
-                  (participant.ats_score || 0) >= 70 ? 'good' :
-                  (participant.ats_score || 0) >= 50 ? 'warning' : 'bad'
-                }
-              />
-              <QuickStat
-                icon={Briefcase}
-                label={t('consultant.participantDetail.savedJobs')}
-                value={participant.saved_jobs_count}
-              />
-              <QuickStat
-                icon={Target}
-                label={t('consultant.participantDetail.activeGoals')}
-                value={goals.filter(g => g.status !== 'COMPLETED').length}
-              />
-              <QuickStat
-                icon={Clock}
-                label={t('consultant.participantDetail.lastContact')}
-                // RK14: "3" utan enhet, räknat bara ur last_contact_at. Nu
-                // "3 dagar sedan" ur verklig senaste kontakt, med källan under.
-                value={kontakt ? kontaktAlderText(kontakt.at) : '—'}
-                detalj={kontakt ? KONTAKT_KALLA_TEXT[kontakt.kalla] : 'Ingen kontakt registrerad'}
-                status={
-                  kontaktDagar === null ? 'bad' :
-                  kontaktDagar > 7 ? 'warning' : 'good'
-                }
-              />
-            </div>
-          </div>
-        </div>
-      </Card>
-
-      {/* Tab Navigation — ARIA-flikmönster (PG-skav 7, persona-genomgången
-          2026-09-12): tidigare vanliga <button> utan tab-semantik, så en
-          skärmläsare varken hörde vilken sektion som var aktiv eller att
-          knapparna hörde ihop som en flikrad.
-          RK5 (rollspelet 2026-09-27): rättelsen gav de inaktiva flikarna
-          tabIndex=-1 men ingen tangenthantering — Aktivitet, Mål, Journal och
-          Tidslinje gick då inte att nå utan mus (WCAG 2.1.1). Nu hela
-          WAI-ARIA-mönstret: roving tabindex, pil vänster/höger (runt), Home/End,
-          automatisk aktivering. */}
+      {/* Flikarna — ARIA-flikmönster (PG-skav 7) med roving tabindex, pilar och
+          Home/End (RK5). Omtaget: utan ikoner, en linje under den valda. */}
       <div
         role="tablist"
         aria-label="Deltagarens avsnitt"
         aria-orientation="horizontal"
-        className="flex items-center gap-2 border-b border-stone-200 dark:border-stone-700 overflow-x-auto"
+        className="flex items-end gap-1 border-b border-[var(--j-linje)] overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0"
       >
         {deltagarFlikar.map(tab => (
           <button
@@ -1037,160 +899,207 @@ export function ParticipantDetailPage() {
               document.getElementById(`participant-tab-${nasta}`)?.focus()
             }}
             className={cn(
-              'flex items-center gap-2 px-4 py-3 font-medium transition-colors whitespace-nowrap',
+              'px-3 sm:px-4 min-h-[44px] -mb-px border-b-[3px] text-[0.9375rem] font-semibold whitespace-nowrap transition-colors rounded-t-[var(--j-r-s)]',
+              KVARTER_FOKUS,
+              'focus-visible:outline-offset-[-3px]',
               activeTab === tab.id
-                ? 'text-[var(--c-text)] dark:text-[var(--c-solid)] border-b-2 border-[var(--c-solid)]'
-                : 'text-stone-500 hover:text-stone-700 dark:hover:text-stone-300'
+                ? 'border-[var(--j-gran)] text-[var(--j-blak)]'
+                : 'border-transparent text-[var(--j-blak-2)] hover:text-[var(--j-blak)] hover:border-[var(--j-linje-2)]'
             )}
           >
-            <tab.icon className="w-5 h-5" aria-hidden="true" />
             {tab.label}
           </button>
         ))}
       </div>
 
-      {/* Tab Content */}
       <div
         id={`participant-tabpanel-${activeTab}`}
         role="tabpanel"
         aria-labelledby={`participant-tab-${activeTab}`}
         tabIndex={0}
+        className={cn('min-w-0 rounded-[var(--j-r-m)]', KVARTER_FOKUS)}
       >
       {activeTab === 'overview' && (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <PlaceringDeltagareKort
-            lage={placeringarLage}
-            onForsokIgen={laddaOmPlaceringar}
-            onRegistrera={(placering, vilken) => setUppfoljning({ placering, vilken })}
-            onBetalstatusAndrad={laddaOmPlaceringar}
-          />
-          <MotesKort
-            lage={motenLage}
-            onBoka={() => setShowMeetingDialog(true)}
-            onForsokIgen={laddaOmMoten}
-            onAndrat={(id, status) => setMotenLage((prev) => prev.status === 'klart'
-              ? { ...prev, moten: prev.moten.map((m) => (m.id === id ? { ...m, status } : m)) }
-              : prev)}
-          />
-          {/* Recent Goals */}
-          <Card className="p-5">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="font-semibold text-stone-900 dark:text-stone-100">
-                {t('consultant.participantDetail.activeGoals')}
-              </h3>
-              {aktivaMal.length > 0 && (
-                <Button size="sm" variant="ghost" onClick={() => setActiveTab('goals')}>
-                  {t('common.seeAll')}
-                </Button>
-              )}
-            </div>
-            {/* RR20 (rollspelet 2026-09-27): utan aktiva mål stod rubriken och
-                "Se alla" över ett tomt kort. Nu ett tomläge med en invit. */}
-            {aktivaMal.length === 0 && (
-              <EmptyState
-                compact
-                icon={Target}
-                title={`${participant.first_name || 'Deltagaren'} har inga aktiva mål`}
-                description="Ett mål ni sätter tillsammans ger samtalen en riktning."
-                action={{ label: 'Sätt ett mål', onClick: () => setShowGoalDialog(true) }}
-              />
-            )}
-            <div className="space-y-3">
-              {aktivaMal.slice(0, 2).map(goal => (
-                <GoalCard
-                  key={goal.id}
-                  goal={goal}
-                  onEdit={handleEditGoal}
-                  onComplete={handleCompleteGoal}
-                  onDelete={handleDeleteGoal}
-                  readOnly={!!goal.consultantId && !!currentUserId && goal.consultantId !== currentUserId}
-                  t={t}
-                />
-              ))}
-            </div>
-          </Card>
-
-          {/* Quick Note */}
-          <Card className="p-5">
-            <h3 className="font-semibold text-stone-900 dark:text-stone-100 mb-4">
-              {t('consultant.participantDetail.quickNote')}
-            </h3>
-            <textarea
-              value={newNote}
-              onChange={e => setNewNote(e.target.value)}
-              placeholder={t('consultant.participantDetail.notePlaceholder')}
-              rows={4}
-              className={cn(
-                'w-full px-4 py-3 rounded-xl',
-                'bg-stone-100 dark:bg-stone-800',
-                'border-2 border-transparent focus:border-[var(--c-solid)]',
-                'text-stone-900 dark:text-stone-100',
-                'resize-none'
-              )}
+        <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(300px,360px)] lg:items-start">
+          <div className="grid gap-6 min-w-0">
+            <VeckanKort
+              lage={planLage}
+              participantName={participant.first_name || fullNamn}
+              onOppnaPlan={() => setActiveTab('aktivitet')}
+              onForsokIgen={planStyrning.ladda}
             />
-            <Button className="mt-3" onClick={handleAddNote} disabled={!newNote.trim()}>
-              <Send className="w-4 h-4 mr-2" />
-              {t('consultant.participantDetail.saveNote')}
-            </Button>
-          </Card>
+
+            <section aria-labelledby="mal-rubrik" className={cn(YTA, 'p-5 sm:p-6')}>
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <h2 id="mal-rubrik" className="m-0 font-rubrik text-[1.25rem] font-bold">
+                  {t('consultant.participantDetail.activeGoals')}
+                </h2>
+                {aktivaMal.length > 0 && (
+                  <Button ton="kvarter" variant="tertiary" size="sm" onClick={() => setActiveTab('goals')}>
+                    {t('common.seeAll')}
+                  </Button>
+                )}
+              </div>
+              {/* RR20: utan aktiva mål — ett tomläge med en invit, inte ett tomt kort. */}
+              {aktivaMal.length === 0 ? (
+                <EmptyState
+                  compact
+                  icon={Target}
+                  title={`${participant.first_name || 'Deltagaren'} har inga aktiva mål`}
+                  description="Ett mål ni sätter tillsammans ger samtalen en riktning."
+                  action={{ label: 'Sätt ett mål', onClick: () => setShowGoalDialog(true) }}
+                />
+              ) : (
+                <ul className="m-0 mt-1 p-0 list-none">
+                  {aktivaMal.slice(0, 2).map(goal => (
+                    <GoalCard
+                      key={goal.id}
+                      goal={goal}
+                      onEdit={handleEditGoal}
+                      onComplete={handleCompleteGoal}
+                      onDelete={handleDeleteGoal}
+                      readOnly={goalReadOnly(goal)}
+                      t={t}
+                    />
+                  ))}
+                </ul>
+              )}
+            </section>
+
+            <section aria-labelledby="snabbanteckning-rubrik" className={cn(YTA, 'p-5 sm:p-6 grid gap-3')}>
+              <h2 id="snabbanteckning-rubrik" className="m-0 font-rubrik text-[1.25rem] font-bold">
+                {t('consultant.participantDetail.quickNote')}
+              </h2>
+              <label htmlFor="snabbanteckning" className="sr-only">{t('consultant.participantDetail.quickNote')}</label>
+              <textarea
+                id="snabbanteckning"
+                value={newNote}
+                onChange={e => setNewNote(e.target.value)}
+                placeholder={t('consultant.participantDetail.notePlaceholder')}
+                rows={3}
+                className={cn(
+                  'w-full px-4 py-3 rounded-[var(--j-r-m)] resize-y',
+                  'bg-[var(--j-kort)] text-[var(--j-blak)] border border-[var(--j-linje-2)]',
+                  'placeholder:text-[var(--j-blak-3)]',
+                  KVARTER_FOKUS,
+                )}
+              />
+              <div>
+                <Button ton="kvarter" variant="secondary" onClick={handleAddNote} disabled={!newNote.trim()}>
+                  {t('consultant.participantDetail.saveNote')}
+                </Button>
+              </div>
+            </section>
+          </div>
+
+          <aside className="grid gap-4 min-w-0" aria-label="Möten och uppgifter">
+            <MotesKort
+              lage={motenLage}
+              onBoka={() => setShowMeetingDialog(true)}
+              onForsokIgen={laddaOmMoten}
+              onAndrat={(id, status) => setMotenLage((prev) => prev.status === 'klart'
+                ? { ...prev, moten: prev.moten.map((m) => (m.id === id ? { ...m, status } : m)) }
+                : prev)}
+            />
+            {placeringKort}
+            <SpaltYta ikon="deltagare" rubrik="Om deltagaren" testId="om-deltagaren">
+              <dl className="m-0 grid grid-cols-[auto_minmax(0,1fr)] gap-x-4 gap-y-2.5 text-sm">
+                <dt className="text-[var(--j-blak-3)]">{t('consultant.participantDetail.lastContact')}</dt>
+                {/* RK14: "3" utan enhet blev "3 dagar sedan", med källan bredvid. */}
+                <dd className="m-0 grid">
+                  {kontakt ? (
+                    <>
+                      <span className="font-semibold">{kontaktAlderText(kontakt.at)}</span>
+                      <span className="text-[var(--j-blak-3)]">{KONTAKT_KALLA_TEXT[kontakt.kalla]}</span>
+                    </>
+                  ) : (
+                    <span className="font-semibold">Ingen kontakt registrerad</span>
+                  )}
+                </dd>
+                <dt className="text-[var(--j-blak-3)]">{t('consultant.participantDetail.cvScore')}</dt>
+                <dd className="m-0">
+                  {participant.ats_score ? `${participant.ats_score} %` : participant.has_cv ? 'CV finns, inget poäng än' : 'Inget CV än'}
+                </dd>
+                <dt className="text-[var(--j-blak-3)]">{t('consultant.participantDetail.savedJobs')}</dt>
+                <dd className="m-0 tabular-nums">{participant.saved_jobs_count}</dd>
+              </dl>
+            </SpaltYta>
+          </aside>
         </div>
       )}
 
       {activeTab === 'aktivitet' && participantId && (
         <AktivitetsplanSektion
           participantId={participantId}
-          participantName={`${participant.first_name} ${participant.last_name}`.trim()}
+          participantName={fullNamn}
+          styrning={planStyrning}
+          hogerspaltForst={(regelverk) => regelverk === 'leverantor' ? (
+            <>
+              {/* Rusta och matcha: mötesklockan (14/28 dagar) och placeringen. */}
+              <SpaltYta ikon="tid" rubrik="Möten enligt avtalet" testId="motesklocka-yta">
+                {motenLage.status === 'klart' && kadens ? (
+                  <Motesklocka klocka={motesklocka(kadens, new Date())} />
+                ) : motenLage.status === 'fel' ? (
+                  <p className="m-0 text-sm text-[var(--s-ogiltig-text)]">
+                    Mötena kunde inte hämtas.{' '}
+                    <button type="button" className="font-semibold underline underline-offset-2" onClick={laddaOmMoten}>Försök igen</button>
+                  </p>
+                ) : null}
+              </SpaltYta>
+              {placeringKort}
+            </>
+          ) : null}
         />
       )}
 
       {activeTab === 'goals' && (
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <p className="text-stone-500">
-              {t('consultant.participantDetail.activeGoalsCount', { count: goals.filter(g => g.status !== 'COMPLETED').length })}
-            </p>
-            <Button onClick={() => setShowGoalDialog(true)}>
-              <Plus className="w-4 h-4 mr-2" />
+        <section aria-labelledby="alla-mal-rubrik" className={cn(YTA, 'p-5 sm:p-6')}>
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <h2 id="alla-mal-rubrik" className="m-0 font-rubrik text-[1.25rem] font-bold">
+              {t('consultant.participantDetail.activeGoalsCount', { count: aktivaMal.length })}
+            </h2>
+            <Button ton="kvarter" variant="secondary" onClick={() => setShowGoalDialog(true)} leftIcon={<Plus className="w-4 h-4" aria-hidden="true" />}>
               {t('consultant.participantDetail.newGoal')}
             </Button>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {goals.map(goal => (
-              <GoalCard
-                key={goal.id}
-                goal={goal}
-                onEdit={handleEditGoal}
-                onComplete={handleCompleteGoal}
-                onDelete={handleDeleteGoal}
-                readOnly={!!goal.consultantId && !!currentUserId && goal.consultantId !== currentUserId}
-                t={t}
-              />
-            ))}
-          </div>
-        </div>
+          {goals.length > 0 && (
+            <ul className="m-0 mt-1 p-0 list-none">
+              {goals.map(goal => (
+                <GoalCard
+                  key={goal.id}
+                  goal={goal}
+                  onEdit={handleEditGoal}
+                  onComplete={handleCompleteGoal}
+                  onDelete={handleDeleteGoal}
+                  readOnly={goalReadOnly(goal)}
+                  t={t}
+                />
+              ))}
+            </ul>
+          )}
+        </section>
       )}
 
       {activeTab === 'journal' && (
-        <div className="space-y-4">
-          <div className="flex items-center justify-between gap-4">
+        <div className="grid gap-4">
+          <div className="flex flex-wrap items-center justify-between gap-3">
             {/* PG21: fliken hette "Dagbok" men är konsulentens journal — deltagarens dagbok är privat. */}
-            <p className="text-sm text-stone-500 dark:text-stone-400">
+            <p className="m-0 text-sm text-[var(--j-blak-2)]">
               {t('consultant.participantDetail.journalPrivateNote')}
             </p>
             {aiAv ? (
-              <p className="text-sm text-stone-500 dark:text-stone-400 shrink-0" role="status">
+              <p className="m-0 text-sm text-[var(--j-blak-3)] shrink-0" role="status">
                 {t('consultant.participantDetail.reportDraftAiOff')}
               </p>
             ) : (
-              <Button variant="outline" onClick={() => setShowReportDraft(true)}>
-                <Sparkles className="w-4 h-4 mr-2" />
+              <Button ton="kvarter" variant="secondary" onClick={() => setShowReportDraft(true)} leftIcon={<KvarterIkon namn="dokument" size={20} />}>
                 {t('consultant.participantDetail.reportDraft')}
               </Button>
             )}
           </div>
 
           <ParticipantJournal
-            participantName={`${participant.first_name} ${participant.last_name}`}
+            participantName={fullNamn}
             entries={journal}
             loadError={journalLoadError}
             onRetryLoad={refetchJournal}
@@ -1215,9 +1124,7 @@ export function ParticipantDetailPage() {
         />
       )}
 
-      {/* KA5: möte och mål gick tidigare bara att skapa via en generisk dialog
-          på en annan flik, där konsulenten fick söka fram samma person hon
-          just tittade på. Båda dialogerna tar emot deltagaren direkt. */}
+      {/* KA5: möte och mål skapas med deltagaren förvald. */}
       {participant && (
         <GoalCreationDialog
           isOpen={showGoalDialog}
@@ -1231,13 +1138,20 @@ export function ParticipantDetailPage() {
       )}
 
       {participant && (
+        <GroupMessageDialog
+          isOpen={showMessageDialog}
+          onClose={() => setShowMessageDialog(false)}
+          preselectedIds={[participant.participant_id]}
+        />
+      )}
+
+      {participant && (
         <MeetingSchedulerDialog
           isOpen={showMeetingDialog}
           onClose={() => setShowMeetingDialog(false)}
           onSuccess={() => {
             setShowMeetingDialog(false)
-            // RR11: ingen bekräftelse syntes efter bokningen, och mötesrutan
-            // (och kadensen) ska visa det bokade mötet direkt.
+            // RR11: bekräftelse, och mötesrutan (och kadensen) visar det bokade mötet direkt.
             notifications.success('Mötet är bokat')
             laddaOmMoten()
           }}
@@ -1247,8 +1161,7 @@ export function ParticipantDetailPage() {
         />
       )}
 
-      {/* AG3/KS1: enda skrivvägen till consultant_placements. Flyttad hit
-          från AnalyticsTab 2026-09-02 — dialogen hoppar över deltagarsökningen. */}
+      {/* AG3/KS1: enda skrivvägen till consultant_placements. Dialogen hoppar över deltagarsökningen. */}
       {participant && (
         <PlacementDialog
           isOpen={showPlacementDialog}

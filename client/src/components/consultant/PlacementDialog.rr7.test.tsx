@@ -10,6 +10,8 @@ import { PlacementDialog } from './PlacementDialog'
 import { consultantService } from '@/services/consultantService'
 import { extraKolumner, anteckningMedExtra, valbaraTyper, placeringLage } from '@/services/placeringUtfall'
 
+// Kundtypen (slipningen 2026-10-11) läses med React Query; här står den fast.
+vi.mock('@/components/consultant/useRegelverk', () => ({ useOrgTypVisning: () => ({ visaAvtalskrav: true, visaIvoUnderlag: true }), useRegelverk: () => 'kommun' }))
 vi.mock('@/services/consultantService', () => ({ consultantService: { recordPlacement: vi.fn() } }))
 vi.mock('@/lib/supabase', () => ({
   supabase: {

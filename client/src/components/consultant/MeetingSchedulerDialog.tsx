@@ -67,6 +67,18 @@ const durations = [
   { value: 90, label: '90 min' },
 ]
 
+/**
+ * Slipningen 2026-10-11: dialogen förvalde i dag även en lördag eller söndag och
+ * varnade sedan "Söndag — stämmer dagen?". Förvalet är nu närmaste vardag.
+ */
+function nastaVardag(d: Date): Date {
+  const ut = new Date(d)
+  const dag = ut.getDay()
+  if (dag === 6) ut.setDate(ut.getDate() + 2)
+  else if (dag === 0) ut.setDate(ut.getDate() + 1)
+  return ut
+}
+
 export function MeetingSchedulerDialog({
   isOpen,
   onClose,
@@ -82,7 +94,7 @@ export function MeetingSchedulerDialog({
   const [selectedParticipant, setSelectedParticipant] = useState<Participant | null>(
     preselectedParticipant || null
   )
-  const [selectedDate, setSelectedDate] = useState<Date>(new Date())
+  const [selectedDate, setSelectedDate] = useState<Date>(() => nastaVardag(new Date()))
   const [selectedTime, setSelectedTime] = useState<string>('')
   const [duration, setDuration] = useState(30)
   const [meetingType, setMeetingType] = useState<MeetingType>(forvaldTyp)
@@ -202,7 +214,7 @@ export function MeetingSchedulerDialog({
     setStep(preselectedParticipant ? 'datetime' : 'participant')
     setSelectedParticipant(preselectedParticipant ?? null)
     setFel(null)
-    setSelectedDate(new Date())
+    setSelectedDate(nastaVardag(new Date()))
     setSelectedTime('')
     setDuration(30)
     setMeetingType(forvaldTyp)

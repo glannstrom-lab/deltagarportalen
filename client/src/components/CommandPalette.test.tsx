@@ -20,13 +20,20 @@
  */
 
 import { describe, it, expect, vi, afterEach } from 'vitest'
-import { render, screen, fireEvent, cleanup } from '@testing-library/react'
+import { render as rtlRender, screen, fireEvent, cleanup } from '@testing-library/react'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import type { ReactElement } from 'react'
 import { MemoryRouter } from 'react-router-dom'
 import CommandPalette from './CommandPalette'
 import { normalisera, matchar, poang, type PalettMal } from '@/lib/palettMatchning'
 import { navHubs } from './layout/navigation'
 
 afterEach(cleanup)
+
+// Paletten läser konsulentens deltagare med React Query (slipningen 2026-10-11).
+function render(ui: ReactElement) {
+  return rtlRender(<QueryClientProvider client={new QueryClient({ defaultOptions: { queries: { retry: false } } })}>{ui}</QueryClientProvider>)
+}
 
 function oppna() {
   const utils = render(

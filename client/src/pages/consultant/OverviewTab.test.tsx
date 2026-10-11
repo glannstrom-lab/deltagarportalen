@@ -1,16 +1,13 @@
 /**
- * Tester för OverviewTab.
+ * Tester för OverviewTab — Min dag som en vy (omtaget "Kvarter", steg 3, 2026-10-11).
  *
- * KS7: ett misslyckat anrop mot consultant_dashboard_participants ska ge ett
- * synligt felläge med "Försök igen" — INTE samma skärm som en konsulent utan
- * deltagare (KPI-korten skulle annars visa 0/0/0/0, identiskt med ett fel).
+ * KS7: ett misslyckat anrop ska ge ett synligt felläge med "Försök igen" —
+ * INTE samma skärm som en konsulent utan deltagare.
  *
- * KV5: "CV-kvalitet"-kortet delade ord med AnalyticsTab men mätte något helt
- * annat (snitt ATS-poäng, med null räknat som 0). Här verifieras att kortet
- * nu heter något som beskriver vad det mäter, och att null INTE räknas som 0.
+ * Nyckeltalen (KV5, KV6-S, RK6, RK23/24/26, målöversikten) flyttade till
+ * Rapporter — deras tester står i OversiktSiffror.test.tsx.
  *
- * KV6-S: aktivitetsflödets "Loggade in"-rad byggs av `last_login`, som i
- * verkligheten är `profiles.updated_at` (vyns alias) — inte en inloggning.
+ * Testerna hittar element på roll och testid, inte på löptext där det går.
  */
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, fireEvent, waitFor, within } from '@testing-library/react'
@@ -111,167 +108,51 @@ beforeEach(() => {
 
 describe('OverviewTab — KS7: felläge skilt från "inga deltagare"', () => {
   it('visar ett eget felläge med orsak och "Försök igen" när hämtningen misslyckas', async () => {
-    tableResponses.consultant_dashboard_participants = {
-      data: null,
-      error: { message: 'network down' },
-    }
+    tableResponses.consultant_dashboard_participants = { data: null, error: { message: 'network down' } }
     renderTab()
 
     const alert = await screen.findByRole('alert')
     expect(alert).toHaveTextContent(/kunde inte hämtas/i)
-
-    // Fel ska INTE se ut som "allt klart, noll deltagare" — KPI-rutnätet
-    // (t.ex. "Behöver kontakt") får inte finnas i DOM:en samtidigt.
-    expect(screen.queryByText(/Behöver kontakt/i)).not.toBeInTheDocument()
+    // Fel ska INTE se ut som en dag: Min dag finns inte i DOM:en samtidigt.
+    expect(screen.queryByTestId('min-dag')).not.toBeInTheDocument()
 
     const retryButton = screen.getByRole('button', { name: /försök igen/i })
     expect(fromCallCount.consultant_dashboard_participants).toBe(1)
-
-    // Nästa försök lyckas — felläget ska försvinna och KPI-korten visas.
     tableResponses.consultant_dashboard_participants = { data: [], error: null }
     fireEvent.click(retryButton)
-
-    await waitFor(() => {
-      expect(fromCallCount.consultant_dashboard_participants).toBe(2)
-    })
-    await waitFor(() => {
-      expect(screen.queryByRole('alert')).not.toBeInTheDocument()
-    })
+    await waitFor(() => expect(fromCallCount.consultant_dashboard_participants).toBe(2))
+    await waitFor(() => expect(screen.queryByText('Översikten kunde inte hämtas')).not.toBeInTheDocument())
+    expect(await screen.findByTestId('min-dag')).toBeInTheDocument()
   })
 })
 
-describe('OverviewTab — KV5: snitt ATS-poäng räknar inte null som 0', () => {
-  it('PG3: kortet "Kräver uppmärksamhet" räknar samma mängd som listan under — CV saknas räknas', async () => {
-    // Persona-genomgång 2026-09-12: demot visade "Kräver uppmärksamhet 0" ovanför
-    // fem rader "CV saknas". Kortet räknade bara ej-kontaktade; listan tre skäl.
-    const idag = new Date().toISOString()
-    tableResponses.consultant_dashboard_participants = {
-      data: [
-        makeParticipant({ participant_id: 'p1', has_cv: true, last_contact_at: idag, last_login: idag }),
-        makeParticipant({ participant_id: 'p2', has_cv: false, last_contact_at: idag, last_login: idag }),
-        makeParticipant({ participant_id: 'p3', has_cv: false, last_contact_at: null, last_login: idag }),
-      ],
-      error: null,
-    }
-    renderTab()
-
-    const kort = await screen.findByRole('button', { name: /Kräver uppmärksamhet/ })
-    // p2 (CV saknas) + p3 (CV saknas OCH ej kontaktad) = 2 unika, inte 1 och inte 3
-    expect(within(kort).getByText('2')).toBeInTheDocument()
-    expect(within(kort).getByText(/2 CV saknas/)).toBeInTheDocument()
-    expect(within(kort).getByText(/1 ej kontaktad/i)).toBeInTheDocument()
-  })
-
-  it('räknar snittet över dem som HAR en poäng, och namnger kortet efter vad det mäter', async () => {
-    tableResponses.consultant_dashboard_participants = {
-      data: [
-        makeParticipant({ participant_id: 'p1', ats_score: 80 }),
-        makeParticipant({ participant_id: 'p2', ats_score: 60 }),
-        // Två utan poäng — om de räknades som 0 skulle snittet bli 35, inte 70.
-        makeParticipant({ participant_id: 'p3', ats_score: null }),
-        makeParticipant({ participant_id: 'p4', ats_score: null }),
-      ],
-      error: null,
-    }
-    renderTab()
-
-    await screen.findByText('Snitt ATS-poäng')
-    expect(screen.getByText('70%')).toBeInTheDocument()
-  })
-
-  it('visar "—" och en förklarande rad — aldrig 0% — när ingen deltagare har en poäng', async () => {
-    tableResponses.consultant_dashboard_participants = {
-      data: [
-        makeParticipant({ participant_id: 'p1', ats_score: null }),
-        makeParticipant({ participant_id: 'p2', ats_score: null }),
-      ],
-      error: null,
-    }
-    renderTab()
-
-    await screen.findByText('Snitt ATS-poäng')
-    expect(screen.getByText('—')).toBeInTheDocument()
-    expect(screen.getByText('Ingen ATS-poäng ännu')).toBeInTheDocument()
-    expect(screen.queryByText('0%')).not.toBeInTheDocument()
-  })
-})
-
-describe('OverviewTab — KV6-S: "Loggade in" påstod något portalen inte mäter', () => {
-  it('visar "Profilen ändrades senast" i stället för "Loggade in"', async () => {
-    tableResponses.consultant_dashboard_participants = {
-      data: [
-        makeParticipant({
-          participant_id: 'p1',
-          last_login: '2026-08-30T09:00:00.000Z',
-        }),
-      ],
-      error: null,
-    }
-    // Inga journalanteckningar → aktivitetsflödet faller tillbaka på
-    // inloggningsdata (se OverviewTab.tsx: "If no journal entries...").
-    // Namnet förekommer flera gånger på sidan (attention-listan, Min dag,
-    // aktivitetsflödet) — det är beskrivningstexten under namnet som är
-    // det unika här.
-    renderTab()
-
-    await screen.findByText('Profilen ändrades senast')
-    expect(screen.queryByText('Loggade in')).not.toBeInTheDocument()
-  })
-})
-
-describe('OverviewTab — Min dag: ett hämtfel är inte "Allt klart"', () => {
+describe('OverviewTab — Min dag: ett hämtfel är inte "allt klart"', () => {
   // Före 2026-09-22 kväll kontrollerades bara deltagarvyns `error`. Föll
-  // mötes-, mål-, meddelande- eller journalfrågan blev `data` null → [] →
-  // Min dag sa "Inga brådskande punkter idag" och KPI-korten "0 möten", "0 försenade
-  // mål" — till en konsulent som kanske hade tre möten den dagen.
-  // Mutation: ta bort `if (meetingsError) throw meetingsError` → testet faller.
-  for (const tabell of ['consultant_meetings', 'consultant_goals', 'consultant_messages', 'consultant_journal']) {
+  // mötes- eller målfrågan blev `data` null → [] → en tom dag till en
+  // konsulent som kanske hade tre möten. Mutation: ta bort
+  // `if (meetingsError) throw meetingsError` → testet faller.
+  for (const tabell of ['consultant_meetings', 'consultant_goals']) {
     it(`fel i ${tabell} ger felläget, inte en tom dag`, async () => {
       tableResponses.consultant_dashboard_participants = { data: [makeParticipant()], error: null }
       tableResponses[tabell] = { data: null, error: { message: 'timeout' } }
       renderTab()
-
       const alert = await screen.findByRole('alert')
       expect(alert).toHaveTextContent(/kunde inte hämtas/i)
-      expect(screen.queryByText(/Inga möten, deadlines eller kontakter/i)).not.toBeInTheDocument()
+      expect(screen.queryByTestId('mindag-tomt')).not.toBeInTheDocument()
     })
   }
 })
 
-describe('OverviewTab — målöversikten utan mål', () => {
-  // Drift 2026-09-22: "0 avklarade / 0 försenade" i stor grön och röd siffra
-  // när inga mål fanns. Mutation: ta bort `stats.goalsTotal === 0`-grenen → testet faller.
-  it('visar en invit, inte två nollor', async () => {
-    tableResponses.consultant_dashboard_participants = { data: [makeParticipant()], error: null }
-    renderTab()
-    expect(await screen.findByText(/Inga mål satta än/)).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Sätt ett mål' })).toBeInTheDocument()
-  })
-
-  it('visar siffrorna när det finns mål', async () => {
-    tableResponses.consultant_dashboard_participants = { data: [makeParticipant()], error: null }
-    tableResponses.consultant_goals = { data: [{ id: 'g1', status: 'COMPLETED', title: 'CV klart', participant_id: 'p1', deadline: null }], error: null }
-    renderTab()
-    await screen.findByText('Snitt ATS-poäng')
-    expect(screen.queryByText(/Inga mål satta än/)).not.toBeInTheDocument()
-  })
-})
-
 /**
- * RR3/RK7 (rollspelet 2026-09-27): Min dag sa "Inga brådskande punkter idag"
- * om Jonas — inget möte på 33 dagar — och ogiltig frånvaro syntes inte alls.
- * Motprov: skicka en tom lista till BradskandeIdag (eller hoppa över
- * bradskandePunkter) → testet faller.
- *
- * RK35 (2026-09-27): sektionen heter "Att göra i dag". En ogiltig frånvaro
- * UTAN anteckning står som en punkt med passet utskrivet (och en åtgärd i
- * raden) i stället för den korta brådskande-raden — samma sak ska inte stå två
- * gånger. KPI-kortets räkning är oförändrad.
+ * RR3/RK7/RK35 (rollspelet 2026-09-27) i den nya formen: det brådskande står
+ * som ett nästa steg och en rad per person. Ogiltig frånvaro UTAN anteckning
+ * är dagens viktigaste sak och blir nästa steg; mötet över gränsen blir en rad.
+ * Motprov: skicka tomma brådskande-punkter till minDagPersoner → testet faller.
  */
-describe('OverviewTab — det brådskande syns i Min dag och i "Kräver uppmärksamhet"', () => {
+describe('OverviewTab — det brådskande blir nästa steg och en rad per person', () => {
   const lokal = (d: Date) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
 
-  it('möte över gränsen och ogiltig frånvaro i går listas med namn och regel', async () => {
+  it('ogiltig frånvaro utan anteckning blir nästa steg; möte över gränsen blir Jonas rad', async () => {
     const nu = new Date()
     const for33 = new Date(nu.getFullYear(), nu.getMonth(), nu.getDate() - 33, 10)
     const igar = new Date(nu.getFullYear(), nu.getMonth(), nu.getDate() - 1)
@@ -293,22 +174,23 @@ describe('OverviewTab — det brådskande syns i Min dag och i "Kräver uppmärk
       data: [{ id: 's1', plan_id: 'pl', participant_id: 'anna', date: lokal(igar), start_time: '09:00', end_time: '12:00', title: 'Verkstad', activity_type: 'jobsearch', attendance: 'absent_invalid' }],
       error: null,
     }
-    // Passet ligger i konsulentens egen plan — bara sådana kan markeras i Att göra (ST2).
     tableResponses.activity_plans = { data: [{ id: 'pl', participant_id: 'anna', consultant_id: 'consultant-1', status: 'active', start_date: '2026-09-01', end_date: null }], error: null }
     renderTab()
 
-    const rubrik = await screen.findByRole('heading', { name: 'Att göra i dag' })
-    const lista = rubrik.closest('section')!
-    expect(within(lista).getByText('Jonas Demo')).toBeInTheDocument()
-    expect(within(lista).getByText('Senaste möte 33 dagar sedan — gränsen är 14')).toBeInTheDocument()
-    expect(within(lista).getByText('Anna Exempel')).toBeInTheDocument()
-    expect(within(lista).getByText(/^Ogiltig frånvaro \d+ \w+ \(Verkstad, 09:00–12:00\) saknar anteckning$/)).toBeInTheDocument()
-    expect(within(lista).queryByText(/^Ogiltig frånvaro \d+ \w+$/)).not.toBeInTheDocument()
-    // Samma punkter i "Kräver uppmärksamhet"-kortets undertext
-    expect(screen.getByText(/1 ogiltig frånvaro · 1 möte över gränsen/)).toBeInTheDocument()
+    const steg = await screen.findByTestId('mindag-nasta-steg')
+    expect(steg).toHaveAttribute('data-typ', 'franvaro_utan_anteckning')
+    expect(within(steg).getByRole('heading', { level: 2 })).toHaveTextContent('Skriv en rad om Annas frånvaro')
+    expect(within(steg).getByText(/Anna Exempel var inte på Verkstad i går/)).toBeInTheDocument()
+    const jonas = screen.getByTestId('mindag-person-jonas')
+    expect(jonas).toHaveAttribute('data-typ', 'mote_over_gransen')
+    expect(within(jonas).getByText('Senaste möte 33 dagar sedan — gränsen är 14')).toBeInTheDocument()
+    // Frånvaron står inte en gång till i listan (mockens möten ger Anna en mötesrad, inget annat).
+    const anna = screen.queryByTestId('mindag-person-anna')
+    if (anna) expect(anna).not.toHaveTextContent(/Var inte på/)
+    expect(screen.getByTestId('mindag-antal')).toHaveTextContent(/^\S+ saker i dag\. Det som brådskar står först\./)
   })
 
-  it('RK35: en ogiltig frånvaro MED anteckning står kvar som den korta brådskande-raden', async () => {
+  it('RK35: en ogiltig frånvaro MED anteckning står som den korta brådskande-raden', async () => {
     const nu = new Date()
     const igar = new Date(nu.getFullYear(), nu.getMonth(), nu.getDate() - 1)
     tableResponses.consultant_dashboard_participants = {
@@ -320,50 +202,44 @@ describe('OverviewTab — det brådskande syns i Min dag och i "Kräver uppmärk
       error: null,
     }
     renderTab()
-    const rubrik = await screen.findByRole('heading', { name: 'Att göra i dag' })
-    expect(within(rubrik.closest('section')!).getByText(/^Ogiltig frånvaro \d+ \w+$/)).toBeInTheDocument()
+    const steg = await screen.findByTestId('mindag-nasta-steg')
+    expect(steg).toHaveAttribute('data-typ', 'franvaro')
+    expect(within(steg).getByText(/^Ogiltig frånvaro \d+ \w+\./)).toBeInTheDocument()
   })
 
-  it('kan underlaget inte hämtas står det så — aldrig ett tyst "inget brådskande"', async () => {
-    tableResponses.consultant_dashboard_participants = { data: [makeParticipant()], error: null }
+  it('kan underlaget inte hämtas står det så — inget nästa steg, inget tomläge', async () => {
+    tableResponses.consultant_dashboard_participants = { data: [makeParticipant({ last_contact_at: new Date().toISOString() })], error: null }
     tableResponses.activity_sessions = { data: null, error: { message: 'timeout' } }
     renderTab()
     expect(await screen.findByText(/Möten och frånvaro kunde inte hämtas/)).toBeInTheDocument()
+    expect(screen.queryByTestId('mindag-nasta-steg')).not.toBeInTheDocument()
+    expect(screen.queryByTestId('mindag-tomt')).not.toBeInTheDocument()
+  })
+
+  it('när inget väntar visas tomläget med bilden — och bara då', async () => {
+    tableResponses.consultant_dashboard_participants = { data: [makeParticipant({ last_contact_at: new Date().toISOString() })], error: null }
+    renderTab()
+    const tomt = await screen.findByTestId('mindag-tomt')
+    expect(tomt.querySelector('img')).toHaveAttribute('src', '/kontor/klart-900.webp')
+    expect(screen.queryByTestId('mindag-nasta-steg')).not.toBeInTheDocument()
+  })
+
+  it('en ny konsulent utan deltagare får Kom igång i stället för en tom "allt klart"-dag', async () => {
+    tableResponses.consultant_dashboard_participants = { data: [], error: null }
+    renderTab()
+    expect(await screen.findByTestId('mindag-ny')).toBeInTheDocument()
+    expect(screen.queryByTestId('mindag-tomt')).not.toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Bjud in deltagare' })).toBeInTheDocument()
   })
 })
 
 /**
- * RK6 (rollspelet 2026-09-27): på en söndag visade "Möten denna vecka" nästa
- * veckas möten — `idag − getDay() + 1` ger måndagen EFTER när getDay() är 0.
- * Motprov: skriv tillbaka den gamla räkningen i OverviewTab → testet faller.
- */
-describe('OverviewTab — RK6: veckan är måndag–söndag även på en söndag', () => {
-  it('frågan om veckans möten går från måndag 21/9 till söndag 27/9 när det är söndag 27/9', async () => {
-    vi.useFakeTimers({ toFake: ['Date'] })
-    vi.setSystemTime(new Date(2026, 8, 27, 10, 0))
-    try {
-      for (const k of Object.keys(byggare)) delete byggare[k]
-      tableResponses.consultant_dashboard_participants = { data: [makeParticipant()], error: null }
-      renderTab()
-      await screen.findByText('Snitt ATS-poäng')
-      const veckofragan = byggare.consultant_meetings.find((b) => b.lte.mock.calls.length > 0)!
-      expect(veckofragan.gte).toHaveBeenCalledWith('scheduled_at', new Date(2026, 8, 21, 0, 0, 0, 0).toISOString())
-      expect(veckofragan.lte).toHaveBeenCalledWith('scheduled_at', new Date(2026, 8, 27, 23, 59, 59, 999).toISOString())
-    } finally {
-      vi.useRealTimers()
-    }
-  })
-})
-
-/**
- * RK38 (rollspelet 2026-09-27): "Ej kontaktad" på Översikt räknades bara ur
- * last_contact_at — en journalanteckning om ett samtal flyttade inte Översikten,
- * fast deltagarsidan och listan redan räknade den (senasteKontakt, RK14).
+ * RK38 (rollspelet 2026-09-27): en journalanteckning är en kontakt.
  * Motprov (kört): använd `p.last_contact_at` i stället för senasteKontaktAt(p)
- * → testet faller ("Aldrig kontaktad" för Anna).
+ * → testet faller (Anna får en rad "Aldrig kontaktad").
  */
 describe('OverviewTab — RK38: en journalanteckning är en kontakt', () => {
-  it('den som fått en anteckning i går flaggas inte som "Aldrig kontaktad"', async () => {
+  it('den som fått en anteckning i går får ingen kontaktrad', async () => {
     const igar = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
     tableResponses.consultant_dashboard_participants = {
       data: [
@@ -373,16 +249,26 @@ describe('OverviewTab — RK38: en journalanteckning är en kontakt', () => {
       error: null,
     }
     renderTab()
-    await screen.findByText('Snitt ATS-poäng')
-    const larm = screen.getAllByText('Aldrig kontaktad')
-    // Bara Bo — i "Kräver uppmärksamhet" och i Min dag
-    for (const rad of larm) {
-      expect(rad.closest('a, li')?.textContent).toContain('Bo')
-      expect(rad.closest('a, li')?.textContent).not.toContain('Antecknad')
+    const steg = await screen.findByTestId('mindag-nasta-steg')
+    // Bo är den enda punkten → hans kontakt blir nästa steg; Anna syns ingenstans.
+    expect(steg).toHaveAttribute('data-typ', 'kontakt')
+    expect(steg).toHaveTextContent('Hör av dig till Bo')
+    expect(steg).toHaveTextContent('Aldrig kontaktad')
+    expect(screen.queryByText(/Antecknad/)).not.toBeInTheDocument()
+  })
+})
+
+describe('OverviewTab — en vy, en primärknapp', () => {
+  it('nästa steg är den enda fyllda knappen', async () => {
+    tableResponses.consultant_dashboard_participants = {
+      data: [
+        makeParticipant({ participant_id: 'a', first_name: 'A', last_contact_at: null }),
+        makeParticipant({ participant_id: 'b', first_name: 'B', last_contact_at: null }),
+      ],
+      error: null,
     }
-    expect(larm.length).toBeGreaterThan(0)
-    // Anna finns inte i någon kontaktlista alls — inte heller som "Ej kontaktad på 1 dag"
-    expect(screen.queryAllByText(/Anna Antecknad/)).toHaveLength(0)
-    expect(screen.getAllByText(/Bo Bortglömd/).length).toBeGreaterThan(0)
+    renderTab()
+    await screen.findByTestId('mindag-nasta-steg')
+    expect(document.querySelectorAll('[data-variant="primary"]')).toHaveLength(1)
   })
 })

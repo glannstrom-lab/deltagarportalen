@@ -19,6 +19,7 @@
  */
 
 import { useState, useEffect } from 'react'
+import { useOrgTypVisning } from './useRegelverk'
 import { FelSammanfattning } from './FelSammanfattning'
 import type { FormularFel } from './gaTillFalt'
 import {
@@ -81,6 +82,8 @@ export function PlacementDialog({
   preselectedParticipant,
 }: PlacementDialogProps) {
   const [step, setStep] = useState<'participant' | 'form'>('participant')
+  // Nivå A/B/C är Rusta och matcha-avtalets begrepp — inte kommunens (slipningen 2026-10-11).
+  const kundtyp = useOrgTypVisning()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [felSignal, setFelSignal] = useState(0)
@@ -470,7 +473,7 @@ export function PlacementDialog({
                 </div>
               </div>
 
-              <div>
+              {kundtyp?.visaAvtalskrav && <div>
                 <label htmlFor="placement-niva" className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">
                   Nivå enligt avtalet (valfritt)
                 </label>
@@ -495,7 +498,7 @@ export function PlacementDialog({
                     Omfattning, slutdatum och nivå sparas tills vidare i anteckningen. Studier som utfall går inte att registrera än.
                   </p>
                 )}
-              </div>
+              </div>}
 
               <div>
                 <label htmlFor="placement-salary" className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">

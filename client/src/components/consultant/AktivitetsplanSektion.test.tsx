@@ -2,7 +2,7 @@
  * AktivitetsplanSektion — tomtillstånd, närvaro och saldo (KM3/KM4/KM6).
  */
 import { describe, it, expect, vi, afterEach, beforeEach } from 'vitest'
-import { screen, fireEvent, cleanup } from '@testing-library/react'
+import { screen, fireEvent, cleanup, within } from '@testing-library/react'
 // JobbsokTidKort (KM9) läser QueryClient — den delade rendern ger en.
 import { render } from '@/test/utils'
 import { AktivitetsplanSektion } from './AktivitetsplanSektion'
@@ -78,13 +78,15 @@ describe('AktivitetsplanSektion', () => {
     expect(screen.getByText('Närvaron inte markerad än')).toBeInTheDocument()
     expect(screen.getByText(/Beslut om nedsättning fattas av socialnämnden/)).toBeInTheDocument()
 
-    // Öppna närvaro på språkcaféet och markera ogiltig frånvaro
-    const knappar = screen.getAllByRole('button', { name: 'Närvaro' })
-    fireEvent.click(knappar[1])
-    fireEvent.click(screen.getByRole('button', { name: 'Ogiltig frånvaro' }))
+    // Omtaget 2026-10-11: närvaron är en radiogrupp direkt på raden (NarvaroVal).
+    const grupp = screen.getByRole('radiogroup', { name: 'Närvaro för Språkcafé 7 okt' })
+    fireEvent.click(within(grupp).getByRole('radio', { name: 'Ogiltig' }))
     await vi.waitFor(() => expect(aktivitetsplanApi.markAttendance).toHaveBeenCalledWith('s2', expect.objectContaining({ attendance: 'absent_invalid' })))
     expect(await screen.findByText('Ogiltig frånvaro i veckan')).toBeInTheDocument()
     expect(screen.getByText('1 pass')).toBeInTheDocument()
+    // Ogiltig frånvaro utan orsak fäller ut anteckningen direkt under raden.
+    expect(screen.getByText(/Vad hände\? En rad räcker/)).toBeInTheDocument()
+    expect(screen.getByLabelText('Anteckning')).toBeInTheDocument()
   })
 
   it('visar — i saldot när veckan saknar pass', async () => {
@@ -117,9 +119,8 @@ describe('AktivitetsplanSektion', () => {
     expect(screen.queryByText('Inget underlag lämnat än.')).not.toBeInTheDocument()
   })
 
-  it('sparar försörjningshinder, markerar underlag lämnat och laddar ner plan-PDF (KM5/KM7)', async () => {
+  it('sparar försörjningshinder och öppnar dialogen för underlag (KM7/F10)', async () => {
     const { aktivitetsplanApi, underlagApi } = await import('@/services/aktivitetApi')
-    const { downloadAktivitetsplanPDF } = await import('@/services/aktivitetsplanPdf')
     // mockResolvedValue från förra testet överlever clearAllMocks — nollställ uttryckligen
     vi.mocked(underlagApi.list).mockResolvedValue([])
     vi.mocked(aktivitetsplanApi.getForParticipant).mockResolvedValue(plan as never)
@@ -139,8 +140,6 @@ describe('AktivitetsplanSektion', () => {
     expect(await screen.findByRole('heading', { name: 'Lämna underlag till handläggaren' })).toBeInTheDocument()
     expect(aktivitetsplanApi.update).not.toHaveBeenCalledWith('plan1', expect.objectContaining({ nedsattning_underlag_lamnat_at: expect.anything() }))
     fireEvent.click(screen.getByRole('button', { name: 'Avbryt' }))
-
-    fireEvent.click(screen.getByRole('button', { name: 'Plan som PDF' }))
-    await vi.waitFor(() => expect(downloadAktivitetsplanPDF).toHaveBeenCalledWith(expect.objectContaining({ participantName: 'Anna Andersson', plan: expect.objectContaining({ id: 'plan1' }) })))
+    // "Plan som PDF" ligger i deltagarsidans Mer-meny sedan omtaget — se useAktivitetsplan.test.tsx.
   })
 })

@@ -52,16 +52,16 @@ export function ForklaraFranvaro({ session, onSaved }: Props) {
 
   if (!oppen) {
     return (
-      <div className="text-sm">
+      <div className="text-[0.9375rem]">
         {befintlig && (
-          <p className="text-stone-700 dark:text-stone-300">
+          <p className="text-j-blak-2">
             {t('minVecka.forklara.din', 'Din förklaring:')} „{befintlig.text}”
           </p>
         )}
         <button
           type="button"
           onClick={() => { setText(befintlig?.text ?? ''); setOppen(true) }}
-          className="mt-1 font-medium text-stone-700 dark:text-stone-300 underline underline-offset-2"
+          className="mt-1 inline-flex min-h-[44px] items-center rounded-j-s font-semibold text-j-gran-text underline underline-offset-2 focus:outline-none focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-[var(--j-fokus)]"
         >
           {befintlig ? t('minVecka.forklara.andra', 'Ändra din förklaring') : t('minVecka.forklara.knapp', 'Förklara frånvaron')}
         </button>
@@ -71,10 +71,10 @@ export function ForklaraFranvaro({ session, onSaved }: Props) {
 
   return (
     <form
-      className="rounded-lg border border-stone-200 dark:border-stone-700 p-3 space-y-2"
+      className="rounded-j-s border border-j-linje p-3 space-y-2"
       onSubmit={(e) => { e.preventDefault(); void skicka() }}
     >
-      <label htmlFor={`${id}-text`} className="block text-sm font-medium text-stone-800 dark:text-stone-200">
+      <label htmlFor={`${id}-text`} className="block text-[0.9375rem] font-medium text-j-blak">
         {t('minVecka.forklara.etikett', 'Vad hände? Skriv med dina egna ord.')}
       </label>
       <textarea
@@ -83,17 +83,17 @@ export function ForklaraFranvaro({ session, onSaved }: Props) {
         onChange={(e) => setText(e.target.value)}
         maxLength={FORKLARING_MAX}
         rows={3}
-        className="w-full rounded-md border border-stone-300 dark:border-stone-600 bg-white dark:bg-stone-900 px-3 py-2 text-sm text-stone-900 dark:text-stone-100"
+        className="w-full rounded-j-s border border-j-linje-2 bg-j-kort px-3 py-2 text-[0.9375rem] text-j-blak"
       />
-      <p className="text-xs text-stone-600 dark:text-stone-400">
+      <p className="text-[0.9375rem] text-j-blak-2">
         {t('minVecka.forklara.vemSer', 'Din konsulent får se förklaringen, och den står med på ditt närvarointyg som din egen förklaring.')}
       </p>
-      {fel && <p role="alert" className="text-sm text-red-700 dark:text-red-300">{fel}</p>}
+      {fel && <p role="alert" className="text-[0.9375rem] font-semibold text-s-ogiltig">{fel}</p>}
       <div className="flex flex-wrap gap-2">
-        <Button type="submit" className="min-h-11" disabled={sparar}>
+        <Button ton="kvarter" variant="secondary" type="submit" disabled={sparar}>
           {t('minVecka.forklara.skicka', 'Skicka förklaringen')}
         </Button>
-        <Button type="button" variant="ghost" className="min-h-11" disabled={sparar} onClick={() => { setOppen(false); setFel(null) }}>
+        <Button type="button" ton="kvarter" variant="tertiary" disabled={sparar} onClick={() => { setOppen(false); setFel(null) }}>
           {t('minVecka.forklara.avbryt', 'Avbryt')}
         </Button>
       </div>

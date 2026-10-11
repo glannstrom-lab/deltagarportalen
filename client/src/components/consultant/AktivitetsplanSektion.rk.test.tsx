@@ -68,7 +68,8 @@ describe('RK4: anteckning skriven efter markeringen', () => {
     const api = await montera(plan(), [markerat])
     vi.mocked(api.saveAttendanceNote).mockImplementation(async (id, note) => ({ ...markerat, id, attendance_note: note }) as never)
 
-    const narvaro = screen.getByRole('button', { name: 'Närvaro' })
+    // Omtaget 2026-10-11: närvaron står på raden; anteckningen fälls ut med "Anteckning".
+    const narvaro = screen.getByRole('button', { name: 'Anteckning' })
     fireEvent.click(narvaro)
     fireEvent.change(screen.getByLabelText('Anteckning'), { target: { value: 'Tandläkare, anmält i förväg per telefon.' } })
     expect(screen.getByText('Anteckningen är inte sparad')).toBeInTheDocument()
@@ -83,7 +84,7 @@ describe('RK4: anteckning skriven efter markeringen', () => {
     const api = await montera(plan(), [pass({ attendance: 'absent_valid' })])
     vi.mocked(api.saveAttendanceNote).mockRejectedValue(new Error('nätverket svarar inte'))
 
-    const narvaro = screen.getByRole('button', { name: 'Närvaro' })
+    const narvaro = screen.getByRole('button', { name: 'Anteckning' })
     fireEvent.click(narvaro)
     fireEvent.change(screen.getByLabelText('Anteckning'), { target: { value: 'Ringde in 08:15.' } })
     fireEvent.click(narvaro)
@@ -96,7 +97,7 @@ describe('RK4: anteckning skriven efter markeringen', () => {
     const markerat = pass({ attendance: 'absent_invalid' })
     const api = await montera(plan(), [markerat])
     vi.mocked(api.saveAttendanceNote).mockImplementation(async (id, note) => ({ ...markerat, id, attendance_note: note }) as never)
-    fireEvent.click(screen.getByRole('button', { name: 'Närvaro' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Anteckning' }))
     fireEvent.change(screen.getByLabelText('Anteckning'), { target: { value: 'Kom inte, svarade inte i telefon.' } })
     fireEvent.click(screen.getByRole('button', { name: 'Spara anteckning' }))
     await vi.waitFor(() => expect(api.saveAttendanceNote).toHaveBeenCalledWith('s1', 'Kom inte, svarade inte i telefon.'))

@@ -1,62 +1,287 @@
 /**
- * Budapest Template - Mörk sidopanel med cirkulärt foto + timeline
- * Inspirerad av resume-example.com Budapest
+ * Budapest (id `budapest`) — mörk skifferblå sidopanel med runt foto i en
+ * orange ring, namnet i versaler och en tidslinje genom erfarenheten. Inter.
+ *
+ * Slipad 2026-10-11 (CVK1):
+ * - Ort, datum och titel i #888 (3,54:1) → #5A6676.
+ * - Profiltexten flyttad från den smala panelen till huvudspalten, där den
+ *   läses först (och av ett rekryteringssystem i rätt ordning). Kompetenserna
+ *   tog dess plats i panelen, så de två spalterna väger jämnare.
+ * - Ett tunt CV ritade en ensam avdelarlinje i en annars tom panel; panelens
+ *   avdelare kommer nu bara mellan sektioner som faktiskt finns.
+ * - Rubriker skrevs med versaler i källtexten ("OM MIG"); nu vanlig text med
+ *   `text-transform`, så den som kopierar texten får "Om mig".
  */
 
+import type { CSSProperties, ReactNode } from 'react'
 import type { TemplateProps } from './types'
 import { getLanguageLevelDisplay, getSkillName, getInitials } from './helpers'
+import { periodText, rubrikTaggar } from './typografi'
+import { Beskrivning } from './Beskrivning'
+import { Url } from './Url'
 
-const dark = '#2C3E50'
-const accent = '#E67E22'
+const SKIFFER = '#2C3E50' // 11,0:1 på vitt
+const ORANGE = '#E67E22' // bara ringen och tidslinjens punkt
+const PANEL_TEXT = '#E8EDF2'
+const PANEL_DAMPAD = '#BAC6D3' // 6,9:1 på skiffer
+const TEXT = '#404B58'
+const DAMPAD = '#5A6676' // 5,9:1 på vitt
+const LINJE = '#E3E7EC'
 
-export function BudapestTemplate({ data, fullName }: TemplateProps) {
+const panelrubrik: CSSProperties = {
+  fontSize: '10.5px',
+  fontWeight: 700,
+  letterSpacing: '0.16em',
+  textTransform: 'uppercase',
+  color: '#FFFFFF',
+  margin: '0 0 10px',
+}
+
+const huvudrubrik: CSSProperties = {
+  fontSize: '12px',
+  fontWeight: 700,
+  letterSpacing: '0.16em',
+  textTransform: 'uppercase',
+  color: SKIFFER,
+  margin: '0 0 16px',
+  paddingBottom: '7px',
+  borderBottom: `1px solid ${LINJE}`,
+}
+
+function Tidslinje({ sist }: { sist: boolean }) {
+  return (
+    <div aria-hidden="true" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', paddingTop: '4px' }}>
+      <div style={{ width: '9px', height: '9px', borderRadius: '50%', border: `2px solid ${SKIFFER}`, background: '#FFFFFF' }} />
+      {!sist && <div style={{ width: '1px', flex: 1, background: '#CBD3DC', marginTop: '4px' }} />}
+    </div>
+  )
+}
+
+export function BudapestTemplate({ data, fullName, rubrikniva }: TemplateProps) {
+  const { Namn, Sektion, Post } = rubrikTaggar(rubrikniva)
+
+  // Panelens sektioner — avdelare bara MELLAN sådana som finns.
+  const panel: { nyckel: string; innehall: ReactNode }[] = []
+  if (data.skills.length > 0) {
+    panel.push({
+      nyckel: 'kompetenser',
+      innehall: (
+        <section>
+          <Sektion style={panelrubrik}>Kompetenser</Sektion>
+          <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: '5px' }}>
+            {data.skills.map((skill, i) => (
+              <li key={i} style={{ fontSize: '12px', color: PANEL_TEXT, lineHeight: 1.35 }}>
+                {getSkillName(skill)}
+              </li>
+            ))}
+          </ul>
+        </section>
+      ),
+    })
+  }
+  if (data.languages.length > 0) {
+    panel.push({
+      nyckel: 'sprak',
+      innehall: (
+        <section className="cv-keep">
+          <Sektion style={panelrubrik}>Språk</Sektion>
+          <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: '5px' }}>
+            {data.languages.map((lang) => {
+              const name = lang.language || ('name' in lang ? (lang as { name: string }).name : '')
+              return (
+                <li key={lang.id} style={{ fontSize: '12px', color: '#FFFFFF', fontWeight: 600 }}>
+                  {name}
+                  <span style={{ color: PANEL_DAMPAD, fontWeight: 400 }}> – {getLanguageLevelDisplay(lang.level)}</span>
+                </li>
+              )
+            })}
+          </ul>
+        </section>
+      ),
+    })
+  }
+  if (data.certificates.length > 0) {
+    panel.push({
+      nyckel: 'certifikat',
+      innehall: (
+        <section className="cv-keep">
+          <Sektion style={panelrubrik}>Certifikat</Sektion>
+          {data.certificates.map((cert) => (
+            <div key={cert.id} className="cv-entry" style={{ marginBottom: '7px' }}>
+              <div style={{ fontSize: '12px', fontWeight: 600, color: '#FFFFFF' }}>{cert.name}</div>
+              {(cert.issuer || cert.date) && (
+                <div className="cv-datum" style={{ fontSize: '11px', color: PANEL_DAMPAD }}>
+                  {[cert.issuer, periodText(cert.date)].filter(Boolean).join(' · ')}
+                </div>
+              )}
+            </div>
+          ))}
+        </section>
+      ),
+    })
+  }
+  if (data.links.length > 0) {
+    panel.push({
+      nyckel: 'lankar',
+      innehall: (
+        <section className="cv-keep">
+          <Sektion style={panelrubrik}>Länkar</Sektion>
+          {data.links.map((link) => (
+            <div key={link.id} className="cv-entry" style={{ marginBottom: '7px' }}>
+              {link.label && <div style={{ fontSize: '12px', fontWeight: 600, color: '#FFFFFF' }}>{link.label}</div>}
+              <div className="cv-url" style={{ fontSize: '10.5px', color: PANEL_DAMPAD }}><Url text={link.url} /></div>
+            </div>
+          ))}
+        </section>
+      ),
+    })
+  }
+
   return (
     <div
       className="cv-preview"
+      lang="sv"
       style={{
         display: 'flex',
         minHeight: '297mm',
-        fontFamily: "'Inter', -apple-system, sans-serif",
+        color: TEXT,
+        fontFamily: "'Inter', 'Helvetica Neue', Arial, sans-serif",
         background: '#FFFFFF',
       }}
     >
-      {/* Mörk sidopanel */}
+      <main style={{ flex: 1, minWidth: 0, padding: '46px 48px 40px', background: '#FFFFFF' }}>
+        <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '20px', marginBottom: '30px' }}>
+          <div style={{ minWidth: 0 }}>
+            <Namn
+              style={{
+                fontSize: '32px',
+                fontWeight: 800,
+                letterSpacing: '0.01em',
+                textTransform: 'uppercase',
+                color: SKIFFER,
+                lineHeight: 1.08,
+                margin: 0,
+              }}
+            >
+              {fullName}
+            </Namn>
+            {data.title && (
+              <p
+                style={{
+                  fontSize: '11.5px',
+                  fontWeight: 600,
+                  letterSpacing: '0.2em',
+                  textTransform: 'uppercase',
+                  color: DAMPAD,
+                  margin: '8px 0 0',
+                }}
+              >
+                {data.title}
+              </p>
+            )}
+          </div>
+          {(data.email || data.phone || data.location) && (
+            <ul
+              className="cv-kontakt"
+              style={{ listStyle: 'none', margin: '4px 0 0', padding: 0, textAlign: 'right', fontSize: '11.5px', color: TEXT, lineHeight: 1.6, flexShrink: 0, maxWidth: '45%' }}
+            >
+              {data.phone && <li>{data.phone}</li>}
+              {data.email && <li>{data.email}</li>}
+              {data.location && <li>{data.location}</li>}
+            </ul>
+          )}
+        </header>
+
+        {data.summary && (
+          <section style={{ marginBottom: '28px' }}>
+            <Sektion style={huvudrubrik}>Om mig</Sektion>
+            <p style={{ fontSize: '12.5px', lineHeight: 1.65, color: TEXT, margin: 0 }}>{data.summary}</p>
+          </section>
+        )}
+
+        {data.workExperience.length > 0 && (
+          <section style={{ marginBottom: '28px' }}>
+            <Sektion style={huvudrubrik}>Arbetslivserfarenhet</Sektion>
+            {data.workExperience.map((job, i) => (
+              <div key={job.id} className="cv-entry">
+                <div style={{ display: 'grid', gridTemplateColumns: '122px 18px 1fr', gap: '10px' }}>
+                  <div style={{ paddingBottom: '16px' }}>
+                    <div style={{ fontSize: '12px', fontWeight: 700, color: SKIFFER, lineHeight: 1.35 }}>{job.company}</div>
+                    {job.location && <div style={{ fontSize: '11px', color: DAMPAD }}>{job.location}</div>}
+                    <div className="cv-datum" style={{ fontSize: '11px', color: DAMPAD, marginTop: '2px' }}>
+                      {periodText(job.startDate, job.endDate, job.current)}
+                    </div>
+                  </div>
+                  <Tidslinje sist={i === data.workExperience.length - 1} />
+                  <div style={{ minWidth: 0, paddingBottom: '16px' }}>
+                    <Post style={{ fontSize: '13.5px', fontWeight: 700, color: SKIFFER, margin: 0 }}>{job.title}</Post>
+                    <Beskrivning text={job.description} style={{ fontSize: '12px', lineHeight: 1.6, color: TEXT, marginTop: '4px' }} />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </section>
+        )}
+
+        {data.education.length > 0 && (
+          <section style={{ marginBottom: '28px' }}>
+            <Sektion style={huvudrubrik}>Utbildning</Sektion>
+            {data.education.map((edu, i) => (
+              <div key={edu.id} className="cv-entry">
+                <div style={{ display: 'grid', gridTemplateColumns: '122px 18px 1fr', gap: '10px' }}>
+                  <div style={{ paddingBottom: '14px' }}>
+                    <div style={{ fontSize: '12px', fontWeight: 700, color: SKIFFER, lineHeight: 1.35 }}>{edu.school}</div>
+                    {edu.location && <div style={{ fontSize: '11px', color: DAMPAD }}>{edu.location}</div>}
+                    <div className="cv-datum" style={{ fontSize: '11px', color: DAMPAD, marginTop: '2px' }}>
+                      {periodText(edu.startDate, edu.endDate, edu.current)}
+                    </div>
+                  </div>
+                  <Tidslinje sist={i === data.education.length - 1} />
+                  <div style={{ minWidth: 0, paddingBottom: '14px' }}>
+                    <Post style={{ fontSize: '13.5px', fontWeight: 700, color: SKIFFER, margin: 0 }}>{edu.degree || edu.school}</Post>
+                    {edu.field && <p style={{ fontSize: '12px', color: TEXT, margin: '2px 0 0' }}>{edu.field}</p>}
+                    <Beskrivning text={edu.description} style={{ fontSize: '12px', lineHeight: 1.6, color: TEXT, marginTop: '4px' }} />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </section>
+        )}
+      </main>
+
+      {/* Efter huvudtexten i dokumentet, till vänster på sidan (order: -1).
+          34 % och #2C3E50 måste stämma med SIDEBAR_CONFIG.budapest. */}
       <aside
         style={{
+          order: -1,
           width: '34%',
-          background: dark,
-          color: '#FFFFFF',
-          padding: '48px 32px',
+          flexShrink: 0,
+          background: SKIFFER,
+          color: PANEL_TEXT,
+          padding: '46px 30px 40px',
         }}
       >
-        {/* Cirkulärt foto */}
-        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '40px' }}>
+        <div className="cv-keep" style={{ display: 'flex', justifyContent: 'center', marginBottom: panel.length ? '34px' : 0 }}>
           {data.profileImage ? (
             <img
               src={data.profileImage}
               alt=""
-              style={{
-                width: '160px',
-                height: '160px',
-                objectFit: 'cover',
-                borderRadius: '50%',
-                border: `4px solid ${accent}`,
-              }}
+              style={{ width: '150px', height: '150px', objectFit: 'cover', borderRadius: '50%', border: `4px solid ${ORANGE}` }}
             />
           ) : (
             <div
+              aria-hidden="true"
               style={{
-                width: '160px',
-                height: '160px',
+                width: '150px',
+                height: '150px',
                 borderRadius: '50%',
-                background: 'rgba(255,255,255,0.06)',
-                border: `4px solid ${accent}`,
+                border: `4px solid ${ORANGE}`,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                fontSize: '48px',
+                fontSize: '46px',
                 fontWeight: 300,
-                color: 'rgba(255,255,255,0.6)',
+                color: '#D5DDE5',
                 letterSpacing: '0.02em',
               }}
             >
@@ -64,282 +289,13 @@ export function BudapestTemplate({ data, fullName }: TemplateProps) {
             </div>
           )}
         </div>
-
-        {/* About me */}
-        {data.summary && (
-          <section style={{ marginBottom: '32px' }}>
-            <h3
-              style={{
-                fontSize: '12px',
-                fontWeight: 700,
-                letterSpacing: '0.15em',
-                marginBottom: '12px',
-                color: '#FFFFFF',
-              }}
-            >
-              OM MIG
-            </h3>
-            <p style={{ fontSize: '12px', lineHeight: 1.7, color: 'rgba(255,255,255,0.85)' }}>
-              {data.summary}
-            </p>
-          </section>
-        )}
-
-        <div style={{ height: '1px', background: 'rgba(255,255,255,0.12)', marginBottom: '18px' }} />
-
-        {/* Links */}
-        {data.links?.length > 0 && (
-          <section className="cv-keep" style={{ marginBottom: '18px' }}>
-            <h3
-              style={{
-                fontSize: '11px',
-                fontWeight: 700,
-                letterSpacing: '0.15em',
-                marginBottom: '8px',
-                color: '#FFFFFF',
-              }}
-            >
-              LÄNKAR
-            </h3>
-            {data.links.map((link) => (
-              <div key={link.id} style={{ marginBottom: '6px' }}>
-                {link.label && (
-                  <div style={{ fontSize: '11.5px', fontWeight: 600, color: '#FFFFFF' }}>{link.label}</div>
-                )}
-                <div style={{ fontSize: '10.5px', color: 'rgba(255,255,255,0.7)', wordBreak: 'break-all' }}>
-                  {link.url}
-                </div>
-              </div>
-            ))}
-          </section>
-        )}
-
-        {data.languages?.length > 0 && (
-          <>
-            <div style={{ height: '1px', background: 'rgba(255,255,255,0.12)', marginBottom: '14px' }} />
-            <section style={{ marginBottom: '18px' }}>
-              <h3
-                style={{
-                  fontSize: '11px',
-                  fontWeight: 700,
-                  letterSpacing: '0.15em',
-                  marginBottom: '8px',
-                  color: '#FFFFFF',
-                }}
-              >
-                SPRÅK
-              </h3>
-              {data.languages.map((lang) => {
-                const name = lang.language || ('name' in lang ? (lang as { name: string }).name : '')
-                return (
-                  <div key={lang.id} className="cv-entry" style={{ marginBottom: '4px', fontSize: '11.5px' }}>
-                    <span style={{ color: '#FFFFFF', fontWeight: 600 }}>{name}</span>
-                    <span style={{ color: 'rgba(255,255,255,0.7)', marginLeft: '6px' }}>
-                      — {getLanguageLevelDisplay(lang.level)}
-                    </span>
-                  </div>
-                )
-              })}
-            </section>
-          </>
-        )}
-
-        {data.certificates?.length > 0 && (
-          <>
-            <div style={{ height: '1px', background: 'rgba(255,255,255,0.12)', marginBottom: '14px' }} />
-            <section>
-              <h3
-                style={{
-                  fontSize: '11px',
-                  fontWeight: 700,
-                  letterSpacing: '0.15em',
-                  marginBottom: '8px',
-                  color: '#FFFFFF',
-                }}
-              >
-                CERTIFIKAT
-              </h3>
-              {data.certificates.map((cert) => (
-                <div key={cert.id} className="cv-entry" style={{ marginBottom: '6px' }}>
-                  <div style={{ fontSize: '11.5px', fontWeight: 600, color: '#FFFFFF' }}>{cert.name}</div>
-                  {(cert.issuer || cert.date) && (
-                    <div style={{ fontSize: '10.5px', color: 'rgba(255,255,255,0.7)' }}>
-                      {[cert.issuer, cert.date].filter(Boolean).join(' · ')}
-                    </div>
-                  )}
-                </div>
-              ))}
-            </section>
-          </>
-        )}
+        {panel.map((p, i) => (
+          <div key={p.nyckel}>
+            {i > 0 && <div aria-hidden="true" style={{ height: '1px', background: '#41546A', margin: '18px 0' }} />}
+            {p.innehall}
+          </div>
+        ))}
       </aside>
-
-      {/* Huvudkolumn */}
-      <main style={{ flex: 1, padding: '48px 56px', background: '#FFFFFF' }}>
-        {/* Header med namn + kontakt */}
-        <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '40px' }}>
-          <div>
-            <h1
-              style={{
-                fontSize: '36px',
-                fontWeight: 700,
-                letterSpacing: '0.02em',
-                textTransform: 'uppercase',
-                color: dark,
-                lineHeight: 1.1,
-                marginBottom: '6px',
-              }}
-            >
-              {fullName}
-            </h1>
-            {data.title && (
-              <p
-                style={{
-                  fontSize: '12px',
-                  fontWeight: 500,
-                  letterSpacing: '0.2em',
-                  textTransform: 'uppercase',
-                  color: '#888888',
-                }}
-              >
-                {data.title}
-              </p>
-            )}
-          </div>
-          <div style={{ textAlign: 'right', fontSize: '12px', color: '#555555' }}>
-            {data.location && <div style={{ marginBottom: '4px' }}>{data.location}</div>}
-            {data.phone && <div style={{ marginBottom: '4px' }}>{data.phone}</div>}
-            {data.email && <div>{data.email}</div>}
-          </div>
-        </header>
-
-        {/* Work experience med timeline */}
-        {data.workExperience?.length > 0 && (
-          <section style={{ marginBottom: '32px' }}>
-            <h2
-              style={{
-                fontSize: '13px',
-                fontWeight: 700,
-                letterSpacing: '0.15em',
-                color: dark,
-                marginBottom: '6px',
-              }}
-            >
-              ARBETSLIVSERFARENHET
-            </h2>
-            <div style={{ height: '1px', background: '#E5E7EB', marginBottom: '20px' }} />
-            <div>
-              {data.workExperience.map((job) => (
-                // VIKTIGT: print-CSS tvingar display:block på .cv-entry för
-                // att break-inside ska respekteras i Chrome (puppeteer #6366).
-                // Grid-layouten måste därför leva på en INNER div.
-                <div key={job.id} className="cv-entry" style={{ marginBottom: '20px' }}>
-                  <div style={{ display: 'grid', gridTemplateColumns: '120px 24px 1fr', gap: '12px' }}>
-                    <div>
-                      <div style={{ fontSize: '12px', fontWeight: 700, color: dark }}>{job.company}</div>
-                      {job.location && <div style={{ fontSize: '11px', color: '#888' }}>{job.location}</div>}
-                      <div style={{ fontSize: '11px', color: '#888', marginTop: '2px' }}>
-                        {job.startDate} - {job.current ? 'Nu' : job.endDate}
-                      </div>
-                    </div>
-                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', paddingTop: '6px' }}>
-                      <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: dark }} />
-                      <div style={{ width: '1px', flex: 1, background: '#D1D5DB', marginTop: '4px' }} />
-                    </div>
-                    <div>
-                      <h3 style={{ fontSize: '13px', fontWeight: 700, color: dark, marginBottom: '4px' }}>
-                        {job.title}
-                      </h3>
-                      {job.description && (
-                        <p style={{ fontSize: '12px', lineHeight: 1.6, color: '#555' }}>{job.description}</p>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </section>
-        )}
-
-        {/* Education */}
-        {data.education?.length > 0 && (
-          <section style={{ marginBottom: '32px' }}>
-            <h2
-              style={{
-                fontSize: '13px',
-                fontWeight: 700,
-                letterSpacing: '0.15em',
-                color: dark,
-                marginBottom: '6px',
-              }}
-            >
-              UTBILDNING
-            </h2>
-            <div style={{ height: '1px', background: '#E5E7EB', marginBottom: '20px' }} />
-            <div>
-              {data.education.map((edu) => (
-                <div key={edu.id} className="cv-entry" style={{ marginBottom: '20px' }}>
-                  <div style={{ display: 'grid', gridTemplateColumns: '120px 24px 1fr', gap: '12px' }}>
-                    <div>
-                      <div style={{ fontSize: '12px', fontWeight: 700, color: dark }}>{edu.school}</div>
-                      {edu.location && <div style={{ fontSize: '11px', color: '#888' }}>{edu.location}</div>}
-                      <div style={{ fontSize: '11px', color: '#888', marginTop: '2px' }}>
-                        {edu.startDate} - {edu.endDate}
-                      </div>
-                    </div>
-                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', paddingTop: '6px' }}>
-                      <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: dark }} />
-                    </div>
-                    <div>
-                      <h3 style={{ fontSize: '13px', fontWeight: 700, color: dark, marginBottom: '4px' }}>
-                        {edu.degree}
-                      </h3>
-                      {edu.field && <div style={{ fontSize: '12px', color: '#555' }}>{edu.field}</div>}
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </section>
-        )}
-
-        {/* Skills - cv-entry för att hela sektionen (rubrik + taggar) ska
-            hållas ihop på samma sida. Utan denna klass orphan-bryts
-            rubriken till sida 1 medan taggar ramlar till sida 2. */}
-        {data.skills?.length > 0 && (
-          <section className="cv-entry">
-            <h2
-              style={{
-                fontSize: '13px',
-                fontWeight: 700,
-                letterSpacing: '0.15em',
-                color: dark,
-                marginBottom: '6px',
-              }}
-            >
-              KOMPETENSER
-            </h2>
-            <div style={{ height: '1px', background: '#E5E7EB', marginBottom: '16px' }} />
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
-              {data.skills.map((skill, i) => (
-                <span
-                  key={i}
-                  style={{
-                    fontSize: '11px',
-                    padding: '5px 12px',
-                    background: '#F3F4F6',
-                    color: dark,
-                    borderRadius: '3px',
-                    fontWeight: 500,
-                  }}
-                >
-                  {getSkillName(skill)}
-                </span>
-              ))}
-            </div>
-          </section>
-        )}
-      </main>
     </div>
   )
 }

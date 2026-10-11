@@ -12,7 +12,8 @@
  * Närvaron sätts per pass genom `aktivitetsplanApi.markAttendance` — samma väg
  * som Min dag och deltagarsidan, ingen kopia av logiken.
  */
-import type { PassIdag } from './dagensPass'
+import type { Attendance } from '@/services/aktivitetSchema'
+import { orsakText, type PassIdag } from './dagensPass'
 
 export interface PassGrupp {
   nyckel: string
@@ -59,4 +60,104 @@ export function gruppLank(g: Pick<PassGrupp, 'date' | 'start_time' | 'end_time' 
  */
 export function kanMarkerasNarvarandeIMassa(p: PassIdag): boolean {
   return p.attendance === null && !p.absence_reason
+}
+
+// ---------------------------------------------------------------------------
+// Förslag (omtaget "Kvarter", steg 4, 2026-10-11)
+// ---------------------------------------------------------------------------
+//
+// "Närvaro för ett helt pass på en skärm": deltagarens egen incheckning och
+// anmälda frånvaro fyller i ett FÖRSLAG som konsulenten bekräftar. Förslaget
+// sparas aldrig av sig självt — det skrivs först när konsulenten klickar,
+// antingen på valet i raden eller på "Bekräfta alla förslag".
+//
+//   self_checkin_at                    → Här
+//   anmäld frånvaro: sjuk              → Sjuk
+//   anmäld frånvaro: vård av barn,
+//     möte hos en myndighet            → Giltig
+//   anmäld frånvaro: annat             → inget förslag (konsulenten bedömer)
+//
+// Ogiltig föreslås aldrig — det är ett beslut med följder för deltagaren och
+// ska tas aktivt, ett pass i taget. En incheckning väger tyngre än en anmälan:
+// den som anmält sig sjuk men ändå checkat in är på plats.
+
+export interface NarvaroForslag {
+  varde: Attendance
+  /** Varför förslaget finns, i ord: "Checkade in själv 12:58". */
+  skal: string
+}
+
+const FORSLAG_FRAN_ORSAK: Record<string, Attendance> = {
+  sick: 'sick_certified',
+  child_care: 'absent_valid',
+  authority_meeting: 'absent_valid',
+}
+
+function klockslag(iso: string): string {
+  return new Date(iso).toLocaleTimeString('sv-SE', { hour: '2-digit', minute: '2-digit' })
+}
+
+/** Förslaget för ett omarkerat pass, eller null. Ett markerat pass har inget förslag. */
+export function narvaroForslag(p: PassIdag): NarvaroForslag | null {
+  if (p.attendance !== null) return null
+  if (p.self_checkin_at) return { varde: 'present', skal: `Checkade in själv ${klockslag(p.self_checkin_at)}` }
+  if (p.absence_reason) {
+    const varde = FORSLAG_FRAN_ORSAK[p.absence_reason]
+    if (!varde) return null
+    return { varde, skal: `Anmälde frånvaro: ${orsakText(p.absence_reason)}` }
+  }
+  return null
+}
+
+/** Radens läge i ord, för ett pass som inte är markerat. */
+export function omarkeratLage(p: PassIdag): string {
+  if (p.self_checkin_at) return `Checkade in själv ${klockslag(p.self_checkin_at)}`
+  if (p.absence_reason) {
+    const not = p.absence_note?.trim() ? ` — „${p.absence_note.trim()}”` : ''
+    return `Anmälde frånvaro: ${orsakText(p.absence_reason)}${not}`
+  }
+  return 'Inte markerad än'
+}
+
+/**
+ * "Markera resten som närvarande": det som `kanMarkerasNarvarandeIMassa`
+ * godtar och som inte redan har ett förslag (förslagen bekräftas för sig).
+ */
+export function restenNarvarande(pass: readonly PassIdag[]): PassIdag[] {
+  return pass.filter((p) => kanMarkerasNarvarandeIMassa(p) && !narvaroForslag(p))
+}
+
+// ---------------------------------------------------------------------------
+// Dagens pass som rader (DagensPass, omtaget steg 4)
+// ---------------------------------------------------------------------------
+
+export type DagensPost = { typ: 'grupp'; grupp: PassGrupp } | { typ: 'ensam'; pass: PassIdag }
+
+/** Passen som rader: grupper med två deltagare eller fler, resten var för sig. */
+export function dagensPoster(pass: readonly PassIdag[]): DagensPost[] {
+  // Eget jobbsökande hör inte hemma i en grupp — det kvitteras per person,
+  // och gruppvyn visar det inte (slipningen 2026-10-11, kommun A11).
+  const egna = pass.filter((p) => p.activity_type === 'jobsearch_own')
+  const poster: DagensPost[] = []
+  for (const g of grupperaPass(pass.filter((p) => p.activity_type !== 'jobsearch_own'))) {
+    if (new Set(g.pass.map((p) => p.participant_id)).size >= 2) poster.push({ typ: 'grupp', grupp: g })
+    else for (const p of g.pass) poster.push({ typ: 'ensam', pass: p })
+  }
+  for (const p of egna) poster.push({ typ: 'ensam', pass: p })
+  const tid = (x: DagensPost) => (x.typ === 'grupp' ? x.grupp.start_time : x.pass.start_time.slice(0, 5))
+  return poster.sort((a, b) => tid(a).localeCompare(tid(b)))
+}
+
+/** Ett grupppass i ord: "6 deltagare · 4 har checkat in · 1 har anmält frånvaro". */
+export function gruppLageText(g: PassGrupp): string {
+  const n = g.pass.length
+  const klara = g.pass.filter((p) => p.attendance !== null).length
+  if (klara === n) return `${n} deltagare · alla markerade`
+  const delar = [`${n} deltagare`]
+  if (klara > 0) delar.push(`${klara} av ${n} markerade`)
+  const incheckade = g.pass.filter((p) => p.attendance === null && p.self_checkin_at).length
+  const anmalda = g.pass.filter((p) => p.attendance === null && !p.self_checkin_at && p.absence_reason).length
+  if (incheckade > 0) delar.push(`${incheckade} har checkat in`)
+  if (anmalda > 0) delar.push(`${anmalda} har anmält frånvaro`)
+  return delar.join(' · ')
 }

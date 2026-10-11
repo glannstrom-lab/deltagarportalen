@@ -90,7 +90,6 @@
     "back": "Tillbaka",
     "next": "Nästa",
     "previous": "Föregående",
-    "yes": "Ja",
     "and": "och",
     "all": "Alla",
     "more": "Mer",
@@ -545,10 +544,8 @@
     "subtitle": "Skapa och hantera ditt CV",
     "experience": "Arbetslivserfarenhet",
     "educationsListAria": "Utbildningar",
-    "languages": "Språk",
     "formattingToolbarAria": "Formateringsverktyg",
     "createCV": "Skapa CV",
-    "links": "Länkar",
     "tabs": {
       "create": "Skapa CV",
       "myCvs": "Dina CV",
@@ -2964,7 +2961,6 @@
     "subtitle": "Kommunicera med {{name}}",
     "subtitleNoConsultant": "Ingen konsulent ännu",
     "noConsultant": "Du har ingen konsulent ännu",
-    "noConsultantDesc": "Du har ännu inte kopplats till en arbetskonsulent. Kontakta oss om du behöver hjälp.",
     "noConsultantFullDesc": "När du har en arbetskonsulent kan ni hålla kontakt här — boka möten, dela dokument och ställa frågor. Vill du ha en konsulent, eller undrar du hur det fungerar? Skriv till oss, så svarar vi.",
     "noConsultantCta": "Skriv till oss",
     "noConsultantMailSubject": "Jag vill ha en arbetskonsulent i Jobin",
@@ -2991,9 +2987,8 @@
       "submitting": "Säger upp…",
       "confirmButton": "Bekräfta uppsägning"
     },
-    "contactInfo": "Så når du hen",
     "consultant": {
-      "yourConsultant": "Din arbetskonsulent"
+      "yourConsultant": "Din konsulent"
     },
     "nextMeeting": {
       "title": "Nästa möte",
@@ -3044,18 +3039,18 @@
       "history": "Meddelandehistorik",
       "writeMessage": "Skriv ett meddelande",
       "sendMessage": "Skicka meddelande",
-      "pressEnterToSend": "Tryck Enter för att skicka"
+      "pressEnterToSend": "Tryck Enter för att skicka",
+      "visaAldre_one": "Visa {{count}} äldre meddelande",
+      "visaAldre_other": "Visa {{count}} äldre meddelanden"
     },
     "goals": {
       "completed": "Avklarade",
       "inProgress": "Pågående",
       "notStarted": "Ej påbörjat",
       "agreedGoals": "Era överenskomna mål",
-      "deadline": "Klart senast",
-      "greatJob": "Bra jobbat — du har klarat {{count}} av era mål."
+      "deadline": "Klart senast"
     },
     "quickActions": {
-      "title": "Snabbåtgärder",
       "bookMeeting": "Boka möte",
       "sendEmail": "Skicka e-post",
       "call": "Ring"
@@ -3063,6 +3058,20 @@
     "email": {
       "bookingSubject": "Bokningsförfrågan",
       "bookingBody": "Hej {{name}},\n\nJag skulle vilja boka ett möte.\n\nMed vänliga hälsningar"
+    },
+    "kontakt": {
+      "skriv": "Skriv"
+    },
+    "mer": {
+      "rubrik": "Mer om dig och {{namn}}",
+      "rubrikUtanNamn": "Mer om dig och din konsulent",
+      "mal": "Era mål",
+      "malText_one": "{{count}} mål som ni har kommit överens om",
+      "malText_other": "{{count}} mål som ni har kommit överens om",
+      "serNamn": "Det här ser {{namn}}",
+      "serText": "Vad du delar, och hur du ändrar det.",
+      "lasloggText": "Varje gång din konsulent öppnar din sida.",
+      "revokeText": "Om du inte vill ha kvar kopplingen till din konsulent."
     }
   },
   "interestGuide": {
@@ -7884,28 +7893,15 @@
     },
     "overview": {
       "totalParticipants": "Totalt deltagare",
-      "needsAttention": "Kräver uppmärksamhet",
       "meetingsThisWeek": "Möten denna vecka",
       "scheduled": "Schemalagda",
-      "attentionAlerts": "Kräver uppmärksamhet",
-      "viewAll": "Visa alla",
-      "allCaughtUp": "Alla deltagare följs upp!",
-      "noAttentionNeeded": "Inga deltagare kräver omedelbar uppmärksamhet.",
-      "quickActions": "Snabbåtgärder",
-      "inviteParticipant": "Bjud in deltagare",
-      "sendGroupMessage": "Skicka gruppmeddelande",
-      "scheduleMeeting": "Schemalägg möte",
-      "exportReport": "Exportera rapport",
-      "createGoal": "Skapa mål för deltagare",
       "recentActivity": "Senaste aktivitet",
       "goalsOverview": "Målöversikt",
       "completedGoals": "Avklarade mål",
       "overdueGoals": "Försenade mål",
       "noGoalCategoriesYet": "Inga mål registrerade än — skapa det första från en deltagares sida.",
       "topGoalCategories": "Vanligaste målkategorierna",
-      "vsLastWeek": "vs förra veckan",
       "noActivity": "Ingen aktivitet ännu",
-      "seeDetails": "Se detaljer",
       "activity": {
         "newNote": "Ny anteckning",
         "progressNoted": "Framsteg noterat",
@@ -7913,92 +7909,15 @@
         "activity": "Aktivitet"
       },
       "myDay": {
-        "title": "Min dag",
-        "todaysMeetings": "Dagens möten",
-        "noMeetingsToday": "Inga möten idag.",
-        "latestNote": "Senaste anteckning",
-        "noNotes": "Ingen journalanteckning än.",
-        "deadlines": "Måldeadlines",
-        "noDeadlines": "Inga deadlines inom 7 dagar.",
-        "daysLeft_one": "1 dag kvar",
-        "daysLeft_other": "{{count}} dagar kvar",
-        "overdue_one": "1 dag försenad",
-        "overdue_other": "{{count}} dagar försenade",
-        "dueToday": "Förfaller idag",
-        "needsContact": "Hör av dig",
-        "contactLogged": "Kontakten är loggad.",
-        "logContact": "Logga kontakt (samtal utanför portalen)",
-        "noContactsNeeded": "Alla deltagare har aktuell kontakt.",
-        "sendMessage": "Skicka meddelande",
-        "joinMeeting": "Möteslänk",
-        "allClear": "Inga möten, deadlines eller kontakter att ta i dag",
-        "allClearDesc": "Bra läge att jobba proaktivt med dina deltagare."
+        "contactLogged": "Kontakten är loggad."
       }
     },
     "participants": {
       "neverContacted": "Aldrig kontaktad",
-      "yesterday": "Igår",
-      "daysAgo": "{{count}} dagar sedan",
-      "weeksAgo": "{{count}} veckor sedan",
-      "noParticipants": "Inga deltagare ännu",
-      "noParticipantsDesc": "Du har inte tilldelat några deltagare ännu.",
-      "jobs": "Jobb",
-      "notes": "Anteckningar",
-      "priority": {
-        "critical": "Kritisk",
-        "high": "Hög"
-      },
-      "table": {
-        "name": "Namn",
-        "status": "Status",
-        "cv": "CV",
-        "savedJobs": "Sparade jobb",
-        "lastContact": "Senast kontakt",
-        "actions": "Åtgärder"
-      },
-      "searchPlaceholder": "Sök efter namn eller email...",
-      "invite": "Bjud in",
-      "selectedCount": "{{count}} valda",
-      "showingCount": "Visar {{shown}} av {{total}} deltagare",
-      "selectAll": "Markera alla",
-      "deselectAll": "Avmarkera alla",
-      "noResults": "Inga deltagare hittades",
-      "tryDifferentFilters": "Prova att ändra dina filter eller sökord.",
-      "clearFilters": "Rensa filter",
       "status": {
-        "active": "Aktiv",
         "inactive": "Inaktiv",
         "completed": "Avslutad",
         "onHold": "Pausad"
-      },
-      "filter": {
-        "all": "Alla statusar",
-        "active": "Aktiva",
-        "inactive": "Inaktiva",
-        "onHold": "Pausade",
-        "completed": "Avslutade",
-        "needsAttention": "Kräver uppmärksamhet"
-      },
-      "sort": {
-        "priority": "Prioritet",
-        "name": "Namn",
-        "cvScore": "CV-poäng",
-        "lastContact": "Senast kontakt",
-        "status": "Status",
-        "setAscending": "Sortera stigande",
-        "setDescending": "Sortera fallande"
-      },
-      "bulk": {
-        "sendMessage": "Skicka meddelande",
-        "addTag": "Lägg till tagg",
-        "changeStatus": "Ändra status",
-        "export": "Exportera"
-      },
-      "inviteFirst": "Bjud in din första deltagare",
-      "selectParticipant": "Välj {{firstName}} {{lastName}}",
-      "view": {
-        "grid": "Rutnätsvy",
-        "list": "Listvy"
       }
     },
     "handover": {
@@ -8190,7 +8109,7 @@
     "resources": {
       "goalTemplates": "Målmallar",
       "jobCollections": "Jobbsamlingar",
-      "bestPractices": "Best Practices",
+      "bestPractices": "Arbetssätt som fungerar",
       "searchTemplates": "Sök mallar...",
       "allCategories": "Alla kategorier",
       "cv": "CV",
@@ -8262,17 +8181,6 @@
       "unsavedChanges": "Du har osparade ändringar",
       "undo": "Ångra",
       "save": "Spara",
-      "preferences": "Inställningar",
-      "defaultParticipantView": "Standardvy för deltagare",
-      "chooseDefaultView": "Välj hur deltagarlistan visas som standard",
-      "grid": "Rutnät",
-      "list": "Lista",
-      "weekStart": "Veckan börjar",
-      "affectsCalendar": "Påverkar kalendervisning",
-      "monday": "Måndag",
-      "sunday": "Söndag",
-      "inactivityWarning": "Inaktivitetsvarning",
-      "daysBeforeInactive": "Dagar innan en deltagare markeras som inaktiv",
       "dataPrivacy": "Data & Integritet",
       "exportAllData": "Exportera all data",
       "exportDone": "Din data laddades ner som JSON-fil.",
@@ -8280,20 +8188,14 @@
       "privacyPolicy": "Integritetspolicy",
       "saved": "Inställningar sparade!",
       "saving": "Sparar...",
-      "preferencesDesc": "Anpassa din konsultvy",
       "dataPrivacyDesc": "Hantera data och GDPR-relaterade inställningar",
-      "daysCount": "{{count}} dagar",
       "exportScopeNote": "Exporten omfattar deltagare du har en aktiv relation till. Avslutade relationer tas inte med.",
       "exportIncludeConcern": "Ta med orosanteckningar",
       "exportIncludeConcernNote": "Anteckningar i kategorin Oro utelämnas som standard."
     },
     "alerts": {
       "noContactDays_one": "Ej kontaktad på 1 dag",
-      "noContactDays_other": "Ej kontaktad på {{count}} dagar",
-      "noContact": "Ej kontaktad på 7+ dagar",
-      "inactive": "Inaktiv i 14+ dagar",
-      "noCv": "CV saknas",
-      "lowEngagement": "Lågt engagemang"
+      "noContactDays_other": "Ej kontaktad på {{count}} dagar"
     },
     "report": {
       "title": "Generera PDF-rapport",
@@ -9598,19 +9500,18 @@
     },
     "saldo": {
       "ingaPass": "Inget inplanerat den här veckan.",
-      "radAnvisat_one": "Du har {{planerade}} av {{mal}} timme i anvisade pass den här veckan.",
+      "radAnvisat_one": "Du har {{planerade}} h inbokade i anvisade pass den här veckan. Målet är {{mal}} timme.",
       "vadRaknas": "Här räknas bara pass som din konsulent har planerat.",
       "vadRaknasJobbsok_one": "Här räknas bara pass som din konsulent har planerat. Eget jobbsökande räknas för sig: {{count}} timme i veckan enligt planen.",
       "vadRaknasJobbsok_other": "Här räknas bara pass som din konsulent har planerat. Eget jobbsökande räknas för sig: {{count}} timmar i veckan enligt planen.",
-      "radAnvisat_other": "Du har {{planerade}} av {{mal}} timmar i anvisade pass den här veckan.",
+      "radAnvisat_other": "Du har {{planerade}} h inbokade i anvisade pass den här veckan. Målet är {{mal}} timmar.",
       "radOver_one": "Du har {{planerade}} timme i anvisade pass den här veckan, mer än målet på {{mal}}.",
       "radOver_other": "Du har {{planerade}} timmar i anvisade pass den här veckan, mer än målet på {{mal}}.",
-      "lasMer": "Så räknas timmarna"
+      "lasMer": "Så räknas timmarna",
+      "narvaroHittills": "Närvaro hittills: {{narvaro}} h."
     },
-    "nastaPass": "Nästa: {{titel}}, {{dag}} kl {{tid}}",
     "forraVeckan": "Förra veckan",
     "nastaVeckan": "Nästa vecka",
-    "veckaRubrik": "Vecka {{fran}} – {{till}}",
     "idag": "i dag",
     "jagArHar": "Jag är här",
     "jobbsok": {
@@ -9656,7 +9557,7 @@
     },
     "franvaro": {
       "knapp": "Jag kan inte komma",
-      "rubrik": "Vad hindrar dig? Din konsulent får besked direkt.",
+      "rubrik": "Vad hindrar dig?",
       "orsak": {
         "sick": "Jag är sjuk",
         "child_care": "Vård av barn",
@@ -9683,7 +9584,9 @@
         "period": "Flera dagar",
         "till": "Till och med",
         "periodHjalp": "Alla dina pass de dagarna anmäls, också eget jobbsökande. Du kan ångra varje pass för sig."
-      }
+      },
+      "titel": "Kan du inte komma?",
+      "galler": "Det gäller {{titel}}, {{dag}} kl {{tid}}. Berätta för din konsulent vad som hindrar dig. Det tar en minut."
     },
     "forklaring": {
       "mal": "Din konsulent har satt {{mal}} timmar i veckan som mål för anvisade aktiviteter — det är kommunens krav enligt socialtjänstlagen.",
@@ -9794,6 +9697,76 @@
         }
       },
       "lasMer": "Om din plan"
+    },
+    "forvantas": {
+      "rubrik": "Vad förväntas av mig?",
+      "dolj": "Dölj Vad förväntas av mig",
+      "vem": {
+        "kommun": "{{namn}} är din konsulent. Hen hjälper dig med din plan och med att komma närmare ett jobb.",
+        "leverantor": "{{namn}} är din konsulent i Rusta och matcha. Hen hjälper dig att komma närmare ett jobb eller studier.",
+        "neutral": "{{namn}} är din konsulent. Hen hjälper dig med din plan.",
+        "utanNamn": "Din konsulent hjälper dig med din plan."
+      },
+      "skriv": "Skriv till din konsulent",
+      "genomgang": {
+        "steg": "Steg {{nr}} av {{antal}}",
+        "s1": "Här ser du dina pass, dag för dag. Byt vecka med pilarna.",
+        "s2": "När du kommer till ett pass i dag: tryck på Jag är här.",
+        "s3": "Kan du inte komma? Tryck på Jag kan inte komma vid passet. Då får din konsulent besked.",
+        "s4": "Har du en fråga? Skriv till din konsulent på sidan Min konsulent.",
+        "nasta": "Nästa",
+        "hoppa": "Hoppa över",
+        "klar": "Klart",
+        "visa": "Visa en kort genomgång"
+      },
+      "rad": {
+        "komma": {
+          "rubrik": "Kom till dina pass",
+          "text": "Tryck på Jag är här när du är på plats.",
+          "textTimmar_one": "{{count}} timme i veckan enligt din plan. Tryck på Jag är här när du är på plats.",
+          "textTimmar_other": "{{count}} timmar i veckan enligt din plan. Tryck på Jag är här när du är på plats."
+        },
+        "franvaro": {
+          "rubrik": "Hör av dig om du inte kan komma",
+          "text": "Gärna innan passet börjar. Tryck på Jag kan inte komma, så får din konsulent besked direkt."
+        },
+        "jobbsok": {
+          "rubrik": "Sök jobb på egen hand",
+          "text_one": "{{count}} timme i veckan enligt din plan.",
+          "text_other": "{{count}} timmar i veckan enligt din plan."
+        },
+        "rapport": {
+          "rubrik": "Lämna din aktivitetsrapport",
+          "text": "Till Arbetsförmedlingen som vanligt, i början av varje månad. Det gör du själv."
+        }
+      }
+    },
+    "mer": {
+      "rubrik": "Mer om din vecka",
+      "planText": "Var du är, vem som har bestämt och vad som räknas.",
+      "jobbsokText": "Det du har gjort i Jobin, som din egen översikt.",
+      "intygText": "Ladda ner ett intyg för en månad."
+    },
+    "nasta": {
+      "idag": "I dag",
+      "idagText": "Tryck på Jag är här när du är på plats.",
+      "nastaPass": "Nästa pass",
+      "nar": "{{dag}} kl {{fran}}–{{till}}",
+      "nastaPassText": "Du behöver inte göra något förrän då. Kan du inte komma? Säg till vid passet längre ner.",
+      "mote": "Nästa möte",
+      "moteMed": "Möte med {{namn}}",
+      "ingetEtikett": "Den här veckan",
+      "inget": "Inget mer är planerat den här veckan.",
+      "ingetText": "Undrar du något?",
+      "tillbaka": "Tillbaka till veckan"
+    },
+    "passRubrik": "Dina pass",
+    "remsa": {
+      "rubrik": "Dina dagar, måndag till fredag",
+      "dennaVecka": "Den här veckan",
+      "veckaNr": "Vecka {{nr}}",
+      "tillbakaIdag": "Till den här veckan",
+      "anmald": "du har anmält frånvaro"
     }
   },
   "minVardagHub": {
@@ -10317,5 +10290,19 @@
         "dagbok": "Skriv några rader i dagboken"
       }
     }
+  },
+  "kvarter": {
+    "status": {
+      "narvarande": "Närvarande",
+      "giltig": "Giltig frånvaro",
+      "ogiltig": "Ogiltig frånvaro",
+      "sjuk": "Sjuk",
+      "vantar": "Väntar på dig",
+      "planerat": "Planerat"
+    },
+    "ingetPass": "Inget pass",
+    "mer": "Mer",
+    "nastaSteg": "Nästa steg",
+    "fler": "+{{count}} till"
   }
 }

@@ -16,8 +16,8 @@ import { join } from 'node:path'
 const kalla = readFileSync(join(__dirname, 'Layout.tsx'), 'utf8').replace(/\r\n/g, '\n')
 
 describe('Lugnare läge finns på mobil även utan rådgivarinnehåll (PG12)', () => {
-  it('LugnarePanel ritas i ett eget block villkorat på isMobile && !visaRadgivare', () => {
-    const block = /\{showBars && isMobile && !visaRadgivare && \(\s*<div[^>]*>\s*<Suspense fallback=\{null\}>\s*<LugnarePanel \/>/
+  it('LugnarePanel ritas i ett eget block villkorat på isMobile && !visaRadgivare, men inte i konsulentvyn (slipningen 2026-10-11)', () => {
+    const block = /\{showBars && isMobile && !visaRadgivare && !location\.pathname\.startsWith\('\/consultant'\) && \(\s*<div[^>]*>\s*<Suspense fallback=\{null\}>\s*<LugnarePanel \/>/
     expect(kalla).toMatch(block)
   })
 

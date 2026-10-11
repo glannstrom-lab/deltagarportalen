@@ -48,7 +48,9 @@ describe('RK19: Exportera rapport på Översikt', () => {
         </MemoryRouter>
       </QueryClientProvider>,
     )
-    fireEvent.click(await screen.findByRole('button', { name: 'Exportera rapport' }))
+    // Omtaget "Kvarter" (2026-10-11): snabbåtgärderna ligger i Mer-menyn bredvid hälsningen.
+    fireEvent.click(await screen.findByRole('button', { name: 'Mer' }))
+    fireEvent.click(await screen.findByRole('menuitem', { name: 'Exportera rapport' }))
     expect(await screen.findByTestId('plats')).toHaveTextContent('/consultant/analytics?rapport=1')
   })
 })

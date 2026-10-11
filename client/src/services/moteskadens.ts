@@ -25,7 +25,7 @@ export const SNART_DAGAR = 3
  * och mötesrutan på deltagarsidan. Coachen trodde att kravet var "var fjärde
  * vecka" och förstod inte varför chipet var gult efter 12 dagar.
  */
-export const KADENS_REGEL = `Individuellt möte minst var ${MOTE_GRANS_DAGAR}:e dag och fysiskt möte minst var ${FYSISKT_GRANS_DAGAR}:e dag (RM3). Bara genomförda möten räknas.`
+export const KADENS_REGEL = `Individuellt möte minst var ${MOTE_GRANS_DAGAR}:e dag och fysiskt möte minst var ${FYSISKT_GRANS_DAGAR}:e dag (Rusta och matcha). Bara genomförda möten räknas.`
 
 export type MoteTyp = 'video' | 'phone' | 'physical'
 export type KadensLage = 'ok' | 'snart' | 'over' | 'inget'

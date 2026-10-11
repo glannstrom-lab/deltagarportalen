@@ -9,8 +9,34 @@ import { cn } from '@/lib/utils'
 import { buttonVariants, touch, animations } from '@/styles/design-system'
 import { Loader2 } from '@/components/ui/icons'
 
+/**
+ * Knappregeln i omtaget "Kvarter" (2026-10-11): EN primärknapp per vy.
+ *   primary   — fylld (Gran i kontorstonen, hubbfärgen annars)
+ *   secondary — ramad
+ *   tertiary  — text
+ * Resten av handlingarna i MerMeny. `ton="kvarter"` ger förslagets form och
+ * färger direkt ur tokens (--j-*), oberoende av hubbfärgen: 44 px höjd,
+ * rundning 14, fokusring 3 px Gran. Utan `ton` ser knappen ut som förut.
+ * Varje knapp bär `data-variant`, så ett test kan räkna primärknapparna.
+ */
+const KVARTER_BAS =
+  'rounded-[var(--j-r-m)] font-semibold min-h-[44px] ' +
+  'focus:outline-none focus-visible:outline focus-visible:outline-[3px] ' +
+  'focus-visible:outline-offset-2 focus-visible:outline-[var(--j-fokus)]'
+
+const KVARTER_VARIANT: Record<'primary' | 'secondary' | 'tertiary', string> = {
+  primary:
+    'bg-[var(--j-gran)] text-[var(--j-pa-gran)] border border-transparent hover:brightness-110',
+  secondary:
+    'bg-[var(--j-kort)] text-[var(--j-blak)] border border-[var(--j-linje-2)] hover:bg-[var(--j-sankt)]',
+  tertiary:
+    'bg-transparent text-[var(--j-blak-2)] border border-transparent hover:bg-[var(--j-sankt)] hover:text-[var(--j-blak)]',
+}
+
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger' | 'default'
+  variant?: 'primary' | 'secondary' | 'tertiary' | 'outline' | 'ghost' | 'danger' | 'default'
+  /** "kvarter" = omtagets knappar (tokens --j-*). Standard: portalens äldre knappar. */
+  ton?: 'standard' | 'kvarter'
   size?: 'sm' | 'md' | 'lg' | 'touch' | 'touch-lg'
   isLoading?: boolean
   loadingText?: string
@@ -30,13 +56,17 @@ export function Button({
   rightIcon,
   fullWidth = false,
   touchOptimized: _touchOptimized = false,
+  ton = 'standard',
   disabled,
   className,
   ...props
 }: ButtonProps) {
   // Map legacy 'default' variant to 'primary'
   const actualVariant = variant === 'default' ? 'primary' : variant
-  
+  const kvarter =
+    ton === 'kvarter' &&
+    (actualVariant === 'primary' || actualVariant === 'secondary' || actualVariant === 'tertiary')
+
   const baseClasses = cn(
     // Base styling
     'inline-flex items-center justify-center gap-1.5 sm:gap-2',
@@ -44,8 +74,11 @@ export function Button({
     'disabled:opacity-50 disabled:cursor-not-allowed',
     animations.press,
 
-    // Variant styling
-    buttonVariants[actualVariant as keyof typeof buttonVariants],
+    // Variant styling. `tertiary` utan kvarter-ton är textknappen i den
+    // äldre stilen, alltså samma som ghost.
+    kvarter
+      ? cn(KVARTER_BAS, KVARTER_VARIANT[actualVariant as keyof typeof KVARTER_VARIANT])
+      : buttonVariants[(actualVariant === 'tertiary' ? 'ghost' : actualVariant) as keyof typeof buttonVariants],
 
     // Size styling - auto touch-optimized on mobile
     // MB3 (2026-09-08): text-sm på ALLA bredder. `text-xs sm:text-sm` gav 12 px
@@ -57,6 +90,10 @@ export function Button({
     size === 'lg' && 'px-5 py-3 sm:px-6 text-base sm:text-lg min-h-[48px] sm:min-h-[52px]',
     size === 'touch' && cn(touch.button, 'text-sm sm:text-base'),
     size === 'touch-lg' && cn(touch.buttonLarge, 'text-base sm:text-lg font-semibold'),
+
+    // Kvarter: 44 px tryckyta på mobil även för sm; 36 px bara på dator
+    // (förslaget: "mindre knappar bara i täta tabeller på dator").
+    kvarter && size === 'sm' && 'min-h-[44px] sm:min-h-[36px]',
 
     // Full width
     fullWidth && 'w-full',
@@ -71,6 +108,7 @@ export function Button({
     <button
       className={baseClasses}
       disabled={disabled || isLoading}
+      data-variant={actualVariant}
       {...props}
     >
       {isLoading ? (

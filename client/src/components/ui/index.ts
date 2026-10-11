@@ -99,3 +99,12 @@ export {
 // En sökning gav noll importörer av dem via den här barreln, så de var
 // dessutom dödkod: ingen förlitade sig på att kunna importera typerna
 // härifrån.
+
+// Omtaget "Kvarter" (2026-10-11) — primitiverna för konsulentvyn och
+// deltagarens vardag. Ikonsetet: '@/components/ui/icons/kvarter'.
+export { NastaSteg } from './NastaSteg'
+export { PersonRad } from './PersonRad'
+export { StatusChip } from './StatusChip'
+export { Veckoremsa } from './Veckoremsa'
+export { NarvaroVal } from './NarvaroVal'
+export { MerMeny } from './MerMeny'

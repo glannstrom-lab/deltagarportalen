@@ -10,7 +10,6 @@
 import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/Button'
-import { Card } from '@/components/ui/Card'
 import { supabase } from '@/lib/supabase'
 import { useAuthStore } from '@/stores/authStore'
 import { minVeckaApi, type ActivityPlan } from '@/services/aktivitetApi'
@@ -101,28 +100,28 @@ export function NarvaroIntyg({ plan, regelverk = null }: Props) {
   }
 
   return (
-    <Card className="p-5 space-y-3">
-      <h2 className="text-base font-semibold text-stone-900 dark:text-stone-100">{t('minVecka.intyg.rubrik', 'Närvarointyg')}</h2>
-      <p className="text-sm text-stone-600 dark:text-stone-400">
+    // Omtaget steg 6: rubriken "Närvarointyg" står i raden som fälls ut (MerRad i Min vecka).
+    <div className="space-y-3">
+      <p className="m-0 text-[0.9375rem] text-j-blak-2">
         {t(regelverkNycklar(regelverk).intyg)}
       </p>
       <div className="flex flex-wrap items-end gap-3">
         <div>
-          <label htmlFor="intyg-manad" className="block text-sm font-medium text-stone-800 dark:text-stone-200 mb-1">
+          <label htmlFor="intyg-manad" className="block text-[0.9375rem] font-medium text-j-blak mb-1">
             {t('minVecka.intyg.manad', 'Månad')}
           </label>
           <select
             id="intyg-manad"
             value={manad}
             onChange={(e) => setManad(e.target.value)}
-            className="min-h-11 rounded-lg border border-stone-300 dark:border-stone-600 bg-white dark:bg-stone-900 px-3 text-sm text-stone-900 dark:text-stone-100"
+            className="min-h-12 rounded-j-s border border-j-linje-2 bg-j-kort px-3 text-base text-j-blak"
           >
             {manader.map((m) => (
               <option key={m} value={m}>{manadOchAr(m, i18n.language)}</option>
             ))}
           </select>
         </div>
-        <Button className="min-h-11" onClick={laddaNer} disabled={laddar}>
+        <Button ton="kvarter" variant="secondary" onClick={laddaNer} disabled={laddar}>
           {laddar ? t('minVecka.intyg.skapar', 'Skapar …') : t('minVecka.intyg.knapp', 'Ladda ner närvarointyg')}
         </Button>
       </div>
@@ -137,8 +136,8 @@ export function NarvaroIntyg({ plan, regelverk = null }: Props) {
           {t('minVecka.intyg.forbehall', 'Bara pass som konsulenten markerat som närvarande räknas som närvaro. Pass utan markering står som "ej markerat".')}
         </p>
       </LasMer>
-      {klart && <p role="status" className="text-sm text-emerald-700 dark:text-emerald-300">{klart}</p>}
-      {fel && <p role="alert" className="text-sm text-red-700 dark:text-red-300">{fel}</p>}
-    </Card>
+      {klart && <p role="status" className="text-[0.9375rem] font-semibold text-s-narvarande">{klart}</p>}
+      {fel && <p role="alert" className="text-[0.9375rem] font-semibold text-s-ogiltig">{fel}</p>}
+    </div>
   )
 }

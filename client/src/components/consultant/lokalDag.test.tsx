@@ -16,6 +16,8 @@ import { describe, it, expect, vi, beforeAll, afterAll, beforeEach, afterEach } 
 import { render, screen, cleanup } from '@testing-library/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
+// Kundtypen (slipningen 2026-10-11) läses med React Query; här står den fast.
+vi.mock('@/components/consultant/useRegelverk', () => ({ useOrgTypVisning: () => ({ visaAvtalskrav: true, visaIvoUnderlag: true }), useRegelverk: () => 'kommun' }))
 vi.mock('@/lib/supabase', () => ({
   supabase: {
     auth: { getUser: async () => ({ data: { user: { id: 'konsulent-1' } }, error: null }) },

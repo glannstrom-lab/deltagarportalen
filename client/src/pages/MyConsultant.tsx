@@ -14,49 +14,28 @@ import { konsulentMeddelandeApi } from '@/services/konsulentMeddelandeApi'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { EmptyState } from '@/components/ui/EmptyState'
-import {
-  User,
-  Mail,
-  Phone,
-  Calendar,
-  MessageSquare,
-  Send,
-  FileText,
-  Target,
-  Activity,
-  Clock,
-  CheckCircle,
-  ChevronDown,
-  ChevronUp,
-  Video,
-  MapPin,
-  Heart,
-  TrendingUp,
-  Eye,
-  EyeOff,
-  Sparkles,
-  UserCheck,
-  AlertCircle,
-} from '@/components/ui/icons'
+import { Send, Eye, EyeOff, UserCheck } from '@/components/ui/icons'
 import { useFocusMode } from '@/components/FocusModeProvider'
 import { FocusMyConsultantWizard } from '@/components/focus/pages/FocusMyConsultantWizard'
 import { supabase } from '@/lib/supabase'
 import { applicationsApi } from '@/services/applicationsApi'
 import { getMyConsultant } from '@/services/myConsultantApi'
 import { useAuthStore } from '@/stores/authStore'
-import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { LoadingState } from '@/components/ui/LoadingState'
 // RD26 (rollspelet 2026-09-27): inget tyst fel när ett meddelande inte går fram
 import { SkrivFel } from '@/components/ui/SkrivFel'
 import { useSkrivning } from '@/components/ui/useSkrivning'
 import { cn } from '@/lib/utils'
-import { buttonVariants } from '@/styles/design-system'
 import { PageLayout } from '@/components/layout/PageLayout'
 import { RevokeConsultantLinkSection } from '@/components/consultant/RevokeConsultantLinkSection'
 import { VemHarOppnatKort } from '@/components/consultant/VemHarOppnatKort'
 import { Delningsforslag } from '@/components/participant/Delningsforslag'
 import { FokusVaxel } from '@/components/focus/shell/FokusVaxel'
+import { MerMeny, type MerMenyVal } from '@/components/ui/MerMeny'
+import { KvarterIkon } from '@/components/ui/icons/kvarter/KvarterIkon'
+import type { KvarterNamn } from '@/components/ui/icons/kvarter/ritningar'
+import { MerLista, MerRad } from '@/components/minvecka/MerRad'
 import { datumSprak, kortDatum } from '@/lib/datumsprak'
 
 // Types
@@ -104,152 +83,155 @@ interface Goal {
   deadline?: string
 }
 
-// Consultant Profile Card
-function ConsultantCard({ consultant, nextMeeting }: { consultant: ConsultantInfo | null; nextMeeting: NextMeeting | null }) {
+/** Initialer i stället för bild när konsulenten saknar en egen. */
+function initialer(forn: string, efter: string): string {
+  return `${forn.trim().charAt(0)}${efter.trim().charAt(0)}`.toUpperCase() || '?'
+}
+
+const MOTES_IKON: Record<NextMeeting['type'], KvarterNamn> = {
+  video: 'digitalt',
+  phone: 'samtal',
+  in_person: 'fysiskt',
+}
+
+/**
+ * Omtaget steg 6: vem, hur du når hen och ert nästa möte — överst, på en yta.
+ * En primärknapp ("Skriv" → meddelandefältet), en ramad (Ring, eller Mejla
+ * utan telefonnummer) och resten i Mer-menyn.
+ */
+export function KonsulentHuvud({
+  consultant,
+  nextMeeting,
+  onSkriv,
+  onBoka,
+}: {
+  consultant: ConsultantInfo
+  nextMeeting: NextMeeting | null
+  onSkriv: () => void
+  onBoka: () => void
+}) {
   const { t, i18n } = useTranslation()
+  const namn = `${consultant.first_name} ${consultant.last_name}`.trim()
+  const tel = consultant.phone?.replace(/\s/g, '')
+  const mejla = () => { window.location.href = `mailto:${consultant.email}` }
+  const ring = () => { if (tel) window.location.href = `tel:${tel}` }
 
-  if (!consultant) {
-    return (
-      <Card className="p-6 text-center">
-        <div className="w-16 h-16 rounded-full bg-stone-100 dark:bg-stone-800 mx-auto mb-4 flex items-center justify-center">
-          <User className="w-8 h-8 text-stone-400 dark:text-stone-500" />
-        </div>
-        <h2 className="text-lg font-semibold text-stone-900 dark:text-stone-100 mb-2">
-          {t('myConsultant.noConsultant')}
-        </h2>
-        <p className="text-stone-600 dark:text-stone-400 text-sm">
-          {t('myConsultant.noConsultantDesc')}
-        </p>
-      </Card>
-    )
-  }
-
-  const meetingTypeIcons = {
-    video: Video,
-    phone: Phone,
-    in_person: MapPin,
-  }
-
-  const meetingTypeLabels = {
-    video: t('myConsultant.nextMeeting.meetingTypes.video'),
-    phone: t('myConsultant.nextMeeting.meetingTypes.phone'),
-    in_person: t('myConsultant.nextMeeting.meetingTypes.inPerson'),
-  }
+  const merVal: MerMenyVal[] = [
+    ...(tel && consultant.email ? [{ etikett: t('myConsultant.quickActions.sendEmail'), ikon: 'meddelande' as const, onClick: mejla }] : []),
+    ...(consultant.email ? [{ etikett: t('myConsultant.quickActions.bookMeeting'), ikon: 'kalender' as const, onClick: onBoka }] : []),
+  ]
 
   return (
-    <Card className="overflow-hidden">
-      {/* Header with gradient */}
-      <div className="bg-[var(--c-solid)] p-6 text-[var(--c-on-solid)]">
-        <div className="flex items-center gap-4">
-          {consultant.avatar_url ? (
-            <img
-              src={consultant.avatar_url}
-              alt=""
-              className="w-16 h-16 rounded-full border-2 border-white/30"
-            />
-          ) : (
-            <div className="w-16 h-16 shrink-0 rounded-full bg-white/20 flex items-center justify-center">
-              <User className="w-8 h-8 text-[var(--c-on-solid)]" />
-            </div>
-          )}
-          <div className="min-w-0">
-            <h2 className="text-lg font-semibold break-words">
-              {consultant.first_name} {consultant.last_name}
-            </h2>
-            <p className="text-[var(--c-on-solid)] text-sm">
-              {consultant.title || t('myConsultant.consultant.yourConsultant')}
-            </p>
-          </div>
+    <section
+      aria-labelledby="min-konsulent-namn"
+      className="overflow-hidden rounded-j-m border border-j-linje bg-j-kort text-j-blak shadow-j"
+      data-testid="konsulent-huvud"
+    >
+      <div className="flex items-center gap-4 p-5 sm:p-6">
+        {consultant.avatar_url ? (
+          <img src={consultant.avatar_url} alt="" className="h-16 w-16 shrink-0 rounded-full object-cover" />
+        ) : (
+          <span aria-hidden="true" className="grid h-16 w-16 shrink-0 place-items-center rounded-full bg-j-gran-mjuk font-rubrik text-xl font-bold text-j-gran-text">
+            {initialer(consultant.first_name, consultant.last_name)}
+          </span>
+        )}
+        <div className="min-w-0">
+          <h2 id="min-konsulent-namn" className="m-0 break-words font-rubrik text-[1.5rem] font-bold leading-tight">
+            {namn}
+          </h2>
+          <p className="m-0 text-[0.9375rem] text-j-blak-2">
+            {consultant.title || t('myConsultant.consultant.yourConsultant')}
+          </p>
         </div>
       </div>
 
-      {/* Contact info */}
-      <div className="p-4 border-b border-stone-200 dark:border-stone-700">
-        <h3 className="text-sm font-medium text-stone-500 dark:text-stone-400 mb-3">
-          {t('myConsultant.contactInfo')}
-        </h3>
-        <div className="space-y-2">
-          <a
-            href={`mailto:${consultant.email}`}
-            className="flex items-center gap-3 p-2 rounded-lg hover:bg-stone-50 dark:hover:bg-stone-800 transition-colors group"
-          >
-            <Mail className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-text)]" />
-            <span className="text-stone-700 dark:text-stone-300 group-hover:text-[var(--c-text)] dark:group-hover:text-[var(--c-text)]">
-              {consultant.email}
-            </span>
-          </a>
+      <div className="space-y-3 px-5 pb-5 sm:px-6">
+        <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">
+          <Button ton="kvarter" variant="primary" onClick={onSkriv} className="w-full sm:w-auto"
+            leftIcon={<KvarterIkon namn="meddelande" size={20} />}>
+            {t('myConsultant.kontakt.skriv', 'Skriv')}
+          </Button>
+          {tel ? (
+            <Button ton="kvarter" variant="secondary" onClick={ring} className="w-full sm:w-auto"
+              leftIcon={<KvarterIkon namn="samtal" size={20} ton="gran" />}>
+              {t('myConsultant.quickActions.call')}
+            </Button>
+          ) : consultant.email ? (
+            <Button ton="kvarter" variant="secondary" onClick={mejla} className="w-full sm:w-auto"
+              leftIcon={<KvarterIkon namn="meddelande" size={20} ton="gran" />}>
+              {t('myConsultant.quickActions.sendEmail')}
+            </Button>
+          ) : null}
+          {merVal.length > 0 && <MerMeny val={merVal} align="start" className="self-start" />}
+        </div>
+        {/* Numret och adressen som text också — den som vill skriva av dem ska kunna det. */}
+        <p className="m-0 flex flex-wrap gap-x-4 gap-y-1 text-[0.9375rem] text-j-blak-2">
           {consultant.phone && (
-            <a
-              href={`tel:${consultant.phone}`}
-              className="flex items-center gap-3 p-2 rounded-lg hover:bg-stone-50 dark:hover:bg-stone-800 transition-colors group"
-            >
-              <Phone className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-text)]" />
-              <span className="text-stone-700 dark:text-stone-300 group-hover:text-[var(--c-text)] dark:group-hover:text-[var(--c-text)]">
-                {consultant.phone}
-              </span>
+            <a href={`tel:${tel}`} className="inline-flex min-h-[44px] items-center gap-1.5 text-j-blak-2 underline-offset-2 hover:underline sm:min-h-0">
+              <KvarterIkon namn="samtal" size={16} />{consultant.phone}
             </a>
           )}
-        </div>
+          {consultant.email && (
+            <a href={`mailto:${consultant.email}`} className="inline-flex min-h-[44px] items-center gap-1.5 break-all text-j-blak-2 underline-offset-2 hover:underline sm:min-h-0">
+              <KvarterIkon namn="meddelande" size={16} />{consultant.email}
+            </a>
+          )}
+        </p>
       </div>
 
-      {/* Next meeting */}
-      <div className="p-4">
-        <h3 className="text-sm font-medium text-stone-500 dark:text-stone-400 mb-3">
+      {/* Ert nästa möte */}
+      <div className="border-t border-j-linje bg-j-sankt/60 px-5 py-4 sm:px-6" data-testid="nasta-mote">
+        <p className="m-0 text-[0.8125rem] font-bold uppercase tracking-[0.08em] text-j-glod">
           {t('myConsultant.nextMeeting.title')}
-        </h3>
+        </p>
         {nextMeeting ? (
-          <div className="bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 rounded-xl p-4">
-            <div className="flex items-start gap-3">
-              <div className="p-2 bg-[var(--c-accent)]/40 dark:bg-[var(--c-solid)] rounded-lg">
-                {(() => {
-                  const Icon = meetingTypeIcons[nextMeeting.type] ?? meetingTypeIcons.video
-                  return <Icon className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-text)]" />
-                })()}
-              </div>
-              <div className="flex-1">
-                <p className="font-medium text-stone-900 dark:text-stone-100">
-                  {meetingTypeLabels[nextMeeting.type] ?? meetingTypeLabels.video}
-                </p>
-                <p className="text-sm text-stone-600 dark:text-stone-400 mt-1">
-                  {new Date(nextMeeting.scheduled_at).toLocaleDateString(datumSprak(i18n.language), {
-                    weekday: 'long',
-                    day: 'numeric',
-                    month: 'long',
-                    hour: '2-digit',
-                    minute: '2-digit',
-                  })}
-                </p>
-                {nextMeeting.location && (
-                  <p className="text-sm text-stone-500 dark:text-stone-400 mt-1">
-                    {nextMeeting.location}
-                  </p>
-                )}
-                {nextMeeting.meeting_link && (
-                  <a
-                    href={nextMeeting.meeting_link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 text-sm text-[var(--c-text)] dark:text-[var(--c-text)] hover:underline mt-2"
-                  >
-                    <Video className="w-4 h-4" />
-                    {t('myConsultant.nextMeeting.joinMeeting')}
-                  </a>
-                )}
-              </div>
+          <div className="mt-2 flex items-start gap-3">
+            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-j-m bg-j-kort">
+              <KvarterIkon namn={MOTES_IKON[nextMeeting.type] ?? 'digitalt'} size={24} ton="gran" />
+            </span>
+            <div className="min-w-0">
+              <p className="m-0 text-base font-semibold first-letter:uppercase">
+                {new Date(nextMeeting.scheduled_at).toLocaleDateString(datumSprak(i18n.language), {
+                  weekday: 'long',
+                  day: 'numeric',
+                  month: 'long',
+                  hour: '2-digit',
+                  minute: '2-digit',
+                })}
+              </p>
+              <p className="m-0 text-[0.9375rem] text-j-blak-2">
+                {t(MOTES_TYP_NYCKEL[nextMeeting.type] ?? MOTES_TYP_NYCKEL.video)}
+                {nextMeeting.location ? ` · ${nextMeeting.location}` : ''}
+              </p>
+              {nextMeeting.meeting_link && (
+                <a
+                  href={nextMeeting.meeting_link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-1 inline-flex min-h-[44px] items-center gap-1.5 font-semibold text-j-gran-text underline underline-offset-2"
+                >
+                  <KvarterIkon namn="digitalt" size={18} />
+                  {t('myConsultant.nextMeeting.joinMeeting')}
+                </a>
+              )}
             </div>
           </div>
         ) : (
-          <div className="text-center py-4 text-stone-500 dark:text-stone-400">
-            <Calendar className="w-8 h-8 mx-auto mb-2 opacity-50" />
-            <p className="text-sm">{t('myConsultant.nextMeeting.noMeetings')}</p>
-          </div>
+          <p className="m-0 mt-1 text-[0.9375rem] text-j-blak-2">{t('myConsultant.nextMeeting.noMeetings')}</p>
         )}
       </div>
-    </Card>
+    </section>
   )
 }
 
-// Shared Information Section
+/** Hela nycklar som literaler — UX24-vakten ska se dem. */
+const MOTES_TYP_NYCKEL: Record<NextMeeting['type'], string> = {
+  video: 'myConsultant.nextMeeting.meetingTypes.video',
+  phone: 'myConsultant.nextMeeting.meetingTypes.phone',
+  in_person: 'myConsultant.nextMeeting.meetingTypes.inPerson',
+}
+
+// Shared Information Section — innehållet i raden "Det här ser {{namn}}"
 function SharedInformationSection({ sharedInfo }: { sharedInfo: SharedInfo[] }) {
   const { t } = useTranslation()
   const [expandedCategories, setExpandedCategories] = useState<string[]>(['progress'])
@@ -263,13 +245,11 @@ function SharedInformationSection({ sharedInfo }: { sharedInfo: SharedInfo[] }) 
   }
 
   // UX24: bara tre kategorier produceras någonsin av datan nedan
-  // (`progress`, `cv`, `wellbeing` — se sharedInfoItems). `goals` och
-  // `activity` var döda grenar vars etiketter aldrig kunde renderas, och
-  // `activity` krockade dessutom med `progress`, som redan heter "Aktivitet".
-  const categoryIcons: Record<string, React.ElementType> = {
-    progress: TrendingUp,
-    cv: FileText,
-    wellbeing: Heart,
+  // (`progress`, `cv`, `wellbeing` — se sharedInfoItems).
+  const categoryIcons: Record<string, KvarterNamn> = {
+    progress: 'jobb',
+    cv: 'dokument',
+    wellbeing: 'deltagare',
   }
 
   const categoryLabels: Record<string, string> = {
@@ -278,84 +258,50 @@ function SharedInformationSection({ sharedInfo }: { sharedInfo: SharedInfo[] }) 
     wellbeing: t('myConsultant.sharedInfo.categories.wellbeing'),
   }
 
-  const statusColors = {
-    good: 'text-[var(--c-text)] dark:text-[var(--c-text)]',
-    neutral: 'text-stone-600 dark:text-stone-400',
-    attention: 'text-amber-600 dark:text-amber-400',
-  }
-
   return (
-    <Card>
-      <div className="p-4 border-b border-stone-200 dark:border-stone-700">
-        <div className="flex items-center gap-2">
-          <Eye className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-text)]" />
-          {/* G13: `t('myConsultant.sharedInfo')` pekade på ett OBJEKT (nyckeln
-              har underliggande barn) → i18next returnerade den råa nyckeln, så
-              kortets rubrik läste "myConsultant.sharedInfo" i produktion.
-              `sharedInfoDesc` fanns inte alls. Båda finns nu som egna nycklar. */}
-          <h2 className="font-semibold text-stone-900 dark:text-stone-100">
-            {t('myConsultant.sharedInfoTitle', 'Det här ser din konsulent')}
-          </h2>
-        </div>
-      </div>
-
-      <div className="divide-y divide-stone-200 dark:divide-stone-700">
+    <div className="space-y-3">
+      <div className="overflow-hidden rounded-j-m border border-j-linje">
         {sharedInfo.map(category => {
           const isExpanded = expandedCategories.includes(category.category)
-          const Icon = categoryIcons[category.category] || Activity
           const label = categoryLabels[category.category] || category.category
 
           return (
-            <div key={category.category}>
+            <div key={category.category} className="border-b border-j-linje last:border-b-0">
               <button
+                type="button"
                 onClick={() => toggleCategory(category.category)}
                 aria-expanded={isExpanded}
                 aria-controls={`shared-${category.category}`}
-                className="w-full flex items-center justify-between p-4 hover:bg-stone-50 dark:hover:bg-stone-800 transition-colors"
+                className="flex min-h-[52px] w-full items-center justify-between gap-3 px-4 text-left hover:bg-j-sankt focus:outline-none focus-visible:outline focus-visible:outline-[3px] focus-visible:-outline-offset-[3px] focus-visible:outline-[var(--j-fokus)]"
               >
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40 rounded-lg">
-                    <Icon className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-text)]" />
-                  </div>
-                  <span className="font-medium text-stone-900 dark:text-stone-100">
-                    {label}
-                  </span>
-                </div>
-                {isExpanded ? (
-                  <ChevronUp className="w-5 h-5 text-stone-400 dark:text-stone-500" />
-                ) : (
-                  <ChevronDown className="w-5 h-5 text-stone-400 dark:text-stone-500" />
-                )}
+                <span className="flex items-center gap-3 font-semibold text-j-blak">
+                  <KvarterIkon namn={categoryIcons[category.category] ?? 'plan'} size={20} ton="gran" />
+                  {label}
+                </span>
+                <KvarterIkon namn="pil" size={18} className={cn('text-j-blak-3 transition-transform motion-reduce:transition-none', isExpanded && 'rotate-90')} />
               </button>
 
               {isExpanded && (
-                <div
-                  id={`shared-${category.category}`}
-                  role="region"
-                  aria-labelledby={`shared-${category.category}-header`}
-                  className="px-4 pb-4"
-                >
-                  <div className="bg-stone-50 dark:bg-stone-800/50 rounded-xl p-4 space-y-3">
+                <div id={`shared-${category.category}`} role="region" aria-label={label} className="px-4 pb-4">
+                  <ul className="m-0 list-none space-y-2.5 p-0">
                     {category.items.map((item, index) => (
-                      <div key={index} className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
+                      <li key={index} className="flex items-start justify-between gap-3 text-[0.9375rem]">
+                        <span className="flex items-center gap-2 text-j-blak-2">
                           {/* Nycklarna låg under sharedInfo, inte direkt under
                               myConsultant — aria-labeln var tom före 2026-07-27. */}
                           {item.isShared ? (
-                            <Eye className="w-4 h-4 text-[var(--c-solid)]" aria-label={t('myConsultant.sharedInfo.shared', 'Delas')} />
+                            <Eye className="h-4 w-4 shrink-0 text-j-gran-text" aria-label={t('myConsultant.sharedInfo.shared', 'Delas')} />
                           ) : (
-                            <EyeOff className="w-4 h-4 text-stone-400 dark:text-stone-500" aria-label={t('myConsultant.sharedInfo.notShared', 'Delas ej')} />
+                            <EyeOff className="h-4 w-4 shrink-0 text-j-blak-3" aria-label={t('myConsultant.sharedInfo.notShared', 'Delas ej')} />
                           )}
-                          <span className="text-sm text-stone-600 dark:text-stone-400">
-                            {item.label}
-                          </span>
-                        </div>
-                        <span className={cn('text-sm font-medium', statusColors[item.status])}>
+                          <span>{item.label}</span>
+                        </span>
+                        <span className={cn('text-right font-semibold', item.status === 'attention' ? 'text-s-vantar' : 'text-j-blak')}>
                           {item.value}
                         </span>
-                      </div>
+                      </li>
                     ))}
-                  </div>
+                  </ul>
                 </div>
               )}
             </div>
@@ -363,32 +309,32 @@ function SharedInformationSection({ sharedInfo }: { sharedInfo: SharedInfo[] }) 
         })}
       </div>
 
-      {/* G13 (2026-07-27): förklara ikonerna och gör transparensen handlingsbar.
-          Utan teckenförklaring är öppet/stängt öga en gissningslek, och utan
-          länken är insikten "måendet delas inte" en död ände. */}
-      <div className="p-4 border-t border-stone-200 dark:border-stone-700 space-y-3">
-        <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-5">
-          <span className="flex items-center gap-1.5 text-xs text-stone-600 dark:text-stone-400">
-            <Eye className="w-3.5 h-3.5 text-[var(--c-solid)]" aria-hidden="true" />
-            {t('myConsultant.legend.shared', 'Din konsulent kan se det här')}
-          </span>
-          <span className="flex items-center gap-1.5 text-xs text-stone-600 dark:text-stone-400">
-            <EyeOff className="w-3.5 h-3.5 text-stone-400 dark:text-stone-500" aria-hidden="true" />
-            {t('myConsultant.legend.notShared', 'Bara du kan se det här')}
-          </span>
-        </div>
-
-        <Link
-          to="/settings?section=privacy"
-          className="inline-flex items-center gap-1.5 text-sm font-semibold text-[var(--c-text)] hover:text-[var(--c-solid)] no-underline"
-        >
-          {t('myConsultant.legend.changeSharing', 'Ändra vad du delar')}
-          <span aria-hidden="true">→</span>
-        </Link>
+      {/* G13 (2026-07-27): förklara ikonerna och gör transparensen handlingsbar. */}
+      <div className="flex flex-col gap-1.5 text-[0.9375rem] text-j-blak-2 sm:flex-row sm:gap-5">
+        <span className="flex items-center gap-1.5">
+          <Eye className="h-4 w-4 text-j-gran-text" aria-hidden="true" />
+          {t('myConsultant.legend.shared', 'Din konsulent kan se det här')}
+        </span>
+        <span className="flex items-center gap-1.5">
+          <EyeOff className="h-4 w-4 text-j-blak-3" aria-hidden="true" />
+          {t('myConsultant.legend.notShared', 'Bara du kan se det här')}
+        </span>
       </div>
-    </Card>
+
+      {/* Rådgivarens hälsning (radgivarHalsningar.ts, myConsultant) pekar hit. */}
+      <Link
+        to="/settings?section=privacy"
+        className="inline-flex min-h-[44px] items-center gap-1.5 font-semibold text-j-gran-text no-underline hover:underline"
+      >
+        {t('myConsultant.legend.changeSharing', 'Ändra vad du delar')}
+        <KvarterIkon namn="pil" size={18} />
+      </Link>
+    </div>
   )
 }
+
+/** Hur många meddelanden som syns innan "Visa äldre". */
+const SENASTE = 4
 
 // Messages Section
 export function MessagesSection({
@@ -396,20 +342,24 @@ export function MessagesSection({
   consultant,
   onSendMessage,
   loading,
+  textRef,
 }: {
   messages: Message[]
   consultant: ConsultantInfo | null
   onSendMessage: (content: string) => Promise<void>
   loading: boolean
+  /** Omtaget: "Skriv" överst flyttar fokus hit. */
+  textRef?: React.Ref<HTMLTextAreaElement>
 }) {
   const { t, i18n } = useTranslation()
   const { user } = useAuthStore()
   const [newMessage, setNewMessage] = useState('')
+  const [visaAlla, setVisaAlla] = useState(false)
   // RD1/RD26: fältet töms BARA när meddelandet gått fram. Ett fel visas med
   // "Din text är kvar" och Försök igen — tidigare tömdes fältet ändå, tyst.
   const skickning = useSkrivning((text: string) => onSendMessage(text))
   const sending = skickning.lage === 'skickar'
-  const messagesEndRef = useRef<HTMLDivElement>(null)
+  const listRef = useRef<HTMLDivElement>(null)
   // RD23 (rollspelet 2026-09-27): "Tryck Enter för att skicka" på mobil, där
   // Enter på tangentbordet betyder ny rad. På pekskärm skickar bara knappen.
   const [pekskarm] = useState(() =>
@@ -418,9 +368,11 @@ export function MessagesSection({
       : false,
   )
 
+  // Nyaste meddelandet syns: listan rullas inom sig själv, inte hela sidan.
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }, [messages])
+    const el = listRef.current
+    if (el) el.scrollTop = el.scrollHeight
+  }, [messages, visaAlla])
 
   const handleSend = async () => {
     if (!newMessage.trim() || sending) return
@@ -443,66 +395,57 @@ export function MessagesSection({
     return null
   }
 
+  const synliga = visaAlla ? messages : messages.slice(-SENASTE)
+  const dolda = messages.length - synliga.length
+
   return (
-    // 2026-10-09: den fasta höjden gällde även en tom lista, och tomtillståndet
-    // (bild + rubrik + text) klipptes mitt i meningen. Höjden behövs bara när
-    // det finns en tråd att rulla i.
-    <Card className={cn('flex flex-col', (loading || messages.length > 0) && 'h-[500px]')}>
-      <div className="p-4 border-b border-stone-200 dark:border-stone-700">
-        <div className="flex items-center gap-2">
-          <MessageSquare className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-text)]" />
-          <h2 className="font-semibold text-stone-900 dark:text-stone-100">
-            {t('myConsultant.messages.title')}
-          </h2>
-        </div>
-        <p className="text-sm text-stone-500 dark:text-stone-400 mt-1">
+    <section aria-labelledby="min-konsulent-meddelanden" className="rounded-j-m border border-j-linje bg-j-kort text-j-blak">
+      <div className="px-5 pb-2 pt-5 sm:px-6">
+        <h2 id="min-konsulent-meddelanden" className="m-0 flex items-center gap-2 font-rubrik text-lg font-bold">
+          <KvarterIkon namn="meddelande" size={22} ton="gran" />
+          {t('myConsultant.messages.title')}
+        </h2>
+        <p className="m-0 mt-0.5 text-[0.9375rem] text-j-blak-2">
           {t('myConsultant.messages.writeTo', { name: consultant.first_name })}
         </p>
       </div>
 
       {/* Messages list */}
       <div
-        className="flex-1 overflow-y-auto p-4 space-y-4"
+        ref={listRef}
+        className="max-h-[360px] space-y-3 overflow-y-auto px-5 py-3 sm:px-6"
         role="log"
         aria-live="polite"
         aria-label={t('myConsultant.messages.history')}
       >
         {loading ? (
-          <div className="flex items-center justify-center h-full">
-            <LoadingState />
-          </div>
+          <LoadingState />
         ) : messages.length === 0 ? (
-          <div className="flex items-center justify-center">
-            <EmptyState
-              illustration="vardag"
-              title={t('myConsultant.messages.noMessages')}
-              description={t('myConsultant.messages.startConversation')}
-            />
-          </div>
+          <p className="m-0 rounded-j-m bg-j-sankt px-4 py-3 text-[0.9375rem] text-j-blak-2">
+            <span className="block font-semibold text-j-blak">{t('myConsultant.messages.noMessages')}</span>
+            {t('myConsultant.messages.startConversation')}
+          </p>
         ) : (
           <>
-            {messages.map(message => {
+            {dolda > 0 && (
+              <Button ton="kvarter" variant="tertiary" size="sm" onClick={() => setVisaAlla(true)}>
+                {t('myConsultant.messages.visaAldre', { count: dolda, defaultValue: 'Visa {{count}} äldre' })}
+              </Button>
+            )}
+            {synliga.map(message => {
               const isOwn = message.sender_id === user?.id
               return (
-                <div
-                  key={message.id}
-                  className={cn('flex', isOwn ? 'justify-end' : 'justify-start')}
-                >
+                <div key={message.id} className={cn('flex', isOwn ? 'justify-end' : 'justify-start')}>
                   <div
                     className={cn(
-                      'max-w-[80%] rounded-2xl px-4 py-3',
+                      'max-w-[85%] rounded-j-m px-4 py-2.5',
                       isOwn
-                        ? 'bg-[var(--c-solid)] text-[var(--c-on-solid)] rounded-br-md'
-                        : 'bg-stone-100 dark:bg-stone-800 text-stone-900 dark:text-stone-100 rounded-bl-md'
+                        ? 'rounded-br-[4px] bg-j-gran text-j-pa-gran'
+                        : 'rounded-bl-[4px] bg-j-sankt text-j-blak'
                     )}
                   >
-                    <p className="text-sm whitespace-pre-wrap">{message.content}</p>
-                    <p
-                      className={cn(
-                        'text-xs mt-1',
-                        isOwn ? 'text-[var(--c-on-solid)]' : 'text-stone-500 dark:text-stone-400'
-                      )}
-                    >
+                    <p className="m-0 whitespace-pre-wrap text-[0.9375rem] leading-[1.45]">{message.content}</p>
+                    <p className={cn('m-0 mt-1 text-[0.8125rem]', isOwn ? 'text-j-pa-gran' : 'text-j-blak-3')}>
                       {new Date(message.created_at).toLocaleTimeString(datumSprak(i18n.language), {
                         hour: '2-digit',
                         minute: '2-digit',
@@ -512,55 +455,54 @@ export function MessagesSection({
                 </div>
               )
             })}
-            <div ref={messagesEndRef} />
           </>
         )}
       </div>
 
       {/* Message input */}
-      <div className="p-4 border-t border-stone-200 dark:border-stone-700">
-        <div className="flex gap-2">
-          <label htmlFor="message-input" className="sr-only">
-            {t('myConsultant.messages.writeMessage')}
-          </label>
-          <textarea
-            id="message-input"
-            value={newMessage}
-            onChange={e => setNewMessage(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder={t('myConsultant.messages.placeholder')}
-            rows={1}
-            className={cn(
-              'flex-1 min-w-0 resize-none rounded-xl border border-stone-300 dark:border-stone-600',
-              'bg-white dark:bg-stone-800 px-4 py-3',
-              'text-stone-900 dark:text-stone-100 placeholder-stone-500',
-              'focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] focus:border-transparent',
-              'transition-colors'
-            )}
-          />
+      <div className="border-t border-j-linje px-5 py-4 sm:px-6">
+        <label htmlFor="message-input" className="sr-only">
+          {t('myConsultant.messages.writeMessage')}
+        </label>
+        <textarea
+          id="message-input"
+          ref={textRef}
+          value={newMessage}
+          onChange={e => setNewMessage(e.target.value)}
+          onKeyDown={handleKeyDown}
+          placeholder={t('myConsultant.messages.placeholder')}
+          rows={2}
+          className={cn(
+            'w-full resize-none rounded-j-m border border-j-linje-2 bg-j-kort px-4 py-3',
+            'text-base text-j-blak placeholder:text-j-blak-3',
+            'focus:outline-none focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-[var(--j-fokus)]'
+          )}
+        />
+        <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
+          {!pekskarm ? (
+            <p className="m-0 text-[0.8125rem] text-j-blak-3">
+              {t('myConsultant.messages.pressEnterToSend')}
+            </p>
+          ) : <span />}
           <Button
+            ton="kvarter"
+            variant="secondary"
             onClick={handleSend}
             disabled={!newMessage.trim() || sending}
-            className="px-4"
-            aria-label={t('myConsultant.messages.sendMessage')}
+            leftIcon={<Send className="h-5 w-5" aria-hidden="true" />}
           >
-            <Send className="w-5 h-5" />
+            {t('myConsultant.messages.sendMessage')}
           </Button>
         </div>
         {skickning.lage === 'fel' && (
           <SkrivFel className="mt-2" onForsokIgen={handleForsokIgen} forsoker={sending} />
         )}
-        {!pekskarm && (
-          <p className="text-xs text-stone-500 dark:text-stone-400 mt-2">
-            {t('myConsultant.messages.pressEnterToSend')}
-          </p>
-        )}
       </div>
-    </Card>
+    </section>
   )
 }
 
-// Goals Section
+// Goals Section — innehållet i raden "Era mål"
 export function GoalsSection({ goals }: { goals: Goal[] }) {
   const { t, i18n } = useTranslation()
 
@@ -568,137 +510,39 @@ export function GoalsSection({ goals }: { goals: Goal[] }) {
     return null
   }
 
-  const statusConfig = {
-    NOT_STARTED: {
-      label: t('myConsultant.goals.notStarted'),
-      color: 'bg-stone-100 text-stone-600 dark:bg-stone-800 dark:text-stone-400',
-      icon: Clock,
-    },
-    IN_PROGRESS: {
-      label: t('myConsultant.goals.inProgress'),
-      color: 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400',
-      icon: Activity,
-    },
-    COMPLETED: {
-      label: t('myConsultant.goals.completed'),
-      color: 'bg-[var(--c-accent)]/40 text-[var(--c-text)] dark:bg-[var(--c-bg)]/40 dark:text-[var(--c-text)]',
-      icon: CheckCircle,
-    },
+  // RD15: "0 av 1 mål avklarade" stod i rubrikposition — ett prestationstal
+  // (DESIGN.md §1). Varje mål har sin egen status, i ord och med ikon.
+  // Statusfärgerna är reserverade för närvaro (omtaget), så målen har ingen.
+  const statusConfig: Record<Goal['status'], { label: string; ikon: KvarterNamn }> = {
+    NOT_STARTED: { label: t('myConsultant.goals.notStarted'), ikon: 'tid' },
+    IN_PROGRESS: { label: t('myConsultant.goals.inProgress'), ikon: 'uppfoljning' },
+    COMPLETED: { label: t('myConsultant.goals.completed'), ikon: 'klart' },
   }
 
-  const completedCount = goals.filter(g => g.status === 'COMPLETED').length
-
   return (
-    <Card>
-      <div className="p-4 border-b border-stone-200 dark:border-stone-700">
-        {/* RD15: "0 av 1 mål avklarade" stod i rubrikposition — ett prestationstal
-            (DESIGN.md §1). Varje mål har redan sin egen status nedan. */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Target className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-text)]" />
-            <h2 className="font-semibold text-stone-900 dark:text-stone-100">
-              {t('myConsultant.goals.agreedGoals')}
-            </h2>
-          </div>
-        </div>
-      </div>
-
-      <div className="p-4 space-y-3">
+    <div>
+      <p className="m-0 mb-2 text-[0.9375rem] text-j-blak-2">{t('myConsultant.goals.agreedGoals')}</p>
+      <ul className="m-0 list-none space-y-2 p-0">
         {goals.map(goal => {
-          const config = statusConfig[goal.status]
-          const Icon = config.icon
-
+          const config = statusConfig[goal.status] ?? statusConfig.NOT_STARTED
           return (
-            <div
-              key={goal.id}
-              className="flex flex-wrap items-center gap-3 p-3 bg-stone-50 dark:bg-stone-800/50 rounded-xl"
-            >
-              <div className={cn('p-2 rounded-lg', config.color)}>
-                <Icon className="w-4 h-4" />
-              </div>
-              <div className="flex-1 min-w-0">
+            <li key={goal.id} className="flex items-start gap-3 rounded-j-m bg-j-sankt px-4 py-3">
+              <KvarterIkon namn={config.ikon} size={22} ton="gran" className="mt-0.5 shrink-0" />
+              <div className="min-w-0 flex-1">
                 {/* RD15: "Tre ansökninga…" — målet är det deltagaren ska kunna läsa, hela */}
-                <p className="font-medium text-stone-900 dark:text-stone-100 break-words">
+                <p className="m-0 break-words font-semibold text-j-blak">
                   {goal.title}
                 </p>
-                {goal.deadline && (
-                  <p className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">
-                    {t('myConsultant.goals.deadline')}: {kortDatum(goal.deadline, i18n.language)}
-                  </p>
-                )}
+                <p className="m-0 text-[0.9375rem] text-j-blak-2">
+                  {config.label}
+                  {goal.deadline ? ` · ${t('myConsultant.goals.deadline')}: ${kortDatum(goal.deadline, i18n.language)}` : ''}
+                </p>
               </div>
-              <span className={cn('text-xs font-medium px-2 py-1 rounded-full', config.color)}>
-                {config.label}
-              </span>
-            </div>
+            </li>
           )
         })}
-      </div>
-
-      {/* Encouragement message */}
-      {completedCount > 0 && (
-        <div className="px-4 pb-4">
-          <div className="bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 rounded-xl p-4 flex items-center gap-3">
-            <Sparkles className="w-6 h-6 text-[var(--c-text)] dark:text-[var(--c-text)] flex-shrink-0" />
-            <p className="text-sm text-[var(--c-text)] dark:text-[var(--c-text)]">
-              {t('myConsultant.goals.greatJob', { count: completedCount })}
-            </p>
-          </div>
-        </div>
-      )}
-    </Card>
-  )
-}
-
-// Quick Actions
-function QuickActions({ consultant, onBookMeeting }: { consultant: ConsultantInfo | null; onBookMeeting: () => void }) {
-  const { t } = useTranslation()
-
-  if (!consultant) return null
-
-  return (
-    <Card className="p-4">
-      <h2 className="font-semibold text-stone-900 dark:text-stone-100 mb-4">
-        {t('myConsultant.quickActions.title')}
-      </h2>
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-        <a
-          href={`mailto:${consultant.email}`}
-          className={cn(
-            'flex items-center gap-3 p-4 rounded-xl transition-all duration-200',
-            'bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700',
-            'text-stone-700 dark:text-stone-300'
-          )}
-        >
-          <Mail className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-text)]" />
-          <span className="font-medium">{t('myConsultant.quickActions.sendEmail')}</span>
-        </a>
-        {consultant.phone && (
-          <a
-            href={`tel:${consultant.phone}`}
-            className={cn(
-              'flex items-center gap-3 p-4 rounded-xl transition-all duration-200',
-              'bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700',
-              'text-stone-700 dark:text-stone-300'
-            )}
-          >
-            <Phone className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-text)]" />
-            <span className="font-medium">{t('myConsultant.quickActions.call')}</span>
-          </a>
-        )}
-        <button
-          onClick={onBookMeeting}
-          className={cn(
-            'flex items-center gap-3 p-4 rounded-xl transition-all duration-200',
-            'bg-[var(--c-solid)] hover:bg-[var(--c-text)]',
-            'text-[var(--c-on-solid)]'
-          )}
-        >
-          <Calendar className="w-5 h-5" />
-          <span className="font-medium">{t('myConsultant.quickActions.bookMeeting')}</span>
-        </button>
-      </div>
-    </Card>
+      </ul>
+    </div>
   )
 }
 
@@ -1049,6 +893,14 @@ function MyConsultantInner() {
     }))
   }
 
+  const skrivRef = useRef<HTMLTextAreaElement>(null)
+  const handleSkriv = () => {
+    const ruta = skrivRef.current
+    if (!ruta) return
+    ruta.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    ruta.focus({ preventScroll: true })
+  }
+
   if (loading) {
     return (
       <PageLayout
@@ -1061,6 +913,8 @@ function MyConsultantInner() {
       </PageLayout>
     )
   }
+
+  const fornamn = consultant?.first_name?.trim() || null
 
   return (
     <PageLayout
@@ -1077,28 +931,24 @@ function MyConsultantInner() {
           besked. Att visa det första när det andra är sant är precis vad som
           dolde den saknade RLS-policyn — sidan såg lugn och korrekt ut. */}
       {!consultant && loadError && (
-        <Card className="p-8 text-center">
-          <div className="w-20 h-20 rounded-full bg-amber-50 dark:bg-amber-900/20 mx-auto mb-6 flex items-center justify-center">
-            <AlertCircle className="w-10 h-10 text-amber-600 dark:text-amber-400" />
-          </div>
-          <h2 className="text-xl font-semibold text-stone-900 dark:text-stone-100 mb-3">
+        <section className="max-w-2xl rounded-j-m border border-j-linje bg-j-kort p-6 text-center text-j-blak sm:p-8">
+          <span className="mx-auto mb-4 grid h-16 w-16 place-items-center rounded-full bg-s-vantar-bg">
+            <KvarterIkon namn="varning" size={30} ton="vantar" />
+          </span>
+          <h2 className="m-0 mb-2 font-rubrik text-xl font-bold">
             {t('myConsultant.loadErrorTitle', 'Vi kunde inte hämta din konsulent just nu')}
           </h2>
-          <p className="text-stone-600 dark:text-stone-400 max-w-md mx-auto">
+          <p className="mx-auto m-0 max-w-md text-j-blak-2">
             {t('myConsultant.loadErrorDesc', 'Det är ett tillfälligt fel hos oss — inte något du har gjort. Ladda om sidan om en stund.')}
           </p>
-        </Card>
+        </section>
       )}
 
-      {/* BL1 (2026-09-08): ingen konsulent = ett tomtillstånd med EN väg vidare,
-          inte ett kort som säger "vi hjälper dig gärna" utan knapp. 70 av 101
-          konton saknade koppling när det mättes. Beslutet om självregistrering
-          eller kö är Mikaels; det här är det som gäller oavsett: en mejlväg.
+      {/* BL1 (2026-09-08): ingen konsulent = ett tomtillstånd med EN väg vidare.
           CTA:n är en riktig <a href="mailto:"> (WCAG — inte en knapp som byter
-          window.location), och adressen är den Terms.tsx redan anger. EmptyState
-          har ingen href-action, så länken ligger direkt under den. */}
+          window.location), och adressen är den Terms.tsx redan anger. */}
       {!consultant && !loadError && (
-        <Card className="p-4 sm:p-8">
+        <section className="max-w-2xl rounded-j-m border border-j-linje bg-j-kort p-4 sm:p-8">
           <EmptyState
             icon={UserCheck}
             title={t('myConsultant.noConsultant')}
@@ -1108,74 +958,83 @@ function MyConsultantInner() {
           <div className="flex justify-center mt-6 pb-4">
             <a
               href={`mailto:support@jobin.se?subject=${encodeURIComponent(t('myConsultant.noConsultantMailSubject'))}`}
-              className={cn(
-                buttonVariants.primary,
-                'px-4 py-2.5 sm:px-5 text-sm sm:text-base min-h-[44px] no-underline'
-              )}
+              className="inline-flex min-h-[44px] items-center gap-2 rounded-j-m bg-j-gran px-5 font-semibold text-j-pa-gran no-underline hover:brightness-110 focus:outline-none focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-offset-2 focus-visible:outline-[var(--j-fokus)]"
             >
-              <Mail className="w-4 h-4" aria-hidden="true" />
+              <KvarterIkon namn="meddelande" size={20} />
               {t('myConsultant.noConsultantCta')}
             </a>
           </div>
-        </Card>
+        </section>
       )}
 
       {/* AG5/AG8 (2026-09-13): konsulentens förslag att dela uppgifter med ett
           företag. Notisen "foretag_forslag" länkar hit, så frågan ska ligga högst
-          upp — före meddelandelistan. Renderas oavsett koppling: förslagen är
-          deltagarens egen samtyckeshistorik och rätten att sluta dela försvinner
-          inte med konsulentkopplingen. Utan förslag renderar komponenten null,
-          så marginalen bor på komponenten och inte på en omslutande div. */}
+          upp — före meddelandelistan. Renderas oavsett koppling. Utan förslag
+          renderar komponenten null, så marginalen bor på komponenten. */}
       <Delningsforslag className="mb-6" />
 
-      {/* Main content grid */}
+      {/* Omtaget steg 6: nio skärmhöjder blir en. Vem, hur du når hen, nästa
+          möte och meddelandena står öppet; resten är en rad var. */}
       {consultant && (
-        // 2026-10-09: rutnätet bröts på fönsterbredden (md:/2xl:), men mellan
-        // skenan och rådgivarkolumnen är innehållsytan bara ~500 px vid 1440 —
-        // tre kolumner där gav rubriker som bröts ord för ord. Containerfrågor
-        // mäter ytan kortet faktiskt får.
-        <div className="@container">
-        <div className="grid grid-cols-1 @3xl:grid-cols-2 @6xl:grid-cols-3 gap-6">
-          {/* Left column - Consultant info */}
-          <div className="space-y-6">
-            <ConsultantCard consultant={consultant} nextMeeting={nextMeeting} />
-            <GoalsSection goals={goals} />
-          </div>
-
-          {/* Middle column - Messages */}
-          <div>
-            <MessagesSection
-              messages={messages}
-              consultant={consultant}
-              onSendMessage={handleSendMessage}
-              loading={messagesLoading}
-            />
-          </div>
-
-          {/* Right column - Shared info */}
-          <div className="space-y-6">
-            <SharedInformationSection sharedInfo={sharedInfo} />
-            <VemHarOppnatKort />
-          </div>
-        </div>
-        </div>
-      )}
-
-      {/* Quick actions - full width */}
-      {consultant && (
-        <div className="mt-6">
-          <QuickActions consultant={consultant} onBookMeeting={handleBookMeeting} />
-        </div>
-      )}
-
-      {/* Säg upp kopplingen - längst ner, dämpad */}
-      {consultant && (
-        <div className="mt-6 max-w-3xl mx-auto">
-          <RevokeConsultantLinkSection
-            consultantId={consultant.id}
-            consultantName={`${consultant.first_name} ${consultant.last_name}`.trim()}
-            onRevoked={handleConsultantRevoked}
+        <div className="max-w-2xl space-y-6">
+          <KonsulentHuvud
+            consultant={consultant}
+            nextMeeting={nextMeeting}
+            onSkriv={handleSkriv}
+            onBoka={handleBookMeeting}
           />
+
+          <MessagesSection
+            messages={messages}
+            consultant={consultant}
+            onSendMessage={handleSendMessage}
+            loading={messagesLoading}
+            textRef={skrivRef}
+          />
+
+          <MerLista
+            rubrik={fornamn
+              ? t('myConsultant.mer.rubrik', { defaultValue: 'Mer om dig och {{namn}}', namn: fornamn })
+              : t('myConsultant.mer.rubrikUtanNamn', 'Mer om dig och din konsulent')}
+            rubrikId="min-konsulent-mer"
+          >
+            {goals.length > 0 && (
+              <MerRad
+                ikon="plan"
+                rubrik={t('myConsultant.mer.mal', 'Era mål')}
+                text={t('myConsultant.mer.malText', { count: goals.length, defaultValue: '{{count}} mål som ni har kommit överens om' })}
+              >
+                <GoalsSection goals={goals} />
+              </MerRad>
+            )}
+            <MerRad
+              ikon="deltagare"
+              rubrik={fornamn
+                ? t('myConsultant.mer.serNamn', { defaultValue: 'Det här ser {{namn}}', namn: fornamn })
+                : t('myConsultant.sharedInfoTitle', 'Det här ser din konsulent')}
+              text={t('myConsultant.mer.serText', 'Vad du delar, och hur du ändrar det.')}
+            >
+              <SharedInformationSection sharedInfo={sharedInfo} />
+            </MerRad>
+            <MerRad
+              ikon="tid"
+              rubrik={t('myConsultant.laslogg.title', 'Vem har öppnat dina uppgifter')}
+              text={t('myConsultant.mer.lasloggText', 'Varje gång din konsulent öppnar din sida.')}
+            >
+              <VemHarOppnatKort />
+            </MerRad>
+            <MerRad
+              ikon="franvaro"
+              rubrik={t('myConsultant.revoke.title', 'Säg upp kopplingen')}
+              text={t('myConsultant.mer.revokeText', 'Om du inte vill ha kvar kopplingen till din konsulent.')}
+            >
+              <RevokeConsultantLinkSection
+                consultantId={consultant.id}
+                consultantName={`${consultant.first_name} ${consultant.last_name}`.trim()}
+                onRevoked={handleConsultantRevoked}
+              />
+            </MerRad>
+          </MerLista>
         </div>
       )}
     </PageLayout>

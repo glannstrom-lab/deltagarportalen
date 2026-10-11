@@ -6,7 +6,7 @@
  * RR10: praktiken fanns bara som fritext i passen, inte under Platser.
  */
 import { describe, it, expect, vi, afterEach, beforeEach } from 'vitest'
-import { screen, fireEvent, cleanup } from '@testing-library/react'
+import { screen, fireEvent, cleanup, within } from '@testing-library/react'
 import { render } from '@/test/utils'
 import { AktivitetsplanSektion } from './AktivitetsplanSektion'
 
@@ -79,7 +79,9 @@ describe('RK15: egenrapport väntar på kvittens', () => {
 
   it('eget jobbsökande har samma närvaroval som Min dag', async () => {
     await montera(plan(), [pass({ id: 'e2', date: '2026-09-25', activity_type: 'jobsearch_own', title: 'Eget jobbsökande' })])
-    expect(screen.getByRole('button', { name: 'Närvaro' })).toBeInTheDocument()
+    // Omtaget 2026-10-11: samma fyra val som radiogrupp på raden.
+    const grupp = screen.getByRole('radiogroup', { name: 'Närvaro för Eget jobbsökande 25 sep' })
+    expect(within(grupp).getAllByRole('radio').map((r) => r.textContent)).toEqual(['Här', 'Giltig', 'Ogiltig', 'Sjuk'])
   })
 
   it('en incheckning på ett anvisat pass väntar också på kvittens', async () => {

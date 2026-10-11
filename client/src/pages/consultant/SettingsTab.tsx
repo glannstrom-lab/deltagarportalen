@@ -7,11 +7,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import {
-  Settings,
   Shield,
-  Palette,
-  Calendar,
-  AlertTriangle,
   ChevronRight,
   Save,
   Loader2,
@@ -30,40 +26,6 @@ import { cn } from '@/lib/utils'
 import { formatLocalDate } from '@/services/aktivitetSchema'
 
 import { anvandareFranSession } from '@/lib/anvandareFranSession'
-// Setting Row Component
-function SettingRow({
-  icon: Icon,
-  label,
-  description,
-  children,
-}: {
-  icon: React.ElementType
-  label: string
-  description?: string
-  children: React.ReactNode
-}) {
-  return (
-    // Staplad på mobil: sida vid sida sköt tidszonsväljaren ut ur kortet och
-    // gjorde /consultant/settings 478 px bred på en 375 px-telefon (drift 2026-09-22).
-    <div className="flex flex-col gap-3 py-4 border-b border-stone-100 dark:border-stone-800 last:border-0 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
-      <div className="flex min-w-0 items-start gap-3">
-        <div className="p-2 bg-stone-100 dark:bg-stone-800 rounded-lg mt-0.5">
-          <Icon className="w-5 h-5 text-stone-500 dark:text-stone-400" />
-        </div>
-        <div>
-          <p className="font-medium text-stone-900 dark:text-stone-100">{label}</p>
-          {description && (
-            <p className="text-sm text-stone-500 dark:text-stone-400 mt-0.5">
-              {description}
-            </p>
-          )}
-        </div>
-      </div>
-      <div className="min-w-0 pl-12 sm:pl-0 sm:flex-shrink-0">{children}</div>
-    </div>
-  )
-}
-
 export function SettingsTab() {
   const { t } = useTranslation()
   const navigate = useNavigate()
@@ -133,12 +95,6 @@ export function SettingsTab() {
     }
   }
 
-
-  const updatePreference = (key: string, value: unknown) => {
-    setPreferences(prev => ({ ...prev, [key]: value }))
-    setHasChanges(true)
-    setSaved(false)
-  }
 
   const handleSave = async () => {
     setSaving(true)
@@ -348,98 +304,11 @@ export function SettingsTab() {
           inställning som inte gör något är ett löfte. Sparade värden i databasen
           ligger kvar orörda; kortet kommer tillbaka när en leveransväg finns. */}
 
-      {/* Preferences */}
-      <Card className="p-5">
-        <div className="flex items-center gap-3 mb-6">
-          <div className="p-2 bg-emerald-100 dark:bg-emerald-900/40 rounded-xl">
-            <Settings className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
-          </div>
-          <div>
-            <h3 className="font-semibold text-stone-900 dark:text-stone-100">
-              {t('consultant.settings.preferences')}
-            </h3>
-            <p className="text-sm text-stone-500 dark:text-stone-400">
-              {t('consultant.settings.preferencesDesc')}
-            </p>
-          </div>
-        </div>
-
-        <div>
-          <SettingRow
-            icon={Palette}
-            label={t('consultant.settings.defaultParticipantView')}
-            description={t('consultant.settings.chooseDefaultView')}
-          >
-            <select
-              value={preferences.defaultView}
-              onChange={e => updatePreference('defaultView', e.target.value)}
-              className={cn(
-                'px-4 py-2 rounded-xl',
-                'bg-stone-100 dark:bg-stone-800',
-                'border-0',
-                'text-stone-900 dark:text-stone-100'
-              )}
-            >
-              <option value="grid">{t('consultant.settings.grid')}</option>
-              <option value="list">{t('consultant.settings.list')}</option>
-            </select>
-          </SettingRow>
-
-          {/* RK29 (rollspelet 2026-09-27): här fanns ett språkval Svenska/English.
-              Konsulentvyn översätts inte (DESIGN.md §2) — valet bytte bara
-              portalens menyer runt en svensk vy, och deltagarens språk styrs
-              av deltagaren själv. Valet är borttaget; `language` ligger kvar i
-              sparade inställningar men läses inte. */}
-
-          {/* SV12-rest (2026-09-29): tidszonsvalet är borttaget. Det hade ETT
-              alternativ (Stockholm), sparades i preferences.timezone men lästes
-              av ingen kod (grep client/src + supabase/functions), och raden
-              lovade "Används för mötesbokning och påminnelser" — ett löfte
-              inställningen aldrig höll. Mötestider visas i webbläsarens
-              lokala tid. `timezone` ligger kvar i sparade inställningar. */}
-
-          <SettingRow
-            icon={Calendar}
-            label={t('consultant.settings.weekStart')}
-            description={t('consultant.settings.affectsCalendar')}
-          >
-            <select
-              value={preferences.weekStart}
-              onChange={e => updatePreference('weekStart', e.target.value)}
-              className={cn(
-                'px-4 py-2 rounded-xl',
-                'bg-stone-100 dark:bg-stone-800',
-                'border-0',
-                'text-stone-900 dark:text-stone-100'
-              )}
-            >
-              <option value="monday">{t('consultant.settings.monday')}</option>
-              <option value="sunday">{t('consultant.settings.sunday')}</option>
-            </select>
-          </SettingRow>
-
-          <SettingRow
-            icon={AlertTriangle}
-            label={t('consultant.settings.inactivityWarning')}
-            description={t('consultant.settings.daysBeforeInactive')}
-          >
-            <select
-              value={preferences.showInactiveWarning}
-              onChange={e => updatePreference('showInactiveWarning', parseInt(e.target.value))}
-              className={cn(
-                'px-4 py-2 rounded-xl',
-                'bg-stone-100 dark:bg-stone-800',
-                'border-0',
-                'text-stone-900 dark:text-stone-100'
-              )}
-            >
-              <option value={5}>{t('consultant.settings.daysCount', { count: 5 })}</option>
-              <option value={7}>{t('consultant.settings.daysCount', { count: 7 })}</option>
-              <option value={14}>{t('consultant.settings.daysCount', { count: 14 })}</option>
-            </select>
-          </SettingRow>
-        </div>
-      </Card>
+      {/* Slipningen 2026-10-11: kortet "Inställningar" hade tre val — standardvy,
+          veckostart och inaktivitetsvarning. De sparades i consultant_settings.preferences
+          men lästes av ingen annan kod (grep 2026-10-11): deltagarlistans vy kommer ur
+          URL:en och Översikten räknar med fasta 7/14 dagar. Samma felklass som språk-
+          och tidszonsvalen (RK29, SV12). Sparade värden ligger kvar orörda. */}
 
       {/* Organisation (KM2) — ersatte den hårdkodade tomma teamlistan 2026-09-11 */}
       <OrganisationSektion />

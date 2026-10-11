@@ -187,6 +187,16 @@ describe('leverantorsLage — RR26', () => {
 
   it('en deltagare utan fysiskt möte alls säger det rakt ut', () => {
     const l = leverantorsLage({ deltagare: [{ participant_id: 'ny', status: 'ACTIVE' }], plans: [], pass: [], moten: [], placeringar: [], idag: IDAG })
-    expect(l.utanFysisktMote[0].text).toBe('Inget genomfört fysiskt möte de senaste 90 dagarna')
+    expect(l.utanFysisktMote[0].text).toBe('Inget genomfört fysiskt möte än')
+  })
+
+  // Slipningen 2026-10-11 (R&M A4): den som fått jobb ska följas upp, inte kallas till möte.
+  it('en deltagare med en startad placering flaggas inte för fysiskt möte', () => {
+    const l = leverantorsLage({
+      deltagare: [{ participant_id: 'amina', status: 'ACTIVE' }], plans: [], pass: [], moten: [],
+      placeringar: [{ participant_id: 'amina', employer_name: 'Exempel Städ AB', start_date: '2026-07-23', followup_3m: false, followup_6m: false }],
+      idag: IDAG,
+    })
+    expect(l.utanFysisktMote).toEqual([])
   })
 })

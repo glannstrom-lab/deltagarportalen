@@ -590,7 +590,7 @@ export default function Layout() {
                         fokusläget i TopBar inte heller finns. Ritas sist i flödet på
                         mobil; på desktop återinförs ingen tom kolumn (putsrundan
                         2026-08-18). */}
-                    {showBars && isMobile && !visaRadgivare && (
+                    {showBars && isMobile && !visaRadgivare && !location.pathname.startsWith('/consultant') && (
                       <div className="mt-6" data-focus-chrome="radgivare">
                         <Suspense fallback={null}>
                           <LugnarePanel />
