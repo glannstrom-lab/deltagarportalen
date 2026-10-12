@@ -376,7 +376,7 @@ function ExternalResourcesInner() {
 
       {soker ? (
         traffar.length === 0 ? (
-          <EmptyState
+          <EmptyState headingLevel="h2"
             illustration="resurser"
             title={t('externalResources.emptyTitle', 'Vi hittade ingen resurs som matchar')}
             description={t(

@@ -324,7 +324,7 @@ export function QuestionCard({
       {/* Föregående-knapp info */}
       {questionNumber > 1 && (
         <p className="text-xs text-center text-stone-600 dark:text-stone-400 mt-4">
-          💡 Du kan alltid gå tillbaka för att ändra tidigare svar
+          {t('interestGuide.question.canGoBack', 'Du kan alltid gå tillbaka för att ändra tidigare svar')}
         </p>
       )}
     </div>

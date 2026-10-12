@@ -102,7 +102,7 @@ function KnowledgeBaseInner() {
   if (isError) {
     return (
       <PageLayout title={sidtitel} domain="info">
-        <EmptyState
+        <EmptyState headingLevel="h2"
           icon={AlertCircle}
           title={t('knowledgeBase.couldNotLoad', 'Vi kunde inte hämta artiklarna')}
           description={t(

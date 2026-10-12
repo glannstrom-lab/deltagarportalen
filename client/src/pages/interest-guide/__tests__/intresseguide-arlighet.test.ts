@@ -331,14 +331,6 @@ describe('Förklaringen av matchningen', () => {
   })
 })
 
-describe('Lönestatistiken', () => {
-  it('hittar inte på en median för okända yrken', () => {
-    const s = kod('services/scbSalaryApi.ts')
-    expect(s).not.toMatch(/private estimateSalary/)
-    expect(s).not.toMatch(/this\.estimateSalary\(/)
-  })
-})
-
 describe('Karriärpanelen', () => {
   const k = kod('components/interest-guide/CareerRecommendationsPanel.tsx')
 

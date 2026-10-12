@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { MemoryRouter, useLocation } from 'react-router-dom'
 import { I18nextProvider } from 'react-i18next'
@@ -45,6 +45,15 @@ vi.mock('@/lib/deltagarlage', async (importOriginal) => {
   return { ...orig, hamtaVeckansUnderlag: mockVecka }
 })
 vi.mock('@/components/consultant/useRegelverk', () => ({ useOrgTypVisning: () => kundtyp.varde }))
+
+// KSL17: lämnade underlag hämtas separat (activity_plan_handovers). Bara hämtningen mockas.
+const { mockUnderlag } = vi.hoisted(() => ({
+  mockUnderlag: vi.fn(async (): Promise<Array<Record<string, unknown>>> => []),
+}))
+vi.mock('@/services/aktivitetApi', async (importOriginal) => {
+  const orig = await importOriginal<typeof import('@/services/aktivitetApi')>()
+  return { ...orig, underlagApi: { ...orig.underlagApi, listIPeriod: mockUnderlag } }
+})
 
 // BulkActionsDialog körs bara när något är markerat — inte relevant för de här
 // testerna, men mockas bort så den inte drar in sina egna beroenden.
@@ -364,5 +373,71 @@ describe('ParticipantsTab — omtaget: en rad per människa med Läget och vecka
     await waitFor(() => expect(mockVecka).toHaveBeenCalled())
     expect(screen.queryByTestId('kadens-chip')).toBeNull()
     expect(mockHamtaMoten).not.toHaveBeenCalled()
+  })
+})
+
+describe('ParticipantsTab — KSL17: snabbfilter för ogiltig frånvaro och underlag', () => {
+  const ONSDAG = new Date(2026, 9, 14, 10, 0, 0)
+  const pass = (o: Record<string, unknown>) => ({
+    id: String(Math.random()), participant_id: 'p1', plan_id: 'pl1', date: '2026-10-13', start_time: '13:00:00', end_time: '14:00:00',
+    title: 'Gruppträff', activity_type: 'jobsearch', attendance: null, attendance_note: null, self_checkin_at: null, absence_reason: null, ...o,
+  })
+  const tva = () => mockEq.mockResolvedValue({
+    data: [makeParticipant(), makeParticipant({ participant_id: 'p2', first_name: 'Bo', last_name: 'Berg', email: 'bo@example.com' })],
+    error: null,
+  })
+  const planer = [
+    { id: 'pl1', participant_id: 'p1', weekly_hours_target: 10, status: 'active' },
+    { id: 'pl2', participant_id: 'p2', weekly_hours_target: 10, status: 'active' },
+  ]
+
+  beforeEach(() => {
+    kundtyp.varde = { visaAvtalskrav: false, visaIvoUnderlag: true }
+    vi.useFakeTimers({ toFake: ['Date'] })
+    vi.setSystemTime(ONSDAG)
+    tva()
+  })
+  afterEach(() => vi.useRealTimers())
+
+  it('"Ogiltig frånvaro i veckan" tar bara dem med absent_invalid — inte giltig frånvaro eller sjukdom', async () => {
+    mockVecka.mockResolvedValue({ planer, pass: [pass({ attendance: 'absent_invalid' }), pass({ participant_id: 'p2', attendance: 'absent_valid' })] })
+    renderTab()
+    await screen.findByText('Bo Berg')
+    fireEvent.click(await screen.findByRole('button', { name: /Ogiltig frånvaro i veckan/ }))
+    expect(screen.getByText('Anna Andersson')).toBeInTheDocument()
+    expect(screen.queryByText('Bo Berg')).toBeNull()
+    await waitFor(() => expect(screen.getByTestId('location-probe').textContent).toContain('filter=ogiltig'))
+  })
+
+  it('hos en leverantör är det fakta, inte en giltighetsbedömning', async () => {
+    kundtyp.varde = { visaAvtalskrav: true, visaIvoUnderlag: false }
+    mockVecka.mockResolvedValue({ planer, pass: [pass({ attendance: 'absent_invalid' })] })
+    renderTab()
+    await screen.findByText('Anna Andersson')
+    expect(await screen.findByRole('button', { name: /Frånvarande, inte anmäld i veckan/ })).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /Ogiltig frånvaro i veckan/ })).toBeNull()
+    expect(screen.queryByRole('button', { name: /Underlag ej lämnat/ })).toBeNull()
+  })
+
+  it('"Underlag ej lämnat" tar aktiva planer utan ett underlag i månaden — ett ångrat underlag räknas inte', async () => {
+    mockVecka.mockResolvedValue({ planer, pass: [] })
+    mockUnderlag.mockResolvedValue([
+      { participant_id: 'p1', handed_over_at: new Date(2026, 9, 5, 12).toISOString(), withdrawn_at: null },
+      { participant_id: 'p2', handed_over_at: new Date(2026, 9, 6, 12).toISOString(), withdrawn_at: new Date(2026, 9, 6, 13).toISOString() },
+    ])
+    renderTab()
+    await screen.findByText('Bo Berg')
+    fireEvent.click(await screen.findByRole('button', { name: /Underlag ej lämnat/ }))
+    expect(screen.getByText('Bo Berg')).toBeInTheDocument()
+    expect(screen.queryByText('Anna Andersson')).toBeNull()
+  })
+
+  it('kan underlagen inte hämtas sägs det, och filtret visas inte', async () => {
+    mockVecka.mockResolvedValue({ planer, pass: [] })
+    mockUnderlag.mockRejectedValue(new Error('nätverk'))
+    renderTab()
+    await screen.findByText('Anna Andersson')
+    expect(await screen.findByText(/Lämnade underlag kunde inte hämtas/)).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /Underlag ej lämnat/ })).toBeNull()
   })
 })

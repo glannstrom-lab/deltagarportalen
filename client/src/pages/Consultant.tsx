@@ -7,8 +7,9 @@ import { lazy, Suspense } from 'react'
 import { Routes, Route, Navigate, useLocation, useSearchParams } from 'react-router-dom'
 import { PageLayout } from '@/components/layout/PageLayout'
 import { LoadingState } from '@/components/ui/LoadingState'
-import { consultantTabs } from '@/data/consultantTabs'
-import { flikSokvag, MOBIL_FLIKRAD_DOLJ_BOTTENNAV } from './consultantFlikar'
+import { handlaggareFarOppna } from '@/data/consultantTabs'
+import { flikSokvag, MOBIL_FLIKRAD_DOLJ_BOTTENNAV, MOBIL_FLIKRAD_DOLJ_HANDLAGGARE } from './consultantFlikar'
+import { useKonsulentFlikar } from './useKonsulentFlikar'
 import { useTranslation } from 'react-i18next'
 
 // E8 (2026-05-15): Lazy-loada tabbar så bara aktiv tab dras in.
@@ -29,8 +30,12 @@ export default function Consultant() {
   const { t } = useTranslation()
   const location = useLocation()
   const [sok] = useSearchParams()
+  const { enbartHandlaggare, flikar } = useKonsulentFlikar()
   const dit = location.pathname.replace(/\/+$/, '') === '/consultant' ? flikSokvag(sok.get('tab')) : null
-  if (dit) return <Navigate to={dit} replace />
+  // KSL15: handläggaren når inte deltagar-/platsvyerna (hon har ingen läsrätt där) —
+  // en direktlänk dit går till Översikt i stället för en tom vy.
+  if (enbartHandlaggare && !handlaggareFarOppna(location.pathname)) return <Navigate to="/consultant" replace />
+  if (dit && (!enbartHandlaggare || handlaggareFarOppna(dit))) return <Navigate to={dit} replace />
 
   return (
     // Omtaget "Kvarter" (2026-10-11): kontorstonen för hela konsulentvyn —
@@ -39,10 +44,10 @@ export default function Consultant() {
       <PageLayout
         title={t('consultant.title', 'Arbetsyta')}
         subtitle={t('consultant.subtitle', 'Dina deltagare och din dag')}
-        tabs={consultantTabs}
+        tabs={flikar}
         tabVariant="glass"
         domain="info"
-        className={MOBIL_FLIKRAD_DOLJ_BOTTENNAV}
+        className={enbartHandlaggare ? MOBIL_FLIKRAD_DOLJ_HANDLAGGARE : MOBIL_FLIKRAD_DOLJ_BOTTENNAV}
       >
         <Suspense fallback={<LoadingState />}>
           <Routes>

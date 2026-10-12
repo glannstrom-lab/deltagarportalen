@@ -333,7 +333,7 @@ function CalendarInner() {
             )
           })}
           {sortedEvents.length === 0 && (
-            <EmptyState
+            <EmptyState headingLevel="h4"
               illustration="vardag"
               title={t('calendar.noEventsPlanned')}
               action={{ label: t('calendar.newEvent'), onClick: handleCreateEvent }}

@@ -116,6 +116,9 @@ export default function HealthTab() {
   // tomma reflektioner över molnets. Då spärras sparandet tills vi vet.
   const [valmaendeLaddfel, setValmaendeLaddfel] = useState(false)
   const kanSparaValmaende = !valmaendeLaddfel
+  // Skrivfel av aktiviteter/reflektioner. wellnessDataApi.save kastar numera;
+  // förut föll det tyst tillbaka på localStorage och bocken såg sparad ut.
+  const [valmaendeSparfel, setValmaendeSparfel] = useState(false)
 
   const loadWellness = useCallback(async () => {
     setValmaendeLaddfel(false)
@@ -229,6 +232,8 @@ export default function HealthTab() {
     const newActivities = activities.map(a =>
       a.id === id ? { ...a, completed: !a.completed } : a
     )
+    const forre = activities
+    setValmaendeSparfel(false)
     setActivities(newActivities)
 
     try {
@@ -238,6 +243,9 @@ export default function HealthTab() {
       })
     } catch (error) {
       console.error('Failed to save activity:', error)
+      // Bocken ska inte stå kvar som om den sparats.
+      setActivities(forre)
+      setValmaendeSparfel(true)
     }
   }
 
@@ -245,6 +253,7 @@ export default function HealthTab() {
     if (!reflection.trim() || !kanSparaValmaende) return
 
     setIsSaving(true)
+    setValmaendeSparfel(false)
     try {
       const newReflections = [...savedReflections, reflection]
       await wellnessDataApi.save({
@@ -255,6 +264,8 @@ export default function HealthTab() {
       setReflection('')
     } catch (error) {
       console.error('Failed to save reflection:', error)
+      // Texten står kvar i fältet så inget skrivet går förlorat.
+      setValmaendeSparfel(true)
     } finally {
       setIsSaving(false)
     }
@@ -411,6 +422,13 @@ export default function HealthTab() {
             </Button>
           </div>
         </Card>
+      )}
+
+      {valmaendeSparfel && (
+        <p role="alert" className="flex items-start gap-2 p-3 rounded-lg bg-white dark:bg-stone-800 text-sm text-stone-800 dark:text-stone-100 border border-stone-300 dark:border-stone-600">
+          <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" aria-hidden="true" />
+          {t('wellness.health.saveFailed', 'Det du gjorde kunde inte sparas just nu. Försök igen om en stund. Det du skrev står kvar.')}
+        </p>
       )}
 
       {/* Daily Activities */}

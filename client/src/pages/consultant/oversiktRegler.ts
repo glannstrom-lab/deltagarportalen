@@ -16,6 +16,7 @@ import { addDays, formatLocalDate, isoVeckonummer, veckansMandag, type Attendanc
 import { vantarPaKvittens } from '@/services/egenrapport'
 import { avtalskravPerDeltagare, senasteAvslutadeSondag } from '@/services/aktivitetslogg'
 import type { ActivityPlan } from '@/services/aktivitetApi'
+import { avvikelserader } from '@/services/avvikelserapport'
 import { followupStatus } from './placeringsmatt'
 
 /** Måndag 00:00 till söndag 23:59:59.999 i lokal tid, för veckan `nu` ligger i. */
@@ -349,7 +350,16 @@ export interface LeverantorLage {
   underTimkravet: LeverantorPunkt[]
   utanFysisktMote: LeverantorPunkt[]
   uppfoljningar: LeverantorPunkt[]
+  /**
+   * KSL14: avvikelser (frånvarande, sjuk) som konsulenten inte antecknat som
+   * rapporterade till AF — en rad per deltagare. `null` = underlaget kunde inte
+   * hämtas: då påstår vi varken att något saknas eller att allt är rapporterat.
+   */
+  avvikelserEjRapporterade: LeverantorPunkt[] | null
 }
+
+/** Pass med det avvikelsereglerna (services/avvikelserapport.ts) läser. */
+export type AvvikelsePass = Parameters<typeof avvikelserader>[0][number] & { participant_id: string }
 
 export interface PlaceringRad {
   participant_id: string
@@ -370,6 +380,8 @@ export function leverantorsLage(args: {
   moten: readonly MoteRad[]
   placeringar: readonly PlaceringRad[]
   idag: Date
+  /** KSL14: passen från början av förra månaden till i dag. `null`/utelämnad = kunde inte hämtas. */
+  avvikelsePass?: readonly AvvikelsePass[] | null
 }): LeverantorLage {
   const { deltagare, idag } = args
   const mina = new Set(deltagare.map((d) => d.participant_id))
@@ -434,7 +446,35 @@ export function leverantorsLage(args: {
     uppfoljningar.push({ participantId: p.participant_id, text: `${s.text} — ${p.employer_name}` })
   }
 
-  return { bedomdaPlaner, underTimkravet, utanFysisktMote, uppfoljningar }
+  // KSL14: avvikelser som ännu inte noterats som rapporterade till AF. Samma regel som
+  // avvikelserapporten (leverantörsledda pass, bara markerade utfall).
+  let avvikelserEjRapporterade: LeverantorPunkt[] | null = null
+  if (args.avvikelsePass) {
+    avvikelserEjRapporterade = []
+    const from = fornaManadensStart(idagIso)
+    for (const d of deltagare) {
+      const ejRapporterade = avvikelserader(args.avvikelsePass.filter((p) => p.participant_id === d.participant_id), from, idagIso)
+        .filter((r) => r.underrattad === null)
+      if (ejRapporterade.length === 0) continue
+      const aldsta = ejRapporterade[0]
+      avvikelserEjRapporterade.push({
+        participantId: d.participant_id,
+        text: ejRapporterade.length === 1
+          ? `Avvikelse ${kortDatum(aldsta.datum)} är inte rapporterad till AF`
+          : `${ejRapporterade.length} avvikelser är inte rapporterade till AF, den äldsta ${kortDatum(aldsta.datum)}`,
+      })
+    }
+  }
+
+  return { bedomdaPlaner, underTimkravet, utanFysisktMote, uppfoljningar, avvikelserEjRapporterade }
+}
+
+/** Första dagen i förra månaden (YYYY-MM-DD): hit hämtas passen för avvikelserna. */
+export function fornaManadensStart(idagIso: string): string {
+  const [y, m] = idagIso.split('-').map(Number)
+  const ar = m === 1 ? y - 1 : y
+  const man = m === 1 ? 12 : m - 1
+  return `${ar}-${String(man).padStart(2, '0')}-01`
 }
 
 /** Sammanfattningsraden. Timkravet utan en enda bedömd vecka skrivs inte som 0. */
@@ -445,6 +485,10 @@ export function leverantorSammanfattning(l: LeverantorLage): string[] {
       : `${l.underTimkravet.length} deltagare under timkravet`,
     `${l.utanFysisktMote.length} utan fysiskt möte`,
     `${l.uppfoljningar.length} ${l.uppfoljningar.length === 1 ? 'uppföljning' : 'uppföljningar'} inom 14 dagar`,
+    // Okänt (null) skrivs inte som 0 — då utelämnas raden hellre än att påstå något.
+    ...(l.avvikelserEjRapporterade === null
+      ? []
+      : [`${l.avvikelserEjRapporterade.length} deltagare med avvikelse som inte rapporterats till AF`]),
   ]
 }
 
@@ -654,6 +698,9 @@ export function minDagPersoner(args: {
     }
     for (const p of args.leverantor.underTimkravet) {
       punkter.push({ typ: 'under_timkravet', participantId: p.participantId, lage: p.text, detalj: 'Senaste avslutade veckan', status: 'ogiltig', statusText: 'Under timkravet' })
+    }
+    for (const p of args.leverantor.avvikelserEjRapporterade ?? []) {
+      punkter.push({ typ: 'franvaro', participantId: p.participantId, lage: p.text, detalj: 'Skriv in den i AF:s system och markera den som underrättad på deltagarens plan', status: 'vantar', statusText: 'Avvikelse att rapportera' })
     }
     for (const p of args.leverantor.uppfoljningar) {
       punkter.push({ typ: 'uppfoljning', participantId: p.participantId, lage: p.text, status: 'vantar', statusText: 'Uppföljning' })

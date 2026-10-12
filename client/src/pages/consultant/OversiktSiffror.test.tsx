@@ -3,15 +3,13 @@
  * Rapporter (flyttade från Översikt i omtaget "Kvarter", steg 3, 2026-10-11).
  * Testerna följde med från OverviewTab.test.tsx och OverviewTab.rollspel.test.tsx:
  *
- * KV5   ATS-snittet räknas över dem som HAR en poäng; ingen poäng → "—", aldrig 0 %.
+ * KSL14 "Snitt ATS-poäng" ersatt av avtalsläget (leverantör) / planläget (kommun).
  * KV6-S "Profilen ändrades senast", aldrig "Loggade in" (last_login = profiles.updated_at).
  * RK6   veckan är måndag–söndag även på en söndag.
  * RK23  en Oro-anteckning heter "Oro noterad".
  * RK24  målkategorierna räknas med samma regel som Rapporter och PDF:en.
  * RK26  dag + klockslag, och "1 aktiv" / "1 oläst meddelande" i singular.
  * Inga mål → en invit, inte två nollor. Ett läsfel → en rad, aldrig nollor.
- *
- * Motprov (kört): räkna `ats_score ?? 0` över alla → KV5-testet faller (35 %).
  */
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
@@ -20,6 +18,9 @@ import { I18nextProvider } from 'react-i18next'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import i18n from '@/i18n/config'
 import { calculateGoalCategories } from './analytics'
+
+const rg = vi.hoisted(() => ({ varde: 'kommun' as 'kommun' | 'leverantor' | null }))
+vi.mock('@/components/consultant/useRegelverk', () => ({ useRegelverk: () => rg.varde }))
 
 type Svar = { data: unknown; error: unknown }
 const tabeller = vi.hoisted(() => ({
@@ -91,24 +92,63 @@ function rita() {
   )
 }
 
-describe('OversiktSiffror — KV5: snitt ATS-poäng', () => {
-  it('räknar snittet över dem som HAR en poäng', async () => {
-    tabeller.svar.consultant_dashboard_participants = {
-      data: [deltagare({ participant_id: 'a', ats_score: 80 }), deltagare({ participant_id: 'b', ats_score: 60 }), deltagare({ participant_id: 'c', ats_score: null }), deltagare({ participant_id: 'd', ats_score: null })],
-      error: null,
-    }
-    rita()
-    await screen.findByText('Snitt ATS-poäng')
-    expect(screen.getByText('70%')).toBeInTheDocument()
+describe('OversiktSiffror — KSL14: avtalsläget/planläget i stället för snitt ATS', () => {
+  const plan = (o: Record<string, unknown> = {}) => ({
+    id: 'pl1', participant_id: 'p1', consultant_id: 'k1', org_id: null, status: 'active', start_date: '2026-08-01', end_date: null,
+    weekly_hours_target: 1, ...o,
   })
 
-  it('visar "—" och en förklarande rad — aldrig 0 % — när ingen har en poäng', async () => {
-    tabeller.svar.consultant_dashboard_participants = { data: [deltagare({ ats_score: null })], error: null }
+  it('"Snitt ATS-poäng" finns inte längre', async () => {
+    rg.varde = 'kommun'
     rita()
-    await screen.findByText('Snitt ATS-poäng')
-    expect(screen.getByText('—')).toBeInTheDocument()
-    expect(screen.getByText('Ingen ATS-poäng ännu')).toBeInTheDocument()
-    expect(screen.queryByText('0%')).not.toBeInTheDocument()
+    await screen.findByText('Planläget')
+    expect(screen.queryByText('Snitt ATS-poäng')).not.toBeInTheDocument()
+  })
+
+  it('kommun: planläget räknar aktiva deltagare med en aktiv plan', async () => {
+    rg.varde = 'kommun'
+    tabeller.svar.consultant_dashboard_participants = {
+      data: [deltagare({ participant_id: 'p1' }), deltagare({ participant_id: 'p2' }), deltagare({ participant_id: 'p3', status: 'INACTIVE' })],
+      error: null,
+    }
+    tabeller.svar.activity_plans = { data: [plan(), plan({ id: 'x', participant_id: 'p3' }), plan({ id: 'y', participant_id: 'p2', consultant_id: 'kollega' })], error: null }
+    rita()
+    expect(await screen.findByText('1 av 2')).toBeInTheDocument()
+    expect(screen.getByText('aktiva deltagare har en aktivitetsplan')).toBeInTheDocument()
+  })
+
+  it('leverantör: avtalsläget är hur många planer som nådde timkravet förra veckan', async () => {
+    rg.varde = 'leverantor'
+    tabeller.svar.activity_plans = { data: [plan()], error: null }
+    // Ingen närvaro förra veckan mot kravet → under timkravet.
+    tabeller.svar.activity_sessions = { data: [], error: null }
+    rita()
+    expect(await screen.findByText('Avtalsläget')).toBeInTheDocument()
+    expect(await screen.findByText('0 av 1')).toBeInTheDocument()
+    expect(screen.queryByText('Planläget')).not.toBeInTheDocument()
+  })
+
+  it('leverantör utan en enda bedömd vecka: "—" och en rad om varför, aldrig 0', async () => {
+    rg.varde = 'leverantor'
+    tabeller.svar.activity_plans = { data: [], error: null }
+    rita()
+    expect(await screen.findByText('Ingen avslutad vecka att bedöma')).toBeInTheDocument()
+  })
+
+  it('kundtypen laddar: inget kundtypsspecifikt kort', async () => {
+    rg.varde = null
+    rita()
+    expect(await screen.findByText('Hämtar kundtypen')).toBeInTheDocument()
+    expect(screen.queryByText('Planläget')).not.toBeInTheDocument()
+    expect(screen.queryByText('Avtalsläget')).not.toBeInTheDocument()
+  })
+
+  it('kunde inte planerna hämtas: "—" och en rad om felet, resten av siffrorna står kvar', async () => {
+    rg.varde = 'kommun'
+    tabeller.svar.activity_plans = { data: null, error: { message: 'timeout' } }
+    rita()
+    expect(await screen.findByText('Planerna kunde inte hämtas')).toBeInTheDocument()
+    expect(screen.getByText('Oro noterad')).toBeInTheDocument()
   })
 })
 
@@ -165,7 +205,7 @@ describe('OversiktSiffror — tomt och fel', () => {
       tabeller.svar[tabell] = { data: null, error: { message: 'timeout' } }
       rita()
       expect(await screen.findByRole('alert')).toHaveTextContent('Siffrorna kunde inte hämtas')
-      expect(screen.queryByText('Snitt ATS-poäng')).not.toBeInTheDocument()
+      expect(screen.queryByText('Planläget')).not.toBeInTheDocument()
     })
   }
 })

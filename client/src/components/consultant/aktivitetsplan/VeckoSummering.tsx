@@ -1,6 +1,6 @@
 /**
  * VeckoSummering — veckan i en mening och en mätare, med reglerna bakom
- * "Så räknas det" (omtaget "Kvarter", steg 5, 2026-10-11).
+ * "Så räknas veckan" (omtaget "Kvarter", steg 5, 2026-10-11).
  *
  * Förut stod fyra saldorutor, två regeltexter och en ampel i lika vikt
  * ovanför passen. Nu: hur många timmar anvisad aktivitet deltagaren varit
@@ -90,7 +90,7 @@ export function VeckoSummering({ plan, sessions, vecka, arLeverantor, participan
 
       <details className="group text-sm text-[var(--j-blak-2)]">
         <summary className="cursor-pointer select-none font-semibold text-[var(--j-gran-text)] underline-offset-2 hover:underline min-h-[44px] sm:min-h-0 inline-flex items-center rounded-[var(--j-r-s)] focus:outline-none focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-offset-2 focus-visible:outline-[var(--j-fokus)]">
-          Så räknas det
+          Så räknas veckan
         </summary>
         <div className="mt-3 grid gap-3">
           <dl className="grid grid-cols-2 sm:grid-cols-4 gap-2 m-0">
@@ -116,11 +116,37 @@ export function VeckoSummering({ plan, sessions, vecka, arLeverantor, participan
               : 'Beslut om nedsättning fattas av socialnämnden, inte här. Ogiltig frånvaro är underlag till handläggaren.'}
             {saldo.antalOmarkerade > 0 && <span> {omarkeradeText(saldo.antalOmarkerade)}</span>}
           </p>
+          {/* KSL16: reglerna i klartext — vad som blir timmar, fysiskt/digitalt, frånvaro. */}
+          <dl className="grid gap-2 m-0" data-testid="sa-raknas-veckan">
+            <Regel rubrik="Vad som blir timmar">
+              Bara pass där du markerat deltagaren som närvarande (eller på plats hos extern part) ger timmar. Ett planerat pass utan markering räknas inte — det står som "ej markerat" tills du markerat det. Giltig frånvaro och sjukfrånvaro med intyg ger inga timmar men räknas inte heller som ogiltig.
+            </Regel>
+            <Regel rubrik="Fysiskt eller digitalt">
+              Fysiskt betyder att deltagaren träffar verksamheten på plats. Märkningen sätts på passet; på äldre pass antas ett pass med ifylld plats vara fysiskt, och det står "antaget" vid passet. Det påverkar inte timmarna ovan, bara hur passet redovisas.
+            </Regel>
+            <Regel rubrik="Frånvaro">
+              {arLeverantor
+                ? 'Frånvaro utan anmälan blir en avvikelse att rapportera till Arbetsförmedlingen. Anmäld frånvaro och sjukfrånvaro med intyg gör det inte.'
+                : 'Ogiltig frånvaro är frånvaro utan giltigt skäl och räknas som underlag till handläggaren. Giltig frånvaro och sjukfrånvaro med intyg gör det inte.'}
+            </Regel>
+            <Regel rubrik="Eget jobbsökande">
+              Deltagarens egen tid räknas inte in i mätaren. Den visas på egen rad och räknas som utförd först när du kvitterat den.
+            </Regel>
+          </dl>
           {/* KM9: eget jobbsökande ur portalens data — deltagarens redovisning, inte kontroll. */}
           <JobbsokTidKort participantId={participantId} plan={plan} vecka={vecka} />
         </div>
       </details>
     </section>
+  )
+}
+
+function Regel({ rubrik, children }: { rubrik: string; children: React.ReactNode }) {
+  return (
+    <div>
+      <dt className="font-semibold text-[var(--j-blak)]">{rubrik}</dt>
+      <dd className="m-0">{children}</dd>
+    </div>
   )
 }
 

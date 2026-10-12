@@ -39,6 +39,8 @@ import { cn } from '@/lib/utils'
 import { BulkActionsDialog } from '@/components/consultant/BulkActionsDialog'
 import { InviteParticipantDialog } from '@/components/consultant/InviteParticipantDialog'
 import { useOrgTypVisning } from '@/components/consultant/useRegelverk'
+import { underlagApi } from '@/services/aktivitetApi'
+import { manadensGranser, ogiltigFranvaroIVeckan, utanUnderlagIManaden } from './deltagarFilter'
 import { DELTAGAR_STATUSAR, STATUS_ORD, STATUS_PLURAL, type DeltagarStatus } from '@/components/consultant/deltagarStatus'
 import { STATUS_ORD_LEVERANTOR } from '@/components/consultant/franvaroFakta'
 import { getTagLabel } from '@/components/consultant/participantTags'
@@ -71,7 +73,7 @@ interface Participant {
 }
 
 type SortField = 'lage' | 'name' | 'last_contact' | 'status' | 'priority'
-type Snabbfilter = 'all' | 'attention' | 'franvaro' | 'utan-plan'
+type Snabbfilter = 'all' | 'attention' | 'franvaro' | 'ogiltig' | 'utan-plan' | 'utan-underlag'
 type StatusFilter = 'all' | Participant['status']
 type BulkTyp = 'message' | 'tag' | 'export' | 'status'
 
@@ -149,7 +151,7 @@ export function ParticipantsTab() {
   const legacyFilter = searchParams.get('filter')
   const [searchQuery, setSearchQueryState] = useState(() => searchParams.get('q') || '')
   const [snabbfilter, setSnabbfilterState] = useState<Snabbfilter>(() =>
-    legacyFilter === 'attention' || legacyFilter === 'franvaro' || legacyFilter === 'utan-plan' ? legacyFilter : 'all')
+    legacyFilter === 'attention' || legacyFilter === 'franvaro' || legacyFilter === 'ogiltig' || legacyFilter === 'utan-plan' || legacyFilter === 'utan-underlag' ? legacyFilter : 'all')
   const [statusFilter, setStatusFilterState] = useState<StatusFilter>(() => {
     const s = searchParams.get('status') || legacyFilter
     return STATUSAR.includes(s as Participant['status']) ? (s as Participant['status']) : 'all'
@@ -201,6 +203,26 @@ export function ParticipantsTab() {
     }
     return karta
   }, [participants, underlag, idag, klockan, franvaroSomFakta])
+  // KSL17: ogiltig frånvaro i veckan och underlag som inte lämnats i månaden.
+  const ogiltigaIVeckan = useMemo(
+    () => (underlag ? ogiltigFranvaroIVeckan(underlag.pass, idag) : new Set<string>()),
+    [underlag, idag],
+  )
+  // Underlag är kommunens stödmånad — hos en ren leverantör finns inget sådant filter.
+  const visaUnderlagsfilter = !!kundtyp && kundtyp.visaIvoUnderlag
+  const underlagQ = useQuery({
+    queryKey: ['deltagarlistans-underlag', idag.slice(0, 7)],
+    queryFn: () => {
+      const { from, to } = manadensGranser(idag)
+      return underlagApi.listIPeriod(from, to)
+    },
+    enabled: participants.length > 0 && visaUnderlagsfilter,
+    staleTime: 30_000,
+  })
+  const utanUnderlag = useMemo(
+    () => (underlag && underlagQ.data ? utanUnderlagIManaden(underlag.planer, underlagQ.data, idag) : new Set<string>()),
+    [underlag, underlagQ.data, idag],
+  )
   // En konsulent som inte använder aktivitetsplaner (t.ex. bara Rusta och matcha)
   // ska inte få "Ingen aktivitetsplan" på varje rad.
   const anvanderPlaner = !!underlag && underlag.planer.length > 0
@@ -209,9 +231,11 @@ export function ParticipantsTab() {
     if (f === 'attention') return behoverKontakt(p, nu)
     const l = lageFor.get(p.participant_id)
     if (f === 'franvaro') return !!l?.franvaroIVeckan
+    if (f === 'ogiltig') return ogiltigaIVeckan.has(p.participant_id)
     if (f === 'utan-plan') return p.status === 'ACTIVE' && !!l?.utanPlan
+    if (f === 'utan-underlag') return p.status === 'ACTIVE' && utanUnderlag.has(p.participant_id)
     return true
-  }, [lageFor, nu])
+  }, [lageFor, nu, ogiltigaIVeckan, utanUnderlag])
 
   const iStatus = useMemo(
     () => (statusFilter === 'all' ? participants : participants.filter((p) => p.status === statusFilter)),
@@ -307,7 +331,12 @@ export function ParticipantsTab() {
     { id: 'all', etikett: 'Alla', kraverVecka: false },
     { id: 'attention', etikett: 'Behöver kontakt', kraverVecka: false },
     { id: 'franvaro', etikett: 'Frånvaro i veckan', kraverVecka: true },
+    // KSL21: hos en leverantör är det fakta (inte anmäld i förväg), inte en giltighetsbedömning.
+    { id: 'ogiltig', etikett: franvaroSomFakta ? 'Frånvarande, inte anmäld i veckan' : 'Ogiltig frånvaro i veckan', kraverVecka: true },
     { id: 'utan-plan', etikett: 'Utan plan', kraverVecka: true },
+    ...(visaUnderlagsfilter && underlagQ.isSuccess
+      ? [{ id: 'utan-underlag' as const, etikett: 'Underlag ej lämnat', kraverVecka: true }]
+      : []),
   ]
 
   return (
@@ -399,6 +428,9 @@ export function ParticipantsTab() {
             Försök igen
           </button>
         </p>
+      )}
+      {visaUnderlagsfilter && underlagQ.isError && (
+        <p role="alert" className="m-0 text-[0.9375rem] text-[var(--s-ogiltig-text)]">Lämnade underlag kunde inte hämtas — filtret "Underlag ej lämnat" visas inte.</p>
       )}
       {kadensQ.isError && (
         <p role="alert" className="m-0 text-[0.9375rem] text-[var(--s-ogiltig-text)]">Mötesdatum kunde inte hämtas — kadensen visas inte.</p>

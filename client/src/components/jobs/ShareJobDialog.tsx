@@ -3,7 +3,8 @@
  * Låter användare dela ett jobb med sin arbetskonsulent
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useEffectEvent } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Share2, Send, X, CheckCircle, User } from '@/components/ui/icons';
 import { shareJobWithConsultant } from '@/services/jobSharingService';
 import type { ShareJobRequest } from '@/services/jobSharingService';
@@ -26,6 +27,7 @@ export const ShareJobDialog: React.FC<ShareJobDialogProps> = ({
   onClose,
   onShared,
 }) => {
+  const { t } = useTranslation();
   const [consultantId, setConsultantId] = useState<string>('');
   const [message, setMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -34,9 +36,10 @@ export const ShareJobDialog: React.FC<ShareJobDialogProps> = ({
   const [success, setSuccess] = useState(false);
 
   // Hämta användarens konsulent vid öppning
+  const hamtaKonsulent = useEffectEvent(() => fetchConsultant());
   useEffect(() => {
     if (isOpen) {
-      fetchConsultant();
+      hamtaKonsulent();
     }
   }, [isOpen]);
 
@@ -47,7 +50,7 @@ export const ShareJobDialog: React.FC<ShareJobDialogProps> = ({
     try {
       const { data: { user } } = await anvandareFranSession();
       if (!user) {
-        setError('Du måste vara inloggad');
+        setError(t('jobs.share.notLoggedIn', 'Du måste vara inloggad'));
         return;
       }
 
@@ -55,13 +58,13 @@ export const ShareJobDialog: React.FC<ShareJobDialogProps> = ({
       const { data: profile, error: profileError } = await getProfile(user.id);
       
       if (profileError || !profile?.consultant_id) {
-        setError('Du har ingen tilldelad konsulent. Kontakta din handläggare.');
+        setError(t('jobs.share.noConsultant', 'Du har ingen tilldelad konsulent. Kontakta din handläggare.'));
         return;
       }
 
       setConsultantId(profile.consultant_id);
     } catch {
-      setError('Kunde inte hämta konsulentinformation');
+      setError(t('jobs.share.fetchFailed', 'Kunde inte hämta konsulentinformation'));
     } finally {
       setIsFetchingConsultant(false);
     }
@@ -71,7 +74,7 @@ export const ShareJobDialog: React.FC<ShareJobDialogProps> = ({
     e.preventDefault();
     
     if (!consultantId) {
-      setError('Ingen konsulent tilldelad');
+      setError(t('jobs.share.noneAssigned', 'Ingen konsulent tilldelad'));
       return;
     }
 
@@ -96,7 +99,7 @@ export const ShareJobDialog: React.FC<ShareJobDialogProps> = ({
         setMessage('');
       }, 1500);
     } else {
-      setError(result.error || 'Kunde inte dela jobbet');
+      setError(result.error || t('jobs.share.failed', 'Kunde inte dela jobbet'));
     }
   };
 
@@ -104,38 +107,39 @@ export const ShareJobDialog: React.FC<ShareJobDialogProps> = ({
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+      <div role="dialog" aria-modal="true" aria-labelledby="sharejobdialog-title" className="bg-white rounded-xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-gray-200">
-          <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
-            <Share2 className="w-5 h-5 text-primary-600" />
-            Dela med konsulent
+          <h2 id="sharejobdialog-title" className="text-lg font-bold text-gray-900 flex items-center gap-2">
+            <Share2 className="w-5 h-5 text-primary-600" aria-hidden="true" />
+            {t('jobs.share.title', 'Dela med konsulent')}
           </h2>
           <button
             onClick={onClose}
+            aria-label={t('jobs.share.close', 'Stäng')}
             className="text-gray-400 hover:text-gray-600 transition-colors"
           >
-            <X className="w-5 h-5" />
+            <X className="w-5 h-5" aria-hidden="true" />
           </button>
         </div>
 
         {/* Content */}
         <div className="p-4">
           {isFetchingConsultant ? (
-            <LoadingState message="Hämtar konsulent..." size="sm" />
+            <LoadingState message={t('jobs.share.loading', 'Hämtar konsulent …')} size="sm" />
           ) : success ? (
             <div className="text-center py-8">
               <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
               <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                Jobbet har delats!
+                {t('jobs.share.sharedTitle', 'Jobbet har delats!')}
               </h3>
               <p className="text-gray-600">
-                Din konsulent har fått en notifikation och kommer att granska jobbet.
+                {t('jobs.share.sharedBody', 'Din konsulent har fått en notifikation och kommer att granska jobbet.')}
               </p>
             </div>
           ) : error ? (
             <ErrorState
-              title="Kunde inte dela jobbet"
+              title={t('jobs.share.failed', 'Kunde inte dela jobbet')}
               message={error}
               onRetry={fetchConsultant}
               onCancel={onClose}
@@ -163,21 +167,21 @@ export const ShareJobDialog: React.FC<ShareJobDialogProps> = ({
                   <User className="w-5 h-5 text-primary-600" />
                 </div>
                 <div>
-                  <p className="font-medium text-primary-900">Din konsulent</p>
-                  <p className="text-sm text-primary-700">Får notifikation om detta</p>
+                  <p className="font-medium text-primary-900">{t('jobs.share.yourConsultant', 'Din konsulent')}</p>
+                  <p className="text-sm text-primary-700">{t('jobs.share.getsNotified', 'Får notifikation om detta')}</p>
                 </div>
               </div>
 
               {/* Meddelande */}
               <div>
                 <label htmlFor="sharejobdialog-f1" className="block text-sm font-medium text-gray-700 mb-1">
-                  Personligt meddelande (valfritt)
+                  {t('jobs.share.messageLabel', 'Personligt meddelande (valfritt)')}
                 </label>
                 <textarea
                   id="sharejobdialog-f1"
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
-                  placeholder="T.ex. 'Detta jobb verkar perfekt för mig! Vad tycker du?'"
+                  placeholder={t('jobs.share.messagePlaceholder', 'T.ex. ”Detta jobb verkar perfekt för mig! Vad tycker du?”')}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 resize-none"
                   rows={3}
                   maxLength={500}
@@ -194,7 +198,7 @@ export const ShareJobDialog: React.FC<ShareJobDialogProps> = ({
                   onClick={onClose}
                   className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
                 >
-                  Avbryt
+                  {t('jobs.share.cancel', 'Avbryt')}
                 </button>
                 <button
                   type="submit"
@@ -204,12 +208,12 @@ export const ShareJobDialog: React.FC<ShareJobDialogProps> = ({
                   {isLoading ? (
                     <>
                       <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                      Skickar...
+                      {t('jobs.share.sending', 'Skickar …')}
                     </>
                   ) : (
                     <>
                       <Send className="w-4 h-4" />
-                      Dela jobb
+                      {t('jobs.share.submit', 'Dela jobb')}
                     </>
                   )}
                 </button>

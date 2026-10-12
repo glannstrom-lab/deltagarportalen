@@ -51,6 +51,7 @@ import {
   attGoraFonster,
   attGoraIdag,
   bradskandePunkter,
+  fornaManadensStart,
   leverantorSammanfattning,
   leverantorsLage,
   antalSaker,
@@ -58,6 +59,7 @@ import {
   passAttMarkera,
   veckanIEnMening,
   type AttGoraPass,
+  type AvvikelsePass,
   type Bradskande,
   type KontaktPunkt,
   type MalDeadline,
@@ -109,7 +111,7 @@ export function OverviewTab() {
   // varje åtgärd — utan att Översikten läggs i laddningsläge.
   const [attGoraPass, setAttGoraPass] = useState<AttGoraPass[]>([])
   const [egnaPlanIds, setEgnaPlanIds] = useState<Set<string> | null>(null)
-  const [levUnderlag, setLevUnderlag] = useState<{ plans: ActivityPlan[]; placeringar: PlaceringRad[]; moten: MoteRad[] } | null>(null)
+  const [levUnderlag, setLevUnderlag] = useState<{ plans: ActivityPlan[]; placeringar: PlaceringRad[]; moten: MoteRad[]; avvikelsePass: AvvikelsePass[] | null } | null>(null)
   const [levFel, setLevFel] = useState(false)
   const [underlagsDag, setUnderlagsDag] = useState<Date | null>(null)
   const [moten, setMoten] = useState<MoteIdag[]>([])
@@ -165,6 +167,7 @@ export function OverviewTab() {
       pass: attGoraPass,
       moten: levUnderlag.moten,
       placeringar: levUnderlag.placeringar,
+      avvikelsePass: levUnderlag.avvikelsePass,
       idag: underlagsDag,
     })
   }, [arLeverantor, levUnderlag, underlagsDag, participants, egnaPlanIds, attGoraPass])
@@ -270,9 +273,20 @@ export function OverviewTab() {
       setEgnaPlanIds(planUtfall.status === 'fulfilled'
         ? new Set(planUtfall.value.filter((p) => p.consultant_id === user.id).map((p) => p.id))
         : null)
+      // KSL14: avvikelserna sträcker sig från förra månadens början — längre än Att göra-fönstret —
+      // och finns bara hos leverantören (AF-rapporteringen), så passen hämtas bara där.
+      const avvikelseUtfall = regelverk(medlemskap.map((m) => m.organization?.kind).filter((k): k is OrgKind => !!k)) === 'leverantor'
+        ? await Promise.allSettled([aktivitetsplanApi.listSessionsBetween(fornaManadensStart(formatLocalDate(idagNu)), formatLocalDate(idagNu))])
+        : null
       const levOk = !underlagFel && planUtfall.status === 'fulfilled' && placeringUtfall.status === 'fulfilled'
       setLevUnderlag(levOk
-        ? { plans: planUtfall.value, placeringar: placeringUtfall.value, moten: (motenUtfall as PromiseFulfilledResult<MoteRad[]>).value }
+        ? {
+            plans: planUtfall.value,
+            placeringar: placeringUtfall.value,
+            moten: (motenUtfall as PromiseFulfilledResult<MoteRad[]>).value,
+            // Misslyckas bara den här hämtningen blir avvikelserna "okända" (null), inte "inga".
+            avvikelsePass: avvikelseUtfall && avvikelseUtfall[0].status === 'fulfilled' ? (avvikelseUtfall[0].value as AvvikelsePass[]) : null,
+          }
         : null)
       setLevFel(!levOk)
 

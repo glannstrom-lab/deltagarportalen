@@ -5,7 +5,11 @@
  * Förslaget: "Snitt ATS-poäng" och "Möten denna vecka" i hjälteläge var mått
  * på CV:n, inte på konsulentens dag. Under Rapporter är de svar på en fråga
  * någon faktiskt ställer. Reglerna är oförändrade från Översikten:
- *   - KV5: ATS-snittet räknas över dem som HAR en poäng; ingen poäng → "—".
+ *   - KSL14 (2026-10-12): "Snitt ATS-poäng" är borta — ett mått på CV:n, inte på
+ *     konsulentens uppdrag. Kortet visar i stället avtalsläget (leverantör: hur
+ *     många som var under timkravet senaste avslutade vecka) eller planläget
+ *     (kommun: hur många aktiva som har en aktivitetsplan). Kundtypen avgörs av
+ *     useRegelverk(); medan den laddar visas ingenting om någondera.
  *   - RK6: veckan är måndag–söndag i lokal tid, även på en söndag.
  *   - KV6-S: "Profilen ändrades senast", aldrig "Loggade in".
  *   - RK23/RK24/RK26: "Oro noterad", målkategorier med samma regel som
@@ -21,13 +25,17 @@ import { useEffect, useEffectEvent, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useQueryClient } from '@tanstack/react-query'
-import { Users, FileText, Calendar, Target, Activity, MessageSquare } from '@/components/ui/icons'
+import { Users, FileText, Calendar, Target, Activity, MessageSquare, ClipboardCheck } from '@/components/ui/icons'
 import { supabase } from '@/lib/supabase'
 import { Card } from '@/components/ui/Card'
 import { cn } from '@/lib/utils'
 import { anvandareFranSession } from '@/lib/anvandareFranSession'
 import { fetchCachedConsultantParticipants } from './consultantParticipantsQuery'
-import { veckansGranser } from './oversiktRegler'
+import { useRegelverk } from '@/components/consultant/useRegelverk'
+import { aktivitetsplanApi, type ActivityPlan } from '@/services/aktivitetApi'
+import { senasteAvslutadeSondag } from '@/services/aktivitetslogg'
+import { formatLocalDate, veckansMandag } from '@/services/aktivitetSchema'
+import { leverantorsLage, veckansGranser, type AttGoraPass } from './oversiktRegler'
 import { calculateGoalCategories } from './analytics'
 import { antal } from './antal'
 import { aktivitetstid } from './aktivitetstid'
@@ -54,8 +62,10 @@ interface Aktivitet {
 interface Siffror {
   deltagare: number
   aktiva: number
-  atsSnitt: number | null
-  kompletta: number
+  /** Aktiva deltagare, för planläget. */
+  aktivaIds: string[]
+  /** Egna planer och förra veckans pass; `null` = kunde inte hämtas (inte "inga"). */
+  plan: { planer: ActivityPlan[]; pass: AttGoraPass[]; deltagare: Deltagare[] } | null
   motenVeckan: number
   olasta: number
   malKlara: number
@@ -83,11 +93,71 @@ function Tal({ titel, varde, under, ikon: Ikon, till }: { titel: string; varde: 
   )
 }
 
+/**
+ * KSL14: kortet som ersatte "Snitt ATS-poäng". Ett värde utan underlag är "—" och en
+ * rad om varför — aldrig 0.
+ */
+function LageTal({ s, regelverk }: { s: Siffror; regelverk: ReturnType<typeof useRegelverk> }) {
+  // Kundtypen laddar: inget kundtypsspecifikt kort hellre än fel kort.
+  if (regelverk === null) {
+    return <Tal titel="Läget" varde="—" under="Hämtar kundtypen" ikon={ClipboardCheck} till="/consultant/participants" />
+  }
+  if (!s.plan) {
+    return (
+      <Tal
+        titel={regelverk === 'leverantor' ? 'Avtalsläget' : 'Planläget'}
+        varde="—"
+        under="Planerna kunde inte hämtas"
+        ikon={ClipboardCheck}
+        till="/consultant/participants"
+      />
+    )
+  }
+  if (regelverk === 'leverantor') {
+    // Avtalsläget: senaste avslutade veckan mot timkravet (samma regel som Min dag).
+    const l = leverantorsLage({
+      deltagare: s.plan.deltagare,
+      plans: s.plan.planer,
+      pass: s.plan.pass,
+      moten: [],
+      placeringar: [],
+      idag: new Date(),
+    })
+    return l.bedomdaPlaner === 0
+      ? <Tal titel="Avtalsläget" varde="—" under="Ingen avslutad vecka att bedöma" ikon={ClipboardCheck} till="/consultant/analytics#avtalskrav" />
+      : (
+        <Tal
+          titel="Avtalsläget"
+          varde={`${l.bedomdaPlaner - l.underTimkravet.length} av ${l.bedomdaPlaner}`}
+          under="planer nådde timkravet senaste avslutade vecka"
+          ikon={ClipboardCheck}
+          till="/consultant/analytics#avtalskrav"
+        />
+      )
+  }
+  // Planläget: hur många aktiva deltagare som har en aktiv aktivitetsplan.
+  const medPlan = new Set(s.plan.planer.filter((p) => p.status === 'active').map((p) => p.participant_id))
+  if (s.aktivaIds.length === 0) {
+    return <Tal titel="Planläget" varde="—" under="Inga aktiva deltagare" ikon={ClipboardCheck} till="/consultant/participants" />
+  }
+  const antalMed = s.aktivaIds.filter((id) => medPlan.has(id)).length
+  return (
+    <Tal
+      titel="Planläget"
+      varde={`${antalMed} av ${s.aktivaIds.length}`}
+      under="aktiva deltagare har en aktivitetsplan"
+      ikon={ClipboardCheck}
+      till="/consultant/participants?filter=utan-plan"
+    />
+  )
+}
+
 export function OversiktSiffror() {
   const { t } = useTranslation()
   const queryClient = useQueryClient()
   const [lage, setLage] = useState<'laddar' | 'fel' | 'klart'>('laddar')
   const [s, setS] = useState<Siffror | null>(null)
+  const regelverk = useRegelverk()
 
   const hamta = async () => {
     setLage('laddar')
@@ -110,7 +180,19 @@ export function OversiktSiffror() {
 
       const nu = new Date()
       const lista = deltagare ?? []
-      const medPoang = lista.filter((p) => p.ats_score != null)
+      // KSL14: planläget och avtalsläget. Ett misslyckat anrop här fäller inte hela panelen.
+      const sondag = senasteAvslutadeSondag(formatLocalDate(nu))
+      const [planerSvar, passSvar] = await Promise.allSettled([
+        aktivitetsplanApi.listAll(),
+        aktivitetsplanApi.listSessionsBetween(veckansMandag(sondag), sondag),
+      ])
+      const planUnderlag = planerSvar.status === 'fulfilled' && passSvar.status === 'fulfilled'
+        ? {
+            planer: planerSvar.value.filter((p) => p.consultant_id === user.id),
+            pass: passSvar.value as unknown as AttGoraPass[],
+            deltagare: lista,
+          }
+        : null
       const malData = (mal.data ?? []) as Array<{ status: string; deadline: string | null; title?: string; description?: string }>
       const typer: Record<string, Aktivitet['typ']> = { GENERAL: 'message', PROGRESS: 'cv_updated', CONCERN: 'message', GOAL: 'goal_completed' }
       const ord: Record<string, string> = {
@@ -138,8 +220,8 @@ export function OversiktSiffror() {
       setS({
         deltagare: lista.length,
         aktiva: lista.filter((p) => p.status === 'ACTIVE').length,
-        atsSnitt: medPoang.length > 0 ? Math.round(medPoang.reduce((a, p) => a + (p.ats_score || 0), 0) / medPoang.length) : null,
-        kompletta: lista.filter((p) => p.has_cv && (p.ats_score || 0) >= 70).length,
+        aktivaIds: lista.filter((p) => p.status === 'ACTIVE').map((p) => p.participant_id),
+        plan: planUnderlag,
         motenVeckan: moten.data?.length ?? 0,
         olasta: meddelanden.data?.length ?? 0,
         malKlara: malData.filter((g) => g.status === 'COMPLETED').length,
@@ -180,14 +262,7 @@ export function OversiktSiffror() {
         <>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <Tal titel={t('consultant.overview.totalParticipants')} varde={s.deltagare} under={antal(s.aktiva, 'aktiv', 'aktiva')} ikon={Users} till="/consultant/participants" />
-            {/* KV5: namnet säger vad som mäts; inget underlag → "—", aldrig 0 %. */}
-            <Tal
-              titel="Snitt ATS-poäng"
-              varde={s.atsSnitt !== null ? `${s.atsSnitt}%` : '—'}
-              under={s.atsSnitt !== null ? antal(s.kompletta, 'komplett', 'kompletta') : 'Ingen ATS-poäng ännu'}
-              ikon={FileText}
-              till="/consultant/participants"
-            />
+            <LageTal s={s} regelverk={regelverk} />
             <Tal
               titel={t('consultant.overview.meetingsThisWeek')}
               varde={s.motenVeckan}

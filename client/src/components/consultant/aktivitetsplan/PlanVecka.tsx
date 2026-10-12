@@ -2,7 +2,7 @@
  * PlanVecka — planen som en vecka (omtaget "Kvarter", steg 5, 2026-10-11).
  *
  * Överst veckan som fem dagar (Veckoremsa, stor), sedan veckan i en mening
- * med reglerna bakom "Så räknas det", sedan passen dag för dag med närvaron
+ * med reglerna bakom "Så räknas veckan", sedan passen dag för dag med närvaron
  * direkt på raden. En vecka utan pass säger det en gång, inte tre.
  */
 import { Plus } from '@/components/ui/icons'

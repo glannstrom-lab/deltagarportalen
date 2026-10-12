@@ -9,6 +9,7 @@
  * - Accessibility Specialist: WCAG 2.1 AA
  */
 
+import { cvIfyllda, CV_DEL_STANDARD, CV_DEL_NYCKEL } from './myConsultantCv'
 import { useState, useEffect, useEffectEvent, useRef } from 'react'
 import { konsulentMeddelandeApi } from '@/services/konsulentMeddelandeApi'
 import { Link } from 'react-router-dom'
@@ -740,7 +741,7 @@ function MyConsultantInner() {
     // CV — maybeSingle: .single() gav PGRST116 när användaren saknar CV
     const { data: cvData } = await supabase
       .from('cvs')
-      .select('ats_score, updated_at')
+      .select('summary, work_experience, education, skills, updated_at')
       .eq('user_id', user?.id)
       .order('updated_at', { ascending: false })
       .limit(1)
@@ -830,9 +831,15 @@ function MyConsultantInner() {
             isShared: true,
           },
           {
-            label: t('myConsultant.sharedInfo.atsScore'),
-            value: cvData?.ats_score ? `${cvData.ats_score}%` : t('myConsultant.sharedInfo.notCalculated'),
-            status: cvData?.ats_score && cvData.ats_score >= 70 ? 'good' : cvData?.ats_score ? 'attention' : 'neutral',
+            // En procent säger inget om vad konsulenten faktiskt ser och
+            // läses som ett betyg. Vi visar i stället vilka delar som är ifyllda.
+            label: t('myConsultant.sharedInfo.cvParts', 'Ifyllda delar'),
+            value: cvData
+              ? (cvIfyllda(cvData).length > 0
+                  ? cvIfyllda(cvData).map((k) => t(CV_DEL_NYCKEL[k], CV_DEL_STANDARD[k])).join(', ')
+                  : t('myConsultant.sharedInfo.cvPartsNone', 'Inget ifyllt än'))
+              : t('myConsultant.sharedInfo.notCreated'),
+            status: 'neutral',
             isShared: true,
           },
           {
@@ -986,7 +993,7 @@ function MyConsultantInner() {
           window.location), och adressen är den Terms.tsx redan anger. */}
       {!consultant && !loadError && (
         <section className="max-w-2xl rounded-j-m border border-j-linje bg-j-kort p-4 sm:p-8">
-          <EmptyState
+          <EmptyState headingLevel="h2"
             icon={UserCheck}
             title={t('myConsultant.noConsultant')}
             description={t('myConsultant.noConsultantFullDesc')}

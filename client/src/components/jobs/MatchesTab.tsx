@@ -255,7 +255,7 @@ export function MatchesTab() {
           // ========== BASE SCORE (20 points) ==========
           // Job was returned by API for this search term, so it's relevant
           let totalScore = 20
-          matchDetails.push(`Hittades via sökningen ”${searchTerm}”`)
+          matchDetails.push(t('jobs.matches.detail.foundViaSearch', 'Hittades via sökningen ”{{term}}”', { term: searchTerm }))
 
           // ========== TITLE/OCCUPATION MATCHING (bonus 0-30 points) ==========
           let titleBonus = 0
@@ -265,13 +265,13 @@ export function MatchesTab() {
             const titleResult = matchJobTitle(userTitle, jobHeadline, jobOccupation)
             if (titleResult.match === 'exact') {
               titleBonus = Math.max(titleBonus, 30)
-              matchDetails.push(`Du har jobbat som ${userTitle}`)
+              matchDetails.push(t('jobs.matches.detail.workedAs', 'Du har jobbat som {{title}}', { title: userTitle }))
             } else if (titleResult.match === 'similar') {
               titleBonus = Math.max(titleBonus, 20)
-              matchDetails.push(`Liknar din roll som ${userTitle}`)
+              matchDetails.push(t('jobs.matches.detail.similarRole', 'Liknar din roll som {{title}}', { title: userTitle }))
             } else if (titleResult.match === 'partial') {
               titleBonus = Math.max(titleBonus, 10)
-              matchDetails.push(`Relaterat till din erfarenhet som ${userTitle}`)
+              matchDetails.push(t('jobs.matches.detail.relatedExperience', 'Relaterat till din erfarenhet som {{title}}', { title: userTitle }))
             }
           }
 
@@ -303,7 +303,7 @@ export function MatchesTab() {
             const words = edu.toLowerCase().split(/\s+/).filter(w => w.length > 3)
             if (words.some(word => jobText.includes(word))) {
               hasEducationMatch = true
-              matchDetails.push('Matchar din utbildning')
+              matchDetails.push(t('jobs.matches.detail.education', 'Matchar din utbildning'))
               break
             }
           }
@@ -330,7 +330,7 @@ export function MatchesTab() {
     return allJobs
       .sort((a, b) => b.score - a.score)
       .slice(0, 50)
-  }, [])
+  }, [t])
 
   // Search and match jobs for Interest (based on RIASEC/interest guide occupations)
   const searchInterestJobs = useCallback(async (
@@ -407,12 +407,12 @@ export function MatchesTab() {
             // Direct match in title (best)
             if (jobTitle.includes(searchTermLower)) {
               matchQuality = 100
-              matchDetails.push(`Intresse: ${occ.name}`)
+              matchDetails.push(t('jobs.matches.detail.interest', 'Intresse: {{name}}', { name: occ.name }))
             }
             // Direct match in occupation label
             else if (jobOccupation.includes(searchTermLower)) {
               matchQuality = 90
-              matchDetails.push(`Intresse: ${occ.name}`)
+              matchDetails.push(t('jobs.matches.detail.interest', 'Intresse: {{name}}', { name: occ.name }))
             }
             // Partial word match
             else {
@@ -420,10 +420,10 @@ export function MatchesTab() {
               const matchedWords = searchWords.filter(w => jobText.includes(w))
               if (matchedWords.length > 0) {
                 matchQuality = 70 + (matchedWords.length / searchWords.length) * 20
-                matchDetails.push(`Passar ditt intresse för ${occ.name}`)
+                matchDetails.push(t('jobs.matches.detail.fitsInterest', 'Passar ditt intresse för {{name}}', { name: occ.name }))
               } else {
                 matchQuality = 50
-                matchDetails.push(`Relaterat yrke`)
+                matchDetails.push(t('jobs.matches.detail.relatedOccupation', 'Relaterat yrke'))
               }
             }
 
@@ -460,7 +460,7 @@ export function MatchesTab() {
       .filter(m => m.score >= 30)
       .sort((a, b) => b.score - a.score)
       .slice(0, 50)
-  }, [])
+  }, [t])
 
   // Search and match jobs for Career (based on desired jobs and career goals)
   const searchCareerJobs = useCallback(async (
@@ -521,17 +521,21 @@ export function MatchesTab() {
           // Direct title match (best)
           if (jobTitle.includes(roleLower)) {
             baseScore = isDesiredJob ? 90 : 75
-            matchDetails.push(isDesiredJob ? `Önskat yrke: ${role}` : `Karriärmål: ${role}`)
+            matchDetails.push(isDesiredJob
+              ? t('jobs.matches.detail.desiredJob', 'Önskat yrke: {{role}}', { role })
+              : t('jobs.matches.detail.careerGoal', 'Karriärmål: {{role}}', { role }))
           }
           // Occupation label match
           else if (jobOccupation.includes(roleLower)) {
             baseScore = isDesiredJob ? 80 : 65
-            matchDetails.push(isDesiredJob ? `Önskat yrke: ${role}` : `Karriärmål: ${role}`)
+            matchDetails.push(isDesiredJob
+              ? t('jobs.matches.detail.desiredJob', 'Önskat yrke: {{role}}', { role })
+              : t('jobs.matches.detail.careerGoal', 'Karriärmål: {{role}}', { role }))
           }
           // Description match
           else if (jobText.includes(roleLower)) {
             baseScore = isDesiredJob ? 60 : 50
-            matchDetails.push(`Nära ditt mål: ${role}`)
+            matchDetails.push(t('jobs.matches.detail.nearGoal', 'Nära ditt mål: {{role}}', { role }))
           }
 
           // Check career keywords for additional boost
@@ -576,7 +580,7 @@ export function MatchesTab() {
       .filter(m => m.score >= 30)
       .sort((a, b) => b.score - a.score)
       .slice(0, 50)
-  }, [])
+  }, [t])
 
   // Load all data
   const loadData = useCallback(async () => {
@@ -833,32 +837,33 @@ export function MatchesTab() {
               <div className="flex flex-wrap gap-2 text-xs">
                 {sourceData.preferences.employmentTypes.length > 0 && (
                   <span className="px-2 py-1 bg-sky-100 dark:bg-sky-900/40 text-sky-700 dark:text-sky-300 rounded-full">
-                    {sourceData.preferences.employmentTypes.map(t =>
-                      t === 'fulltime' ? 'Heltid' : t === 'parttime' ? 'Deltid' : t
+                    {sourceData.preferences.employmentTypes.map(typ =>
+                      typ === 'fulltime' ? t('jobs.matches.pref.fulltime', 'Heltid')
+                        : typ === 'parttime' ? t('jobs.matches.pref.parttime', 'Deltid') : typ
                     ).join(', ')}
                   </span>
                 )}
                 {sourceData.preferences.remoteWork && (
                   <span className="px-2 py-1 bg-sky-100 dark:bg-sky-900/40 text-sky-700 dark:text-sky-300 rounded-full">
-                    {sourceData.preferences.remoteWork === 'yes' ? 'Distansarbete' :
-                     sourceData.preferences.remoteWork === 'hybrid' ? 'Hybrid' : 'På plats'}
+                    {sourceData.preferences.remoteWork === 'yes' ? t('jobs.matches.pref.remote', 'Distansarbete') :
+                     sourceData.preferences.remoteWork === 'hybrid' ? t('jobs.matches.pref.hybrid', 'Hybrid') : t('jobs.matches.pref.onsite', 'På plats')}
                   </span>
                 )}
                 {sourceData.preferences.driversLicense.length > 0 && (
                   <span className="px-2 py-1 bg-sky-100 dark:bg-sky-900/40 text-sky-700 dark:text-sky-300 rounded-full flex items-center gap-1">
-                    <Car className="w-3 h-3" />
-                    Körkort {sourceData.preferences.driversLicense.join(', ')}
+                    <Car className="w-3 h-3" aria-hidden="true" />
+                    {t('jobs.matches.pref.license', 'Körkort {{list}}', { list: sourceData.preferences.driversLicense.join(', ') })}
                   </span>
                 )}
                 {sourceData.preferences.hasCar && (
                   <span className="px-2 py-1 bg-sky-100 dark:bg-sky-900/40 text-sky-700 dark:text-sky-300 rounded-full">
-                    Har bil
+                    {t('jobs.matches.pref.hasCar', 'Har bil')}
                   </span>
                 )}
               </div>
             </div>
             <Link to="/profile" className="text-xs text-sky-600 dark:text-sky-400 hover:underline shrink-0">
-              Ändra
+              {t('jobs.matches.pref.change', 'Ändra')}
             </Link>
           </div>
         </div>

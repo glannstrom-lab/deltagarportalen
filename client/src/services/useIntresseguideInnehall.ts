@@ -16,6 +16,7 @@
  * byts ut. Se `FALT_SOM_AR_NYCKLAR` i `lib/innehallsOversattning.ts`.
  */
 import { useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useInnehall } from '@/data/oversattningar'
 import {
   allQuestions,
@@ -31,6 +32,7 @@ import {
   type ICFAdaptation,
   type JobMatch,
   type UserProfile,
+  type MatchKontext,
 } from './interestGuideData'
 
 /** Alla frågor, översatta. Ordning och id oförändrade. */
@@ -64,6 +66,23 @@ export function useBigFiveNamn(): Record<string, { name: string; description: st
 }
 
 /**
+ * Språkvalet för de texter matchningen själv skriver — varningar, anpassningar
+ * och "varför hamnade det här"-förklaringen. Räknas om när språket byts.
+ */
+export function useMatchKontext(): MatchKontext {
+  const { t, i18n } = useTranslation()
+  const icf = useIcfAnpassningar()
+  return useMemo(
+    () => ({
+      texter: (nyckel, svenska, vars) => t(nyckel, svenska, vars) as string,
+      icf,
+    }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- t byter identitet med språket
+    [t, i18n.language, icf]
+  )
+}
+
+/**
  * Jobbmatchningarna, beräknade mot den ÖVERSATTA yrkeslistan.
  *
  * Matchningen bär med sig hela yrkesobjektet ut i gränssnittet, så det räcker
@@ -74,8 +93,9 @@ export function useJobbmatchningar(
   filterUniversity?: boolean | null
 ): JobMatch[] {
   const yrken = useYrken()
+  const kontext = useMatchKontext()
   return useMemo(
-    () => (profile ? calculateJobMatches(profile, filterUniversity, yrken) : []),
-    [profile, filterUniversity, yrken]
+    () => (profile ? calculateJobMatches(profile, filterUniversity, yrken, kontext) : []),
+    [profile, filterUniversity, yrken, kontext]
   )
 }

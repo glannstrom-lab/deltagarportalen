@@ -21,3 +21,7 @@ export function flikSokvag(tab: string | null): string | null {
  */
 export const MOBIL_FLIKRAD_DOLJ_BOTTENNAV =
   'max-lg:[&_nav[aria-label=Avsnitt]_li:nth-child(-n+5)]:hidden'
+
+/** KSL15: handläggarens tre flikar ryms alla i bottennavet — hela övre raden döljs. */
+export const MOBIL_FLIKRAD_DOLJ_HANDLAGGARE =
+  'max-lg:[&_nav[aria-label=Avsnitt]_li:nth-child(-n+3)]:hidden'

@@ -191,8 +191,10 @@ describe('Min vecka', () => {
     ])
     render(<MinVecka />)
     expect(await screen.findByText(/Du har 5 h inbokade i anvisade pass den här veckan\. Målet är 25 timmar\./)).toBeInTheDocument()
-    expect(screen.getByText('Språkcafé')).toBeInTheDocument()
-    expect(screen.getByText('Verkstad')).toBeInTheDocument()
+    // På en måndag ligger Språkcafé (tisdag) i framtiden och visas också som
+    // nästa pass — därför getAll (föll måndagen 2026-10-12).
+    expect(screen.getAllByText('Språkcafé').length).toBeGreaterThan(0)
+    expect(screen.getAllByText('Verkstad').length).toBeGreaterThan(0)
     expect(screen.getByText(/Eget jobbsökande räknas för sig: 5 timmar i veckan enligt planen/)).toBeInTheDocument()
   })
 

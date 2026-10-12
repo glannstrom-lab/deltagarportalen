@@ -150,6 +150,7 @@ describe('Min dag — nästa steg och en rad per människa', () => {
       underTimkravet: [],
       utanFysisktMote: [{ participantId: 'omar', text: 'Inget genomfört fysiskt möte än' }],
       uppfoljningar: [],
+      avvikelserEjRapporterade: [],
     }
     rita({ personer: personer({ attGora: [punkt('kvittera', pass({ activity_type: 'jobsearch_own' }))], leverantor: lev }), onBokaMote })
     fireEvent.click(within(screen.getByTestId('mindag-person-omar')).getByRole('button', { name: 'Boka fysiskt möte: Omar Demo' }))

@@ -81,7 +81,7 @@ describe('minDagPersoner — personen är enheten', () => {
     const personer = minDagPersoner({
       ...tomt,
       bradskande: [{ participantId: 'sami', typ: 'mote', text: 'Senaste möte 20 dagar sedan — gränsen är 14' }],
-      leverantor: { bedomdaPlaner: 1, underTimkravet: [], utanFysisktMote: [{ participantId: 'sami', text: 'x' }], uppfoljningar: [] },
+      leverantor: { bedomdaPlaner: 1, underTimkravet: [], utanFysisktMote: [{ participantId: 'sami', text: 'x' }], uppfoljningar: [], avvikelserEjRapporterade: [] },
     })
     expect(personer[0].punkter.map((p) => p.typ)).toEqual(['mote_over_gransen'])
   })

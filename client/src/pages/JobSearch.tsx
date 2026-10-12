@@ -1335,7 +1335,7 @@ function SavedJobsTab() {
   if (onlySaved.length === 0) {
     return (
       <Card className="bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
-        <EmptyState
+        <EmptyState headingLevel="h2"
           illustration="jobb"
           title={t('jobSearch.noSavedJobsTitle')}
           description={t('jobSearch.noSavedJobsDesc')}

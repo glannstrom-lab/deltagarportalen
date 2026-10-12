@@ -9,7 +9,7 @@
  *
  * Svenska literaler: konsulentvyn översätts inte (DESIGN.md §2).
  */
-import { consultantTabs } from '@/data/consultantTabs'
+import { consultantTabs, flikarForRoll } from '@/data/consultantTabs'
 
 export function arKonsulentvy(pathname: string): boolean {
   return pathname === '/consultant' || pathname.startsWith('/consultant/')
@@ -21,9 +21,14 @@ export const konsulentBottenNav = BOTTEN_IDS
   .map((id) => consultantTabs.find((t) => t.id === id))
   .filter((t): t is NonNullable<typeof t> => t !== undefined)
 
+/** KSL15: bottennavets flikar för handläggaren (Översikt, Rapporter, Inställningar). */
+export function konsulentBottenNavFor(enbartHandlaggare: boolean) {
+  return enbartHandlaggare ? flikarForRoll(true) : konsulentBottenNav
+}
+
 /** Aktiv flik: Översikt bara exakt, övriga på prefix (en deltagarsida hör till Deltagare). */
-export function aktivKonsulentFlik(pathname: string): string | null {
+export function aktivKonsulentFlik(pathname: string, flikar = konsulentBottenNav): string | null {
   if (pathname === '/consultant' || pathname === '/consultant/') return 'overview'
-  const traff = konsulentBottenNav.find((t) => t.path !== '/consultant' && (pathname === t.path || pathname.startsWith(`${t.path}/`)))
+  const traff = flikar.find((t) => t.path !== '/consultant' && (pathname === t.path || pathname.startsWith(`${t.path}/`)))
   return traff?.id ?? null
 }

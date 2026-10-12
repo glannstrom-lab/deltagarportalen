@@ -4,7 +4,7 @@
  *
  * Omtaget "Kvarter", steg 5 (2026-10-11): uppdelad i tre delar —
  *   aktivitetsplan/PlanVecka       veckan som fem dagar, summeringen, passen
- *   aktivitetsplan/VeckoSummering  veckan i en mening + "Så räknas det"
+ *   aktivitetsplan/VeckoSummering  veckan i en mening + "Så räknas veckan"
  *   aktivitetsplan/PlanHogerspalt  högerspalten per kundtyp
  * Hämtningen bor i aktivitetsplan/useAktivitetsplan, så deltagarsidans huvud
  * (läget, Mer-menyn med "Plan som PDF" och "Avsluta plan") och Översikt läser

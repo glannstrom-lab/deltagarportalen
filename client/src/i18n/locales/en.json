@@ -1828,7 +1828,49 @@
         "sentence": "We are showing {{total}} jobs here. {{high}} of them look like strong matches.",
         "sentenceNoStrong": "We are showing {{total}} jobs here, sorted by how closely they match what you have filled in."
       },
-      "preferencesUsed": "Your preferences affect matching"
+      "preferencesUsed": "Your preferences affect matching",
+      "detail": {
+        "foundViaSearch": "Found by your search \"{{term}}\"",
+        "workedAs": "You have worked as {{title}}",
+        "similarRole": "Similar to your role as {{title}}",
+        "relatedExperience": "Related to your experience as {{title}}",
+        "education": "Fits your education",
+        "interest": "Interest: {{name}}",
+        "fitsInterest": "Fits your interest in {{name}}",
+        "relatedOccupation": "Related job",
+        "desiredJob": "Job you want: {{role}}",
+        "careerGoal": "Career goal: {{role}}",
+        "nearGoal": "Close to your goal: {{role}}"
+      },
+      "pref": {
+        "fulltime": "Full-time",
+        "parttime": "Part-time",
+        "remote": "Remote work",
+        "hybrid": "Hybrid",
+        "onsite": "On site",
+        "license": "Driving licence {{list}}",
+        "hasCar": "Has a car",
+        "change": "Change"
+      }
+    },
+    "share": {
+      "notLoggedIn": "You need to be logged in",
+      "noConsultant": "You do not have a consultant yet. Contact your case worker.",
+      "fetchFailed": "We could not get your consultant details",
+      "noneAssigned": "No consultant assigned",
+      "failed": "We could not share the job",
+      "title": "Share with your consultant",
+      "close": "Close",
+      "loading": "Getting your consultant …",
+      "sharedTitle": "The job is shared!",
+      "sharedBody": "Your consultant has been notified and will look at the job.",
+      "yourConsultant": "Your consultant",
+      "getsNotified": "Gets a notification about this",
+      "messageLabel": "Personal message (optional)",
+      "messagePlaceholder": "For example: \"This job looks perfect for me! What do you think?\"",
+      "cancel": "Cancel",
+      "sending": "Sending …",
+      "submit": "Share job"
     }
   },
   "applications": {
@@ -3014,8 +3056,6 @@
       "cvStatus": "CV status",
       "created": "Created",
       "notCreated": "Not created",
-      "atsScore": "ATS score",
-      "notCalculated": "Not calculated",
       "lastUpdated": "Last updated",
       "energyLevel": "Energy level",
       "latestMood": "Latest mood",
@@ -3028,7 +3068,15 @@
         "wellbeing": "Wellbeing"
       },
       "shared": "Shared",
-      "notShared": "Not shared"
+      "notShared": "Not shared",
+      "cvParts": "Parts filled in",
+      "cvPartsNone": "Nothing filled in yet",
+      "cvPart": {
+        "summary": "Summary",
+        "workExperience": "Experience",
+        "education": "Education",
+        "skills": "Skills"
+      }
     },
     "messages": {
       "title": "Messages",
@@ -3233,7 +3281,8 @@
       "pauseContinue": "Keep answering",
       "pauseConfirm": "Pause and go back",
       "pauseButton": "Pause",
-      "resumeModal": {}
+      "resumeModal": {},
+      "canGoBack": "You can always go back and change your earlier answers"
     },
     "intro": {
       "get4": "Ideas from {{count}} jobs, with adjustments you can talk about",
@@ -3515,6 +3564,62 @@
       "scoreOf": "{{score}} out of 5",
       "notAnswered": "You have not answered this part yet",
       "helpTitle": "Things that often help, and are worth talking about"
+    },
+    "match": {
+      "warn": {
+        "fysRorlighet": "The work needs good physical mobility",
+        "tungaLyft": "The work involves heavy lifting or physically demanding tasks",
+        "stillasittande": "Long periods of sitting can be tiring",
+        "socialtKravande": "The work is socially demanding, with a lot of contact with people",
+        "koncentration": "The work needs high concentration for long periods",
+        "sensorisk": "The workplace can have loud sounds, bright light or other strong sensory input",
+        "tidspress": "The work often means time pressure and a fast pace"
+      },
+      "adapt": {
+        "rorlighet": "Motor skills: Ask for adapted tasks or aids for mobility",
+        "ergonomi": "Motor skills: Ergonomic equipment can make tasks easier",
+        "lyft": "Energy/Motor skills: Ask for help with heavy lifting or ergonomic aids",
+        "rorelsepauser": "Energy: Ask for movement breaks and a height-adjustable desk",
+        "arbetsstallningar": "Motor skills: Varied working positions are recommended",
+        "aterhamtning": "Energy: Ask for scheduled rest breaks and clear routines",
+        "lugnMiljo": "Concentration: Ask for a quiet workplace and ways to reduce distractions",
+        "horselskydd": "Sensory: Ask for ear protection, adjusted lighting or other changes",
+        "prioritering": "Concentration/Energy: Ask for clear priority lists and some say over your work pace"
+      },
+      "interest": {
+        "teknik_mekanik": "technology and mechanics",
+        "natur_vetenskap": "nature and science",
+        "konst_kultur": "art and culture",
+        "social_vard": "health care and caring",
+        "affarer_forsaljning": "business and sales",
+        "administration_kontor": "administration and office work",
+        "utomhusarbete": "working outdoors",
+        "ledarskap_organisation": "leadership and organisation",
+        "data_it": "data and IT",
+        "undervisning_pedagogik": "teaching and education"
+      },
+      "riasec": {
+        "R": "practical hands-on work",
+        "I": "investigating and solving problems",
+        "A": "creating and expressing yourself",
+        "S": "meeting and supporting others",
+        "E": "influencing and leading",
+        "C": "order and clear routines"
+      },
+      "part": {
+        "riasec": "The kind of work you are drawn to (RIASEC)",
+        "interests": "Your areas of interest",
+        "self": "How you described yourself",
+        "strengths": "Your strongest sides against the demands of the job"
+      },
+      "and": " and ",
+      "summary": {
+        "upDown": "The job ended up here mainly because you answered positively about {{upp}}. What speaks against it is that you answered low about {{ner}}.",
+        "upOnly": "The job ended up here mainly because you answered positively about {{upp}}.",
+        "downOnly": "The job is lower in the list because you answered low about {{ner}}.",
+        "middle": "Your answers were close to the middle on the areas this job needs. That means the job neither stands out nor is ruled out. Have a look at it if it appeals to you.",
+        "none": "Nothing in your answers points especially to this job. That does not mean you could not enjoy it. It only means these questions did not pick it up."
+      }
     }
   },
   "international": {
@@ -4636,7 +4741,8 @@
       "laddarAktiviteter": "Getting your activities and notes ...",
       "lugnDag": "Today it is enough that you said how you feel. The ideas for the day are still here when you want them.",
       "visaIdeerAnda": "Show the ideas anyway",
-      "ideerInvit": "A few small ideas for the day. Take what you like."
+      "ideerInvit": "A few small ideas for the day. Take what you like.",
+      "saveFailed": "We could not save that just now. Try again in a moment. What you wrote is still here."
     },
     "energy": {
       "howIsYourEnergy": "How is your energy today?",

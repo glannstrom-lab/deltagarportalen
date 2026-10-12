@@ -4,6 +4,7 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
 import { render, screen, cleanup } from '@testing-library/react'
 import { MemoryRouter, Routes, Route } from 'react-router-dom'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 
@@ -14,6 +15,11 @@ vi.mock('@/components/layout/PageLayout', () => ({
 }))
 vi.mock('./consultant/OverviewTab', () => ({ OverviewTab: () => <p>ÖVERSIKT</p> }))
 vi.mock('./consultant/SettingsTab', () => ({ SettingsTab: () => <p>INSTÄLLNINGAR</p> }))
+vi.mock('./consultant/ParticipantsTab', () => ({ ParticipantsTab: () => <p>DELTAGARE</p> }))
+const mockMedlemskap = vi.hoisted(() => ({ roller: [] as string[] }))
+vi.mock('@/services/orgApi', () => ({
+  orgApi: { myMemberships: async () => mockMedlemskap.roller.map((role) => ({ role })) },
+}))
 vi.mock('react-i18next', () => ({ useTranslation: () => ({ t: (_k: string, f: string) => f }) }))
 
 import Consultant from './Consultant'
@@ -21,15 +27,18 @@ import { flikSokvag, MOBIL_FLIKRAD_DOLJ_BOTTENNAV } from './consultantFlikar'
 import { konsulentBottenNav } from '@/components/layout/konsulentNav'
 import { consultantTabs } from '@/data/consultantTabs'
 
-afterEach(cleanup)
+afterEach(() => { cleanup(); mockMedlemskap.roller = [] })
 
 function visa(url: string) {
+  const qc = new QueryClient({ defaultOptions: { queries: { retry: false } } })
   return render(
-    <MemoryRouter initialEntries={[url]}>
-      <Routes>
-        <Route path="/consultant/*" element={<Consultant />} />
-      </Routes>
-    </MemoryRouter>,
+    <QueryClientProvider client={qc}>
+      <MemoryRouter initialEntries={[url]}>
+        <Routes>
+          <Route path="/consultant/*" element={<Consultant />} />
+        </Routes>
+      </MemoryRouter>
+    </QueryClientProvider>,
   )
 }
 
@@ -62,5 +71,29 @@ describe('KH7: mobilens övre flikrad visar bara det bottennavet saknar', () => 
     expect(MOBIL_FLIKRAD_DOLJ_BOTTENNAV.startsWith('max-lg:')).toBe(true)
     const skena = readFileSync(join(__dirname, '../components/layout/SidRail.tsx'), 'utf8')
     expect(skena).toMatch(/export function FlikRad[\s\S]*aria-label="Avsnitt"/)
+  })
+})
+
+describe('KSL15: handläggarens flikar', () => {
+  it('en direktlänk till Deltagare går till Översikt för en handläggare', async () => {
+    mockMedlemskap.roller = ['handlaggare']
+    visa('/consultant/participants')
+    expect(await screen.findByText('ÖVERSIKT')).toBeInTheDocument()
+    expect(screen.queryByText('DELTAGARE')).toBeNull()
+  })
+
+  it('en konsulent når Deltagare som förut', async () => {
+    mockMedlemskap.roller = ['konsulent']
+    visa('/consultant/participants')
+    expect(await screen.findByText('DELTAGARE')).toBeInTheDocument()
+  })
+
+  it('?tab=settings fungerar för handläggaren, ?tab=participants gör det inte', async () => {
+    mockMedlemskap.roller = ['handlaggare']
+    visa('/consultant?tab=settings')
+    expect(await screen.findByText('INSTÄLLNINGAR')).toBeInTheDocument()
+    cleanup()
+    visa('/consultant?tab=participants')
+    expect(await screen.findByText('ÖVERSIKT')).toBeInTheDocument()
   })
 })

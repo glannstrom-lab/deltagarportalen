@@ -12,7 +12,7 @@ import {
   matchningsplats,
   type JobMatch,
 } from '@/services/interestGuideData'
-import { useYrken } from '@/services/useIntresseguideInnehall'
+import { useYrken, useMatchKontext } from '@/services/useIntresseguideInnehall'
 import { LoadingState, InfoCard, Button, Card, EmptyState } from '@/components/ui'
 import { interestGuideApi } from '@/services/cloudStorage'
 import {
@@ -45,6 +45,7 @@ export default function OccupationsTab() {
   const [expandedOccupation, setExpandedOccupation] = useState<string | null>(null)
 
   const yrken = useYrken()
+  const matchKontext = useMatchKontext()
 
   // useEffect for loading data
   useEffect(() => {
@@ -82,7 +83,7 @@ export default function OccupationsTab() {
       return { allMatches: [] as JobMatch[], calculationError: null }
     }
     try {
-      const matches = calculateJobMatches(profile, filterUni)
+      const matches = calculateJobMatches(profile, filterUni, undefined, matchKontext)
       /*
         `calculateJobMatches` har bara två parametrar — den tredje
         (yrkeslistan) som `useJobbmatchningar` i useIntresseguideInnehall.ts
@@ -105,7 +106,7 @@ export default function OccupationsTab() {
         calculationError: t('interestGuide.occupations.errCalcMatches', 'Kunde inte beräkna yrkesmatchningar: {{fel}}', { fel: err instanceof Error ? err.message : t('interestGuide.occupations.unknownError', 'Okänt fel') })
       }
     }
-  }, [profile, filterUni, yrken, t])
+  }, [profile, filterUni, yrken, t, matchKontext])
 
   // Filter and sort matches - also unconditional
   const filteredMatches = useMemo(() => {
@@ -374,7 +375,7 @@ export default function OccupationsTab() {
                         just de svar personen gav.
                       */}
                       <p className="mb-3 text-xs text-stone-600 dark:text-stone-400">
-                        {matchningsplats(allMatches.indexOf(match), allMatches.length)}
+                        {matchningsplats(allMatches.indexOf(match), allMatches.length, matchKontext.texter)}
                       </p>
 
                       {/* Tags */}

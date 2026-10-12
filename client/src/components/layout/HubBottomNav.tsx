@@ -14,7 +14,8 @@ import { Link, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { navHubs, getActiveHub } from './navigation'
 import { HUB_ICON_SRC } from './hubIcons'
-import { arKonsulentvy, aktivKonsulentFlik, konsulentBottenNav } from './konsulentNav'
+import { arKonsulentvy, aktivKonsulentFlik, konsulentBottenNavFor } from './konsulentNav'
+import { useEnbartHandlaggareICache } from '@/pages/useKonsulentFlikar'
 import { cn } from '@/lib/utils'
 
 export function HubBottomNav() {
@@ -57,7 +58,10 @@ export function HubBottomNav() {
   // (Söka jobb, Karriär, Din vardag) under /consultant. Där visas i stället
   // konsulentvyns egna flikar. Svenska literaler — konsulentvyn översätts inte.
   const konsulent = arKonsulentvy(location.pathname)
-  const aktivFlik = konsulent ? aktivKonsulentFlik(location.pathname) : null
+  // KSL15: handläggaren ser bara sina tre flikar.
+  const enbartHandlaggare = useEnbartHandlaggareICache()
+  const konsulentFlikar = konsulentBottenNavFor(enbartHandlaggare)
+  const aktivFlik = konsulent ? aktivKonsulentFlik(location.pathname, konsulentFlikar) : null
 
   return (
     <nav
@@ -82,7 +86,7 @@ export function HubBottomNav() {
     >
       {konsulent ? (
         <ul className="flex flex-row items-stretch justify-between">
-          {konsulentBottenNav.map((flik) => {
+          {konsulentFlikar.map((flik) => {
             const isActive = aktivFlik === flik.id
             const Icon = flik.icon
             return (

@@ -81,3 +81,29 @@ export const consultantTabs: Tab[] = [
   { id: 'resources', label: 'Resurser', path: '/consultant/resources', icon: Wrench },
   { id: 'settings', label: 'Inställningar', path: '/consultant/settings', icon: Settings },
 ]
+
+/**
+ * KSL15 (2026-10-12): en kommunhandläggare (org-roll `handlaggare` i
+ * organization_members) har ingen läsrätt på deltagarna — hon når bara
+ * underlagen som lämnats till henne (rpc `mina_mottagna_underlag`, definer).
+ * Deltagare, Platser, Kommunikation och Resurser var därför tomma för henne.
+ * Hon ser Översikt (där underlagen ligger), Rapporter och Inställningar.
+ */
+export const HANDLAGGARE_FLIK_IDS = ['overview', 'analytics', 'settings'] as const
+
+/** Handläggare = medlem i minst en organisation och handläggare i ALLA sina. */
+export function arEnbartHandlaggare(roller: readonly string[]): boolean {
+  return roller.length > 0 && roller.every((r) => r === 'handlaggare')
+}
+
+export function flikarForRoll(enbartHandlaggare: boolean): Tab[] {
+  return enbartHandlaggare
+    ? consultantTabs.filter((t) => (HANDLAGGARE_FLIK_IDS as readonly string[]).includes(t.id))
+    : consultantTabs
+}
+
+/** Får handläggaren öppna sökvägen? Deltagarsidor, platser m.m. är dolda. */
+export function handlaggareFarOppna(pathname: string): boolean {
+  const p = pathname.replace(/\/+$/, '')
+  return flikarForRoll(true).some((t) => p === t.path || (t.path !== '/consultant' && p.startsWith(`${t.path}/`)))
+}

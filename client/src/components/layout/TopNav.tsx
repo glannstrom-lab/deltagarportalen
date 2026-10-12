@@ -44,7 +44,8 @@ import { Link, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import type { TFunction } from 'i18next'
 import { navHubs, getActiveHub, senasteBesok } from './navigation'
-import { aktivKonsulentFlik, arKonsulentvy, konsulentBottenNav } from './konsulentNav'
+import { aktivKonsulentFlik, arKonsulentvy, konsulentBottenNavFor } from './konsulentNav'
+import { useEnbartHandlaggareICache } from '@/pages/useKonsulentFlikar'
 import { HUB_ICON_SRC, TOOL_ICON_SRC } from './hubIcons'
 import { cn } from '@/lib/utils'
 import { avkodaSokvag } from '@/lib/sokvag'
@@ -219,13 +220,16 @@ export function HubNav({ variant = 'bar' }: { variant?: 'bar' | 'inline' } = {})
   // Det är förlagan från skissen: två rader totalt, inte tre. `bar` finns kvar
   // för det fristående läget och för testerna.
   const inline = variant === 'inline'
+  // KSL15: handläggaren ser bara sina tre flikar.
+  const enbartHandlaggare = useEnbartHandlaggareICache()
 
   // RK20 (rollspelet 2026-09-27): på dator visade raden deltagarens hubbar
   // (Söka jobb, Karriär, CV, Intresseguide) även under /consultant. Samma
   // rättelse som RK17 gjorde för mobilen: konsulentvyns egna flikar i stället.
   // Svenska literaler — konsulentvyn översätts inte.
   if (arKonsulentvy(location.pathname)) {
-    const aktivFlik = aktivKonsulentFlik(location.pathname)
+    const flikar = konsulentBottenNavFor(enbartHandlaggare)
+    const aktivFlik = aktivKonsulentFlik(location.pathname, flikar)
     return (
       <nav
         aria-label="Konsulentvyns navigering"
@@ -236,7 +240,7 @@ export function HubNav({ variant = 'bar' }: { variant?: 'bar' | 'inline' } = {})
           inline ? '' : 'px-3 sm:px-4 border-b border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-900'
         )}
       >
-        {konsulentBottenNav.map((flik) => {
+        {flikar.map((flik) => {
           const aktiv = aktivFlik === flik.id
           const Ikon = flik.icon
           return (

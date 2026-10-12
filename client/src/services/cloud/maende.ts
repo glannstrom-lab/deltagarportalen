@@ -308,10 +308,10 @@ export const wellnessDataApi = {
         onConflict: 'user_id'
       })
 
-    if (error) {
-      handleStorageError(error, 'spara wellness data')
-      localStorage.setItem('wellness_data', JSON.stringify(wellnessData))
-    }
+    // Skrivfel KASTAS. Tidigare skrevs det till localStorage och funktionen
+    // återvände som om allt gått bra — en bockad aktivitet eller en reflektion
+    // såg sparad ut men fanns bara i webbläsaren, och get() läser molnet.
+    if (error) kastaLagringsFel(error, 'spara wellness data')
   }
 }
 

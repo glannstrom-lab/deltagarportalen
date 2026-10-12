@@ -7,10 +7,8 @@ import { useCallback, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { cn } from '@/lib/utils'
 import { AgentSelector, getAgentById } from '@/components/ai-team/AgentSelector'
-import { PersonalityDropdown } from '@/components/ai-team/PersonalityDropdown'
-import { QuickActions } from '@/components/ai-team/QuickActions'
 import { AgentChat, type AgentChatHandle } from '@/components/ai-team/AgentChat'
-import { ResponseModeSelector } from '@/components/ai-team/ResponseModeSelector'
+import { AITeamVerktyg } from '@/components/ai-team/AITeamVerktyg'
 import { useAITeamStore } from '@/stores/aiTeamStore'
 import { agentColorClasses } from '@/components/ai-team/types'
 import { Users, Lightbulb, Bot, ChevronDown } from '@/components/ui/icons'
@@ -148,20 +146,9 @@ function AITeamInner() {
           chatten, trots att chatten syns överst. WCAG 1.3.2 och 2.4.3.
         */}
         <div className="lg:col-span-1 space-y-4 lg:order-first">
-          {/* Personality */}
-          <section className="bg-white dark:bg-stone-800/50 rounded-xl border border-stone-200 dark:border-stone-700/50 p-4">
-            <PersonalityDropdown />
-          </section>
-
-          {/* Response Mode */}
-          <section className="bg-white dark:bg-stone-800/50 rounded-xl border border-stone-200 dark:border-stone-700/50 p-4">
-            <ResponseModeSelector />
-          </section>
-
-          {/* Quick Actions */}
-          <section className="bg-white dark:bg-stone-800/50 rounded-xl border border-stone-200 dark:border-stone-700/50 p-4">
-            <QuickActions onActionClick={handleQuickAction} />
-          </section>
+          {/* UT3: personlighet, svarslängd och snabbfunktioner visas inte när
+              organisationen stängt av AI — de skulle vara klickbara utan verkan. */}
+          <AITeamVerktyg onQuickAction={handleQuickAction} />
 
           {/* Tips — hopfällda (designpasset 2026-10-09). Sällan behövda,
               och de stod tidigare som en fjärde ruta under snabbfunktionerna. */}

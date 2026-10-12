@@ -285,7 +285,7 @@ export default function MinVecka() {
     const utanKonsulent = saknarPlan && konsulentQuery.isSuccess && konsulentQuery.data === null
     innehall = (
       <div>
-        <EmptyState
+        <EmptyState headingLevel="h2"
           icon={ClipboardCheck}
           title={utanKonsulent
             ? t('minVecka.ingenPlan.utanKonsulentTitel', 'Din vecka visas här när du har en konsulent')

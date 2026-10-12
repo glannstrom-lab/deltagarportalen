@@ -1114,7 +1114,7 @@ function ResourcesInner() {
         {/* Tomtillstånd — per flik, inte bara för hela sidan                */}
         {/* ---------------------------------------------------------------- */}
         {!flikHarInnehall && (
-          <EmptyState
+          <EmptyState headingLevel="h2"
             illustration="resurser"
             title={
               activeTab === 'documents'

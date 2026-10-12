@@ -3568,6 +3568,26 @@ export const icfAdaptations: Record<string, ICFAdaptation> = {
 
 // ===== MATCHNINGSALGORITM =====
 
+/**
+ * Översättare för de texter matchningen skriver själv. Nyckeln är en
+ * i18n-nyckel, `svenska` reservtexten (och det som visas när ingen
+ * översättare anges — tester och icke-visande anropare får svenska).
+ */
+export type MatchTexter = (
+  nyckel: string,
+  svenska: string,
+  vars?: Record<string, string | number>
+) => string
+
+export interface MatchKontext {
+  texter?: MatchTexter
+  /** ICF-anpassningarna på användarens språk (default: svenska originalet). */
+  icf?: Record<string, ICFAdaptation>
+}
+
+const svenskaTexter: MatchTexter = (_nyckel, svenska, vars) =>
+  vars ? svenska.replace(/\{\{(\w+)\}\}/g, (_m, n: string) => String(vars[n] ?? '')) : svenska
+
 export function calculateJobMatches(
   profile: UserProfile,
   filterUniversity?: boolean | null,
@@ -3577,7 +3597,9 @@ export function calculateJobMatches(
    * (`m.occupation.name`), så utan den här parametern visar resultatsidan
    * svenska yrkesnamn även på engelska. Utelämnad = svenska originalet.
    */
-  yrken: Occupation[] = occupations
+  yrken: Occupation[] = occupations,
+  /** Språkval för de texter beräkningen själv skriver (varningar, anpassningar, förklaring). */
+  ctx: MatchKontext = {}
 ): JobMatch[] {
   const matches: JobMatch[] = yrken.map(occupation => {
     // Filtrera på universitetskrav om angivet
@@ -3627,7 +3649,7 @@ export function calculateJobMatches(
     totalWeight += 0.35
 
     // 3. ICF — vikt 0. Bidrar med anpassningar och varningar, inte med poäng.
-    const icfResult = calculateICFMatch(profile.icf, occupation.icf, occupation.challenges)
+    const icfResult = calculateICFMatch(profile.icf, occupation.icf, occupation.challenges, ctx)
     adaptations.push(...icfResult.adaptations)
     warnings.push(...icfResult.warnings)
 
@@ -3660,7 +3682,7 @@ export function calculateJobMatches(
         intressen: interestScore,
         bigFive: bigFiveScore,
         toppRiasec: topRiasecMatch,
-      }),
+      }, ctx),
     }
   }).filter((match): match is JobMatch => match !== null)
 
@@ -3668,18 +3690,18 @@ export function calculateJobMatches(
   return matches.sort((a, b) => b.matchPercentage - a.matchPercentage)
 }
 
-/** Svenska namn på intresseområdena, för förklaringstexten. */
-const intresseNamn: Record<keyof StrongInterestCategories, string> = {
-  teknik_mekanik: 'teknik och mekanik',
-  natur_vetenskap: 'natur och vetenskap',
-  konst_kultur: 'konst och kultur',
-  social_vard: 'vård och omsorg',
-  affarer_forsaljning: 'affärer och försäljning',
-  administration_kontor: 'administration och kontorsarbete',
-  utomhusarbete: 'utomhusarbete',
-  ledarskap_organisation: 'ledarskap och organisation',
-  data_it: 'data och IT',
-  undervisning_pedagogik: 'undervisning och pedagogik',
+/** Svenska namn på intresseområdena, för förklaringstexten (reservtext till i18n-nyckeln). */
+const intresseNamn: Record<keyof StrongInterestCategories, [nyckel: string, svenska: string]> = {
+  teknik_mekanik: ['interestGuide.match.interest.teknik_mekanik', 'teknik och mekanik'],
+  natur_vetenskap: ['interestGuide.match.interest.natur_vetenskap', 'natur och vetenskap'],
+  konst_kultur: ['interestGuide.match.interest.konst_kultur', 'konst och kultur'],
+  social_vard: ['interestGuide.match.interest.social_vard', 'vård och omsorg'],
+  affarer_forsaljning: ['interestGuide.match.interest.affarer_forsaljning', 'affärer och försäljning'],
+  administration_kontor: ['interestGuide.match.interest.administration_kontor', 'administration och kontorsarbete'],
+  utomhusarbete: ['interestGuide.match.interest.utomhusarbete', 'utomhusarbete'],
+  ledarskap_organisation: ['interestGuide.match.interest.ledarskap_organisation', 'ledarskap och organisation'],
+  data_it: ['interestGuide.match.interest.data_it', 'data och IT'],
+  undervisning_pedagogik: ['interestGuide.match.interest.undervisning_pedagogik', 'undervisning och pedagogik'],
 }
 
 /**
@@ -3692,13 +3714,15 @@ const intresseNamn: Record<keyof StrongInterestCategories, string> = {
 function byggForklaring(
   profil: UserProfile,
   yrke: Occupation,
-  delpoang: { riasec: number; intressen: number; bigFive: number; toppRiasec: number }
+  delpoang: { riasec: number; intressen: number; bigFive: number; toppRiasec: number },
+  ctx: MatchKontext = {}
 ): MatchForklaring {
+  const tx = ctx.texter ?? svenskaTexter
   const delar = [
-    { namn: 'Vilken sorts arbete du dras till (RIASEC)', andel: 40, poang: Math.round(delpoang.riasec * 100) },
-    { namn: 'Dina intresseområden', andel: 35, poang: Math.round(delpoang.intressen * 100) },
-    { namn: 'Hur du beskrev dig själv', andel: 15, poang: Math.round(delpoang.bigFive * 100) },
-    { namn: 'Dina starkaste sidor mot yrkets krav', andel: 10, poang: Math.round(delpoang.toppRiasec * 100) },
+    { namn: tx('interestGuide.match.part.riasec', 'Vilken sorts arbete du dras till (RIASEC)'), andel: 40, poang: Math.round(delpoang.riasec * 100) },
+    { namn: tx('interestGuide.match.part.interests', 'Dina intresseområden'), andel: 35, poang: Math.round(delpoang.intressen * 100) },
+    { namn: tx('interestGuide.match.part.self', 'Hur du beskrev dig själv'), andel: 15, poang: Math.round(delpoang.bigFive * 100) },
+    { namn: tx('interestGuide.match.part.strengths', 'Dina starkaste sidor mot yrkets krav'), andel: 10, poang: Math.round(delpoang.toppRiasec * 100) },
   ]
 
   // Vilka av yrkets kravområden matchar användarens svar, och vilka inte?
@@ -3722,17 +3746,17 @@ function byggForklaring(
     if (!kategori || !vikt || sedda.has(kategori)) return
     sedda.add(kategori)
     const svar = profil.strongInterest[kategori]
-    if (svar >= 60) upp.push({ text: intresseNamn[kategori], vikt: vikt * svar })
-    else if (svar <= 40) ner.push({ text: intresseNamn[kategori], vikt: vikt * (100 - svar) })
+    if (svar >= 60) upp.push({ text: tx(...intresseNamn[kategori]), vikt: vikt * svar })
+    else if (svar <= 40) ner.push({ text: tx(...intresseNamn[kategori]), vikt: vikt * (100 - svar) })
   })
 
   // RIASEC: de dimensioner där yrket kräver mycket och användaren svarade högt.
   const riasecNycklar: (keyof RiasecScores)[] = ['R', 'I', 'A', 'S', 'E', 'C']
   riasecNycklar.forEach(k => {
     if (yrke.riasec[k] >= 4 && profil.riasec[k] >= 4) {
-      upp.push({ text: riasecNamn[k], vikt: 400 })
+      upp.push({ text: tx(...riasecNamn[k]), vikt: 400 })
     } else if (yrke.riasec[k] >= 4 && profil.riasec[k] <= 2) {
-      ner.push({ text: riasecNamn[k], vikt: 400 })
+      ner.push({ text: tx(...riasecNamn[k]), vikt: 400 })
     }
   })
 
@@ -3741,16 +3765,17 @@ function byggForklaring(
       .map(x => x.text)
       .slice(0, 3)
 
+  const lista = (delar: string[]) => listaText(delar, tx('interestGuide.match.and', ' och '))
   const drogUpp = sortera(upp)
   const drogNer = sortera(ner)
 
   let sammanfattning: string
   if (drogUpp.length && drogNer.length) {
-    sammanfattning = `Yrket hamnade här främst för att du svarade positivt om ${listaText(drogUpp)}. Det som talar emot är att du svarade lågt om ${listaText(drogNer)}.`
+    sammanfattning = tx('interestGuide.match.summary.upDown', 'Yrket hamnade här främst för att du svarade positivt om {{upp}}. Det som talar emot är att du svarade lågt om {{ner}}.', { upp: lista(drogUpp), ner: lista(drogNer) })
   } else if (drogUpp.length) {
-    sammanfattning = `Yrket hamnade här främst för att du svarade positivt om ${listaText(drogUpp)}.`
+    sammanfattning = tx('interestGuide.match.summary.upOnly', 'Yrket hamnade här främst för att du svarade positivt om {{upp}}.', { upp: lista(drogUpp) })
   } else if (drogNer.length) {
-    sammanfattning = `Yrket ligger längre ned i listan för att du svarade lågt om ${listaText(drogNer)}.`
+    sammanfattning = tx('interestGuide.match.summary.downOnly', 'Yrket ligger längre ned i listan för att du svarade lågt om {{ner}}.', { ner: lista(drogNer) })
   } else {
     /*
       Ingen dimension korsade tröskeln åt något håll. Då får texten inte säga
@@ -3760,27 +3785,27 @@ function byggForklaring(
     */
     const kandeIgen = (delpoang.riasec + delpoang.intressen) / 2
     sammanfattning = kandeIgen >= 0.6
-      ? 'Dina svar låg nära mitten på de områden yrket kräver. Det gör att yrket varken sticker ut eller sorteras bort — titta på det om det lockar dig.'
-      : 'Inget i dina svar pekar särskilt mot det här yrket. Det betyder inte att du inte skulle kunna trivas — bara att just de här frågorna inte fångade det.'
+      ? tx('interestGuide.match.summary.middle', 'Dina svar låg nära mitten på de områden yrket kräver. Det gör att yrket varken sticker ut eller sorteras bort — titta på det om det lockar dig.')
+      : tx('interestGuide.match.summary.none', 'Inget i dina svar pekar särskilt mot det här yrket. Det betyder inte att du inte skulle kunna trivas — bara att just de här frågorna inte fångade det.')
   }
 
   return { delar, drogUpp, drogNer, sammanfattning }
 }
 
 /** "a, b och c" — svensk uppräkning. */
-function listaText(delar: string[]): string {
+function listaText(delar: string[], och = ' och '): string {
   if (delar.length <= 1) return delar[0] ?? ''
-  return `${delar.slice(0, -1).join(', ')} och ${delar[delar.length - 1]}`
+  return `${delar.slice(0, -1).join(', ')}${och}${delar[delar.length - 1]}`
 }
 
-/** Beskrivande namn på RIASEC-typerna, i förklaringstextens form. */
-const riasecNamn: Record<keyof RiasecScores, string> = {
-  R: 'praktiskt arbete med händerna',
-  I: 'att undersöka och lösa problem',
-  A: 'att skapa och uttrycka dig',
-  S: 'att möta och stötta andra',
-  E: 'att påverka och driva',
-  C: 'ordning och tydliga rutiner',
+/** Beskrivande namn på RIASEC-typerna, i förklaringstextens form (reservtext till i18n-nyckeln). */
+const riasecNamn: Record<keyof RiasecScores, [nyckel: string, svenska: string]> = {
+  R: ['interestGuide.match.riasec.R', 'praktiskt arbete med händerna'],
+  I: ['interestGuide.match.riasec.I', 'att undersöka och lösa problem'],
+  A: ['interestGuide.match.riasec.A', 'att skapa och uttrycka dig'],
+  S: ['interestGuide.match.riasec.S', 'att möta och stötta andra'],
+  E: ['interestGuide.match.riasec.E', 'att påverka och driva'],
+  C: ['interestGuide.match.riasec.C', 'ordning och tydliga rutiner'],
 }
 
 function calculateRiasecMatch(user: RiasecScores, job: RiasecScores): number {
@@ -3820,8 +3845,11 @@ function calculateBigFiveMatch(user: BigFiveScores, job: BigFiveScores): number 
 function calculateICFMatch(
   user: ICFScores,
   job: ICFScores,
-  challenges: JobChallenges
+  challenges: JobChallenges,
+  ctx: MatchKontext = {}
 ): { adaptations: string[]; warnings: string[] } {
+  const tx = ctx.texter ?? svenskaTexter
+  const icf = ctx.icf ?? icfAdaptations
   const keys: (keyof ICFScores)[] = ['kognitiv', 'kommunikation', 'koncentration', 'motorik', 'sensorisk', 'energi']
   const adaptations: string[] = []
   const warnings: string[] = []
@@ -3834,8 +3862,8 @@ function calculateICFMatch(
       const gap = jobScore - userScore
 
       // Anpassningsförslag vid gap — det ICF-delen faktiskt är till för.
-      if (gap >= 1 && icfAdaptations[key]) {
-        const adaptationText = `${icfAdaptations[key].name}: ${icfAdaptations[key].adaptations[0]}`
+      if (gap >= 1 && icf[key]) {
+        const adaptationText = `${icf[key].name}: ${icf[key].adaptations[0]}`
         if (!adaptations.includes(adaptationText)) {
           adaptations.push(adaptationText)
         }
@@ -3848,60 +3876,60 @@ function calculateICFMatch(
   // Fysisk rörlighet krävs
   if (challenges.fysisk_rorlighet && challenges.fysisk_rorlighet > 3) {
     if (user.motorik < 2.5) {
-      warnings.push('Arbetet kräver god fysisk rörlighet')
-      adaptations.push('Motorik: Be om anpassade arbetsuppgifter eller hjälpmedel för rörlighet')
+      warnings.push(tx('interestGuide.match.warn.fysRorlighet', 'Arbetet kräver god fysisk rörlighet'))
+      adaptations.push(tx('interestGuide.match.adapt.rorlighet', 'Motorik: Be om anpassade arbetsuppgifter eller hjälpmedel för rörlighet'))
     } else if (user.motorik < 3.5) {
-      adaptations.push('Motorik: Ergonomisk utrustning kan underlätta arbetsuppgifter')
+      adaptations.push(tx('interestGuide.match.adapt.ergonomi', 'Motorik: Ergonomisk utrustning kan underlätta arbetsuppgifter'))
     }
   }
 
   // Fysisk styrka krävs
   if (challenges.fysisk_styrka && challenges.fysisk_styrka > 3) {
     if (user.energi < 2.5 || user.motorik < 2.5) {
-      warnings.push('Arbetet innebär tunga lyft eller fysiskt krävande uppgifter')
-      adaptations.push('Energi/Motorik: Be om hjälp med tunga lyft eller ergonomiska hjälpmedel')
+      warnings.push(tx('interestGuide.match.warn.tungaLyft', 'Arbetet innebär tunga lyft eller fysiskt krävande uppgifter'))
+      adaptations.push(tx('interestGuide.match.adapt.lyft', 'Energi/Motorik: Be om hjälp med tunga lyft eller ergonomiska hjälpmedel'))
     }
   }
 
   // Stillasittande arbete
   if (challenges.stillasittande && challenges.stillasittande > 3) {
     if (user.energi < 2.5) {
-      warnings.push('Långa perioder av stillasittande kan vara påfrestande')
-      adaptations.push('Energi: Be om möjlighet till rörelsepauser och höj-/sänkbart bord')
+      warnings.push(tx('interestGuide.match.warn.stillasittande', 'Långa perioder av stillasittande kan vara påfrestande'))
+      adaptations.push(tx('interestGuide.match.adapt.rorelsepauser', 'Energi: Be om möjlighet till rörelsepauser och höj-/sänkbart bord'))
     } else if (user.motorik < 3) {
-      adaptations.push('Motorik: Varierande arbetsställningar rekommenderas')
+      adaptations.push(tx('interestGuide.match.adapt.arbetsstallningar', 'Motorik: Varierande arbetsställningar rekommenderas'))
     }
   }
 
   // Social energi krävs
   if (challenges.social_energi && challenges.social_energi > 3) {
     if (user.energi < 2.5) {
-      warnings.push('Arbetet är socialt krävande med mycket mänsklig kontakt')
-      adaptations.push('Energi: Be om schemalagda återhämtningspauser och tydliga rutiner')
+      warnings.push(tx('interestGuide.match.warn.socialtKravande', 'Arbetet är socialt krävande med mycket mänsklig kontakt'))
+      adaptations.push(tx('interestGuide.match.adapt.aterhamtning', 'Energi: Be om schemalagda återhämtningspauser och tydliga rutiner'))
     }
   }
 
   // Koncentration krävs
   if (challenges.koncentration && challenges.koncentration > 3) {
     if (user.koncentration < 2.5) {
-      warnings.push('Arbetet kräver hög koncentrationsförmåga under långa perioder')
-      adaptations.push('Koncentration: Be om lugn arbetsmiljö och möjlighet att minska störningar')
+      warnings.push(tx('interestGuide.match.warn.koncentration', 'Arbetet kräver hög koncentrationsförmåga under långa perioder'))
+      adaptations.push(tx('interestGuide.match.adapt.lugnMiljo', 'Koncentration: Be om lugn arbetsmiljö och möjlighet att minska störningar'))
     }
   }
 
   // Sensoriska utmaningar
   if (challenges.sensorisk && challenges.sensorisk > 3) {
     if (user.sensorisk < 2.5) {
-      warnings.push('Arbetsmiljön kan innebära starka ljud, ljus eller andra sinnesintryck')
-      adaptations.push('Sensorisk: Be om hörselskydd, justerad belysning eller annan anpassning')
+      warnings.push(tx('interestGuide.match.warn.sensorisk', 'Arbetsmiljön kan innebära starka ljud, ljus eller andra sinnesintryck'))
+      adaptations.push(tx('interestGuide.match.adapt.horselskydd', 'Sensorisk: Be om hörselskydd, justerad belysning eller annan anpassning'))
     }
   }
 
   // Tidspress
   if (challenges.tidspress && challenges.tidspress > 3) {
     if (user.koncentration < 2.5 || user.energi < 2.5) {
-      warnings.push('Arbetet innebär ofta tidspress och högt tempo')
-      adaptations.push('Koncentration/Energi: Be om tydliga prioriteringslistor och möjlighet att påverka arbetstempo')
+      warnings.push(tx('interestGuide.match.warn.tidspress', 'Arbetet innebär ofta tidspress och högt tempo'))
+      adaptations.push(tx('interestGuide.match.adapt.prioritering', 'Koncentration/Energi: Be om tydliga prioriteringslistor och möjlighet att påverka arbetstempo'))
     }
   }
 
@@ -4229,8 +4257,8 @@ export function arProfilenKomplett(answers: Record<string, number>): boolean {
  * Regeln: visa PLATS, inte procent. Talet finns kvar i typen för sortering och
  * historik.
  */
-export function matchningsplats(index: number, totalt: number): string {
-  return `Nr ${index + 1} av ${totalt} utifrån dina svar`
+export function matchningsplats(index: number, totalt: number, texter: MatchTexter = svenskaTexter): string {
+  return texter('interestGuide.results.rankPlace', 'Nr {{place}} av {{total}} utifrån dina svar', { place: index + 1, total: totalt })
 }
 
 /** Frågor som saknar svar — används för att peka användaren rätt. */

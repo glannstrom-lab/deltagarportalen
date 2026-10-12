@@ -1828,7 +1828,49 @@
         "sentence": "Vi visar {{total}} jobb här. {{high}} av dem ser ut som starka matchningar.",
         "sentenceNoStrong": "Vi visar {{total}} jobb här, sorterade efter hur väl de liknar det du fyllt i."
       },
-      "preferencesUsed": "Dina preferenser påverkar matchningen"
+      "preferencesUsed": "Dina preferenser påverkar matchningen",
+      "detail": {
+        "foundViaSearch": "Hittades via sökningen ”{{term}}”",
+        "workedAs": "Du har jobbat som {{title}}",
+        "similarRole": "Liknar din roll som {{title}}",
+        "relatedExperience": "Relaterat till din erfarenhet som {{title}}",
+        "education": "Matchar din utbildning",
+        "interest": "Intresse: {{name}}",
+        "fitsInterest": "Passar ditt intresse för {{name}}",
+        "relatedOccupation": "Relaterat yrke",
+        "desiredJob": "Önskat yrke: {{role}}",
+        "careerGoal": "Karriärmål: {{role}}",
+        "nearGoal": "Nära ditt mål: {{role}}"
+      },
+      "pref": {
+        "fulltime": "Heltid",
+        "parttime": "Deltid",
+        "remote": "Distansarbete",
+        "hybrid": "Hybrid",
+        "onsite": "På plats",
+        "license": "Körkort {{list}}",
+        "hasCar": "Har bil",
+        "change": "Ändra"
+      }
+    },
+    "share": {
+      "notLoggedIn": "Du måste vara inloggad",
+      "noConsultant": "Du har ingen tilldelad konsulent. Kontakta din handläggare.",
+      "fetchFailed": "Kunde inte hämta konsulentinformation",
+      "noneAssigned": "Ingen konsulent tilldelad",
+      "failed": "Kunde inte dela jobbet",
+      "title": "Dela med konsulent",
+      "close": "Stäng",
+      "loading": "Hämtar konsulent …",
+      "sharedTitle": "Jobbet har delats!",
+      "sharedBody": "Din konsulent har fått en notifikation och kommer att granska jobbet.",
+      "yourConsultant": "Din konsulent",
+      "getsNotified": "Får notifikation om detta",
+      "messageLabel": "Personligt meddelande (valfritt)",
+      "messagePlaceholder": "T.ex. ”Detta jobb verkar perfekt för mig! Vad tycker du?”",
+      "cancel": "Avbryt",
+      "sending": "Skickar …",
+      "submit": "Dela jobb"
     }
   },
   "applications": {
@@ -3014,8 +3056,6 @@
       "cvStatus": "CV-status",
       "created": "Skapat",
       "notCreated": "Ej skapat",
-      "atsScore": "ATS-poäng",
-      "notCalculated": "Ej beräknat",
       "lastUpdated": "Senast uppdaterat",
       "energyLevel": "Energinivå",
       "latestMood": "Senaste humör",
@@ -3028,7 +3068,15 @@
         "wellbeing": "Mående"
       },
       "shared": "Delas",
-      "notShared": "Delas ej"
+      "notShared": "Delas ej",
+      "cvParts": "Ifyllda delar",
+      "cvPartsNone": "Inget ifyllt än",
+      "cvPart": {
+        "summary": "Sammanfattning",
+        "workExperience": "Erfarenhet",
+        "education": "Utbildning",
+        "skills": "Kompetenser"
+      }
     },
     "messages": {
       "title": "Meddelanden",
@@ -3233,7 +3281,8 @@
       "pauseContinue": "Fortsätt svara",
       "pauseConfirm": "Pausa och gå tillbaka",
       "pauseButton": "Pausa",
-      "resumeModal": {}
+      "resumeModal": {},
+      "canGoBack": "Du kan alltid gå tillbaka för att ändra tidigare svar"
     },
     "intro": {
       "get4": "Förslag bland {{count}} yrken, med anpassningar att prata vidare om",
@@ -3515,6 +3564,62 @@
       "scoreOf": "{{score}} av 5",
       "notAnswered": "Du har inte svarat på den här delen än",
       "helpTitle": "Sånt som brukar hjälpa — värt att prata om"
+    },
+    "match": {
+      "warn": {
+        "fysRorlighet": "Arbetet kräver god fysisk rörlighet",
+        "tungaLyft": "Arbetet innebär tunga lyft eller fysiskt krävande uppgifter",
+        "stillasittande": "Långa perioder av stillasittande kan vara påfrestande",
+        "socialtKravande": "Arbetet är socialt krävande med mycket mänsklig kontakt",
+        "koncentration": "Arbetet kräver hög koncentrationsförmåga under långa perioder",
+        "sensorisk": "Arbetsmiljön kan innebära starka ljud, ljus eller andra sinnesintryck",
+        "tidspress": "Arbetet innebär ofta tidspress och högt tempo"
+      },
+      "adapt": {
+        "rorlighet": "Motorik: Be om anpassade arbetsuppgifter eller hjälpmedel för rörlighet",
+        "ergonomi": "Motorik: Ergonomisk utrustning kan underlätta arbetsuppgifter",
+        "lyft": "Energi/Motorik: Be om hjälp med tunga lyft eller ergonomiska hjälpmedel",
+        "rorelsepauser": "Energi: Be om möjlighet till rörelsepauser och höj-/sänkbart bord",
+        "arbetsstallningar": "Motorik: Varierande arbetsställningar rekommenderas",
+        "aterhamtning": "Energi: Be om schemalagda återhämtningspauser och tydliga rutiner",
+        "lugnMiljo": "Koncentration: Be om lugn arbetsmiljö och möjlighet att minska störningar",
+        "horselskydd": "Sensorisk: Be om hörselskydd, justerad belysning eller annan anpassning",
+        "prioritering": "Koncentration/Energi: Be om tydliga prioriteringslistor och möjlighet att påverka arbetstempo"
+      },
+      "interest": {
+        "teknik_mekanik": "teknik och mekanik",
+        "natur_vetenskap": "natur och vetenskap",
+        "konst_kultur": "konst och kultur",
+        "social_vard": "vård och omsorg",
+        "affarer_forsaljning": "affärer och försäljning",
+        "administration_kontor": "administration och kontorsarbete",
+        "utomhusarbete": "utomhusarbete",
+        "ledarskap_organisation": "ledarskap och organisation",
+        "data_it": "data och IT",
+        "undervisning_pedagogik": "undervisning och pedagogik"
+      },
+      "riasec": {
+        "R": "praktiskt arbete med händerna",
+        "I": "att undersöka och lösa problem",
+        "A": "att skapa och uttrycka dig",
+        "S": "att möta och stötta andra",
+        "E": "att påverka och driva",
+        "C": "ordning och tydliga rutiner"
+      },
+      "part": {
+        "riasec": "Vilken sorts arbete du dras till (RIASEC)",
+        "interests": "Dina intresseområden",
+        "self": "Hur du beskrev dig själv",
+        "strengths": "Dina starkaste sidor mot yrkets krav"
+      },
+      "and": " och ",
+      "summary": {
+        "upDown": "Yrket hamnade här främst för att du svarade positivt om {{upp}}. Det som talar emot är att du svarade lågt om {{ner}}.",
+        "upOnly": "Yrket hamnade här främst för att du svarade positivt om {{upp}}.",
+        "downOnly": "Yrket ligger längre ned i listan för att du svarade lågt om {{ner}}.",
+        "middle": "Dina svar låg nära mitten på de områden yrket kräver. Det gör att yrket varken sticker ut eller sorteras bort — titta på det om det lockar dig.",
+        "none": "Inget i dina svar pekar särskilt mot det här yrket. Det betyder inte att du inte skulle kunna trivas — bara att just de här frågorna inte fångade det."
+      }
     }
   },
   "international": {
@@ -4636,7 +4741,8 @@
       "laddarAktiviteter": "Hämtar dina aktiviteter och reflektioner …",
       "lugnDag": "Idag räcker det att du har sagt hur du mår. Idéerna för dagen finns kvar när du vill ha dem.",
       "visaIdeerAnda": "Visa idéerna ändå",
-      "ideerInvit": "Några små idéer för dagen. Ta det du vill."
+      "ideerInvit": "Några små idéer för dagen. Ta det du vill.",
+      "saveFailed": "Det du gjorde kunde inte sparas just nu. Försök igen om en stund. Det du skrev står kvar."
     },
     "energy": {
       "howIsYourEnergy": "Hur är din energi idag?",

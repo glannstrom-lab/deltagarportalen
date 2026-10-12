@@ -7,7 +7,7 @@ import {
   type RiasecScores,
   type BigFiveScores
 } from '@/services/interestGuideData'
-import { useRiasecNamn, useYrken } from '@/services/useIntresseguideInnehall'
+import { useRiasecNamn, useYrken, useMatchKontext } from '@/services/useIntresseguideInnehall'
 import { BigFiveChart } from './BigFiveChart'
 import { ICFSection } from './ICFSection'
 import { HealthConsentGate } from '@/components/consent/HealthConsentGate'
@@ -153,6 +153,7 @@ export function ResultsView({ profile }: ResultsViewProps) {
   const riasecText = riasecInfo(t)
   const bigFiveText = bigFiveInfo(t)
   const yrken = useYrken()
+  const matchKontext = useMatchKontext()
 
   /*
     `useJobbmatchningar` (services/useIntresseguideInnehall.ts) skulle ha gjort
@@ -166,11 +167,11 @@ export function ResultsView({ profile }: ResultsViewProps) {
   */
   const matches = useMemo(() => {
     const yrkeOversattPerId = new Map(yrken.map(o => [o.id, o]))
-    return calculateJobMatches(profile, filterUni).map(m => ({
+    return calculateJobMatches(profile, filterUni, undefined, matchKontext).map(m => ({
       ...m,
       occupation: yrkeOversattPerId.get(m.occupation.id) ?? m.occupation,
     }))
-  }, [profile, filterUni, yrken])
+  }, [profile, filterUni, yrken, matchKontext])
   const topMatches = matches.slice(0, 10)
 
   const toggleJobSelection = (jobId: string) => {
