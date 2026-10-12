@@ -127,7 +127,7 @@ export const CompactTextarea = forwardRef<HTMLTextAreaElement, CompactTextareaPr
               'text-xs ml-2',
               currentLength >= maxChars * 0.9
                 ? 'text-amber-500'
-                : 'text-stone-400 dark:text-stone-500'
+                : 'text-stone-400 dark:text-stone-400'
             )}
             aria-live="polite"
           >

@@ -693,7 +693,7 @@ function ExercisesInner() {
                     <div key={question.id} className="bg-gray-50 dark:bg-stone-700 rounded-lg p-4">
                       <p className="text-sm text-gray-600 dark:text-gray-300 mb-2">{question.text}</p>
                       <p className="text-gray-800 dark:text-gray-100 whitespace-pre-wrap">
-                        {answer || <span className="text-gray-400 dark:text-gray-500 italic">{t('exercises.notAnswered', 'Ej besvarat')}</span>}
+                        {answer || <span className="text-gray-400 dark:text-gray-400 italic">{t('exercises.notAnswered', 'Ej besvarat')}</span>}
                       </p>
                     </div>
                   )

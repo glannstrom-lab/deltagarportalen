@@ -39,6 +39,18 @@ import { describe, it, expect } from 'vitest'
 import { readFileSync, readdirSync, statSync, type Dirent } from 'node:fs'
 import { join, resolve, relative } from 'node:path'
 
+// Unika nyckelmängder per tabell, ur supabase/schema-snapshot.json (`npm run schema:refresh`).
+const UNIKA: Record<string, string[]> = JSON.parse(
+  readFileSync(resolve(__dirname, '../../../supabase/schema-snapshot.json'), 'utf8')
+).unique
+
+/** Täcker filterkolumnerna minst ett unikt index/constraint på tabellen? Då kan .single() aldrig få FLER än en rad. */
+function tackerUnikNyckel(tabell: string, eqCols: string[]): boolean | null {
+  const unika = UNIKA?.[tabell]
+  if (!unika) return null // vy eller okänd tabell — kan inte avgöras
+  return unika.some((nyckel) => nyckel.split(',').every((k) => eqCols.includes(k)))
+}
+
 const REPO_ROOT = resolve(__dirname, '../../..')
 const ROOTS: Array<{ dir: string; exts: string[] }> = [
   { dir: resolve(__dirname, '..'), exts: ['.ts', '.tsx'] }, // client/src
@@ -67,6 +79,8 @@ interface SingleCall {
   chain: string
   hardFail: boolean
   autoApproved: boolean
+  /** Kolumner som kedjan filtrerar på med .eq()/.match({…}) — underlag för unikhetskontrollen. */
+  eqCols: string[]
 }
 
 function isExcluded(path: string): boolean {
@@ -259,6 +273,12 @@ function analyzeSource(raw: string, relPath: string): SingleCall[] {
     }
     const hardFail = HARD_FAIL_MARKERS.some((marker) => chain.includes(marker))
     const autoApproved = AUTO_APPROVE_MARKERS.some((marker) => chain.includes(marker))
+    const eqCols = [
+      ...[...chain.matchAll(/\.eq\(\s*['"]([a-zA-Z0-9_]+)['"]/g)].map((x) => x[1]),
+      ...[...chain.matchAll(/\.match\(\s*\{([^}]*)\}/g)].flatMap((x) =>
+        [...x[1].matchAll(/(?:^|,)\s*['"]?([a-zA-Z0-9_]+)['"]?\s*:/g)].map((y) => y[1])
+      ),
+    ]
     results.push({
       relPath,
       line: lineOf(clean, pos),
@@ -266,6 +286,7 @@ function analyzeSource(raw: string, relPath: string): SingleCall[] {
       chain: chain.replace(/\s+/g, ' ').trim().slice(-200),
       hardFail,
       autoApproved,
+      eqCols,
     })
   }
   return results
@@ -539,5 +560,47 @@ describe('single-krav-en-rad: .single() kan bara användas där 0 rader struktur
       dodaPoster,
       `Städa ALLOWLIST — dessa nycklar matchar ingen kvarvarande .single()-kedja:\n${dodaPoster.join('\n')}`
     ).toEqual([])
+  })
+})
+
+/**
+ * Den andra halvan av .single()-kravet: PGRST116 kommer också vid FLER än en rad.
+ * En allowlistad läsning är bara säker mot dubbletter om filtret (.eq/.match) täcker
+ * ett unikt index/constraint i prod-snapshoten. Utan det kan kedjan strukturellt
+ * ge flera rader. Undantag listas här med skäl — upptäckta, ej rättade.
+ */
+const OUNIKA_UNDANTAG: Record<string, string> = {}
+
+describe('single-krav-en-rad: unikhet ur schema-snapshoten', () => {
+  const alla = collectAll()
+  const lasningar = alla.filter((c) => !c.autoApproved && !c.hardFail)
+
+  it('snapshoten bär unika nycklar (annars kan unikheten inte verifieras)', () => {
+    expect(Object.keys(UNIKA ?? {}).length).toBeGreaterThan(50)
+  })
+
+  it('varje allowlistad .single()-läsning filtrerar på ett unikt index — eller finns i OUNIKA_UNDANTAG', () => {
+    const fel = lasningar
+      .filter((c) => tackerUnikNyckel(c.table, c.eqCols) === false)
+      .filter((c) => !(`${c.relPath}:${c.line}` in OUNIKA_UNDANTAG))
+      .map(
+        (c) =>
+          `${c.relPath}:${c.line} (tabell "${c.table}") filtrerar på [${c.eqCols.join(', ') || '—'}] — ` +
+          `inget unikt index i snapshoten (${(UNIKA[c.table] ?? []).join(' | ')}), så .single() kan få fler än en rad.`
+      )
+    expect(fel, fel.join('\n')).toEqual([])
+  })
+
+  it('MUTATION: ett .single() med filter utanför varje unikt index fäller (prövat i minnet)', () => {
+    const muterad = "export const x = () => supabase.from('profiles').select('id').eq('role', 'USER').single()\n"
+    const c = analyzeSource(muterad, 'fixtur.ts')[0]
+    expect(tackerUnikNyckel(c.table, c.eqCols)).toBe(false)
+    const ok = analyzeSource("export const y = () => supabase.from('profiles').select('id').eq('id', 'x').single()\n", 'fixtur.ts')[0]
+    expect(tackerUnikNyckel(ok.table, ok.eqCols)).toBe(true)
+  })
+
+  it('OUNIKA_UNDANTAG har inga döda poster', () => {
+    const levande = new Set(lasningar.map((c) => `${c.relPath}:${c.line}`))
+    expect(Object.keys(OUNIKA_UNDANTAG).filter((k) => !levande.has(k))).toEqual([])
   })
 })

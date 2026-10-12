@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-11T15:57:50.903Z",
+  "generatedAt": "2026-10-12T19:53:08.500Z",
   "note": "Genererad av client/scripts/refresh-schema-snapshot.cjs. Kör om efter varje migration och committa i samma commit. Läses av check-schema-drift.cjs.",
   "tables": {
     "account_deletion_requests": [
@@ -2269,6 +2269,518 @@
       "id",
       "is_active",
       "prompt_text"
+    ]
+  },
+  "unique": {
+    "account_deletion_requests": [
+      "id"
+    ],
+    "achievements": [
+      "id",
+      "key"
+    ],
+    "activity_catalog_items": [
+      "id"
+    ],
+    "activity_plan_handovers": [
+      "id"
+    ],
+    "activity_plans": [
+      "id"
+    ],
+    "activity_sessions": [
+      "id"
+    ],
+    "activity_template_items": [
+      "id"
+    ],
+    "activity_templates": [
+      "id"
+    ],
+    "admin_audit_log": [
+      "id"
+    ],
+    "ai_team_sessions": [
+      "agent_id,user_id",
+      "id"
+    ],
+    "ai_usage_logs": [
+      "id"
+    ],
+    "application_contacts": [
+      "id"
+    ],
+    "application_history": [
+      "id"
+    ],
+    "application_reminders": [
+      "id"
+    ],
+    "application_templates": [
+      "id"
+    ],
+    "article_bookmarks": [
+      "article_id,user_id",
+      "id"
+    ],
+    "article_categories": [
+      "id",
+      "key"
+    ],
+    "article_checklists": [
+      "article_id,user_id",
+      "id"
+    ],
+    "article_course_links": [
+      "article_id,course_id",
+      "id"
+    ],
+    "article_reading_progress": [
+      "article_id,user_id",
+      "id"
+    ],
+    "articles": [
+      "id",
+      "slug"
+    ],
+    "audit_logs": [
+      "id"
+    ],
+    "calendar_events": [
+      "id"
+    ],
+    "calendar_goals": [
+      "id"
+    ],
+    "calendar_mood_entries": [
+      "date,user_id",
+      "id"
+    ],
+    "career_milestones": [
+      "id"
+    ],
+    "career_paths": [
+      "current_occupation,target_occupation,user_id",
+      "id"
+    ],
+    "career_plans": [
+      "id"
+    ],
+    "consent_history": [
+      "id"
+    ],
+    "consultant_consents": [
+      "id"
+    ],
+    "consultant_goal_templates": [
+      "id"
+    ],
+    "consultant_goals": [
+      "id"
+    ],
+    "consultant_job_collections": [
+      "id"
+    ],
+    "consultant_journal": [
+      "id"
+    ],
+    "consultant_journal_revisions": [
+      "id"
+    ],
+    "consultant_meetings": [
+      "id"
+    ],
+    "consultant_messages": [
+      "id"
+    ],
+    "consultant_notes": [
+      "id"
+    ],
+    "consultant_participants": [
+      "consultant_id,participant_id",
+      "id"
+    ],
+    "consultant_placements": [
+      "id"
+    ],
+    "consultant_requests": [
+      "consultant_id,participant_id",
+      "id"
+    ],
+    "consultant_settings": [
+      "consultant_id",
+      "id"
+    ],
+    "consultant_work_placement_followups": [
+      "id",
+      "placement_id,week_number"
+    ],
+    "consultant_work_placements": [
+      "id"
+    ],
+    "content_calendar": [
+      "id"
+    ],
+    "course_recommendations": [
+      "course_id,user_id",
+      "id"
+    ],
+    "courses": [
+      "external_id,provider",
+      "id"
+    ],
+    "cover_letters": [
+      "id"
+    ],
+    "cv_analyses": [
+      "id"
+    ],
+    "cv_shares": [
+      "id",
+      "share_code"
+    ],
+    "cv_versions": [
+      "id"
+    ],
+    "cvs": [
+      "id",
+      "user_id"
+    ],
+    "daily_tasks": [
+      "id"
+    ],
+    "dashboard_preferences": [
+      "id",
+      "user_id"
+    ],
+    "data_export_logs": [
+      "id"
+    ],
+    "data_sharing_audit": [
+      "id"
+    ],
+    "diary_entries": [
+      "id"
+    ],
+    "diary_streaks": [
+      "id",
+      "user_id"
+    ],
+    "elevator_pitches": [
+      "id"
+    ],
+    "email_notifications": [
+      "id"
+    ],
+    "email_queue": [
+      "id"
+    ],
+    "employer_checkins": [
+      "id"
+    ],
+    "employer_messages": [
+      "id"
+    ],
+    "employer_places": [
+      "id"
+    ],
+    "employer_profiles": [
+      "org_id"
+    ],
+    "employer_share_proposals": [
+      "id"
+    ],
+    "exercise_answers": [
+      "exercise_id,user_id",
+      "id"
+    ],
+    "exercise_categories": [
+      "id",
+      "key"
+    ],
+    "exercise_questions": [
+      "id"
+    ],
+    "exercise_steps": [
+      "exercise_id,step_number",
+      "id"
+    ],
+    "exercises": [
+      "id",
+      "slug"
+    ],
+    "favorite_occupations": [
+      "id",
+      "occupation_id,user_id"
+    ],
+    "gratitude_entries": [
+      "id"
+    ],
+    "interest_guide_history": [
+      "id"
+    ],
+    "interest_guide_progress": [
+      "id",
+      "user_id"
+    ],
+    "interest_results": [
+      "id",
+      "user_id"
+    ],
+    "interview_sessions": [
+      "id"
+    ],
+    "invitations": [
+      "id",
+      "token"
+    ],
+    "job_alerts": [
+      "id"
+    ],
+    "job_applications": [
+      "id"
+    ],
+    "job_interest_matches": [
+      "id",
+      "job_id,user_id"
+    ],
+    "job_notifications": [
+      "alert_id,job_id",
+      "id"
+    ],
+    "journal_entries": [
+      "id"
+    ],
+    "learning_activities": [
+      "id"
+    ],
+    "login_attempts": [
+      "id"
+    ],
+    "milestones": [
+      "id",
+      "key"
+    ],
+    "mood_history": [
+      "id"
+    ],
+    "mood_logs": [
+      "id",
+      "log_date,user_id"
+    ],
+    "msfa_overforingar": [
+      "id",
+      "period_month,plan_id"
+    ],
+    "network_contacts": [
+      "id"
+    ],
+    "networking_events": [
+      "id"
+    ],
+    "notification_preferences": [
+      "id",
+      "user_id"
+    ],
+    "notification_settings": [
+      "id",
+      "user_id"
+    ],
+    "notifications": [
+      "id"
+    ],
+    "organization_members": [
+      "id",
+      "org_id,user_id"
+    ],
+    "organizations": [
+      "id"
+    ],
+    "participant_data_sharing": [
+      "consultant_id,participant_id",
+      "id"
+    ],
+    "personal_brand_audit": [
+      "id"
+    ],
+    "personal_brand_audits": [
+      "id"
+    ],
+    "platsbanken_saved_jobs": [
+      "id",
+      "job_id,user_id"
+    ],
+    "platsbanken_saved_searches": [
+      "id"
+    ],
+    "portfolio_items": [
+      "id"
+    ],
+    "profile_documents": [
+      "id"
+    ],
+    "profile_history": [
+      "id"
+    ],
+    "profile_shares": [
+      "id",
+      "share_code"
+    ],
+    "profile_skills": [
+      "id",
+      "name,user_id"
+    ],
+    "profiles": [
+      "email",
+      "id"
+    ],
+    "quests": [
+      "id"
+    ],
+    "rate_limits": [
+      "id"
+    ],
+    "relocation_preferences": [
+      "id",
+      "user_id"
+    ],
+    "salary_searches": [
+      "id",
+      "occupation,user_id"
+    ],
+    "saved_educations": [
+      "id"
+    ],
+    "saved_jobs": [
+      "id",
+      "job_id,user_id"
+    ],
+    "shared_jobs": [
+      "id"
+    ],
+    "shared_resources": [
+      "id"
+    ],
+    "skills_analyses": [
+      "id"
+    ],
+    "spontaneous_companies": [
+      "id",
+      "org_number,user_id"
+    ],
+    "sta_absences": [
+      "absence_date,enrollment_id",
+      "id"
+    ],
+    "sta_activities": [
+      "id"
+    ],
+    "sta_assessments": [
+      "id"
+    ],
+    "sta_documents": [
+      "id"
+    ],
+    "sta_enrollments": [
+      "id"
+    ],
+    "sta_pulse_checks": [
+      "check_date,enrollment_id",
+      "id"
+    ],
+    "sta_quick_notes": [
+      "id"
+    ],
+    "sta_weekly_checkins": [
+      "enrollment_id,week_starts",
+      "id"
+    ],
+    "sta_workplace_followups": [
+      "id",
+      "week_number,workplace_id"
+    ],
+    "sta_workplaces": [
+      "id"
+    ],
+    "storage_gallring_ko": [
+      "user_id"
+    ],
+    "unified_profiles": [
+      "id",
+      "user_id"
+    ],
+    "user_achievements": [
+      "achievement_id,user_id",
+      "id"
+    ],
+    "user_activities": [
+      "id"
+    ],
+    "user_activity_log": [
+      "id"
+    ],
+    "user_adaptations": [
+      "id",
+      "user_id"
+    ],
+    "user_certifications": [
+      "id"
+    ],
+    "user_credentials": [
+      "id"
+    ],
+    "user_drafts": [
+      "draft_key,draft_type,user_id",
+      "id"
+    ],
+    "user_gamification": [
+      "user_id"
+    ],
+    "user_goals": [
+      "id"
+    ],
+    "user_interests": [
+      "id",
+      "user_id"
+    ],
+    "user_learning_paths": [
+      "id"
+    ],
+    "user_milestones": [
+      "id",
+      "milestone_id,user_id"
+    ],
+    "user_notifications": [
+      "id"
+    ],
+    "user_preferences": [
+      "id",
+      "user_id"
+    ],
+    "user_sessions": [
+      "id"
+    ],
+    "user_skills": [
+      "id",
+      "skill_name,target_occupation,user_id"
+    ],
+    "user_streaks": [
+      "id",
+      "streak_type,user_id"
+    ],
+    "visibility_progress": [
+      "id",
+      "strategy_id,user_id"
+    ],
+    "visibility_settings": [
+      "id",
+      "user_id"
+    ],
+    "weekly_goals": [
+      "id"
+    ],
+    "writing_prompts": [
+      "id"
     ]
   },
   "routines": [

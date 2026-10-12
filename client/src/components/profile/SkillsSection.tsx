@@ -230,7 +230,7 @@ export function SkillsSection({ className }: Props) {
                         'w-4 h-4 transition-colors',
                         level <= skill.level
                           ? 'text-amber-400 fill-amber-400'
-                          : 'text-stone-300 dark:text-stone-500'
+                          : 'text-stone-300 dark:text-stone-400'
                       )}
                       aria-hidden="true"
                     />
@@ -344,7 +344,7 @@ export function SkillsSection({ className }: Props) {
                       'w-5 h-5 transition-colors',
                       level <= newSkill.level
                         ? 'text-amber-400 fill-amber-400'
-                        : 'text-stone-300 dark:text-stone-500 hover:text-amber-300'
+                        : 'text-stone-300 dark:text-stone-400 hover:text-amber-300'
                     )}
                     aria-hidden="true"
                   />

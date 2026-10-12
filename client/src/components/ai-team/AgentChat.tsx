@@ -749,7 +749,7 @@ function EmptyState({ agent, onQuickAction }: EmptyStateProps) {
       {/* Quick action suggestions */}
       {quickActions.length > 0 && onQuickAction && (
         <div className="mt-6 w-full max-w-sm">
-          <p className="text-xs text-stone-400 dark:text-stone-500 mb-2">
+          <p className="text-xs text-stone-400 dark:text-stone-400 mb-2">
             {t('aiTeam.tryAsking')}
           </p>
           <div className="flex flex-col gap-2">

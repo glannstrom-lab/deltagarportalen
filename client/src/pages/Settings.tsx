@@ -984,7 +984,7 @@ function SettingsInner() {
                 </div>
                 <ChevronRight size={18} aria-hidden="true" className={cn(
                   "hidden lg:block flex-shrink-0 transition-colors",
-                  isActive ? 'text-[var(--c-solid)] dark:text-[var(--c-text)]' : 'text-stone-400 dark:text-stone-500'
+                  isActive ? 'text-[var(--c-solid)] dark:text-[var(--c-text)]' : 'text-stone-400 dark:text-stone-400'
                 )} />
               </button>
             )

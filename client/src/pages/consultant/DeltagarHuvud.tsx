@@ -54,6 +54,8 @@ export function DeltagarHuvud({
   onLoggaSamtal,
   onRegistreraPlacering,
   plan,
+  lakarintyg = null,
+  regelverk = null,
 }: {
   namn: string
   bildUrl: string | null
@@ -70,6 +72,13 @@ export function DeltagarHuvud({
   onLoggaSamtal: () => void
   onRegistreraPlacering: () => void
   plan: PlanAtgarder | null
+  /**
+   * KSL19: "Läkarintyg behövs från dag 8" när sjukfrånvaron pågått mer än sju
+   * dagar (lakarintygDag8 i services/franvaroperiod.ts). Texten bygger anroparen.
+   */
+  lakarintyg?: string | null
+  /** Flaggan visas bara för kommun; `null` (laddar) och leverantör visar den inte. */
+  regelverk?: 'kommun' | 'leverantor' | null
 }) {
   const { t } = useTranslation()
   const statusChip = status === 'ACTIVE' ? null : STATUS_CHIP[status] ?? STATUS_CHIP.INACTIVE
@@ -110,6 +119,9 @@ export function DeltagarHuvud({
       </p>
       <p className="row-start-3 col-[1/3] sm:col-[2/3] lg:col-[2/4] m-0 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-sm">
         {statusChip && <StatusChip status={statusChip.status}>{t(statusChip.nyckel)}</StatusChip>}
+        {lakarintyg && regelverk === 'kommun' && (
+          <span data-testid="lakarintyg-dag8"><StatusChip status="sjuk">{lakarintyg}</StatusChip></span>
+        )}
         {meddelandeLast && (
           <span data-testid="meddelande-last" className="inline-flex items-center gap-1.5 text-[var(--j-blak-2)]">
             <KvarterIkon namn="meddelande" size={16} />

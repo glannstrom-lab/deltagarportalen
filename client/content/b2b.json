@@ -45,7 +45,7 @@
           "Praktikplatser, placeringar och en översiktlig analysvy",
           "Export av din egen data direkt under inställningar (GDPR-uttag)"
         ],
-        "obs": "/consultant är portalens enda konsulentvy. Steg till arbete-spåret (STA) är en separat modul som för närvarande är avstängd, och har ingen egen konsulentyta i dagsläget."
+        "obs": "/consultant är portalens enda konsulentvy."
       },
       "leverantorsvardag": null,
       "gdprAi": {
@@ -206,7 +206,8 @@
         "punkter": [
           "En sida per deltagare med mål, journal och tidslinje",
           "Bokade möten och meddelanden samlade på ett ställe",
-          "Placeringar och en översikt över hela er caseload",
+          "Placeringar och en översikt över hela er caseload, med uppföljning efter 3 och 6 månader",
+          "Underlag för avvikelserapporten och för det ni för över i Arbetsförmedlingens system, att kopiera som text. Jobin skickar ingenting dit",
           "Deltagarens egna sökverktyg minskar en del av handledarens manuella arbete"
         ],
         "guideHref": "/guider/rusta-och-matcha/",
@@ -246,7 +247,7 @@
         ],
         [
           "Kan vi se plattformen innan vi bestämmer oss?",
-          "Ja, direkt och utan att boka något. Inloggningsuppgifterna till demot ligger på jobin.se/demo/. Demot är uppsatt som en kommun, inte som en leverantör, men konsulentvyn är samma yta för er: ett chefskonto med fem fiktiva deltagare, med mål, journal och möten, plus ett deltagarkonto där ni ser portalen som deltagaren gör. Aktivitetsplanen med närvaro som också finns där hör till kommunernas aktivitetskrav och är inget ni behöver använda. Allt ni ändrar återställs varje natt, AI-funktionerna är avstängda i demot och inga mejl kan skickas därifrån. Vill ni hellre ha en visning med oss så bokar ni den nedan."
+          "Ja, direkt och utan att boka något. Inloggningsuppgifterna till demot ligger på jobin.se/demo/. Demot är uppsatt som en kommun, inte som en leverantör, men konsulentvyn är samma yta för er: ett chefskonto med fem fiktiva deltagare, med mål, journal och möten, plus ett deltagarkonto där ni ser portalen som deltagaren gör. Aktivitetsplanen med närvaro som också finns där är byggd för kommunernas aktivitetskrav, men samma pass kan märkas som verksamhetsledda och ligger bakom underlaget för avvikelser och MSFA nedan. Allt ni ändrar återställs varje natt, AI-funktionerna är avstängda i demot och inga mejl kan skickas därifrån. Vill ni hellre ha en visning med oss så bokar ni den nedan."
         ],
         [
           "Fungerar det för flera handledare samtidigt?",
@@ -254,7 +255,15 @@
         ],
         [
           "Kan vi stänga av AI-funktionerna för våra deltagare?",
-          "Varje AI-funktion kräver ett eget samtycke innan den används, och portalens grundfunktioner (CV, jobbsökning, dagbok) fungerar utan AI. Se avsnittet om personuppgifter ovan för vilken leverantör som behandlar vad."
+          "Ja. För en ny organisation är AI-funktionerna avstängda tills ni själva slår på dem, och de kan stängas av för hela organisationen. Varje AI-funktion kräver dessutom ett eget samtycke från deltagaren innan den används, och portalens grundfunktioner (CV, jobbsökning, dagbok) fungerar utan AI. Se avsnittet om personuppgifter ovan för vilken leverantör som behandlar vad."
+        ],
+        [
+          "Vem driver Jobin?",
+          "Glänne & Söner, en enskild firma i Sverige. Innehavare är arbetskonsulenten Mikael Glännström, och det finns inget större bolag bakom. Därför är frågan om vad som händer med er data rimlig att ställa. Ni ska inte behöva oss för att få ut den. Redan i dag kan varje konsulent under Inställningar ladda ner sina mål, journalanteckningar, möten, meddelanden och placeringar för sina aktiva deltagare som en fil. Deltagarlistan går att ta ut som CSV, och deltagaren kan själv ladda ner sina egna uppgifter. Någon samlad export av hela organisationen med en knapp finns inte i dag. I det biträdesavtal vi föreslår står att vi, när avtalet upphör av vilket skäl det än är, raderar era personuppgifter eller lämnar tillbaka dem i ett maskinläsbart format och sedan raderar dem, efter ert val. Mer om vem vi är står på jobin.se/om-oss/."
+        ],
+        [
+          "Hur fungerar drift och support?",
+          "Det finns inget formellt SLA i dag, alltså ingen avtalad tillgänglighet och ingen garanterad svarstid, och vi skriver inte in någon här. Support sker via mejl till support@jobin.se och besvaras av samma person som bygger portalen. Driften ligger hos Supabase i Irland och Vercel i Frankfurt. Behöver er verksamhet en avtalad svarstid eller tillgänglighetsnivå, säg det före start, så svarar vi ärligt på om vi kan åta oss den."
         ]
       ],
       "guider": [

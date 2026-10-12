@@ -286,7 +286,7 @@ export function SupportSection() {
       <SectionCard title={t('profile.support.nextSteps')} icon={<Calendar className="w-4 h-4" />} colorScheme="teal">
         <div className="space-y-2">
           {(preferences.consultant_data?.nextSteps || []).length === 0 && (
-            <p className="text-xs text-stone-400 dark:text-stone-500 italic py-2">
+            <p className="text-xs text-stone-400 dark:text-stone-400 italic py-2">
               Inga aktiviteter tillagda ännu
             </p>
           )}
@@ -307,12 +307,12 @@ export function SupportSection() {
                 htmlFor={`step-${i}`}
                 className={cn(
                   'flex-1 text-sm text-stone-700 dark:text-stone-300 cursor-pointer',
-                  step.completed && 'line-through text-stone-400 dark:text-stone-500'
+                  step.completed && 'line-through text-stone-400 dark:text-stone-400'
                 )}
               >
                 {step.activity}
               </label>
-              <span className="text-xs text-stone-400 dark:text-stone-500">{step.date}</span>
+              <span className="text-xs text-stone-400 dark:text-stone-400">{step.date}</span>
               <button
                 onClick={() => {
                   const steps = (preferences.consultant_data?.nextSteps || []).filter((_, idx) => idx !== i)

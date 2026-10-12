@@ -277,7 +277,7 @@ export default function SharedProfile() {
         )}
 
         {/* Footer */}
-        <div className="text-center text-xs text-stone-400 dark:text-stone-500 mt-8">
+        <div className="text-center text-xs text-stone-400 dark:text-stone-400 mt-8">
           <p>{t('sharedProfile.sharedVia')}</p>
           {share?.expires_at && (
             <p className="mt-1">

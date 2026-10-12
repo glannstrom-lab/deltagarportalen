@@ -44,6 +44,7 @@ import { FYSISKT_GRANS_DAGAR, hamtaMotenForKonsulent, type MoteRad } from '@/ser
 import { aktivitetsplanApi, type ActivityPlan, type AttendanceInput } from '@/services/aktivitetApi'
 import { orgApi, type OrgKind } from '@/services/orgApi'
 import { MottagnaUnderlag } from '@/components/consultant/MottagnaUnderlag'
+import { ChefsVy } from '@/components/consultant/ChefsVy'
 import { orgTypVisning, regelverk, regelverkForPlan } from '@/components/consultant/orgTypVisning'
 import { formatLocalDate } from '@/services/aktivitetSchema'
 import { senasteKontakt } from '@/services/senasteKontakt'
@@ -417,7 +418,7 @@ export function OverviewTab() {
           { etikett: 'Exportera rapport', ikon: 'dokument', onClick: () => navigate('/consultant/analytics?rapport=1') },
         ]}
         // KH11: underlag lämnade till mig — alltid för handläggare, annars bara om något lämnats.
-        efter={<MottagnaUnderlag visaTomt={arHandlaggare} />}
+        efter={<><ChefsVy /><MottagnaUnderlag visaTomt={arHandlaggare} /></>}
         // Kom igång för den som redan har deltagare: i sidospalten, aldrig som ett andra nästa steg.
         sido={klart && !nyKonsulent ? <KomIgangGuide onBjudIn={() => setShowInviteDialog(true)} /> : null}
       >

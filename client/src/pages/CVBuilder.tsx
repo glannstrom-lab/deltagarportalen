@@ -1556,7 +1556,7 @@ export default function CVBuilder() {
                     >
                       <StigPrick lage={aktiv ? 'aktiv' : klar ? 'klar' : 'kvar'} />
                       <span className="min-w-0 flex-1 truncate">{stegTitel(t, st)}</span>
-                      <span className="text-[0.6875rem] text-stone-400 dark:text-stone-500 shrink-0">
+                      <span className="text-[0.6875rem] text-stone-400 dark:text-stone-400 shrink-0">
                         {klar ? '✓' : t('cvBuilder.stepper.minutes', { defaultValue: '{{min}} min', min: st.minutes })}
                       </span>
                     </button>

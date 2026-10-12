@@ -487,7 +487,7 @@ export function ATSAnalyzer({
           <p className="text-sm text-stone-600 dark:text-stone-400" aria-hidden="true">
             {t('cv.ats.analyzer.outOf100', 'av 100 poäng')}
           </p>
-          <p className="text-xs text-stone-500 dark:text-stone-500 mt-1">
+          <p className="text-xs text-stone-500 dark:text-stone-400 mt-1">
             {t('cv.ats.analyzer.checksCompleted', 'Du har {{passed}} av {{total}} på plats', { passed: passedChecks, total: allChecks.length })}
           </p>
         </div>

@@ -781,7 +781,7 @@ export default function SearchTab() {
                     {focusDraft.message}
                   </p>
                 )}
-                <p className="text-xs text-stone-500 dark:text-stone-500 mt-2">
+                <p className="text-xs text-stone-500 dark:text-stone-400 mt-2">
                   {t('spontaneous.focusDraft.description')}
                 </p>
               </div>
@@ -842,12 +842,12 @@ export default function SearchTab() {
                       <p className="text-sm text-stone-600 dark:text-stone-400">
                         {searchResult.sniCodes.slice(0, 3).map(sni => (
                           <span key={sni.code} className="block">
-                            <span className="text-xs text-stone-500 dark:text-stone-500">{sni.code}</span>{' '}
+                            <span className="text-xs text-stone-500 dark:text-stone-400">{sni.code}</span>{' '}
                             {sni.description || getSniDescription(sni.code)}
                           </span>
                         ))}
                         {searchResult.sniCodes.length > 3 && (
-                          <span className="text-xs text-stone-500 dark:text-stone-500">
+                          <span className="text-xs text-stone-500 dark:text-stone-400">
                             +{searchResult.sniCodes.length - 3} {t('common.more').toLowerCase()}
                           </span>
                         )}

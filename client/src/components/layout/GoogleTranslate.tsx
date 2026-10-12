@@ -193,7 +193,7 @@ export function GoogleTranslate() {
                     >
                       Svenska
                     </span>
-                    <span className="text-xs text-stone-400 dark:text-stone-500">
+                    <span className="text-xs text-stone-400 dark:text-stone-400">
                       Original
                     </span>
                   </div>
@@ -245,7 +245,7 @@ export function GoogleTranslate() {
             {/* Footer — maskinöversättning + integritetsnotis.
                 A34 (2026-09-01): notisen fanns, men var oläsbar och otydlig.
                 · Kontrast mätt: `text-stone-400` på vitt gav 2,52:1 och
-                  `dark:text-stone-500` på stone-900 gav 3,65:1 — båda under AA:s 4,5:1,
+                  stone-500 i mörkt läge, på stone-900, gav 3,65:1 — båda under AA:s 4,5:1,
                   och i 11 px. En upplysning om att text lämnar portalen får inte vara
                   det minst läsbara i menyn.
                 · Texten sa "sidans innehåll", vilket den som står på Dagboken inte

@@ -9752,7 +9752,9 @@
       "knapp": "Add to calendar",
       "knappEtikett": "Add {{titel}} to calendar",
       "status": "The calendar file is downloaded. Open it to add the session to your calendar.",
-      "fel": "The calendar file could not be created. Please try again in a while."
+      "fel": "The calendar file could not be created. Please try again in a while.",
+      "veckaKnapp": "Add this week to my calendar",
+      "veckaStatus": "The calendar file for your week is downloaded. Open it to add everything at once."
     },
     "mote": {
       "rubrik": "Meeting with your konsulent",

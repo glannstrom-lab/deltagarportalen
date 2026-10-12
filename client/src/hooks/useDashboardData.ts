@@ -156,7 +156,7 @@ export interface UseDashboardDataReturn {
 
 // Funktion för att hämta all dashboard-data
 // PRESTANDA: Alla anrop körs parallellt i ett enda Promise.all för snabbast möjliga laddning
-async function fetchDashboardData(): Promise<DashboardWidgetData> {
+export async function fetchDashboardData(): Promise<DashboardWidgetData> {
   try {
   // Hämta användare EN gång och återanvänd
   const { data: { user } } = await anvandareFranSession()
@@ -182,7 +182,8 @@ async function fetchDashboardData(): Promise<DashboardWidgetData> {
     // Kritisk data
     cvApi.getCV().catch(() => null),
     interestApi.getResult().catch(() => null),
-    savedJobsApi.getAll().catch(() => []),
+    // null = läsfelet är okänt, inte "inga sparade jobb" (2026-10-12).
+    savedJobsApi.getAll().catch(() => null),
     coverLetterApi.getAll().catch(() => []),
     // Sekundär data - nu parallellt med kritisk data
     cvApi.getATSAnalysis().catch(() => null),
@@ -204,7 +205,7 @@ async function fetchDashboardData(): Promise<DashboardWidgetData> {
   const hasCV = !!cv && (!!cv.summary || !!(cv.work_experience && cv.work_experience.length > 0))
 
   // Hämta nyligen sparade jobb (max 3)
-  const recentJobs = savedJobs.slice(0, 3).map((savedJob: SavedJob) => {
+  const recentJobs = (savedJobs ?? []).slice(0, 3).map((savedJob: SavedJob) => {
     const jobData = savedJob.job_data || {}
     return {
       id: savedJob.job_id || savedJob.id,
@@ -268,7 +269,7 @@ async function fetchDashboardData(): Promise<DashboardWidgetData> {
       totalQuestions: 36,
     },
     jobs: {
-      savedCount: savedJobs.length,
+      savedCount: savedJobs === null ? null : savedJobs.length,
       newMatches: 0,
       recentSavedJobs: recentJobs,
     },
@@ -375,7 +376,7 @@ export function getDefaultDashboardData(): DashboardWidgetData {
       totalQuestions: 36,
     },
     jobs: {
-      savedCount: 0,
+      savedCount: null,
       newMatches: 0,
       recentSavedJobs: [],
     },

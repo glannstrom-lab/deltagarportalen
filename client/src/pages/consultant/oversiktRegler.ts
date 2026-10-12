@@ -16,7 +16,9 @@ import { addDays, formatLocalDate, isoVeckonummer, veckansMandag, type Attendanc
 import { vantarPaKvittens } from '@/services/egenrapport'
 import { avtalskravPerDeltagare, senasteAvslutadeSondag } from '@/services/aktivitetslogg'
 import type { ActivityPlan } from '@/services/aktivitetApi'
+import { arLeverantorsledd } from '@/services/planMarkning'
 import { avvikelserader } from '@/services/avvikelserapport'
+import { avvikelseDag8, lakarintygDag8, type Franvaroperiod } from '@/services/franvaroperiod'
 import { followupStatus } from './placeringsmatt'
 
 /** Måndag 00:00 till söndag 23:59:59.999 i lokal tid, för veckan `nu` ligger i. */
@@ -199,11 +201,14 @@ export type AttGoraTyp =
   | 'anmald_franvaro'
   | 'kvittera'
   | 'omarkerat'
+  | 'lakarintyg_dag8'
 
 export interface AttGora {
   typ: AttGoraTyp
   participantId: string
   pass: AttGoraPass
+  /** Bara lakarintyg_dag8: sjukperioden punkten bygger på. */
+  period?: Pick<Franvaroperiod, 'start' | 'slut' | 'dagar' | 'kanVaraLangre'>
   /** Konsulentvyn översätts inte (DESIGN.md §2). */
   text: string
 }
@@ -215,6 +220,7 @@ const ATT_GORA_ORDNING: Record<AttGoraTyp, number> = {
   anmald_franvaro: 3,
   kvittera: 4,
   omarkerat: 5,
+  lakarintyg_dag8: 2,
 }
 
 const ANMALAN_ORSAK: Record<string, string> = {
@@ -284,6 +290,35 @@ export function attGoraForPass(p: AttGoraPass, idag: string, franvaroSomFakta = 
 }
 
 /**
+ * KSL19: en punkt per deltagare vars sjukfrånvaro pågått mer än sju kalenderdagar
+ * utan att intyget kommit in. Räkningen (och dess antaganden) bor i
+ * services/franvaroperiod.ts. Inget paragrafnummer anges — det är obelagt.
+ */
+function lakarintygPunkter(pass: readonly AttGoraPass[], mina: ReadonlySet<string>, idag: string): AttGora[] {
+  const perPerson = new Map<string, AttGoraPass[]>()
+  for (const p of pass) {
+    if (!mina.has(p.participant_id)) continue
+    const lista = perPerson.get(p.participant_id) ?? []
+    lista.push(p)
+    perPerson.set(p.participant_id, lista)
+  }
+  const ut: AttGora[] = []
+  for (const [participantId, lista] of perPerson) {
+    const period = lakarintygDag8(lista, idag)
+    if (!period) continue
+    const { start, slut, dagar, kanVaraLangre } = period
+    ut.push({
+      typ: 'lakarintyg_dag8',
+      participantId,
+      pass: period.pass[period.pass.length - 1],
+      period: { start, slut, dagar, kanVaraLangre },
+      text: `Sjuk sedan ${kortDatum(start)} — läkarintyg behövs från dag 8`,
+    })
+  }
+  return ut
+}
+
+/**
  * Konsulentens punkter för i dag: det deltagaren väntar på svar om först,
  * sedan dokumentationen, sedan det som bara är omarkerat. Bara egna
  * deltagare (listan) räknas — samma avgränsning som bradskandePunkter.
@@ -294,6 +329,12 @@ export function attGoraIdag(args: {
   idag: Date
   /** KSL21: leverantörens ord (anmäld/inte anmäld) i stället för giltig/ogiltig. */
   franvaroSomFakta?: boolean
+  /**
+   * KSL19: flagga "Läkarintyg behövs från dag 8". Bara kommunens regel — för en
+   * leverantör (franvaroSomFakta) läggs den aldrig till, oavsett värde här.
+   * Utan värde: på för kommun.
+   */
+  lakarintygDag8?: boolean
 }): AttGora[] {
   const mina = new Set(args.deltagare.map((d) => d.participant_id))
   const idag = formatLocalDate(args.idag)
@@ -302,6 +343,9 @@ export function attGoraIdag(args: {
     if (!mina.has(p.participant_id)) continue
     const punkt = attGoraForPass(p, idag, args.franvaroSomFakta ?? false)
     if (punkt) ut.push(punkt)
+  }
+  if (!args.franvaroSomFakta && args.lakarintygDag8 !== false) {
+    ut.push(...lakarintygPunkter(args.pass, mina, idag))
   }
   return ut.sort((a, b) =>
     ATT_GORA_ORDNING[a.typ] - ATT_GORA_ORDNING[b.typ]
@@ -356,6 +400,11 @@ export interface LeverantorLage {
    * hämtas: då påstår vi varken att något saknas eller att allt är rapporterat.
    */
   avvikelserEjRapporterade: LeverantorPunkt[] | null
+  /**
+   * KSL20 (AFFS 2023:1 § 10): sjukfrånvaro som fortsatt efter dag 8 utan att en ny
+   * avvikelserapport antecknats som lämnad. `null`/utelämnad = underlaget saknas.
+   */
+  avvikelseDag8?: LeverantorPunkt[] | null
 }
 
 /** Pass med det avvikelsereglerna (services/avvikelserapport.ts) läser. */
@@ -466,7 +515,23 @@ export function leverantorsLage(args: {
     }
   }
 
-  return { bedomdaPlaner, underTimkravet, utanFysisktMote, uppfoljningar, avvikelserEjRapporterade }
+  // KSL20: ny rapport dag 8 vid fortsatt frånvaro. Samma passunderlag och samma
+  // räkning som kommunens läkarintygsflagga (services/franvaroperiod.ts).
+  let avvikelseDag8Punkter: LeverantorPunkt[] | null = null
+  if (args.avvikelsePass) {
+    avvikelseDag8Punkter = []
+    for (const d of deltagare) {
+      const lista = args.avvikelsePass.filter((p) => p.participant_id === d.participant_id && arLeverantorsledd(p))
+      const period = avvikelseDag8(lista, idagIso, 'sick')
+      if (!period) continue
+      avvikelseDag8Punkter.push({
+        participantId: d.participant_id,
+        text: `Sjuk sedan ${kortDatum(period.start)} — ny avvikelserapport till AF behövs för dag 8`,
+      })
+    }
+  }
+
+  return { bedomdaPlaner, underTimkravet, utanFysisktMote, uppfoljningar, avvikelserEjRapporterade, avvikelseDag8: avvikelseDag8Punkter }
 }
 
 /** Första dagen i förra månaden (YYYY-MM-DD): hit hämtas passen för avvikelserna. */
@@ -489,6 +554,9 @@ export function leverantorSammanfattning(l: LeverantorLage): string[] {
     ...(l.avvikelserEjRapporterade === null
       ? []
       : [`${l.avvikelserEjRapporterade.length} deltagare med avvikelse som inte rapporterats till AF`]),
+    ...(l.avvikelseDag8 == null || l.avvikelseDag8.length === 0
+      ? []
+      : [`${l.avvikelseDag8.length} med sjukfrånvaro som behöver en ny avvikelserapport dag 8`]),
   ]
 }
 
@@ -523,6 +591,7 @@ export const MIN_DAG_PRIO: Record<MinDagTyp, number> = {
   forklaring: 20,
   anmald_franvaro: 25,
   sjuk_utan_intyg: 30,
+  lakarintyg_dag8: 29,
   kvittera: 35,
   franvaro: 40,
   omarkerat: 45,
@@ -611,6 +680,17 @@ export function lageForAttGora(a: AttGora, idag: string, franvaroSomFakta = fals
     }
     case 'sjuk_utan_intyg':
       return { ...bas, lage: `Sjuk ${nar}, intyget har inte kommit`, detalj: `${p.title} ${passTid(p)}`, status: 'sjuk' }
+    case 'lakarintyg_dag8': {
+      const per = a.period
+      const langd = per ? `${per.kanVaraLangre ? 'minst ' : ''}${dagar(per.dagar)} i följd` : ''
+      return {
+        ...bas,
+        lage: 'Läkarintyg behövs från dag 8',
+        detalj: per ? `Sjuk sedan ${kortDatum(per.start)}, ${langd} enligt planens pass. Räknat i kalenderdagar.` : undefined,
+        status: 'sjuk',
+        statusText: 'Läkarintyg dag 8',
+      }
+    }
     case 'kvittera':
       return {
         ...bas,
@@ -701,6 +781,9 @@ export function minDagPersoner(args: {
     }
     for (const p of args.leverantor.avvikelserEjRapporterade ?? []) {
       punkter.push({ typ: 'franvaro', participantId: p.participantId, lage: p.text, detalj: 'Skriv in den i AF:s system och markera den som underrättad på deltagarens plan', status: 'vantar', statusText: 'Avvikelse att rapportera' })
+    }
+    for (const p of args.leverantor.avvikelseDag8 ?? []) {
+      punkter.push({ typ: 'franvaro', participantId: p.participantId, lage: p.text, detalj: 'Frånvaron fortsätter efter dag 8. Skriv in en ny rapport i AF:s system och markera passet som underrättat.', status: 'vantar', statusText: 'Ny rapport dag 8' })
     }
     for (const p of args.leverantor.uppfoljningar) {
       punkter.push({ typ: 'uppfoljning', participantId: p.participantId, lage: p.text, status: 'vantar', statusText: 'Uppföljning' })
@@ -897,6 +980,13 @@ export function valjNastaSteg(personer: readonly MinDagPerson[], pass: readonly 
   if (moten[0]) return { typ: 'punkt', punkt: moten[0] }
   const ovrigt = forsta.find((p) => p.typ !== 'mote_idag')
   return ovrigt ? { typ: 'punkt', punkt: ovrigt } : null
+}
+
+/** Personerna utan läkarintygsflaggan (dag 8). En person som bara hade den försvinner ur listan. */
+export function utanLakarintyg(personer: readonly MinDagPerson[]): MinDagPerson[] {
+  return personer
+    .map((p) => ({ ...p, punkter: p.punkter.filter((x) => x.typ !== 'lakarintyg_dag8') }))
+    .filter((p) => p.punkter.length > 0)
 }
 
 /** Personerna utan punkten som blev nästa steg — samma sak ska inte stå två gånger. */

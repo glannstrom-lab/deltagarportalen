@@ -78,4 +78,29 @@ describe('lint:kolumner — skriptet fäller av rätt skäl', () => {
     expect(r.status).toBe(1)
     expect(r.stdout).toContain('profiles.insert() → SAKNAS: finns_inte_i_array')
   })
+
+  describe('onConflict mot unikt index (42P10)', () => {
+    it('fäller på onConflict-kolumner utan unikt index — och namnger fil:rad, tabell och kolumner', () => {
+      const r = korMed(`${GILTIG}
+export const c = (u: string) => supabase.from('personal_brand_audit').upsert({ user_id: u }, { onConflict: 'user_id' })`)
+      expect(r.status, r.stdout + r.stderr).toBe(1)
+      expect(r.stdout).toContain('=== 1 upsert() har onConflict utan unikt index/constraint (42P10) ===')
+      expect(r.stdout).toContain('src/fixtur.ts:3')
+      expect(r.stdout).toContain("personal_brand_audit.upsert(…, { onConflict: 'user_id' })")
+    })
+
+    it('godkänner onConflict som matchar ett unikt index, oavsett kolumnordning', () => {
+      const r = korMed(`${GILTIG}
+export const c = (a: string, u: string) => supabase.from('ai_team_sessions').upsert({ agent_id: a, user_id: u }, { onConflict: 'user_id,agent_id' })`)
+      expect(r.status, r.stdout + r.stderr).toBe(0)
+      expect(r.stdout).toContain('Alla onConflict-mål har ett unikt index/constraint.')
+    })
+
+    it('ignorerar onConflict i kommentarer (falskt positivt som hittades på varumarke.ts)', () => {
+      const r = korMed(`${GILTIG}
+// .from('personal_brand_audit').upsert(x, { onConflict: 'user_id' })
+/* supabase.from('personal_brand_audit').upsert(x, { onConflict: 'user_id' }) */`)
+      expect(r.status, r.stdout + r.stderr).toBe(0)
+    })
+  })
 })

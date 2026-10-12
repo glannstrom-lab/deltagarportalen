@@ -9752,7 +9752,9 @@
       "knapp": "Lägg till i kalendern",
       "knappEtikett": "Lägg till {{titel}} i kalendern",
       "status": "Kalenderfilen är nedladdad. Öppna den för att lägga passet i din kalender.",
-      "fel": "Kalenderfilen kunde inte skapas. Försök igen om en stund."
+      "fel": "Kalenderfilen kunde inte skapas. Försök igen om en stund.",
+      "veckaKnapp": "Lägg veckan i min kalender",
+      "veckaStatus": "Kalenderfilen med veckan är nedladdad. Öppna den för att lägga in allt på en gång."
     },
     "mote": {
       "rubrik": "Möte med din konsulent",

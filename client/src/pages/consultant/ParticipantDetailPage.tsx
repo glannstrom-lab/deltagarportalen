@@ -65,6 +65,7 @@ import { formatLocalDate, veckosaldo } from '@/services/aktivitetSchema'
 import type { Placement } from '@/services/consultantService'
 import type { Uppfoljning } from './placeringsmatt'
 import { DeltagarHuvud } from './DeltagarHuvud'
+import { lakarintygDag8, lakarintygText } from '@/services/franvaroperiod'
 import { lastText, type Lasbart } from '@/components/consultant/meddelandeLast'
 import type { DeltagarStatus } from '@/components/consultant/deltagarStatus'
 import { deltagarLaget, type LagetMoten, type LagetPlan } from './deltagarLaget'
@@ -870,6 +871,9 @@ export function ParticipantDetailPage() {
         placeringsrad={placeringsrad}
         laget={laget}
         meddelandeLast={mittSenaste ? lastText(mittSenaste) : null}
+        // KSL19: läkarintyg från dag 8 — bara kommun (DeltagarHuvud grindar själv på regelverket).
+        regelverk={planLage.status === 'klart' && planLage.plan ? planStyrning.regelverk : kundRegelverk}
+        lakarintyg={planLage.status === 'klart' ? lakarintygText(lakarintygDag8(planLage.sessions, idagText)) : null}
 
         loggarSamtal={loggarSamtal}
         onMeddelande={() => setShowMessageDialog(true)}

@@ -22,6 +22,15 @@ const path = require('node:path')
 const ROT = process.argv[2] || path.join(__dirname, '..')
 const snapshot = JSON.parse(fs.readFileSync(path.join(ROT, '../supabase/schema-snapshot.json'), 'utf8'))
 const TABELLER = snapshot.tables
+const UNIKA = snapshot.unique || null // tabell -> ["a,b", …] (sorterade), se refresh-schema-snapshot.cjs
+
+/**
+ * `.upsert(…, { onConflict: 'a,b' })` kräver ett unikt index/constraint på exakt
+ * (a,b) — annars svarar Postgres 42P10 och skrivningen misslyckas, ofta tyst
+ * bakom `if (error) return`. lint:schema ser det inte (kolumnerna finns ju).
+ * Allowlist: `fil:tabell:onConflict` -> skäl. Bara upptäckta men ännu orättade fel hör hit.
+ */
+const UPSERT_ALLOWLIST = {}
 
 const filer = []
 const gaIgenom = (dir) => {
@@ -100,9 +109,54 @@ function toppnycklar(obj) {
 
 const fynd = []
 const hoppade = []
+const onConflictFynd = []
+
+/** Klipper ut argumenttexten i anropet vars '(' ligger vid `oppen`. */
+function argumentVid(text, oppen) {
+  let djup = 0
+  let iStrang = null
+  for (let i = oppen; i < text.length; i++) {
+    const c = text[i]
+    if (iStrang) {
+      if (c === '\\') i++
+      else if (c === iStrang) iStrang = null
+      continue
+    }
+    if (c === '"' || c === "'" || c === '`') { iStrang = c; continue }
+    if (c === '(') djup++
+    else if (c === ')') { djup--; if (djup === 0) return text.slice(oppen, i + 1) }
+  }
+  return null
+}
+
+/** Blankar kommentarer men behåller strängar och längd (offsets och radnummer stämmer). */
+function utanKommentarer(kod) {
+  let ut = ''
+  let tillstand = 'kod'
+  for (let i = 0; i < kod.length; i++) {
+    const c = kod[i]
+    const c2 = kod[i + 1]
+    if (tillstand === 'kod') {
+      if (c === '/' && c2 === '/') { tillstand = 'rad'; ut += '  '; i++; continue }
+      if (c === '/' && c2 === '*') { tillstand = 'block'; ut += '  '; i++; continue }
+      if (c === '"' || c === "'" || c === '`') tillstand = c
+      ut += c
+    } else if (tillstand === 'rad') {
+      if (c === '\n') { tillstand = 'kod'; ut += c } else ut += ' '
+    } else if (tillstand === 'block') {
+      if (c === '*' && c2 === '/') { tillstand = 'kod'; ut += '  '; i++ } else ut += c === '\n' ? c : ' '
+    } else {
+      // inne i sträng
+      ut += c
+      if (c === '\\') { ut += c2 ?? ''; i++ } else if (c === tillstand) tillstand = 'kod'
+    }
+  }
+  return ut
+}
 
 for (const fil of filer) {
   const text = fs.readFileSync(fil, 'utf8')
+  const ren = utanKommentarer(text)
   // Varje .from('x') och det som följer fram till nästa .from(
   const re = /\.from\(\s*['"]([a-z0-9_]+)['"]\s*\)/g
   let m
@@ -111,6 +165,24 @@ for (const fil of filer) {
     const kolumner = TABELLER[tabell]
     const nastaFrom = text.indexOf('.from(', m.index + 6)
     const kedja = text.slice(m.index, nastaFrom > 0 ? nastaFrom : Math.min(text.length, m.index + 4000))
+    if (UNIKA) {
+      const renKedja = ren.slice(m.index, m.index + kedja.length)
+      const upRe = /\.upsert\(/g
+      let um
+      while ((um = upRe.exec(renKedja))) {
+        const args = argumentVid(renKedja, um.index + um[0].length - 1)
+        if (!args) continue
+        const oc = args.match(/onConflict:\s*['"`]([^'"`$]+)['"`]/)
+        if (!oc) continue
+        const nyckel = oc[1].split(',').map((x) => x.trim()).filter(Boolean).sort().join(',')
+        const unika = UNIKA[tabell] || []
+        if (unika.includes(nyckel)) continue
+        const rad = text.slice(0, m.index + um.index).split('\n').length
+        const filRel = path.relative(ROT, fil).replace(/\\/g, '/')
+        const allowKey = `${filRel}:${tabell}:${nyckel}`
+        onConflictFynd.push({ fil: filRel, rad, tabell, nyckel, unika, skal: UPSERT_ALLOWLIST[allowKey] })
+      }
+    }
     if (!kolumner) continue // check-schema-drift äger den kontrollen
 
     for (const op of ['insert', 'update', 'upsert']) {
@@ -149,4 +221,24 @@ if (!fynd.length) {
   }
 }
 
-process.exit(fynd.length ? 1 : 0)
+const ejTillatna = onConflictFynd.filter((f) => !f.skal)
+for (const f of onConflictFynd.filter((f) => f.skal)) {
+  console.log(`(allowlistad) ${f.fil}:${f.rad} ${f.tabell} onConflict '${f.nyckel}' — ${f.skal}`)
+}
+if (ejTillatna.length) {
+  console.log(`
+=== ${ejTillatna.length} upsert() har onConflict utan unikt index/constraint (42P10) ===
+`)
+  for (const f of ejTillatna) {
+    console.log(`${f.fil}:${f.rad}`)
+    console.log(`  ${f.tabell}.upsert(…, { onConflict: '${f.nyckel}' }) → inget unikt index på exakt dessa kolumner`)
+    console.log(`  unika nycklar: ${f.unika.join(' | ') || '(inga)'}
+`)
+  }
+} else if (UNIKA) {
+  console.log('Alla onConflict-mål har ett unikt index/constraint.')
+} else {
+  console.log('Snapshoten saknar "unique" — kör npm run schema:refresh; onConflict-kontrollen hoppades över.')
+}
+
+process.exit(fynd.length || ejTillatna.length ? 1 : 0)

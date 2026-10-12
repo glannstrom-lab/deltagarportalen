@@ -140,7 +140,7 @@ function TemplateCard({
           >
             <Star className={cn(
               'w-4 h-4',
-                            template.isStarred ? 'fill-[var(--c-solid)] text-[var(--c-solid)]' : 'text-stone-400 dark:text-stone-500'
+                            template.isStarred ? 'fill-[var(--c-solid)] text-[var(--c-solid)]' : 'text-stone-400 dark:text-stone-400'
             )} />
           </button>
           {!isDefault && (

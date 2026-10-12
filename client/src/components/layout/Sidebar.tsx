@@ -99,7 +99,7 @@ function SidebarNavLink({
         <Icon className={cn(
           'shrink-0 transition-colors',
           isCollapsed ? 'w-[18px] h-[18px]' : 'w-4 h-4',
-          isActive ? 'text-current' : 'text-stone-400 dark:text-stone-500 group-hover:text-current'
+          isActive ? 'text-current' : 'text-stone-400 dark:text-stone-400 group-hover:text-current'
         )} />
 
         {!isCollapsed && (
@@ -357,7 +357,7 @@ export function Sidebar({ onClose, isCollapsed = false, onToggleCollapse }: Side
               onClick={onToggleCollapse}
               title={isCollapsed ? t('sidebar.expand', 'Expandera') : t('sidebar.collapse', 'Minimera')}
               className={cn(
-                'w-full flex items-center rounded-md text-stone-400 dark:text-stone-500 hover:bg-stone-100 dark:hover:bg-stone-800 hover:text-stone-600 dark:hover:text-stone-300 transition-colors',
+                'w-full flex items-center rounded-md text-stone-400 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800 hover:text-stone-600 dark:hover:text-stone-300 transition-colors',
                 isCollapsed ? 'p-2 justify-center' : 'gap-2.5 px-2 py-1.5'
               )}
               aria-label={isCollapsed ? t('sidebar.expand', 'Expandera') : t('sidebar.collapse', 'Minimera')}

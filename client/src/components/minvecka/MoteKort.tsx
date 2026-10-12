@@ -46,7 +46,14 @@ export function MoteKort({ mote, datumText, passerat, onStatus }: Props) {
     try {
       const titel = t('minVecka.mote.rubrik', 'Möte med din konsulent')
       laddaNerIcs(
-        byggIcs([{ uid: `${mote.id}@jobin.se`, datum: motesDatum(mote), start, slut, titel, plats: mote.location }]),
+        // Exakt ögonblick ur scheduled_at — inte lokal väggklocka, som blir fel i annan tidszon
+        byggIcs([{
+          uid: `${mote.id}@jobin.se`,
+          startUtc: new Date(mote.scheduled_at),
+          slutUtc: new Date(new Date(mote.scheduled_at).getTime() + (mote.duration_minutes ?? 0) * 60_000),
+          titel,
+          plats: mote.location,
+        }]),
         icsFilnamn(`${titel} ${motesDatum(mote)}`),
       )
       onStatus?.(t('minVecka.kalender.status', 'Kalenderfilen är nedladdad. Öppna den för att lägga passet i din kalender.'))

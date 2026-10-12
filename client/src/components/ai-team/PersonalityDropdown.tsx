@@ -172,7 +172,7 @@ export function PersonalityDropdown({ className }: PersonalityDropdownProps) {
         >
           {/* Serious personalities */}
           <div className="p-2">
-            <div className="px-2 py-1.5 text-xs font-semibold text-stone-400 dark:text-stone-500 uppercase tracking-wider">
+            <div className="px-2 py-1.5 text-xs font-semibold text-stone-400 dark:text-stone-400 uppercase tracking-wider">
               {t('aiTeam.personalityCategories.serious')}
             </div>
             {seriousPersonalities.map((personality) => (
@@ -192,7 +192,7 @@ export function PersonalityDropdown({ className }: PersonalityDropdownProps) {
 
           {/* Fun personalities */}
           <div className="p-2">
-            <div className="px-2 py-1.5 text-xs font-semibold text-stone-400 dark:text-stone-500 uppercase tracking-wider">
+            <div className="px-2 py-1.5 text-xs font-semibold text-stone-400 dark:text-stone-400 uppercase tracking-wider">
               {t('aiTeam.personalityCategories.fun')}
             </div>
             {funPersonalities.map((personality) => (

@@ -178,7 +178,9 @@
       "knapp": "Lägg till i kalendern",
       "knappEtikett": "Lägg till {{titel}} i kalendern",
       "status": "Filen är nedladdad. Öppna filen. Då kommer passet in i din kalender.",
-      "fel": "Det gick inte att göra filen nu. Försök igen om en stund."
+      "fel": "Det gick inte att göra filen nu. Försök igen om en stund.",
+      "veckaKnapp": "Lägg veckan i min kalender",
+      "veckaStatus": "Filen med veckan är nedladdad. Öppna den så hamnar allt i din kalender."
     },
     "plan": {
       "rubrik": "Din plan",

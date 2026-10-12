@@ -117,17 +117,6 @@ export interface GratitudeEntry {
   created_at: string
 }
 
-export interface DiaryStreaks {
-  id: string
-  user_id: string
-  current_streak: number
-  longest_streak: number
-  last_entry_date: string | null
-  total_entries: number
-  total_words: number
-  updated_at: string
-}
-
 export interface WritingPrompt {
   id: string
   prompt_text: string
@@ -210,14 +199,9 @@ export const diaryEntriesApi = {
       return { ok: false, orsak: error.code === '42501' ? 'samtycke' : 'fel' }
     }
 
-    // Skrivsviten är bokföring vid sidan av — ett fel där får inte göra ett
-    // sparat inlägg till ett "misslyckat".
-    try {
-      await diaryStreaksApi.updateAfterEntry(entry.word_count || entry.content.split(/\s+/).filter(w => w).length)
-    } catch (err) {
-      console.warn('Kunde inte uppdatera skrivsviten:', err)
-    }
-
+    // Skrivsviten (diary_streaks) skrevs här till 2026-10-12. Ingen läste den —
+    // varken UI, vyer eller funktioner — så skrivningen var en extra rundtur
+    // per inlägg för ingenting. Tabellen lämnas orörd i prod.
     return { ok: true, entry: data }
   },
 
@@ -577,83 +561,6 @@ export const gratitudeApi = {
       .eq('user_id', user.id)
 
     return !error
-  }
-}
-
-// ============================================
-// DIARY STREAKS API
-// ============================================
-
-export const diaryStreaksApi = {
-  async get(): Promise<DiaryStreaks | null> {
-    const { data: { user } } = await anvandareFranSession()
-    if (!user) return null
-
-    const { data, error } = await supabase
-      .from('diary_streaks')
-      .select('*')
-      .eq('user_id', user.id)
-      .maybeSingle()
-
-    if (error) lasfel(error, 'skrivsviten')
-    return data
-  },
-
-  async updateAfterEntry(wordCount: number): Promise<void> {
-    const { data: { user } } = await anvandareFranSession()
-    if (!user) return
-
-    const today = idag()
-
-    // Get current streaks
-    const streaks = await this.get()
-
-    if (!streaks) {
-      // Create new streaks record
-      await supabase
-        .from('diary_streaks')
-        .insert({
-          user_id: user.id,
-          current_streak: 1,
-          longest_streak: 1,
-          last_entry_date: today,
-          total_entries: 1,
-          total_words: wordCount
-        })
-      return
-    }
-
-    // Calculate new streak
-    const lastDate = streaks.last_entry_date ? new Date(streaks.last_entry_date) : null
-    const todayDate = new Date(today)
-    let newStreak = streaks.current_streak
-
-    if (lastDate) {
-      const diffDays = Math.floor((todayDate.getTime() - lastDate.getTime()) / (1000 * 60 * 60 * 24))
-
-      if (diffDays === 0) {
-        // Same day, don't change streak
-      } else if (diffDays === 1) {
-        // Consecutive day
-        newStreak = streaks.current_streak + 1
-      } else {
-        // Streak broken
-        newStreak = 1
-      }
-    }
-
-    const newLongest = Math.max(newStreak, streaks.longest_streak)
-
-    await supabase
-      .from('diary_streaks')
-      .update({
-        current_streak: newStreak,
-        longest_streak: newLongest,
-        last_entry_date: today,
-        total_entries: streaks.total_entries + 1,
-        total_words: streaks.total_words + wordCount
-      })
-      .eq('user_id', user.id)
   }
 }
 

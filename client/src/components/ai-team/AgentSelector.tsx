@@ -190,7 +190,7 @@ export function AgentSelector({ className }: AgentSelectorProps) {
                 'mt-1 text-xs text-center line-clamp-2 leading-snug',
                 isSelected
                   ? 'text-stone-500 dark:text-stone-400'
-                  : 'text-stone-400 dark:text-stone-500'
+                  : 'text-stone-400 dark:text-stone-400'
               )}
             >
               {t(agent.descriptionKey)}

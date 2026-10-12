@@ -77,9 +77,15 @@ serve(medFelrapport('af-trends', async (req) => {
     }
   } catch (error) {
     console.error('[af-trends] Error:', error);
+    // Alla fel här kommer från uppströms (JobSearch svarade fel, tidsgränsen
+    // löpte ut eller svaret saknade siffran). 500 sa "vårt fel" och gav
+    // klienten ingen orsak att skilja på. 504 = uppströms svarade inte,
+    // 502 = uppströms svarade fel; båda med felkod. Aldrig 200 med tomt
+    // resultat — klienten kastar och flikarna visar sitt felläge.
+    const timeoutFel = error instanceof Error && error.name === 'AbortError';
     return new Response(
-      JSON.stringify({ error: felText(error) }),
-      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      JSON.stringify({ error: felText(error), code: timeoutFel ? 'AF_TIMEOUT' : 'AF_UPSTREAM_ERROR' }),
+      { status: timeoutFel ? 504 : 502, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }
 }));
@@ -140,16 +146,23 @@ async function handleMarketStats(corsHeaders: Record<string, string>): Promise<R
       fetchJobSearch(weekUrl),
     ]);
 
+    // Ett 200 utan träffsiffra är ett trasigt svar, inte "0 annonser".
+    for (const d of [data, dayData, weekData]) {
+      if (typeof d?.total?.value !== 'number') {
+        throw new Error('JobSearch API error: svaret saknar total.value');
+      }
+    }
+
     // Extract stats
     const regionStats = data.stats?.find((s: any) => s.type === 'region')?.values || [];
     const occupationStats = data.stats?.find((s: any) => s.type === 'occupation-group')?.values || [];
 
     // Build market stats response — enbart mätta värden
     const marketStats = {
-      total_jobs: data.total?.value || 0,
+      total_jobs: data.total.value,
       // Riktiga träffräkningar, inte procent av totalen.
-      new_jobs_today: dayData.total?.value || 0,
-      new_jobs_week: weekData.total?.value || 0,
+      new_jobs_today: dayData.total.value,
+      new_jobs_week: weekData.total.value,
 
       by_region: regionStats.slice(0, 10).map((r: any) => ({
         region: r.term,

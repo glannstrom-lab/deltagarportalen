@@ -195,7 +195,7 @@ export default function OversiktPanel({
                         </span>
                       ) : (
                         !r.harData && (
-                          <span aria-hidden="true" className="shrink-0 text-stone-400 dark:text-stone-500">
+                          <span aria-hidden="true" className="shrink-0 text-stone-400 dark:text-stone-400">
                             →
                           </span>
                         )

@@ -74,9 +74,32 @@ const routineRows = queryJson(`
 console.log('Hämtar storage-buckets …')
 const bucketRows = queryJson(`SELECT string_agg(id, ',' ORDER BY id) AS ids FROM storage.buckets`)
 
+// Unika index/constraints (PK ingår) per tabell. Bara fullständiga, icke-partiella
+// index utan uttryck räknas — det är de som ON CONFLICT (kolumner) kan luta sig mot.
+// Kolumnerna sorteras (ordningen spelar ingen roll för inferensen) och sammanfogas med ','.
+console.log('Hämtar unika index …')
+const uniqueRows = queryJson(`
+  SELECT c.relname AS t,
+         string_agg(DISTINCT (
+           SELECT string_agg(a.attname, ',' ORDER BY a.attname)
+           FROM unnest(i.indkey) k JOIN pg_attribute a ON a.attrelid = i.indrelid AND a.attnum = k
+         ), ' ') AS keys
+  FROM pg_index i
+  JOIN pg_class c ON c.oid = i.indrelid
+  JOIN pg_namespace n ON n.oid = c.relnamespace
+  WHERE n.nspname = 'public' AND i.indisunique AND i.indpred IS NULL AND i.indexprs IS NULL
+    AND i.indisvalid
+  GROUP BY c.relname
+`)
+
 const tables = {}
 for (const row of columnRows) {
   tables[row.t] = String(row.cols || '').split(',').filter(Boolean)
+}
+
+const unique = {}
+for (const row of uniqueRows) {
+  unique[row.t] = String(row.keys || '').split(' ').filter(Boolean).sort()
 }
 
 const snapshot = {
@@ -84,6 +107,8 @@ const snapshot = {
   generatedAt: new Date().toISOString(),
   note: 'Genererad av client/scripts/refresh-schema-snapshot.cjs. Kör om efter varje migration och committa i samma commit. Läses av check-schema-drift.cjs.',
   tables,
+  // tabell -> lista av unika nyckelmängder ("a,b" = unikt på (a,b)). Läses av lint:kolumner och single-krav-grinden.
+  unique,
   routines: String(routineRows[0]?.names || '').split(',').filter(Boolean),
   buckets: String(bucketRows[0]?.ids || '').split(',').filter(Boolean),
 }
@@ -96,6 +121,8 @@ const colCount = Object.values(snapshot.tables).reduce((a, b) => a + b.length, 0
 console.log(
   `\nSkrev ${path.relative(REPO_ROOT, OUT_FILE)}\n` +
   `  ${tableCount} tabeller/vyer, ${colCount} kolumner\n` +
+  `  ${Object.values(unique).reduce((a, b) => a + b.length, 0)} unika nycklar på ${Object.keys(unique).length} tabeller
+` +
   `  ${snapshot.routines.length} RPC-funktioner\n` +
   `  ${snapshot.buckets.length} storage-buckets`
 )

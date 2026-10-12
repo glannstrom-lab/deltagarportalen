@@ -33,6 +33,20 @@ export interface IcsHandelse {
   beskrivning?: string | null
 }
 
+/**
+ * En händelse som redan har ett exakt ögonblick (t.ex. ett möte vars
+ * `scheduled_at` är en timestamptz). Då räknas inget om via väggklocka —
+ * webbläsarens tidszon spelar ingen roll.
+ */
+export interface IcsOgonblick {
+  uid: string
+  startUtc: Date
+  slutUtc: Date
+  titel: string
+  plats?: string | null
+  beskrivning?: string | null
+}
+
 export interface IcsAlternativ {
   /** Tidpunkten som blir DTSTAMP. Default: nu. */
   nu?: Date
@@ -153,7 +167,7 @@ function textRad(namn: string, varde: string): string {
 }
 
 /** Bygger en hel VCALENDAR med en VEVENT per händelse. */
-export function byggIcs(handelser: IcsHandelse[], alternativ: IcsAlternativ = {}): string {
+export function byggIcs(handelser: Array<IcsHandelse | IcsOgonblick>, alternativ: IcsAlternativ = {}): string {
   const dtstamp = utcStampel(alternativ.nu ?? new Date())
   const rader: string[] = [
     'BEGIN:VCALENDAR',
@@ -163,9 +177,16 @@ export function byggIcs(handelser: IcsHandelse[], alternativ: IcsAlternativ = {}
     'METHOD:PUBLISH',
   ]
   for (const h of handelser) {
-    const start = stockholmTillUtc(h.datum, h.start)
-    const overMidnatt = sekunder(h.slut) <= sekunder(h.start)
-    const slut = stockholmTillUtc(h.datum, h.slut, overMidnatt ? 1 : 0)
+    let start: Date
+    let slut: Date
+    if ('startUtc' in h) {
+      start = h.startUtc
+      slut = h.slutUtc
+    } else {
+      start = stockholmTillUtc(h.datum, h.start)
+      const overMidnatt = sekunder(h.slut) <= sekunder(h.start)
+      slut = stockholmTillUtc(h.datum, h.slut, overMidnatt ? 1 : 0)
+    }
     rader.push('BEGIN:VEVENT')
     rader.push(textRad('UID', h.uid))
     rader.push(`DTSTAMP:${dtstamp}`)

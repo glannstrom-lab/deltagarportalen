@@ -311,14 +311,14 @@ export function InsightsPanel({
                     <AlertTriangle className="w-6 h-6 text-amber-700 dark:text-amber-400" />
                   </div>
                   <p className="text-stone-600 dark:text-stone-400 font-medium">Insikterna kunde inte hämtas</p>
-                  <p className="text-sm text-stone-500 dark:text-stone-500 mt-1">
+                  <p className="text-sm text-stone-500 dark:text-stone-400 mt-1">
                     Mål-källan svarade med ett fel som är loggat. Övriga källor gav inga insikter just nu.
                   </p>
                 </div>
               ) : (
                 <div className="p-8 text-center">
                   <p className="text-stone-600 dark:text-stone-400 font-medium">Inga insikter just nu</p>
-                  <p className="text-sm text-stone-500 dark:text-stone-500 mt-1">
+                  <p className="text-sm text-stone-500 dark:text-stone-400 mt-1">
                     Reglerna tittar på dagar sedan profilen ändrades, CV-poäng, sparade jobb och mål med deadline.
                     Inget av det sticker ut &mdash; det säger inte att alla deltagare mår bra.
                   </p>
@@ -405,7 +405,7 @@ export function InsightsPanel({
             {risks.length === 0 ? (
               <div className="p-8 text-center">
                 <p className="text-stone-600 dark:text-stone-400 font-medium">Inga riskfaktorer hittade</p>
-                <p className="text-sm text-stone-500 dark:text-stone-500 mt-1">
+                <p className="text-sm text-stone-500 dark:text-stone-400 mt-1">
                   Reglerna tittar på aktivitet, CV och sparade jobb. Närvaro i aktivitetsplanen ingår inte här.
                 </p>
               </div>

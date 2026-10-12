@@ -207,7 +207,7 @@ export function DocumentsSection({ className }: Props) {
         <p className="text-sm text-stone-600 dark:text-stone-400">
           {t('profile.documents.clickToUpload')}
         </p>
-        <p className="text-xs text-stone-500 dark:text-stone-500 mt-1">
+        <p className="text-xs text-stone-500 dark:text-stone-400 mt-1">
           {t('profile.documents.fileFormats')}
         </p>
       </button>

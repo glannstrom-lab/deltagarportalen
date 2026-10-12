@@ -253,7 +253,7 @@ export function AIWritingAssistant({ content, onChange, type, cvData }: AIWritin
             <div className="p-4 bg-white dark:bg-stone-800 rounded-lg border border-stone-200 dark:border-stone-700 text-center">
               <RefreshCw size={20} className="animate-spin mx-auto mb-2 text-[var(--c-text)] dark:text-[var(--c-solid)]" />
               <p className="text-sm text-stone-600 dark:text-stone-400">{t('cv.aiWriting.aiWorking')}</p>
-              <p className="text-xs text-stone-600 dark:text-stone-500 mt-1">{t('cv.aiWriting.mayTakeSeconds')}</p>
+              <p className="text-xs text-stone-600 dark:text-stone-400 mt-1">{t('cv.aiWriting.mayTakeSeconds')}</p>
             </div>
           )}
 

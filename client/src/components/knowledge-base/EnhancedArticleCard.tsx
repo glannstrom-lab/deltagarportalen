@@ -133,7 +133,7 @@ export default function EnhancedArticleCard({
 
         <ChevronRight
           size={20}
-          className="text-stone-400 dark:text-stone-500 group-hover:text-[var(--c-solid)] mt-1 shrink-0"
+          className="text-stone-400 dark:text-stone-400 group-hover:text-[var(--c-solid)] mt-1 shrink-0"
           aria-hidden="true"
         />
       </div>

@@ -76,7 +76,7 @@ export const CompactInput = forwardRef<HTMLInputElement, CompactInputProps>(({
 
       <div className="relative">
         {icon && (
-          <div className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400 dark:text-stone-500 pointer-events-none">
+          <div className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400 dark:text-stone-400 pointer-events-none">
             {icon}
           </div>
         )}
@@ -126,7 +126,7 @@ export const CompactInput = forwardRef<HTMLInputElement, CompactInputProps>(({
               'text-xs ml-2',
               currentLength >= maxChars * 0.9
                 ? 'text-amber-500'
-                : 'text-stone-400 dark:text-stone-500'
+                : 'text-stone-400 dark:text-stone-400'
             )}
             aria-live="polite"
           >

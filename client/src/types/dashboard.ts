@@ -46,7 +46,8 @@ export interface DashboardWidgetData {
   
   // Jobbsökning
   jobs: {
-    savedCount: number
+    /** null = okänt (läsfel) — aldrig 0 som ersättning för "vet inte". */
+    savedCount: number | null
     newMatches: number
     recentSavedJobs: {
       id: string

@@ -33,6 +33,7 @@ import {
   passMening,
   radSammanfattning,
   talOrd,
+  utanLakarintyg,
   utanNastaSteg,
   valjNastaSteg,
   type AttGoraPass,
@@ -144,6 +145,7 @@ function useAtgarder(props: Props) {
         }
         return { kontroll: 'val', primar: { etikett: 'Giltig frånvaro', onClick: markera('absent_valid') }, sekundar: { etikett: 'Ogiltig frånvaro', onClick: markera('absent_invalid') } }
       case 'sjuk_utan_intyg':
+      case 'lakarintyg_dag8':
         return { kontroll: null, primar: { etikett: 'Intyget har kommit', onClick: markera('sick_certified', { sickCertificateReceived: true }) } }
       case 'kvittera':
         return { kontroll: null, primar: { etikett: 'Kvittera', onClick: markera('present') } }
@@ -191,6 +193,8 @@ function nastaRubrik(punkt: MinDagPunkt, namn: string, regelverk?: Regelverk | n
         : { rubrik: `Bedöm ${genitiv(f)} anmälda frånvaro`, text: `${punkt.lage}. ${punkt.detalj ?? ''}`.trim() }
     case 'sjuk_utan_intyg':
       return { rubrik: `Har sjukintyget från ${f} kommit?`, text: `${punkt.lage}. ${punkt.detalj ?? ''}`.trim() }
+    case 'lakarintyg_dag8':
+      return { rubrik: `Läkarintyg behövs från ${f}`, text: `${punkt.lage}. ${punkt.detalj ?? ''}`.trim() }
     case 'kvittera':
       return { rubrik: `Kvittera ${genitiv(f)} ${punkt.pass?.activity_type === 'jobsearch_own' ? 'jobbsökande' : 'incheckning'}`, text: `${punkt.lage}, ${punkt.detalj}.` }
     case 'omarkerat':
@@ -453,7 +457,10 @@ function NastaPass({ pass }: { pass: PassAttMarkera }) {
 }
 
 export function BradskandeIdag(props: Props) {
-  const { personer, pass = [], visaNastaSteg = true, nu = new Date() } = props
+  const { pass = [], visaNastaSteg = true, nu = new Date() } = props
+  // KSL19: läkarintygsflaggan hör till kommunen. Den visas bara när vi VET att
+  // regelverket är kommun — inte under laddning (null) och aldrig för en leverantör.
+  const personer = props.regelverk === 'kommun' ? props.personer : utanLakarintyg(props.personer)
   const val: NastaStegVal | null = visaNastaSteg ? valjNastaSteg(personer, pass, nu) : null
   const lista = utanNastaSteg(personer, val)
 

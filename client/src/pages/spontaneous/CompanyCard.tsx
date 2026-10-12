@@ -411,7 +411,7 @@ export function CompanyCard({
                   <User className="w-3.5 h-3.5" aria-hidden="true" />
                   {company.contact_name}
                   {company.outreach_method && (
-                    <span className="text-xs text-stone-500 dark:text-stone-500">
+                    <span className="text-xs text-stone-500 dark:text-stone-400">
                       ({t(`spontaneous.contact.methods.${company.outreach_method}`)})
                     </span>
                   )}
@@ -433,7 +433,7 @@ export function CompanyCard({
                 type="button"
                 onClick={() => setIsEditingContact(true)}
                 aria-label={`${t('common.edit')}: ${t('spontaneous.contact.title')}`}
-                className="text-stone-500 dark:text-stone-500 hover:text-stone-700 dark:hover:text-stone-300"
+                className="text-stone-500 dark:text-stone-400 hover:text-stone-700 dark:hover:text-stone-300"
               >
                 <Edit2 className="w-3.5 h-3.5" aria-hidden="true" />
               </button>
@@ -443,7 +443,7 @@ export function CompanyCard({
               <button
                 type="button"
                 onClick={() => setIsEditingContact(true)}
-                className="text-xs text-stone-500 dark:text-stone-500 hover:text-stone-700 dark:hover:text-stone-300 flex items-center gap-1"
+                className="text-xs text-stone-500 dark:text-stone-400 hover:text-stone-700 dark:hover:text-stone-300 flex items-center gap-1"
               >
                 <UserPlus className="w-3 h-3" aria-hidden="true" />
                 {t('spontaneous.contact.add')}
@@ -478,7 +478,7 @@ export function CompanyCard({
                 {company.notes ? (
                   <span className="line-clamp-2 block">{company.notes}</span>
                 ) : (
-                  <span className="text-stone-500 dark:text-stone-500 italic flex items-center gap-1">
+                  <span className="text-stone-500 dark:text-stone-400 italic flex items-center gap-1">
                     <Edit2 className="w-3 h-3" aria-hidden="true" />
                     {t('spontaneous.clickToAddNotes')}
                   </span>

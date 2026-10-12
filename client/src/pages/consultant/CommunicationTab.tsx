@@ -353,14 +353,14 @@ function MeetingCard({
                   day: 'numeric',
                 })}
               </span>
-              <span className="text-stone-300 dark:text-stone-500">|</span>
+              <span className="text-stone-300 dark:text-stone-400">|</span>
               <span className="text-sm text-stone-500 dark:text-stone-400">
                 {new Date(meeting.scheduledAt).toLocaleTimeString('sv-SE', {
                   hour: '2-digit',
                   minute: '2-digit',
                 })}
               </span>
-              <span className="text-stone-300 dark:text-stone-500">|</span>
+              <span className="text-stone-300 dark:text-stone-400">|</span>
               <span className="text-sm text-stone-500 dark:text-stone-400">
                 {meeting.duration} min
               </span>

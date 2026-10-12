@@ -127,7 +127,7 @@ export function ProfileHeader() {
             </div>
 
             {/* Sync status */}
-            <div className="hidden sm:flex items-center gap-1.5 text-xs text-stone-400 dark:text-stone-500">
+            <div className="hidden sm:flex items-center gap-1.5 text-xs text-stone-400 dark:text-stone-400">
               {cloudSyncing ? (
                 <>
                   <Loader2 className="w-3.5 h-3.5 animate-spin" />

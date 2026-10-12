@@ -40,6 +40,7 @@ import { FranvaroAnmalan } from '@/components/minvecka/FranvaroAnmalan'
 import { NarvaroIntyg } from '@/components/minvecka/NarvaroIntyg'
 // RD4 (rollspelet 2026-09-27): konsulentens möten i veckan
 import { MoteKort } from '@/components/minvecka/MoteKort'
+import { veckansKalenderPoster } from '@/components/minvecka/veckansKalender'
 import { hamtaMoten, motesDatum, motesStart, type KonsulentMote } from '@/components/minvecka/konsulentMoten'
 // RD3 (rollspelet 2026-09-27): kommunens juridik bara när planen belagt kommer från en kommun
 import { hamtaPlanensOrganisation, regelverkNycklar } from '@/components/minvecka/planensRegelverk'
@@ -248,6 +249,29 @@ export default function MinVecka() {
       setStatus(t('minVecka.kalender.status', 'Kalenderfilen är nedladdad. Öppna den för att lägga passet i din kalender.'))
     } catch {
       // Synligt, inte bara i den dolda statusraden (samma rad som incheckningsfelet)
+      setCheckinFel(t('minVecka.kalender.fel', 'Kalenderfilen kunde inte skapas. Försök igen om en stund.'))
+    }
+  }
+
+  // NF1-rest: veckans inbokade pass och möten i EN fil. Samma UID:n som de
+  // enskilda knapparna, så en omimport uppdaterar i stället för att dubblera.
+  const veckansPoster = () =>
+    veckansKalenderPoster(sessionsQuery.data ?? [], moten, dagens, new Date(), {
+      moteTitel: t('minVecka.mote.rubrik', 'Möte med din konsulent'),
+      passBeskrivning: (p) => t(TYP_NYCKEL[p.activity_type]),
+      moteBeskrivning: (m) => t(m.meeting_type === 'phone' ? 'myConsultant.nextMeeting.meetingTypes.phone'
+        : m.meeting_type === 'physical' || m.meeting_type === 'in_person' ? 'myConsultant.nextMeeting.meetingTypes.inPerson'
+        : 'myConsultant.nextMeeting.meetingTypes.video'),
+    })
+
+  const handleVeckaKalender = () => {
+    setCheckinFel(null)
+    try {
+      const poster = veckansPoster()
+      if (poster.length === 0) return
+      laddaNerIcs(byggIcs(poster), icsFilnamn(`Jobin vecka ${veckonummer(mandag)} ${mandag}`))
+      setStatus(t('minVecka.kalender.veckaStatus', 'Kalenderfilen med veckan är nedladdad. Öppna den för att lägga in allt på en gång.'))
+    } catch {
       setCheckinFel(t('minVecka.kalender.fel', 'Kalenderfilen kunde inte skapas. Försök igen om en stund.'))
     }
   }
@@ -523,6 +547,14 @@ export default function MinVecka() {
             <p className="m-0 text-[0.9375rem] text-j-blak-2">
               {t('minVecka.mote.hamtFel', 'Dina möten med konsulenten kunde inte hämtas just nu. Du ser dem på sidan Min konsulent.')}
             </p>
+          )}
+          {veckansPoster().length > 0 && (
+            <div>
+              <Button ton="kvarter" variant="secondary" size="sm" onClick={handleVeckaKalender}
+                leftIcon={<KvarterIkon namn="kalender" size={18} />}>
+                {t('minVecka.kalender.veckaKnapp', 'Lägg veckan i min kalender')}
+              </Button>
+            </div>
           )}
           {perDag.length === 0 ? (
             <p className="m-0 rounded-j-m border border-dashed border-j-linje-2 p-4 text-j-blak-2">

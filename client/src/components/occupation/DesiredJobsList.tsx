@@ -180,7 +180,7 @@ export function DesiredJobsList({
           <p className="text-sm text-stone-600 dark:text-stone-400">
             {t('occupation.desiredJobsList.empty')}
           </p>
-          <p className="text-xs text-stone-500 dark:text-stone-500 mt-0.5">
+          <p className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">
             {t('occupation.desiredJobsList.emptyHint', { max: maxJobs })}
           </p>
         </div>

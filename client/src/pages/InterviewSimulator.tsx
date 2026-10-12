@@ -1710,7 +1710,7 @@ ${t('interviewSimulator.download.tipsForImprovement')}:
                 isRecording ? 'border-red-300 dark:border-red-700' : 'border-stone-200 dark:border-stone-600'
               }`}
             />
-            <div id="svar-hints" className="flex justify-between items-center text-xs text-stone-500 dark:text-stone-500">
+            <div id="svar-hints" className="flex justify-between items-center text-xs text-stone-500 dark:text-stone-400">
               <span>{t('interviewSimulator.input.characters', { count: anvandarSvar.length })}</span>
               <span>{t('interviewSimulator.input.recommended')}</span>
             </div>
