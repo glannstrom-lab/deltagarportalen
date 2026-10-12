@@ -432,6 +432,15 @@ describe('ParticipantsTab — KSL17: snabbfilter för ogiltig frånvaro och unde
     expect(screen.queryByText('Anna Andersson')).toBeNull()
   })
 
+  it('direktlänk till ?filter=utan-underlag hos en ren leverantör ger hela listan och en förklaring, inte en tom lista', async () => {
+    kundtyp.varde = { visaAvtalskrav: true, visaIvoUnderlag: false }
+    mockVecka.mockResolvedValue({ planer, pass: [] })
+    renderTab(['/consultant/participants?filter=utan-underlag'])
+    expect(await screen.findByText('Anna Andersson')).toBeInTheDocument()
+    expect(screen.getByText('Bo Berg')).toBeInTheDocument()
+    expect(await screen.findByText(/gäller bara kommun/)).toBeInTheDocument()
+  })
+
   it('kan underlagen inte hämtas sägs det, och filtret visas inte', async () => {
     mockVecka.mockResolvedValue({ planer, pass: [] })
     mockUnderlag.mockRejectedValue(new Error('nätverk'))

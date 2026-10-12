@@ -1840,7 +1840,12 @@
         "relatedOccupation": "Related job",
         "desiredJob": "Job you want: {{role}}",
         "careerGoal": "Career goal: {{role}}",
-        "nearGoal": "Close to your goal: {{role}}"
+        "nearGoal": "Close to your goal: {{role}}",
+        "licenseRequired": "Driving licence needed",
+        "hasLicense": "You have a {{klass}} driving licence ✓",
+        "needsLicense": "{{klass}} driving licence needed",
+        "remote": "Remote work ✓",
+        "hasCar": "You have a car ✓"
       },
       "pref": {
         "fulltime": "Full-time",
@@ -9232,7 +9237,21 @@
       "saved": "Saved!",
       "editHint": "You can edit the text above. Click the copy button to copy.",
       "generateError": "Something went wrong. Please try again.",
-      "done": "Done!"
+      "done": "Done!",
+      "templates": {
+        "standard": {
+          "name": "Standard",
+          "description": "Professional and balanced"
+        },
+        "short": {
+          "name": "Short and clear",
+          "description": "Max 150 words, straight to the point"
+        },
+        "formal": {
+          "name": "Formal",
+          "description": "Traditional tone"
+        }
+      }
     }
   },
   "hubs": {

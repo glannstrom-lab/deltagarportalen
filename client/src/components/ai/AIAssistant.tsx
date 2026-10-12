@@ -399,7 +399,7 @@ function ActionsTab({ analysis, onClose: _onClose, t }: { analysis: BehaviorAnal
                 </span>
               </div>
             </div>
-            <ChevronRight size={20} className="text-stone-300 dark:text-stone-600" />
+            <ChevronRight size={20} className="text-stone-300 dark:text-stone-500" />
           </div>
         </motion.div>
       ))}

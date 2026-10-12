@@ -42,9 +42,9 @@ const MOTIVATION_SUGGESTIONS = [
 
 // Simplified template options for focus mode
 const SIMPLE_TEMPLATES = [
-  { id: 'standard', name: 'Standard', description: 'Professionell och balanserad', icon: FileText },
-  { id: 'short', name: 'Kort & Koncis', description: 'Max 150 ord - rak på sak', icon: FileText },
-  { id: 'formal', name: 'Formell', description: 'Traditionell ton', icon: FileText },
+  { id: 'standard', name: 'Standard', description: 'Professionell och balanserad', nameKey: 'focusGuide.letter.templates.standard.name', descKey: 'focusGuide.letter.templates.standard.description', icon: FileText },
+  { id: 'short', name: 'Kort & Koncis', description: 'Max 150 ord - rak på sak', nameKey: 'focusGuide.letter.templates.short.name', descKey: 'focusGuide.letter.templates.short.description', icon: FileText },
+  { id: 'formal', name: 'Formell', description: 'Traditionell ton', nameKey: 'focusGuide.letter.templates.formal.name', descKey: 'focusGuide.letter.templates.formal.description', icon: FileText },
 ]
 
 export function FocusCoverLetter({ onComplete, onSkip, onBack: _onBack }: FocusCoverLetterProps) {
@@ -466,10 +466,10 @@ ${name} ${lastName}`.trim()
                         'font-medium',
                         isSelected ? 'text-[var(--c-text)] dark:text-[var(--c-text)]' : 'text-stone-800 dark:text-stone-100'
                       )}>
-                        {template.name}
+                        {t(template.nameKey, template.name)}
                       </h4>
                       <p className="text-sm text-stone-500 dark:text-stone-400">
-                        {template.description}
+                        {t(template.descKey, template.description)}
                       </p>
                     </div>
                   </div>
@@ -660,7 +660,7 @@ ${name} ${lastName}`.trim()
               </>
             ) : (
               <div className="text-center py-8">
-                <FileText className="w-12 h-12 text-stone-300 dark:text-stone-600 mx-auto mb-3" />
+                <FileText className="w-12 h-12 text-stone-300 dark:text-stone-400 mx-auto mb-3" aria-hidden="true" />
                 <p className="text-stone-500 dark:text-stone-400">
                   {t('focusGuide.letter.generateError', 'Något gick fel. Försök igen.')}
                 </p>

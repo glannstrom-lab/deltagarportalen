@@ -22,6 +22,19 @@ import {
 
 export type MatchSource = 'cv' | 'interest' | 'career'
 
+/**
+ * Översättare för detaljtexterna (samma form som t() och som
+ * MatchTexter i interestGuideData). Utan den blir texten svensk.
+ */
+export type MatchTexter = (
+  nyckel: string,
+  svenska: string,
+  vars?: Record<string, string | number>
+) => string
+
+const svenskaTexter: MatchTexter = (_nyckel, svenska, vars) =>
+  vars ? svenska.replace(/\{\{(\w+)\}\}/g, (_m, n: string) => String(vars[n] ?? '')) : svenska
+
 export interface MatchedJob {
   job: PlatsbankenJob
   score: number
@@ -271,7 +284,7 @@ export function matchesRemoteWork(job: PlatsbankenJob, preference: 'yes' | 'no' 
 /**
  * Check if user has required driver's license
  */
-export function matchesDriversLicense(job: PlatsbankenJob, userLicenses: string[]): { matches: boolean; boost: number; detail: string | null } {
+export function matchesDriversLicense(job: PlatsbankenJob, userLicenses: string[], tx: MatchTexter = svenskaTexter): { matches: boolean; boost: number; detail: string | null } {
   const jobText = `${job.headline || ''} ${job.description?.text || ''}`.toLowerCase()
 
   // Check for driver's license requirements
@@ -288,7 +301,7 @@ export function matchesDriversLicense(job: PlatsbankenJob, userLicenses: string[
   // Job requires license - check if user has it
   if (userLicenses.length === 0) {
     // User hasn't specified licenses, slight penalty for jobs requiring them
-    return { matches: true, boost: -10, detail: 'Körkort krävs' }
+    return { matches: true, boost: -10, detail: tx('jobs.matches.detail.licenseRequired', 'Körkort krävs') }
   }
 
   // Check specific license types
@@ -297,19 +310,19 @@ export function matchesDriversLicense(job: PlatsbankenJob, userLicenses: string[
   const hasCE = userLicenses.some(l => l.toUpperCase() === 'CE')
 
   if (jobText.includes('ce-körkort') || jobText.includes('ce körkort')) {
-    if (hasCE) return { matches: true, boost: 15, detail: 'Du har CE-körkort ✓' }
-    return { matches: true, boost: -15, detail: 'CE-körkort krävs' }
+    if (hasCE) return { matches: true, boost: 15, detail: tx('jobs.matches.detail.hasLicense', 'Du har {{klass}}-körkort ✓', { klass: 'CE' }) }
+    return { matches: true, boost: -15, detail: tx('jobs.matches.detail.needsLicense', '{{klass}}-körkort krävs', { klass: 'CE' }) }
   }
 
   if (jobText.includes('c-körkort') || jobText.includes('c körkort')) {
-    if (hasC || hasCE) return { matches: true, boost: 15, detail: 'Du har C-körkort ✓' }
-    return { matches: true, boost: -15, detail: 'C-körkort krävs' }
+    if (hasC || hasCE) return { matches: true, boost: 15, detail: tx('jobs.matches.detail.hasLicense', 'Du har {{klass}}-körkort ✓', { klass: 'C' }) }
+    return { matches: true, boost: -15, detail: tx('jobs.matches.detail.needsLicense', '{{klass}}-körkort krävs', { klass: 'C' }) }
   }
 
   if (jobText.includes('b-körkort') || jobText.includes('b körkort') ||
       (jobText.includes('körkort') && !jobText.includes('c-') && !jobText.includes('ce-'))) {
-    if (hasB || hasC || hasCE) return { matches: true, boost: 10, detail: 'Du har B-körkort ✓' }
-    return { matches: true, boost: -10, detail: 'B-körkort krävs' }
+    if (hasB || hasC || hasCE) return { matches: true, boost: 10, detail: tx('jobs.matches.detail.hasLicense', 'Du har {{klass}}-körkort ✓', { klass: 'B' }) }
+    return { matches: true, boost: -10, detail: tx('jobs.matches.detail.needsLicense', '{{klass}}-körkort krävs', { klass: 'B' }) }
   }
 
   return { matches: true, boost: 0, detail: null }
@@ -322,7 +335,8 @@ export function applyProfileBoosts(
   job: PlatsbankenJob,
   baseScore: number,
   preferences: MatchPreferences,
-  matchDetails: string[]
+  matchDetails: string[],
+  tx: MatchTexter = svenskaTexter
 ): { score: number; details: string[] } {
   let score = baseScore
   const details = [...matchDetails]
@@ -335,11 +349,11 @@ export function applyProfileBoosts(
   const remoteMatch = matchesRemoteWork(job, preferences.remoteWork)
   score += remoteMatch.boost
   if (remoteMatch.boost > 0 && preferences.remoteWork === 'yes') {
-    details.push('Distansarbete ✓')
+    details.push(tx('jobs.matches.detail.remote', 'Distansarbete ✓'))
   }
 
   // Driver's license
-  const licenseMatch = matchesDriversLicense(job, preferences.driversLicense)
+  const licenseMatch = matchesDriversLicense(job, preferences.driversLicense, tx)
   score += licenseMatch.boost
   if (licenseMatch.detail && licenseMatch.boost > 0) {
     details.push(licenseMatch.detail)
@@ -350,7 +364,7 @@ export function applyProfileBoosts(
     const jobText = `${job.headline || ''} ${job.description?.text || ''}`.toLowerCase()
     if (jobText.includes('egen bil') || jobText.includes('tillgång till bil')) {
       score += 10
-      details.push('Har bil ✓')
+      details.push(tx('jobs.matches.detail.hasCar', 'Har bil ✓'))
     }
   }
 

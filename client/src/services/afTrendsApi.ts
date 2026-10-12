@@ -195,7 +195,10 @@ export async function getSalaryStats(occupation: string): Promise<SalaryStats | 
       };
     }
   } catch (error) {
-    jobLogger.debug('Historical API error:', { error });
+    // Ett avbrott (af-historical svarar 502/504) ska inte se ut som "ingen
+    // lönedata" — null betyder bara att AF svarade men annonserna saknar lön.
+    jobLogger.error('Historical API error:', { error });
+    throw error instanceof Error ? error : new Error(String(error));
   }
   
   // Ingen fallback - returnera null om ingen data finns

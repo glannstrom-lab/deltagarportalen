@@ -105,12 +105,14 @@ Deno.serve(medFelrapport('af-jobsearch', async (req) => {
       if (!response.ok) {
         const errorText = await response.text();
         console.error(`[af-jobsearch] AF API error: ${response.status} - ${errorText}`);
+        // Ett avbrott uppströms får aldrig se ut som "inga träffar": 200 med
+        // tom hits-lista gjorde det. 502 + felkod låter klienten kasta och
+        // sidan säga att tjänsten inte svarar. (Buggpasset 2026-10-12.)
         return jsonResponse({
-          total: { value: 0 },
-          hits: [],
           error: 'Arbetsförmedlingen API error',
-          status: response.status
-        }, 200, corsHeaders);
+          code: 'AF_UPSTREAM_ERROR',
+          upstreamStatus: response.status,
+        }, 502, corsHeaders);
       }
 
       const data = await response.json();
@@ -121,10 +123,9 @@ Deno.serve(medFelrapport('af-jobsearch', async (req) => {
       if (fetchError instanceof Error && fetchError.name === 'AbortError') {
         console.error('[af-jobsearch] Timeout');
         return jsonResponse({
-          total: { value: 0 },
-          hits: [],
-          error: 'Timeout - förfrågan tog för lång tid'
-        }, 200, corsHeaders);
+          error: 'Timeout - förfrågan tog för lång tid',
+          code: 'AF_TIMEOUT',
+        }, 504, corsHeaders);
       }
       throw fetchError;
     }
@@ -132,10 +133,9 @@ Deno.serve(medFelrapport('af-jobsearch', async (req) => {
   } catch (error) {
     console.error('[af-jobsearch] Error:', error);
     return jsonResponse({
-      total: { value: 0 },
-      hits: [],
       error: 'Internal server error',
+      code: 'AF_PROXY_ERROR',
       message: error instanceof Error ? error.message : 'Unknown error'
-    }, 500, corsHeaders);
+    }, 502, corsHeaders);
   }
 }));

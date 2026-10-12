@@ -62,9 +62,9 @@ serve(medFelrapport('af-jobed', async (req) => {
       const errorText = await response.text();
       console.error(`[af-jobed] API error: ${response.status} - ${errorText}`);
       return new Response(
-        JSON.stringify({ error: 'JobEd API error', status: response.status }),
+        JSON.stringify({ error: 'JobEd API error', code: 'AF_UPSTREAM_ERROR', upstreamStatus: response.status }),
         { 
-          status: 200,
+          status: 502,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' }
         }
       );
@@ -80,10 +80,15 @@ serve(medFelrapport('af-jobed', async (req) => {
     });
   } catch (error) {
     console.error('[af-jobed] Error:', error);
+    // Timeout (AbortError) skiljs från övriga fel så klienten kan säga rätt sak.
+    const timeoutFel = error instanceof Error && error.name === 'AbortError';
     return new Response(
-      JSON.stringify({ error: felText(error) }),
+      JSON.stringify({
+        error: felText(error),
+        code: timeoutFel ? 'AF_TIMEOUT' : 'AF_PROXY_ERROR',
+      }),
       {
-        status: 200,
+        status: timeoutFel ? 504 : 502,
         headers: {
           ...corsHeaders,
           'Content-Type': 'application/json',

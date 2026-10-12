@@ -1840,7 +1840,12 @@
         "relatedOccupation": "Relaterat yrke",
         "desiredJob": "Önskat yrke: {{role}}",
         "careerGoal": "Karriärmål: {{role}}",
-        "nearGoal": "Nära ditt mål: {{role}}"
+        "nearGoal": "Nära ditt mål: {{role}}",
+        "licenseRequired": "Körkort krävs",
+        "hasLicense": "Du har {{klass}}-körkort ✓",
+        "needsLicense": "{{klass}}-körkort krävs",
+        "remote": "Distansarbete ✓",
+        "hasCar": "Har bil ✓"
       },
       "pref": {
         "fulltime": "Heltid",
@@ -9232,7 +9237,21 @@
       "saved": "Sparat!",
       "editHint": "Du kan redigera texten ovan. Klicka på kopieringsknappen för att kopiera.",
       "generateError": "Något gick fel. Försök igen.",
-      "done": "Klar!"
+      "done": "Klar!",
+      "templates": {
+        "standard": {
+          "name": "Standard",
+          "description": "Professionell och balanserad"
+        },
+        "short": {
+          "name": "Kort & Koncis",
+          "description": "Max 150 ord - rak på sak"
+        },
+        "formal": {
+          "name": "Formell",
+          "description": "Traditionell ton"
+        }
+      }
     }
   },
   "hubs": {

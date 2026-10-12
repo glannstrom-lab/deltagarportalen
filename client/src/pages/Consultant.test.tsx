@@ -96,4 +96,19 @@ describe('KSL15: handläggarens flikar', () => {
     visa('/consultant?tab=participants')
     expect(await screen.findByText('ÖVERSIKT')).toBeInTheDocument()
   })
+
+  it('medan rollerna laddas renderas inte en dold flik, och en konsulent hamnar sedan på sin sida', async () => {
+    mockMedlemskap.roller = ['konsulent']
+    visa('/consultant/participants')
+    expect(screen.queryByText('DELTAGARE')).toBeNull()
+    expect(await screen.findByText('DELTAGARE')).toBeInTheDocument()
+  })
+
+  it('en handläggares direktlänk blinkar aldrig förbi innehållet medan rollerna laddas', async () => {
+    mockMedlemskap.roller = ['handlaggare']
+    visa('/consultant/participants')
+    expect(screen.queryByText('DELTAGARE')).toBeNull()
+    expect(await screen.findByText('ÖVERSIKT')).toBeInTheDocument()
+    expect(screen.queryByText('DELTAGARE')).toBeNull()
+  })
 })

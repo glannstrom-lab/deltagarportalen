@@ -52,6 +52,13 @@ function calculatePercentile(values: number[], percentile: number): number {
   return sorted[Math.min(index, sorted.length - 1)];
 }
 
+/** Uppströms svarade, men annonserna nämner ingen lön. Inget avbrott. */
+class IngenLonedataFel extends Error {
+  constructor() {
+    super('No salary data found');
+  }
+}
+
 async function fetchJobs(occupation: string, limit: number = 100): Promise<any[]> {
   const url = `${JOBSEARCH_API_BASE}/search?q=${encodeURIComponent(occupation)}&limit=${limit}`;
   console.log(`[af-historical] Fetching: ${url}`);
@@ -106,7 +113,7 @@ async function getSalaryStatistics(occupation: string) {
   
   console.log(`[af-historical] Found ${salaries.length} salaries`);
   
-  if (salaries.length === 0) throw new Error('No salary data found');
+  if (salaries.length === 0) throw new IngenLonedataFel();
   
   const median = calculateMedian(salaries);
   const p25 = calculatePercentile(salaries, 0.25);
@@ -173,9 +180,18 @@ serve(medFelrapport('af-historical', async (req) => {
     
   } catch (error) {
     console.error('[af-historical] Error:', error);
+    // Saknad lönedata är ett giltigt svar (200). Ett avbrott uppströms är det
+    // inte — det fick tidigare också 200 och såg ut som "ingen lönedata".
+    if (error instanceof IngenLonedataFel) {
+      return new Response(
+        JSON.stringify({ error: felText(error), code: 'NO_SALARY_DATA', note: 'No salary data available' }),
+        { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+    const timeoutFel = error instanceof Error && error.name === 'AbortError';
     return new Response(
-      JSON.stringify({ error: felText(error), note: 'No salary data available' }),
-      { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      JSON.stringify({ error: felText(error), code: timeoutFel ? 'AF_TIMEOUT' : 'AF_UPSTREAM_ERROR' }),
+      { status: timeoutFel ? 504 : 502, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }
 }));

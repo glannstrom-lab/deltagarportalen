@@ -700,7 +700,7 @@ export function ApplicationDetailModal({
                 </div>
               ) : history.length === 0 ? (
                 <div className="text-center py-8 text-stone-700 dark:text-stone-300">
-                  <Clock className="w-8 h-8 mx-auto mb-2 text-stone-300 dark:text-stone-600" />
+                  <Clock className="w-8 h-8 mx-auto mb-2 text-stone-300 dark:text-stone-500" />
                   <p>{t('applications.detail.noHistory', 'Ingen historik än')}</p>
                 </div>
               ) : (
@@ -750,7 +750,7 @@ export function ApplicationDetailModal({
               ) : contacts.length === 0 ? (
                 !showContactForm && (
                   <div className="text-center py-8 text-stone-700 dark:text-stone-300">
-                    <User className="w-8 h-8 mx-auto mb-2 text-stone-300 dark:text-stone-600" />
+                    <User className="w-8 h-8 mx-auto mb-2 text-stone-300 dark:text-stone-500" />
                     <p>{t('applications.detail.noContacts', 'Inga kontakter tillagda')}</p>
                     <Button variant="outline" size="sm" className="mt-3" onClick={() => setShowContactForm(true)}>
                       <Plus className="w-4 h-4 mr-1" />
@@ -809,7 +809,7 @@ export function ApplicationDetailModal({
               ) : reminders.filter(r => !r.isCompleted).length === 0 ? (
                 !showReminderForm && (
                   <div className="text-center py-8 text-stone-700 dark:text-stone-300">
-                    <Bell className="w-8 h-8 mx-auto mb-2 text-stone-300 dark:text-stone-600" />
+                    <Bell className="w-8 h-8 mx-auto mb-2 text-stone-300 dark:text-stone-500" />
                     <p>{t('applications.detail.noReminders', 'Inga aktiva påminnelser')}</p>
                     <Button variant="outline" size="sm" className="mt-3" onClick={() => setShowReminderForm(true)}>
                       <Plus className="w-4 h-4 mr-1" />

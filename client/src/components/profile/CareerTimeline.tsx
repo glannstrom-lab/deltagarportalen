@@ -242,7 +242,7 @@ export function CareerTimeline({ className }: Props) {
         </div>
       ) : (
         <div className="text-center py-8">
-          <Calendar className="w-12 h-12 text-stone-300 dark:text-stone-600 mx-auto mb-3" />
+          <Calendar className="w-12 h-12 text-stone-300 dark:text-stone-500 mx-auto mb-3" />
           <p className="text-sm text-stone-500 dark:text-stone-400 mb-4">
             {t('profile.careerTimeline.emptyState')}
           </p>

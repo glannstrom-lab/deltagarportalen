@@ -35,22 +35,47 @@ function tsxFiler(katalog: string): string[] {
   return ut
 }
 
-describe('mörkt läge: ingen text i stone-600', () => {
-  it('components/ och pages/ använder inte dark:text-stone-600 på text', () => {
+/**
+ * Breddad 2026-10-12: stone-700 och de andra gråskalorna (gray/zinc/slate/neutral)
+ * i 600/700 är lika låga mot mörk yta. Varje undantag står i ALLOWLIST med
+ * motivering; en ny träff utan post där fäller grinden.
+ * Mutation: lägg `dark:text-stone-700` på en <p> → testet faller och pekar ut raden.
+ */
+const MORK_TEXT = /dark:text-(stone|gray|zinc|slate|neutral)-(600|700)(?![\w-])/
+
+const ALLOWLIST: { fil: string; innehaller: string; skal: string }[] = [
+  {
+    fil: join('pages', 'consultant', 'AnalyticsTab.tsx'),
+    innehaller: 'text-stone-200 dark:text-stone-700',
+    skal: 'SVG-cirkelns spår (stroke="currentColor"), ingen text; dekorativ grafik',
+  },
+]
+
+describe('mörkt läge: ingen text i stone-600/700', () => {
+  it('components/ och pages/ använder inte dark:text-<grå>-600/700 på text', () => {
     const filer = KATALOGER.flatMap((k) => tsxFiler(k))
     expect(filer.length).toBeGreaterThan(300)
     expect(filer.some((f) => f.includes(join('pages', 'consultant')))).toBe(true)
 
     const fynd: string[] = []
     for (const fil of filer) {
-      readFileSync(fil, 'utf8').split('\n').forEach((rad, i) => {
-        if (!/dark:text-stone-600\b/.test(rad)) return
+      const rel = fil.slice(ROT.length + 1)
+      readFileSync(fil, 'utf8').split(/\r?\n/).forEach((rad, i) => {
+        if (!MORK_TEXT.test(rad)) return
         const arIkon = /^\s*<[A-Z][A-Za-z.]*[\s>]/.test(rad) && !/^\s*<(Link|Button)\b/.test(rad)
         const arInaktiv = /cursor-not-allowed/.test(rad)
-        if (!arIkon && !arInaktiv) fynd.push(`${fil.slice(ROT.length + 1)}:${i + 1}`)
+        const arTillaten = ALLOWLIST.some((a) => rel === a.fil && rad.includes(a.innehaller))
+        if (!arIkon && !arInaktiv && !arTillaten) fynd.push(`${rel}:${i + 1}`)
       })
     }
     expect(fynd).toEqual([])
+  })
+
+  it('allowlistens poster pekar på rader som finns kvar', () => {
+    for (const a of ALLOWLIST) {
+      const txt = readFileSync(join(ROT, a.fil), 'utf8')
+      expect(txt.includes(a.innehaller), `${a.fil}: ${a.skal}`).toBe(true)
+    }
   })
 })
 

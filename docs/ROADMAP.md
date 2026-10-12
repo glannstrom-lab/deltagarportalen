@@ -54,12 +54,12 @@ Underlag (scratchpad, inte i repot): research-kommun.md, research-rm.md, researc
 
 **Öppet — bygg (inget beslut):**
 - [x] **KSL14** ✅ 2026-10-12: leverantörens Min dag har en rad per deltagare med avvikelser som inte markerats rapporterade till AF (`oversiktRegler.ts`, samma regler som `avvikelserader()`; hämtas bara för leverantör, okänt svar utelämnas). "Snitt ATS" (låg på Rapporter, `OversiktSiffror.tsx`) ersatt av **Avtalsläget** (leverantör: planer som nådde timkravet förra veckan) / **Planläget** (kommun: aktiva deltagare med aktiv plan); "—" utan underlag.
-- [x] **KSL15** ✅ 2026-10-12: den som är `handlaggare` i alla sina organisationer ser Översikt + Rapporter + Inställningar — skena, toppnav, bottennav och mobilrad (`flikarForRoll`, `useKonsulentFlikar`; navigationen läser bara cachen via `useEnbartHandlaggareICache`). Direktlänk/`?tab=` till dold flik → `/consultant`. Handläggaren har ingen RLS-läsrätt på deltagare, så flikarna var tomma för henne. **Kvar:** under laddning av medlemskapen kan en dold sida blinka förbi.
+- [x] **KSL15** ✅ 2026-10-12: den som är `handlaggare` i alla sina organisationer ser Översikt + Rapporter + Inställningar — skena, toppnav, bottennav och mobilrad (`flikarForRoll`, `useKonsulentFlikar`; navigationen läser bara cachen via `useEnbartHandlaggareICache`). Direktlänk/`?tab=` till dold flik → `/consultant`. Handläggaren har ingen RLS-läsrätt på deltagare, så flikarna var tomma för henne. ~~**Kvar:** under laddning av medlemskapen kan en dold sida blinka förbi.~~ ✅ 2026-10-12 (pass 2): under laddning visas bara handläggarens flikar — sidan (`useKonsulentFlikar` + `LoadingState` i `Consultant.tsx`) och navigationen (`useEnbartHandlaggareICache` läser frågans status); misslyckad fråga → alla flikar, så en konsulent aldrig fastnar i handläggarvyn.
 - [x] **KSL16** ✅ 2026-10-12: veckan låg redan först (Kvarter-omtaget). "Så räknas veckan" har nu fyra regler: vad som blir timmar, fysiskt/digitalt, frånvaro (per kundtyp), eget jobbsökande (`VeckoSummering.tsx`).
-- [x] **KSL17** ✅ 2026-10-12: "utan plan"/"frånvaro i veckan" fanns. Nytt: "Ogiltig frånvaro i veckan" (hos leverantör "Frånvarande, inte anmäld i veckan" — KSL21) och "Underlag ej lämnat" (kommun, per kalendermånad) i `deltagarFilter.ts`. Deltagarhuvudet visade redan läget, inte CV-siffror. **Skav:** `?filter=utan-underlag` för en ren leverantör ger tom lista.
+- [x] **KSL17** ✅ 2026-10-12: "utan plan"/"frånvaro i veckan" fanns. Nytt: "Ogiltig frånvaro i veckan" (hos leverantör "Frånvarande, inte anmäld i veckan" — KSL21) och "Underlag ej lämnat" (kommun, per kalendermånad) i `deltagarFilter.ts`. Deltagarhuvudet visade redan läget, inte CV-siffror. ~~**Skav:** `?filter=utan-underlag` för en ren leverantör ger tom lista.~~ ✅ 2026-10-12 (pass 2): `underlagsfiltretGaller()` — direktlänken visar alla deltagare med en notis om att filtret bara gäller kommun.
 - [ ] **KSL18** Demoleverantörens sådd: en plats + ett Nordfrakt-förslag så matchningen kan visas (migration av seed-funktionen).
-- [ ] **KSL19** Kommun (research): 4 a §/4 d § på planen, nekad/nedsatt via kvittensen till IVO-underlaget, uppehållsräknare och läkarintygsflagga dag 8, inskrivning/avslut med orsak + Kolada-export.
-- [ ] **KSL20** R&M (research): avvikelser i AF:s format och frister, periodisk redovisning i Mina sidors struktur, fristbevakning (planering/slutredovisning 5 dagar), möteslängd per nivå, ledningsvy mot resultatöversynen.
+- [ ] **KSL19** *Underlag klart 2026-10-12: `docs/ksl19-20-underlag.md` — SoL 2025:400 12 kap. 4 a/4 d/4 f §, 34 kap. 11–12 § (IVO). Byggbart utan migration: läkarintygsflaggan (S). Resten kräver migration (anvisningsgrund på planen + beslut via kvittensen först, före IVO-fönstret jan 2027). Läkarintygets paragraf och Kolada-id obelagda.* Kommun (research): 4 a §/4 d § på planen, nekad/nedsatt via kvittensen till IVO-underlaget, uppehållsräknare och läkarintygsflagga dag 8, inskrivning/avslut med orsak + Kolada-export.
+- [ ] **KSL20** *Underlag klart 2026-10-12: `docs/ksl19-20-underlag.md` — avvikelsevy, MSFA, mötesklocka, uppföljning 3/6 mån finns redan. Belagt: gemensam planering 5 arbetsdagar (AFFS § 6), slutredovisning 5 dagar (§ 9), frånvaro från 15 min + dag 8 (§ 10), möte 30/45/60 min för A/B/C. Ordning: migration nivå-på-plan + inskickat-markering → fristbevakning → avvikelser i AF:s format → slutredovisningsutkast → periodisk redovisning.* R&M (research): avvikelser i AF:s format och frister, periodisk redovisning i Mina sidors struktur, fristbevakning (planering/slutredovisning 5 dagar), möteslängd per nivå, ledningsvy mot resultatöversynen.
 
 **Kräver beslut av Mikael:**
 - [x] **KSL21** ✅ 2026-10-11 (`d545e26d`): frånvaro som fakta hos leverantör, grind `franvaroFakta.test.tsx`. — "Giltig/ogiltig frånvaro" i leverantörens vy — IAF 2024:12 kallar leverantörens giltighetsbedömning otillåten myndighetsutövning. Förslag: hos leverantör visas orsak och fakta, ingen bedömning; deltagartexten "din konsulent avgör om skälet är giltigt" anpassas.
@@ -168,7 +168,7 @@ Driftpasset 23/9, Buggpasset 22/9, Städpasset 22/9 och 24/9. **Nästan hälften
 - [x] **GA1** ✅ **Hemligheterna satta och prövade i drift 2026-10-04:** `CRON_SECRET` (samma värde som Vercels, som `job-alerts`/`pass-paminnelse` redan använder) och `BLOB_READ_WRITE_TOKEN` satta i Supabase, `CRON_SECRET` som GitHub-secret via API:t. Direktanrop gav `{"hittade":1,"stadade":1,"misslyckade":0}`; manuell workflowkörning grön. `delete-account` städar nu också Vercel Blob. **Historik:** Byggt och migrationen körd 2026-09-29 (Mikaels ja):** `20260929f_gallring_storage_ko.sql` (kön + köning i båda gallringsjobben; diffat mot prod, provkört i rollback; 1 tidigare cron-raderat konto köat). Edge `gallring-sopare` (Storage + Blob, kvitterar först när båda lagren är städade; delad `_shared/blobCleanup.ts`, nu med paginering), workflow `gallring-sopare.yml` 04:55 UTC. **Kvar (Mikael):** `CRON_SECRET` i Supabase OCH GitHub (samma värde), och `BLOB_READ_WRITE_TOKEN` i Supabase — **den saknas där, så `delete-account` har aldrig städat Vercel Blob i drift** (`blobCleanup: skipped`). Tills dess blir sopans nattkörning röd. Sedan: kör workflowen manuellt, förvänta `{"hittade":1,"stadade":1}`.
 - [x] **EX1** ✅ 2026-09-29 (Mikaels beslut: stryk taket). Den döda koden och dess fem nycklar borttagna; "Alla" visar alla som förut.
 
-**Kvar, ingen blockering:** ~~`wellnessDataApi.save`~~ (✅ 2026-10-12: kastar `LagringsFel`, HealthTab rullar tillbaka och visar fel) · ~~intresseguidens svenska~~ (✅ 2026-10-12: `matchningsplats`, varningar, anpassningar och förklaringar via `useMatchKontext`) · ~~MatchesTab/ShareJobDialog/DailyJobTab~~ (✅; ShareJobDialog har noll importörer) · ~~`scbSalaryApi.ts`~~ (raderad) · **nytt:** `services/jobMatching.ts` (`applyProfileBoosts`, `matchesDriversLicense`) har kvar svenska detaljtexter ("Har bil ✓") som visas i matchningskorten · 44 `dark:text-stone-600`; supabase-js i två versioner; `schema:refresh` utan index.
+**Kvar, ingen blockering:** ~~`wellnessDataApi.save`~~ (✅ 2026-10-12: kastar `LagringsFel`, HealthTab rullar tillbaka och visar fel) · ~~intresseguidens svenska~~ (✅ 2026-10-12: `matchningsplats`, varningar, anpassningar och förklaringar via `useMatchKontext`) · ~~MatchesTab/ShareJobDialog/DailyJobTab~~ (✅; ShareJobDialog har noll importörer) · ~~`scbSalaryApi.ts`~~ (raderad) · ~~`services/jobMatching.ts` svenska detaljtexter~~ (✅ 2026-10-12 pass 2: valfri översättare `MatchTexter`, MatchesTab skickar `t`) · ~~44 `dark:text-stone-600`~~ (✅ pass 2: 14 kvar, inte 44; 9 dekorativa ikoner → stone-500, 3 motiverade undantag; grinden `morkt-lage-textkontrast.test.ts` fäller nu på stone/gray/zinc/slate/neutral-600/700 i hela components+pages) · **ny rest:** `dark:text-stone-500` på löpande `text-xs` (InsightsPanel, ATSAnalyzer, DocumentsSection, SupportSection) är 3,65:1 — eget svep; supabase-js i två versioner; `schema:refresh` utan index.
 
 ## Rollspel 2026-09-28 — sju nya roller i prod
 
@@ -444,12 +444,12 @@ efter STA). 0 sårbarheter.
 - [ ] **DP4** Deno-testerna (58 st) körs fortfarande inte i CI (= BP9).
 
 ### Kvar (ingen blockering)
-`fetchWithRetry` i `ai.js` utan timeout; följdfrågorna i strömmen räknas inte mot tokentaket;
+*(Genomgånget 2026-10-12 pass 2 — allt nedan redan löst med belägg: timeout `ai.js:607-617`, följdfrågor i taket `ai.js:1369`, intervjufeedback 900 tokens + `reasoningEffort`, reserverade domäner, Exercises/JobSearch/brevmallar/CredentialsTab/flyttdata översatta, tidszonsvalet borttaget. Kvar: bara supabase-js-versionerna.)* ~~`fetchWithRetry` i `ai.js` utan timeout; följdfrågorna i strömmen räknas inte mot tokentaket;
 intervjusimulatorns feedbackgren 500 tokens utan `reasoningEffort`; `job-alerts.js` hoppar inte
 över reserverade domäner; `Exercises` `confirm()` + hårdkodad svenska; oöversatt i `JobSearch`
 ("Lägg till yrke", sparade-fliken), brevmallarna, `CredentialsTab`, `flyttdata.ts`;
 `interestGuideApi.getHistory` returnerar `[]` vid fel; tidszonsvalet i konsulentinställningarna
-läses av ingen kod; `@supabase/supabase-js` i två versioner (client 2.97, rot 2.103).
+läses av ingen kod~~; `@supabase/supabase-js` i två versioner (client 2.97, rot 2.103).
 
 ---
 
@@ -533,15 +533,22 @@ sparade, 36 döda service-metoder, 11 validerare, två workflow-widgetar) + 32 i
 
 ### Kvar för nästa pass (ingen blockering)
 
-- Dagboken sväljer fel i två lager (`diaryApi` → `[]`, `useDiary` fångar igen) — ändra hook + service + `JournalTab` ihop.
-  Samma för `jobAlertEmailService.getUnreadCount`, `moodApi.getStreak`, `interestGuideApi.getHistoryCount`, `savedJobsApi.getAll`.
-- AF-proxyerna `af-jobsearch/-jobed/-historical/education-search` svarar 200 tomt vid avbrott — ändras ihop med konsumenterna.
-- SSE-grenen i `ai.js` avbryter inte uppströms vid klientnedkoppling. `job-alerts.js` mejlmallar oeskaperade.
-- `workflowApi.ts:213/256` samma ofiltrerade `from('cvs')` som `CreateApplicationModal`. `tidslinjeApi` sorterar lokal tid mot UTC.
-- `check_role_change_allowed` kontrollerar `role` men inte `roles`. `consultant_requests` kan aldrig besvaras (policyn).
-- `ResultsTab` (intresseguiden) till stora delar oöversatt och visar procent trots beslutet om plats.
-- 44 `dark:text-stone-600` kvar i 18 filer (grinden `morkt-lage-textkontrast.test.ts` täcker bara delar).
-- `scbSalaryApi` heter SCB men bygger på en egen okällad tabell — pröva mot regeln om påhittade värden.
+> **Genomgånget 2026-10-12 (pass 2), premiss först — nästan allt var redan löst:** dagboken
+> kastar `DagboksFel` och `JournalTab` har tre lägen; `getUnreadCount`/`getStreak`/`getHistory`/
+> `savedJobsApi.getAll` kastar (`getHistoryCount` raderad); SSE avbryter uppströms
+> (`ai.js:1170-1183`), `job-alerts.js` eskaperar (`esc()`) och hoppar över reserverade domäner;
+> `workflowApi` filtrerar på användaren; `tidslinjeApi` jämför UTC mot UTC; `consultant_requests`
+> avskriven i CR1; `ResultsTab` visar plats och är översatt; `scbSalaryApi` raderad.
+> **Faktiskt byggt:** AF-proxyerna `af-jobsearch`/`af-jobed`/`af-historical` svarar nu 502/504 med
+> felkod i stället för 200 tomt, och `afTrendsApi.getSalaryStats` kastar (`education-search` var
+> redan rätt). `dark:text-stone-600` → se raden "Kvar, ingen blockering" under KSL.
+
+- `check_role_change_allowed` (läst i prod 2026-10-12): egna ändringar kontrollerar `roles`, men
+  **admin-grenen kontrollerar bara `new_role`** — en ADMIN kan sätta `roles` med `SUPERADMIN` på
+  någon annan, som sedan kan välja det som `active_role`. Migration, kräver ja.
+- `hooks/useDashboardData.ts:185` `savedJobsApi.getAll().catch(() => [])` → `savedCount` 0 vid fel
+  (läses bara som AI-kontext). `useWritingPrompts` sväljer fel (skrivfrågor, inte användardata).
+- `af-trends` (Arbetsmarknad/Flytt-flikarna) inte prövad mot samma avbrottsmönster.
 
 ---
 

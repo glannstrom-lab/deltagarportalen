@@ -40,7 +40,7 @@ import { BulkActionsDialog } from '@/components/consultant/BulkActionsDialog'
 import { InviteParticipantDialog } from '@/components/consultant/InviteParticipantDialog'
 import { useOrgTypVisning } from '@/components/consultant/useRegelverk'
 import { underlagApi } from '@/services/aktivitetApi'
-import { manadensGranser, ogiltigFranvaroIVeckan, utanUnderlagIManaden } from './deltagarFilter'
+import { manadensGranser, ogiltigFranvaroIVeckan, underlagsfiltretGaller, utanUnderlagIManaden } from './deltagarFilter'
 import { DELTAGAR_STATUSAR, STATUS_ORD, STATUS_PLURAL, type DeltagarStatus } from '@/components/consultant/deltagarStatus'
 import { STATUS_ORD_LEVERANTOR } from '@/components/consultant/franvaroFakta'
 import { getTagLabel } from '@/components/consultant/participantTags'
@@ -150,7 +150,7 @@ export function ParticipantsTab() {
 
   const legacyFilter = searchParams.get('filter')
   const [searchQuery, setSearchQueryState] = useState(() => searchParams.get('q') || '')
-  const [snabbfilter, setSnabbfilterState] = useState<Snabbfilter>(() =>
+  const [snabbfilterVal, setSnabbfilterState] = useState<Snabbfilter>(() =>
     legacyFilter === 'attention' || legacyFilter === 'franvaro' || legacyFilter === 'ogiltig' || legacyFilter === 'utan-plan' || legacyFilter === 'utan-underlag' ? legacyFilter : 'all')
   const [statusFilter, setStatusFilterState] = useState<StatusFilter>(() => {
     const s = searchParams.get('status') || legacyFilter
@@ -241,6 +241,12 @@ export function ParticipantsTab() {
     () => (statusFilter === 'all' ? participants : participants.filter((p) => p.status === statusFilter)),
     [participants, statusFilter],
   )
+
+  // KSL17-skav: ett direktlänkat "Underlag ej lämnat" där filtret saknar mening gäller inte.
+  const underlagsfilterBortvalt =
+    snabbfilterVal === 'utan-underlag' &&
+    !underlagsfiltretGaller({ kundtypKand: !!kundtyp, visaUnderlagsfilter, underlagFel: underlagQ.isError })
+  const snabbfilter: Snabbfilter = underlagsfilterBortvalt ? 'all' : snabbfilterVal
 
   const filteredParticipants = useMemo(() => {
     let result = [...iStatus]
@@ -431,6 +437,11 @@ export function ParticipantsTab() {
       )}
       {visaUnderlagsfilter && underlagQ.isError && (
         <p role="alert" className="m-0 text-[0.9375rem] text-[var(--s-ogiltig-text)]">Lämnade underlag kunde inte hämtas — filtret "Underlag ej lämnat" visas inte.</p>
+      )}
+      {underlagsfilterBortvalt && (
+        <p role="status" className="m-0 text-[0.9375rem] text-[var(--j-blak-2)]">
+          Filtret "Underlag ej lämnat" gäller bara kommun{visaUnderlagsfilter ? ' och kunde inte beräknas nu' : ''} — du ser alla deltagare.
+        </p>
       )}
       {kadensQ.isError && (
         <p role="alert" className="m-0 text-[0.9375rem] text-[var(--s-ogiltig-text)]">Mötesdatum kunde inte hämtas — kadensen visas inte.</p>

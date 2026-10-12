@@ -61,7 +61,7 @@ export function MatchesEmptyState({ type, labels }: {
 
   return (
     <Card className="p-8 text-center">
-      <Sparkles className="w-12 h-12 text-stone-300 dark:text-stone-600 mx-auto mb-4" />
+      <Sparkles className="w-12 h-12 text-stone-300 dark:text-stone-500 mx-auto mb-4" />
       <p className="text-stone-700 dark:text-stone-300">
         {labels.noJobsFound}
       </p>

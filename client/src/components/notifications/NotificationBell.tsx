@@ -469,7 +469,7 @@ export function NotificationBell({ className }: NotificationBellProps) {
                 </p>
               ) : filteredNotifications.length === 0 ? (
                 <div className="text-center py-8 px-4">
-                  <Bell className="w-10 h-10 mx-auto text-stone-300 dark:text-stone-600 mb-3" />
+                  <Bell className="w-10 h-10 mx-auto text-stone-300 dark:text-stone-500 mb-3" />
                   <p className="text-stone-500 dark:text-stone-400 text-sm">
                     {activeFilter === 'all'
                       ? 'Inga notifikationer'

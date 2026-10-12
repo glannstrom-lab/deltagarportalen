@@ -550,7 +550,7 @@ export default function Landing() {
                 </div>
                 {step < 3 && (
                   <div className="hidden md:block absolute top-1/2 -right-4 transform -translate-y-1/2">
-                    <ChevronRight className="w-8 h-8 text-stone-300 dark:text-stone-600" />
+                    <ChevronRight className="w-8 h-8 text-stone-300 dark:text-stone-500" />
                   </div>
                 )}
               </div>

@@ -79,6 +79,7 @@ export function CoverLetterPreview({
 
   return (
     <div
+      lang="sv"
       className={cn(
         'bg-white shadow-lg border border-stone-200 dark:border-stone-700 rounded-lg overflow-hidden',
         className

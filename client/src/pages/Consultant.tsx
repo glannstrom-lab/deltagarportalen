@@ -30,12 +30,15 @@ export default function Consultant() {
   const { t } = useTranslation()
   const location = useLocation()
   const [sok] = useSearchParams()
-  const { enbartHandlaggare, flikar } = useKonsulentFlikar()
+  const { enbartHandlaggare, laddar, flikar } = useKonsulentFlikar()
   const dit = location.pathname.replace(/\/+$/, '') === '/consultant' ? flikSokvag(sok.get('tab')) : null
   // KSL15: handläggaren når inte deltagar-/platsvyerna (hon har ingen läsrätt där) —
   // en direktlänk dit går till Översikt i stället för en tom vy.
+  // Rollerna okända: en sökväg som är dold för en handläggare renderas inte (och
+  // vi omdirigerar inte heller — en vanlig konsulent ska vara kvar på sin sida).
+  const dolpTillRollerna = laddar && !handlaggareFarOppna(location.pathname)
   if (enbartHandlaggare && !handlaggareFarOppna(location.pathname)) return <Navigate to="/consultant" replace />
-  if (dit && (!enbartHandlaggare || handlaggareFarOppna(dit))) return <Navigate to={dit} replace />
+  if (dit && !laddar && (!enbartHandlaggare || handlaggareFarOppna(dit))) return <Navigate to={dit} replace />
 
   return (
     // Omtaget "Kvarter" (2026-10-11): kontorstonen för hela konsulentvyn —
@@ -49,7 +52,7 @@ export default function Consultant() {
         domain="info"
         className={enbartHandlaggare ? MOBIL_FLIKRAD_DOLJ_HANDLAGGARE : MOBIL_FLIKRAD_DOLJ_BOTTENNAV}
       >
-        <Suspense fallback={<LoadingState />}>
+        {dolpTillRollerna ? <LoadingState /> : <Suspense fallback={<LoadingState />}>
           <Routes>
             <Route index element={<OverviewTab />} />
             <Route path="participants" element={<ParticipantsTab />} />
@@ -61,7 +64,7 @@ export default function Consultant() {
             <Route path="resources" element={<ResourcesTab />} />
             <Route path="settings" element={<SettingsTab />} />
           </Routes>
-        </Suspense>
+        </Suspense>}
       </PageLayout>
 
       {/*

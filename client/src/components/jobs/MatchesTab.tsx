@@ -312,7 +312,7 @@ export function MatchesTab() {
           // All jobs start with 20 base points since API already filtered for relevance
 
           // Apply profile preference boosts
-          const { score, details } = applyProfileBoosts(job, totalScore, preferences, matchDetails)
+          const { score, details } = applyProfileBoosts(job, totalScore, preferences, matchDetails, t)
 
           allJobs.push({
             job,
@@ -433,7 +433,7 @@ export function MatchesTab() {
             const baseScore = Math.round((matchQuality / 100) * occ.matchPercentage)
 
             // Apply profile preference boosts
-            const { score, details } = applyProfileBoosts(job, baseScore, preferences, matchDetails)
+            const { score, details } = applyProfileBoosts(job, baseScore, preferences, matchDetails, t)
 
             allJobs.push({
               job,
@@ -552,7 +552,7 @@ export function MatchesTab() {
 
           if (baseScore >= 30) {
             // Apply profile preference boosts
-            const { score, details } = applyProfileBoosts(job, baseScore, preferences, matchDetails)
+            const { score, details } = applyProfileBoosts(job, baseScore, preferences, matchDetails, t)
 
             allJobs.push({
               job,
