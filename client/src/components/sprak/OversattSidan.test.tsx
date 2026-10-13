@@ -10,6 +10,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { render, screen, cleanup, userEvent } from '@/test/utils'
 import { OversattSidan } from './OversattSidan'
 import { sidan } from '@/services/sidoversattning'
+import i18n from '@/i18n/config'
 
 beforeEach(() => {
   localStorage.removeItem('googleTranslateLanguage')
@@ -39,6 +40,18 @@ describe('OversattSidan (RD31)', () => {
     expect(document.cookie).toContain('googtrans=/sv/so')
     expect(sidan.laddaOm).toHaveBeenCalledTimes(1)
     expect(onVal).toHaveBeenCalled()
+  })
+
+  it('English byter portalens språk — ingen Google-översättning (2026-10-13)', async () => {
+    localStorage.setItem('googleTranslateLanguage', 'so')
+    const byt = vi.spyOn(i18n, 'changeLanguage').mockResolvedValue((() => '') as never)
+    render(<OversattSidan />)
+    await userEvent.click(screen.getByRole('button', { name: 'Översatt till Soomaali' }))
+    await userEvent.click(screen.getByRole('button', { name: 'English' }))
+    expect(byt).toHaveBeenCalledWith('en')
+    expect(localStorage.getItem('googleTranslateLanguage')).toBeNull()
+    expect(document.cookie).not.toContain('googtrans=/sv/en')
+    expect(sidan.laddaOm).toHaveBeenCalledTimes(1)
   })
 
   it('visar valt språk och går tillbaka till svenska', async () => {

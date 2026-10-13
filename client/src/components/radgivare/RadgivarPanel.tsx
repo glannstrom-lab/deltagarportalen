@@ -118,7 +118,7 @@ export function RadgivarTips({ pathname, index = 0 }: { pathname: string; index?
       <div className="flex items-center gap-2 mb-1.5">
         <Avatar id={coachId} />
         <span className="text-[0.78125rem] font-semibold text-stone-900 dark:text-stone-100">
-          {coach.name}, {coach.role.toLowerCase()}
+          <span translate="no">{coach.name}</span>, {coach.role.toLowerCase()}
         </span>
         {tips.length > 1 && (
           <span className="ml-auto text-[0.6875rem] text-stone-500 dark:text-stone-400">
@@ -247,7 +247,7 @@ export default function RadgivarPanel({
                 <>
                   <Avatar id={id} stor />
                   <span className="min-w-0 flex-1">
-                    <span className="block text-[0.90625rem] font-semibold text-stone-900 dark:text-stone-100">
+                    <span translate="no" className="block text-[0.90625rem] font-semibold text-stone-900 dark:text-stone-100">
                       {coach.name}
                     </span>
                     <span className="block text-[0.8125rem] text-stone-500 dark:text-stone-400 truncate">

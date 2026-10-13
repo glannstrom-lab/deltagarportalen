@@ -15,6 +15,8 @@
  * tigrinja m.fl. — portalens egna språk är bara svenska och engelska.
  */
 
+import i18n from '@/i18n/config'
+
 export interface OversattSprak {
   code: string
   /** Namnet på språket självt. */
@@ -59,12 +61,21 @@ function sattCookie(code: string) {
   }
 }
 
+/**
+ * Rensar cookien på VARJE domännivå. Googles skript sätter själv en egen
+ * `googtrans` på moderdomänen (`.jobin.se`), inte bara på `www.jobin.se` där
+ * vi satte vår. Uppmätt i prod 2026-10-13: efter "tillbaka till svenska" stod
+ * `.jobin.se=/sv/so` kvar, och nästa språkval fick två motstridiga cookies.
+ */
 function rensaCookies() {
-  const domain = window.location.hostname
+  const delar = window.location.hostname.split('.')
   const utgangen = 'Thu, 01 Jan 1970 00:00:00 UTC'
   document.cookie = `googtrans=; expires=${utgangen}; path=/`
-  document.cookie = `googtrans=; expires=${utgangen}; path=/; domain=.${domain}`
-  document.cookie = `googtrans=; expires=${utgangen}; path=/; domain=${domain}`
+  for (let i = 0; i < delar.length - 1; i++) {
+    const d = delar.slice(i).join('.')
+    document.cookie = `googtrans=; expires=${utgangen}; path=/; domain=${d}`
+    document.cookie = `googtrans=; expires=${utgangen}; path=/; domain=.${d}`
+  }
 }
 
 /** Injicerbar omladdning, för test. */
@@ -75,6 +86,23 @@ export const sidan = {
 /** Översätt sidan till `code`. Laddar om sidan. */
 export function oversattTill(code: string): void {
   if (!OVERSATT_SPRAK.some((s) => s.code === code)) throw new Error(`Okänt språk: ${code}`)
+  // Engelska har portalen själv, granskad och utan att sidtexten lämnar
+  // webbläsaren. Fram till 2026-10-13 gav "English" i listan Googles
+  // maskinöversättning av svenskan i stället — sämre text, och dagboken
+  // skickades till Google i onödan. Nu byter valet portalens språk.
+  // changeLanguage sparar valet synkront som osparat (settingsStore), så det
+  // når kontot vid nästa start även om omladdningen hinner före anropet.
+  if (code === 'en') {
+    try {
+      localStorage.removeItem(STORAGE_KEY)
+    } catch {
+      // Inget sparat att ta bort.
+    }
+    rensaCookies()
+    void i18n.changeLanguage('en')
+    sidan.laddaOm()
+    return
+  }
   try {
     localStorage.setItem(STORAGE_KEY, code)
   } catch {

@@ -3,70 +3,16 @@ import { useTranslation } from 'react-i18next'
 import { Globe, Check, RotateCcw } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 
-// Språk med namn på sitt eget språk och flagg-emoji.
-// Engelska ligger överst eftersom i18n-täckningen sv→en ännu inte är komplett —
-// Google Translate fyller i resten när användaren bytt UI-språk till engelska.
-const LANGUAGES = [
-  { code: 'en', name: 'English', flag: '🇬🇧', english: 'English' },
-  { code: 'ar', name: 'العربية', flag: '🇸🇦', english: 'Arabic' },
-  { code: 'fa', name: 'فارسی', flag: '🇮🇷', english: 'Persian' },
-  { code: 'so', name: 'Soomaali', flag: '🇸🇴', english: 'Somali' },
-  { code: 'ti', name: 'ትግርኛ', flag: '🇪🇷', english: 'Tigrinya' },
-  { code: 'uk', name: 'Українська', flag: '🇺🇦', english: 'Ukrainian' },
-  { code: 'pl', name: 'Polski', flag: '🇵🇱', english: 'Polish' },
-  { code: 'de', name: 'Deutsch', flag: '🇩🇪', english: 'German' },
-  { code: 'fr', name: 'Français', flag: '🇫🇷', english: 'French' },
-  { code: 'es', name: 'Español', flag: '🇪🇸', english: 'Spanish' },
-  { code: 'fi', name: 'Suomi', flag: '🇫🇮', english: 'Finnish' },
-  { code: 'ru', name: 'Русский', flag: '🇷🇺', english: 'Russian' },
-  { code: 'zh-CN', name: '中文', flag: '🇨🇳', english: 'Chinese' },
-] as const
+import { OVERSATT_SPRAK, oversattTill, valtOversattSprak, visaOriginal } from '@/services/sidoversattning'
 
-const STORAGE_KEY = 'googleTranslateLanguage'
-
-// Hämta valt språk från localStorage
-function getSelectedLanguage(): string | null {
-  try {
-    return localStorage.getItem(STORAGE_KEY)
-  } catch {
-    return null
-  }
+// Mekaniken bor i services/sidoversattning.ts (2026-10-13). Den här menyn hade
+// en egen kopia, och kopian rensade inte Googles cookie på moderdomänen och
+// lät "English" bli maskinöversättning. Här bor bara flaggorna.
+const FLAGGOR: Record<string, string> = {
+  en: '🇬🇧', ar: '🇸🇦', fa: '🇮🇷', so: '🇸🇴', ti: '🇪🇷', uk: '🇺🇦', pl: '🇵🇱',
+  de: '🇩🇪', fr: '🇫🇷', es: '🇪🇸', fi: '🇫🇮', ru: '🇷🇺', 'zh-CN': '🇨🇳',
 }
-
-// Spara valt språk till localStorage
-function setSelectedLanguage(langCode: string | null) {
-  try {
-    if (langCode) {
-      localStorage.setItem(STORAGE_KEY, langCode)
-    } else {
-      localStorage.removeItem(STORAGE_KEY)
-    }
-  } catch {
-    // Ignorera
-  }
-}
-
-// Sätt Google Translate cookie
-function setGoogleTranslateCookie(langCode: string) {
-  const value = `/sv/${langCode}`
-  const domain = window.location.hostname
-
-  document.cookie = `googtrans=${value}; path=/`
-
-  if (domain !== 'localhost' && domain !== '127.0.0.1') {
-    document.cookie = `googtrans=${value}; path=/; domain=.${domain}`
-  }
-}
-
-// Rensa Google Translate cookies så gott det går
-function clearGoogleTranslateCookies() {
-  const domain = window.location.hostname
-  const expiredDate = 'Thu, 01 Jan 1970 00:00:00 UTC'
-
-  document.cookie = `googtrans=; expires=${expiredDate}; path=/`
-  document.cookie = `googtrans=; expires=${expiredDate}; path=/; domain=.${domain}`
-  document.cookie = `googtrans=; expires=${expiredDate}; path=/; domain=${domain}`
-}
+const LANGUAGES = OVERSATT_SPRAK.map((s) => ({ ...s, flag: FLAGGOR[s.code] ?? '🌐' }))
 
 export function GoogleTranslate() {
   const { t } = useTranslation()
@@ -74,7 +20,7 @@ export function GoogleTranslate() {
   // Sätts aldrig om av klienten — ett språkbyte laddar om sidan
   // (window.location.reload), och nästa mount läser cookien/localStorage på
   // nytt via initieraren.
-  const [activeLanguage] = useState<string | null>(() => getSelectedLanguage())
+  const [activeLanguage] = useState<string | null>(() => valtOversattSprak())
   const [isLoading, setIsLoading] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
 
@@ -101,28 +47,16 @@ export function GoogleTranslate() {
     return () => document.removeEventListener('keydown', handleEscape)
   }, [isOpen])
 
-  const handleSelectLanguage = async (langCode: string) => {
+  const handleSelectLanguage = (langCode: string) => {
     setIsLoading(true)
     setIsOpen(false)
-
-    // Spara valet
-    setSelectedLanguage(langCode)
-    setGoogleTranslateCookie(langCode)
-
-    // Ladda om sidan för att aktivera översättningen
-    window.location.reload()
+    oversattTill(langCode) // sparar, sätter cookien och laddar om
   }
 
   const handleResetTranslation = () => {
     setIsLoading(true)
     setIsOpen(false)
-
-    // Ta bort sparad översättning
-    setSelectedLanguage(null)
-    clearGoogleTranslateCookies()
-
-    // Ladda om sidan - utan sparad översättning laddas inte scriptet
-    window.location.reload()
+    visaOriginal() // tar bort valet och cookien på alla domännivåer, laddar om
   }
 
   return (

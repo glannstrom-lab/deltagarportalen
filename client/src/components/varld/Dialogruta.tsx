@@ -138,7 +138,7 @@ export function Dialogruta({ coachId, repliker, variant = 'kort', vidByte, class
           aria-expanded={false}
           className="min-w-0 flex-1 text-left text-[0.9375rem] text-stone-700 dark:text-stone-300 truncate hover:underline underline-offset-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--c-solid)] rounded"
         >
-          <span className="font-semibold text-stone-900 dark:text-stone-100">{coach.name}: </span>
+          <span translate="no" className="font-semibold text-stone-900 dark:text-stone-100">{coach.name}: </span>
           {replik.knapp ? replik.knapp.text : replik.text}
         </button>
         {!saknas && (
@@ -185,7 +185,9 @@ export function Dialogruta({ coachId, repliker, variant = 'kort', vidByte, class
 
           <div className="flex items-center gap-2 min-w-0 self-center">
             <p className="m-0 min-w-0 flex-1 leading-tight">
-              <span className="flex items-center gap-2 font-semibold text-[1rem] text-stone-900 dark:text-stone-100">
+              {/* translate="no": Google gjorde Andreas till "Andrew" och Daniel
+                  till "Daanyeel" (prod 2026-10-13). Ett namn översätts inte. */}
+              <span translate="no" className="flex items-center gap-2 font-semibold text-[1rem] text-stone-900 dark:text-stone-100">
                 {coach.name}
                 {spelar && (
                   <span aria-hidden="true" className="varld-talar inline-flex items-end gap-[3px] h-3">
