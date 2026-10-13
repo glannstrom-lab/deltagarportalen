@@ -16,6 +16,7 @@ import { MemoryRouter } from 'react-router-dom'
 import fs from 'node:fs'
 import path from 'node:path'
 import { useSettingsStore } from '@/stores/settingsStore'
+import { showToast } from '@/components/Toast'
 import { SIDHALSNINGAR, OVERSIKT_STEG, OVERSIKT_INGET, ljudFor } from '@/data/radgivarHalsningar'
 import { SIDBILDER } from '@/data/sidbilder'
 import { HUBBPLATSER, STILAR, TIDER, scenSrc, PLATSER, foremalSrc } from '@/data/varld'
@@ -125,6 +126,23 @@ describe('hälsningen på en verktygssida', () => {
     fireEvent.click(paus)
     expect(ljud.pause).toHaveBeenCalled()
     expect(screen.getByRole('button', { name: /lyssna/i })).toBeTruthy()
+  })
+
+  it('"Dölj" slår av rådgivarna, tystnar och går att ångra', () => {
+    const spara = vi.fn(() => Promise.resolve(true))
+    useSettingsStore.setState({ _saveToServer: spara })
+    const toast = vi.spyOn(showToast, 'custom').mockReturnValue('t')
+    rendera('/jobb')
+    act(() => vi.advanceTimersByTime(700))
+    const ljud = FakeAudio.senaste.at(-1)!
+    fireEvent.click(screen.getByRole('button', { name: /dölj rådgivarna/i }))
+    expect(ljud.pause).toHaveBeenCalled()
+    expect(useSettingsStore.getState().showCoachWidget).toBe(false)
+    expect(spara).toHaveBeenCalledWith({ show_coach_widget: false })
+    // Vägen tillbaka: Ångra i toasten.
+    act(() => toast.mock.calls[0][0].action!.onClick())
+    expect(useSettingsStore.getState().showCoachWidget).toBe(true)
+    toast.mockRestore()
   })
 
   it('andra besöket samma session: hopfälld och tyst', () => {

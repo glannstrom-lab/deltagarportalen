@@ -10208,7 +10208,12 @@
       "close": "Fäll ihop",
       "listenShort": "Lyssna",
       "pauseShort": "Pausa",
-      "again": "Lyssna igen"
+      "again": "Lyssna igen",
+      "hide": "Dölj rådgivarna",
+      "hideShort": "Dölj",
+      "hiddenTitle": "Rådgivarna är dolda",
+      "hiddenBody": "Du kan visa dem igen under Inställningar → Utseende.",
+      "undo": "Ångra"
     },
     "moreFrom": "Fler råd från {{namn}}"
   },

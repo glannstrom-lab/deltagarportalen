@@ -10208,7 +10208,12 @@
       "close": "Collapse",
       "listenShort": "Listen",
       "pauseShort": "Pause",
-      "again": "Listen again"
+      "again": "Listen again",
+      "hide": "Hide the advisors",
+      "hideShort": "Hide",
+      "hiddenTitle": "The advisors are hidden",
+      "hiddenBody": "You can show them again under Settings → Appearance.",
+      "undo": "Undo"
     },
     "moreFrom": "More advice from {{namn}}"
   },

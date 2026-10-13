@@ -17,12 +17,13 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { ArrowRight, Pause, Volume2, X, RefreshCw } from '@/components/ui/icons'
+import { ArrowRight, EyeOff, Pause, Volume2, X, RefreshCw } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 import { COACHES, type CoachId } from '@/data/coaches'
 import { ljudFor } from '@/data/radgivarHalsningar'
 import { useInnehall } from '@/data/oversattningar'
 import { useSettingsStore } from '@/stores/settingsStore'
+import { showToast } from '@/components/Toast'
 import { lasHorda, markeraHord, useRost } from './rost'
 
 export interface Replik {
@@ -67,6 +68,43 @@ export function Dialogruta({ coachId, repliker, variant = 'kort', vidByte, class
 
   const { lage, saknas, vaxla } = useRost(ljudFor(replik.nyckel, sprak), autostart, replik.nyckel)
   const spelar = lage === 'spelar'
+
+  // "Dölj" (önskemål Mikael 2026-10-13: "det blir tjatigt efter ett tag").
+  // Slår av samma inställning som "Visa coach-tips" under Inställningar →
+  // Utseende — en brytare, inte två — så rutan, kolumnen och de infogade
+  // råden försvinner överallt och följer med kontot. Toasten pekar ut vägen
+  // tillbaka och har Ångra för den som klickade fel.
+  const dolj = () => {
+    if (spelar) vaxla()
+    markeraHord(repliker[0].nyckel)
+    const st = useSettingsStore.getState()
+    if (!st.showCoachWidget) return
+    st.toggleCoachWidget()
+    showToast.custom({
+      type: 'info',
+      title: t('radgivare.halsning.hiddenTitle', 'Rådgivarna är dolda'),
+      message: t('radgivare.halsning.hiddenBody', 'Du kan visa dem igen under Inställningar → Utseende.'),
+      duration: 8000,
+      action: {
+        label: t('radgivare.halsning.undo', 'Ångra'),
+        onClick: () => {
+          if (!useSettingsStore.getState().showCoachWidget) useSettingsStore.getState().toggleCoachWidget()
+        },
+      },
+    })
+  }
+  const doljKnapp = (
+    <button
+      type="button"
+      onClick={dolj}
+      aria-label={t('radgivare.halsning.hide', 'Dölj rådgivarna')}
+      title={t('radgivare.halsning.hide', 'Dölj rådgivarna')}
+      className="shrink-0 inline-flex items-center justify-center gap-1.5 h-9 min-w-9 px-2 sm:px-2.5 rounded-full text-[0.8125rem] font-medium text-stone-500 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--c-solid)]"
+    >
+      <EyeOff className="w-4 h-4" aria-hidden="true" />
+      <span aria-hidden="true" className="hidden sm:inline">{t('radgivare.halsning.hideShort', 'Dölj')}</span>
+    </button>
+  )
 
   const byt = () => {
     if (spelar) vaxla()
@@ -118,6 +156,7 @@ export function Dialogruta({ coachId, repliker, variant = 'kort', vidByte, class
             {spelar ? <Pause className="w-4 h-4" aria-hidden="true" /> : <Volume2 className="w-4 h-4" aria-hidden="true" />}
           </button>
         )}
+        {doljKnapp}
       </div>
     )
   }
@@ -169,6 +208,7 @@ export function Dialogruta({ coachId, repliker, variant = 'kort', vidByte, class
                 <span className="sr-only sm:not-sr-only">{ljudEtikett}</span>
               </button>
             )}
+            {doljKnapp}
             <button
               type="button"
               onClick={() => {
