@@ -16,6 +16,7 @@
  *   en lång utbildningslista kan delas över en sidbrytning.
  */
 
+import { PostSektion } from './PostSektion'
 import type { CSSProperties } from 'react'
 import type { TemplateProps } from './types'
 import { getLanguageLevelDisplay, getSkillName, getInitials } from './helpers'
@@ -130,8 +131,7 @@ export function ChicagoTemplate({ data, fullName, rubrikniva }: TemplateProps) {
         )}
 
         {data.workExperience.length > 0 && (
-          <section style={{ marginBottom: '28px' }}>
-            <Sektion style={sektionsrubrik}>Arbetslivserfarenhet</Sektion>
+          <PostSektion style={{ marginBottom: '28px' }} rubrik={<Sektion style={sektionsrubrik}>Arbetslivserfarenhet</Sektion>}>
             {data.workExperience.map((job) => (
               <div key={job.id} className="cv-entry" style={{ marginBottom: '17px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
@@ -147,12 +147,11 @@ export function ChicagoTemplate({ data, fullName, rubrikniva }: TemplateProps) {
                 <Beskrivning text={job.description} style={{ fontSize: '12px', lineHeight: 1.65, color: TEXT, marginTop: '4px' }} />
               </div>
             ))}
-          </section>
+          </PostSektion>
         )}
 
         {data.education.length > 0 && (
-          <section style={{ marginBottom: '28px' }}>
-            <Sektion style={sektionsrubrik}>Utbildning</Sektion>
+          <PostSektion style={{ marginBottom: '28px' }} rubrik={<Sektion style={sektionsrubrik}>Utbildning</Sektion>}>
             {data.education.map((edu) => (
               <div key={edu.id} className="cv-entry" style={{ marginBottom: '13px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
@@ -170,7 +169,7 @@ export function ChicagoTemplate({ data, fullName, rubrikniva }: TemplateProps) {
                 <Beskrivning text={edu.description} style={{ fontSize: '12px', lineHeight: 1.65, color: TEXT, marginTop: '4px' }} />
               </div>
             ))}
-          </section>
+          </PostSektion>
         )}
 
         {data.certificates.length > 0 && (

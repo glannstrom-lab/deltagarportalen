@@ -13,6 +13,7 @@
  * - Datumen i kursiv men med tabulära siffror, "mar 2023 – nuvarande".
  */
 
+import { PostSektion } from './PostSektion'
 import type { CSSProperties } from 'react'
 import type { TemplateProps } from './types'
 import { getLanguageLevelDisplay, getSkillName, getInitials } from './helpers'
@@ -116,8 +117,7 @@ export function AtelierTemplate({ data, fullName, rubrikniva }: TemplateProps) {
           )}
 
           {data.workExperience.length > 0 && (
-            <section style={{ marginBottom: '22px' }}>
-              <Sektion style={rubrik}>Erfarenhet</Sektion>
+            <PostSektion style={{ marginBottom: '22px' }} rubrik={<Sektion style={rubrik}>Erfarenhet</Sektion>}>
               {data.workExperience.map((job) => (
                 <div key={job.id} className="cv-entry" style={{ marginBottom: '13px' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
@@ -133,12 +133,11 @@ export function AtelierTemplate({ data, fullName, rubrikniva }: TemplateProps) {
                   <Beskrivning text={job.description} style={{ fontSize: '12.5px', lineHeight: 1.55, color: TEXT, marginTop: '4px' }} />
                 </div>
               ))}
-            </section>
+            </PostSektion>
           )}
 
           {data.education.length > 0 && (
-            <section style={{ marginBottom: '22px' }}>
-              <Sektion style={rubrik}>Utbildning</Sektion>
+            <PostSektion style={{ marginBottom: '22px' }} rubrik={<Sektion style={rubrik}>Utbildning</Sektion>}>
               {data.education.map((edu) => (
                 <div key={edu.id} className="cv-entry" style={{ marginBottom: '11px' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
@@ -158,7 +157,7 @@ export function AtelierTemplate({ data, fullName, rubrikniva }: TemplateProps) {
                   <Beskrivning text={edu.description} style={{ fontSize: '12.5px', lineHeight: 1.55, color: TEXT, marginTop: '4px' }} />
                 </div>
               ))}
-            </section>
+            </PostSektion>
           )}
         </main>
 

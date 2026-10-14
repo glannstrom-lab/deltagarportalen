@@ -16,6 +16,7 @@
  * - Tunn kant mellan kolumnerna även i förhandsvisningen (PDF:en hade den).
  */
 
+import { PostSektion } from './PostSektion'
 import type { CSSProperties } from 'react'
 import type { TemplateProps } from './types'
 import { getLanguageLevelDisplay, getSkillName, getInitials } from './helpers'
@@ -116,8 +117,7 @@ export function RotterdamTemplate({ data, fullName, rubrikniva }: TemplateProps)
         )}
 
         {data.workExperience.length > 0 && (
-          <section style={{ marginBottom: '30px' }}>
-            <Sektion style={sektionsrubrik}>Erfarenhet</Sektion>
+          <PostSektion style={{ marginBottom: '30px' }} rubrik={<Sektion style={sektionsrubrik}>Erfarenhet</Sektion>}>
             {data.workExperience.map((job) => (
               <div key={job.id} className="cv-entry" style={{ marginBottom: '20px' }}>
                 <Post style={{ fontSize: '14px', fontWeight: 700, color: BLACK, margin: 0 }}>{job.title}</Post>
@@ -127,7 +127,7 @@ export function RotterdamTemplate({ data, fullName, rubrikniva }: TemplateProps)
                 <Beskrivning text={job.description} style={{ fontSize: '12px', lineHeight: 1.65, color: TEXT, marginTop: '6px' }} />
               </div>
             ))}
-          </section>
+          </PostSektion>
         )}
 
         {data.certificates.length > 0 && (
@@ -218,9 +218,10 @@ export function RotterdamTemplate({ data, fullName, rubrikniva }: TemplateProps)
           </section>
         )}
 
+        {/* I asidens flex-kolumn kollapsar inga marginaler: sista postens 12px stod
+            förr inne i sektionen. PostSektion nollar den, så den bor här i stället. */}
         {data.education.length > 0 && (
-          <section>
-            <Sektion style={sektionsrubrik}>Utbildning</Sektion>
+          <PostSektion style={{ marginBottom: '12px' }} rubrik={<Sektion style={sektionsrubrik}>Utbildning</Sektion>}>
             {data.education.map((edu) => (
               <div key={edu.id} className="cv-entry" style={{ marginBottom: '12px' }}>
                 <Post style={{ fontSize: '11.5px', fontWeight: 700, color: BLACK, margin: 0, lineHeight: 1.35 }}>{edu.degree || edu.school}</Post>
@@ -231,7 +232,7 @@ export function RotterdamTemplate({ data, fullName, rubrikniva }: TemplateProps)
                 </div>
               </div>
             ))}
-          </section>
+          </PostSektion>
         )}
 
         {data.languages.length > 0 && (

@@ -55,120 +55,164 @@ exports[`CV-mallar — snapshot regression > AtelierTemplate 1`] = `
         </p>
       </section>
       <section
+        class="cv-postsektion"
         style="margin-bottom: 22px;"
       >
-        <h2
-          style="font-size: 10px; font-weight: 700; letter-spacing: 0.24em; text-transform: uppercase; color: rgb(30, 58, 58); margin: 0px 0px 12px; padding-bottom: 6px; border-bottom: 1px solid rgb(30, 58, 58);"
+        <table
+          role="presentation"
+          style="width: 100%; border-collapse: collapse; border-spacing: 0px; table-layout: fixed;"
         >
-          Erfarenhet
-        </h2>
-        <div
-          class="cv-entry"
-          style="margin-bottom: 13px;"
-        >
-          <div
-            style="display: flex; justify-content: space-between; align-items: baseline;"
-          >
-            <h3
-              style="font-size: 14px; font-weight: 700; color: rgb(26, 26, 26); margin: 0px;"
-            >
-              Senior Frontend Developer
-            </h3>
-            <span
-              class="cv-datum"
-              style="font-size: 11px; font-style: italic; color: rgb(92, 92, 92); white-space: nowrap; margin-left: 14px;"
-            >
-              jan 2022 – nuvarande
-            </span>
-          </div>
-          <p
-            style="font-size: 12.5px; margin: 1px 0px 0px; color: rgb(30, 58, 58); font-weight: 600; letter-spacing: 0.02em;"
-          >
-            Tech AB
-          </p>
-          <div
-            style="font-size: 12.5px; line-height: 1.55; color: rgb(51, 51, 51); margin-top: 4px;"
-          >
-            <p
-              class="cv-stycke"
-            >
-              Leder frontend-team. Migrerade legacy Angular till React.
-            </p>
-          </div>
-        </div>
-        <div
-          class="cv-entry"
-          style="margin-bottom: 13px;"
-        >
-          <div
-            style="display: flex; justify-content: space-between; align-items: baseline;"
-          >
-            <h3
-              style="font-size: 14px; font-weight: 700; color: rgb(26, 26, 26); margin: 0px;"
-            >
-              Frontend Developer
-            </h3>
-            <span
-              class="cv-datum"
-              style="font-size: 11px; font-style: italic; color: rgb(92, 92, 92); white-space: nowrap; margin-left: 14px;"
-            >
-              jun 2019 – dec 2021
-            </span>
-          </div>
-          <p
-            style="font-size: 12.5px; margin: 1px 0px 0px; color: rgb(30, 58, 58); font-weight: 600; letter-spacing: 0.02em;"
-          >
-            Webb-byrån
-          </p>
-          <div
-            style="font-size: 12.5px; line-height: 1.55; color: rgb(51, 51, 51); margin-top: 4px;"
-          >
-            <p
-              class="cv-stycke"
-            >
-              Byggde komponentbibliotek och e-handelslösningar.
-            </p>
-          </div>
-        </div>
+          <thead>
+            <tr>
+              <td
+                style="padding: 0px; vertical-align: top;"
+              >
+                <h2
+                  style="font-size: 10px; font-weight: 700; letter-spacing: 0.24em; text-transform: uppercase; color: rgb(30, 58, 58); margin: 0px 0px 12px; padding-bottom: 6px; border-bottom: 1px solid rgb(30, 58, 58);"
+                >
+                  Erfarenhet
+                </h2>
+              </td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td
+                style="padding: 0px; vertical-align: top;"
+              >
+                <div
+                  class="cv-entry"
+                  style="margin-bottom: 13px;"
+                >
+                  <div
+                    style="display: flex; justify-content: space-between; align-items: baseline;"
+                  >
+                    <h3
+                      style="font-size: 14px; font-weight: 700; color: rgb(26, 26, 26); margin: 0px;"
+                    >
+                      Senior Frontend Developer
+                    </h3>
+                    <span
+                      class="cv-datum"
+                      style="font-size: 11px; font-style: italic; color: rgb(92, 92, 92); white-space: nowrap; margin-left: 14px;"
+                    >
+                      jan 2022 – nuvarande
+                    </span>
+                  </div>
+                  <p
+                    style="font-size: 12.5px; margin: 1px 0px 0px; color: rgb(30, 58, 58); font-weight: 600; letter-spacing: 0.02em;"
+                  >
+                    Tech AB
+                  </p>
+                  <div
+                    style="font-size: 12.5px; line-height: 1.55; color: rgb(51, 51, 51); margin-top: 4px;"
+                  >
+                    <p
+                      class="cv-stycke"
+                    >
+                      Leder frontend-team. Migrerade legacy Angular till React.
+                    </p>
+                  </div>
+                </div>
+                <div
+                  class="cv-entry"
+                  style="margin-bottom: 13px;"
+                >
+                  <div
+                    style="display: flex; justify-content: space-between; align-items: baseline;"
+                  >
+                    <h3
+                      style="font-size: 14px; font-weight: 700; color: rgb(26, 26, 26); margin: 0px;"
+                    >
+                      Frontend Developer
+                    </h3>
+                    <span
+                      class="cv-datum"
+                      style="font-size: 11px; font-style: italic; color: rgb(92, 92, 92); white-space: nowrap; margin-left: 14px;"
+                    >
+                      jun 2019 – dec 2021
+                    </span>
+                  </div>
+                  <p
+                    style="font-size: 12.5px; margin: 1px 0px 0px; color: rgb(30, 58, 58); font-weight: 600; letter-spacing: 0.02em;"
+                  >
+                    Webb-byrån
+                  </p>
+                  <div
+                    style="font-size: 12.5px; line-height: 1.55; color: rgb(51, 51, 51); margin-top: 4px;"
+                  >
+                    <p
+                      class="cv-stycke"
+                    >
+                      Byggde komponentbibliotek och e-handelslösningar.
+                    </p>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </section>
       <section
+        class="cv-postsektion"
         style="margin-bottom: 22px;"
       >
-        <h2
-          style="font-size: 10px; font-weight: 700; letter-spacing: 0.24em; text-transform: uppercase; color: rgb(30, 58, 58); margin: 0px 0px 12px; padding-bottom: 6px; border-bottom: 1px solid rgb(30, 58, 58);"
+        <table
+          role="presentation"
+          style="width: 100%; border-collapse: collapse; border-spacing: 0px; table-layout: fixed;"
         >
-          Utbildning
-        </h2>
-        <div
-          class="cv-entry"
-          style="margin-bottom: 11px;"
-        >
-          <div
-            style="display: flex; justify-content: space-between; align-items: baseline;"
-          >
-            <h3
-              style="font-size: 13.5px; font-weight: 700; color: rgb(26, 26, 26); margin: 0px;"
-            >
-              Civilingenjör
-            </h3>
-            <span
-              class="cv-datum"
-              style="font-size: 11px; font-style: italic; color: rgb(92, 92, 92); white-space: nowrap; margin-left: 14px;"
-            >
-              2014 – 2019
-            </span>
-          </div>
-          <p
-            style="font-size: 12.5px; margin: 1px 0px 0px; color: rgb(30, 58, 58); font-weight: 600;"
-          >
-            KTH
-          </p>
-          <p
-            style="font-size: 12px; margin: 1px 0px 0px; color: rgb(92, 92, 92); font-style: italic;"
-          >
-            Datateknik
-          </p>
-        </div>
+          <thead>
+            <tr>
+              <td
+                style="padding: 0px; vertical-align: top;"
+              >
+                <h2
+                  style="font-size: 10px; font-weight: 700; letter-spacing: 0.24em; text-transform: uppercase; color: rgb(30, 58, 58); margin: 0px 0px 12px; padding-bottom: 6px; border-bottom: 1px solid rgb(30, 58, 58);"
+                >
+                  Utbildning
+                </h2>
+              </td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td
+                style="padding: 0px; vertical-align: top;"
+              >
+                <div
+                  class="cv-entry"
+                  style="margin-bottom: 11px;"
+                >
+                  <div
+                    style="display: flex; justify-content: space-between; align-items: baseline;"
+                  >
+                    <h3
+                      style="font-size: 13.5px; font-weight: 700; color: rgb(26, 26, 26); margin: 0px;"
+                    >
+                      Civilingenjör
+                    </h3>
+                    <span
+                      class="cv-datum"
+                      style="font-size: 11px; font-style: italic; color: rgb(92, 92, 92); white-space: nowrap; margin-left: 14px;"
+                    >
+                      2014 – 2019
+                    </span>
+                  </div>
+                  <p
+                    style="font-size: 12.5px; margin: 1px 0px 0px; color: rgb(30, 58, 58); font-weight: 600;"
+                  >
+                    KTH
+                  </p>
+                  <p
+                    style="font-size: 12px; margin: 1px 0px 0px; color: rgb(92, 92, 92); font-style: italic;"
+                  >
+                    Datateknik
+                  </p>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </section>
     </main>
     <aside
@@ -356,139 +400,183 @@ exports[`CV-mallar — snapshot regression > BerlinTemplate 1`] = `
       </p>
     </section>
     <section
+      class="cv-postsektion"
       style="margin-bottom: 16px;"
     >
-      <h2
-        style="display: flex; align-items: baseline; gap: 12px; margin: 0px 0px 10px; padding-bottom: 5px; border-bottom: 2px solid rgb(26, 26, 26); font-size: 13px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; color: rgb(26, 26, 26);"
+      <table
+        role="presentation"
+        style="width: 100%; border-collapse: collapse; border-spacing: 0px; table-layout: fixed;"
       >
-        <span
-          style="font-size: 10px; font-weight: 800; color: rgb(184, 50, 42); min-width: 18px; letter-spacing: 0.02em;"
-        >
-          II
-        </span>
-        Erfarenhet
-      </h2>
-      <div
-        class="cv-entry"
-        style="display: grid; grid-template-columns: 78px 1fr; gap: 14px; margin-bottom: 9px; padding-bottom: 9px; border-bottom: 1px solid rgb(214, 204, 186);"
-      >
-        <div
-          class="cv-datum"
-          style="font-size: 10.5px; font-weight: 700; color: rgb(184, 50, 42); letter-spacing: 0.04em; padding-top: 2px; line-height: 1.4;"
-        >
-          jan 2022
-          <br />
-          – 
-          nu
-        </div>
-        <div
-          style="min-width: 0;"
-        >
-          <h3
-            style="font-size: 14px; font-weight: 800; color: rgb(26, 26, 26); letter-spacing: -0.01em; margin: 0px;"
-          >
-            Senior Frontend Developer
-          </h3>
-          <p
-            style="font-size: 10.5px; font-weight: 600; color: rgb(85, 80, 73); text-transform: uppercase; letter-spacing: 0.08em; margin: 2px 0px 0px;"
-          >
-            Tech AB
-          </p>
-          <div
-            style="font-size: 12px; line-height: 1.55; color: rgb(51, 51, 51); margin-top: 4px;"
-          >
-            <p
-              class="cv-stycke"
+        <thead>
+          <tr>
+            <td
+              style="padding: 0px; vertical-align: top;"
             >
-              Leder frontend-team. Migrerade legacy Angular till React.
-            </p>
-          </div>
-        </div>
-      </div>
-      <div
-        class="cv-entry"
-        style="display: grid; grid-template-columns: 78px 1fr; gap: 14px; margin-bottom: 9px; padding-bottom: 9px; border-bottom: 1px solid rgb(214, 204, 186);"
-      >
-        <div
-          class="cv-datum"
-          style="font-size: 10.5px; font-weight: 700; color: rgb(184, 50, 42); letter-spacing: 0.04em; padding-top: 2px; line-height: 1.4;"
-        >
-          jun 2019
-          <br />
-          – 
-          dec 2021
-        </div>
-        <div
-          style="min-width: 0;"
-        >
-          <h3
-            style="font-size: 14px; font-weight: 800; color: rgb(26, 26, 26); letter-spacing: -0.01em; margin: 0px;"
-          >
-            Frontend Developer
-          </h3>
-          <p
-            style="font-size: 10.5px; font-weight: 600; color: rgb(85, 80, 73); text-transform: uppercase; letter-spacing: 0.08em; margin: 2px 0px 0px;"
-          >
-            Webb-byrån
-          </p>
-          <div
-            style="font-size: 12px; line-height: 1.55; color: rgb(51, 51, 51); margin-top: 4px;"
-          >
-            <p
-              class="cv-stycke"
+              <h2
+                style="display: flex; align-items: baseline; gap: 12px; margin: 0px 0px 10px; padding-bottom: 5px; border-bottom: 2px solid rgb(26, 26, 26); font-size: 13px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; color: rgb(26, 26, 26);"
+              >
+                <span
+                  style="font-size: 10px; font-weight: 800; color: rgb(184, 50, 42); min-width: 18px; letter-spacing: 0.02em;"
+                >
+                  II
+                </span>
+                Erfarenhet
+              </h2>
+            </td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td
+              style="padding: 0px; vertical-align: top;"
             >
-              Byggde komponentbibliotek och e-handelslösningar.
-            </p>
-          </div>
-        </div>
-      </div>
+              <div
+                class="cv-entry"
+                style="display: grid; grid-template-columns: 78px 1fr; gap: 14px; margin-bottom: 9px; padding-bottom: 9px; border-bottom: 1px solid rgb(214, 204, 186);"
+              >
+                <div
+                  class="cv-datum"
+                  style="font-size: 10.5px; font-weight: 700; color: rgb(184, 50, 42); letter-spacing: 0.04em; padding-top: 2px; line-height: 1.4;"
+                >
+                  jan 2022
+                  <br />
+                  – 
+                  nu
+                </div>
+                <div
+                  style="min-width: 0;"
+                >
+                  <h3
+                    style="font-size: 14px; font-weight: 800; color: rgb(26, 26, 26); letter-spacing: -0.01em; margin: 0px;"
+                  >
+                    Senior Frontend Developer
+                  </h3>
+                  <p
+                    style="font-size: 10.5px; font-weight: 600; color: rgb(85, 80, 73); text-transform: uppercase; letter-spacing: 0.08em; margin: 2px 0px 0px;"
+                  >
+                    Tech AB
+                  </p>
+                  <div
+                    style="font-size: 12px; line-height: 1.55; color: rgb(51, 51, 51); margin-top: 4px;"
+                  >
+                    <p
+                      class="cv-stycke"
+                    >
+                      Leder frontend-team. Migrerade legacy Angular till React.
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="cv-entry"
+                style="display: grid; grid-template-columns: 78px 1fr; gap: 14px; margin-bottom: 9px; padding-bottom: 9px; border-bottom: 1px solid rgb(214, 204, 186);"
+              >
+                <div
+                  class="cv-datum"
+                  style="font-size: 10.5px; font-weight: 700; color: rgb(184, 50, 42); letter-spacing: 0.04em; padding-top: 2px; line-height: 1.4;"
+                >
+                  jun 2019
+                  <br />
+                  – 
+                  dec 2021
+                </div>
+                <div
+                  style="min-width: 0;"
+                >
+                  <h3
+                    style="font-size: 14px; font-weight: 800; color: rgb(26, 26, 26); letter-spacing: -0.01em; margin: 0px;"
+                  >
+                    Frontend Developer
+                  </h3>
+                  <p
+                    style="font-size: 10.5px; font-weight: 600; color: rgb(85, 80, 73); text-transform: uppercase; letter-spacing: 0.08em; margin: 2px 0px 0px;"
+                  >
+                    Webb-byrån
+                  </p>
+                  <div
+                    style="font-size: 12px; line-height: 1.55; color: rgb(51, 51, 51); margin-top: 4px;"
+                  >
+                    <p
+                      class="cv-stycke"
+                    >
+                      Byggde komponentbibliotek och e-handelslösningar.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </section>
     <section
+      class="cv-postsektion"
       style="margin-bottom: 16px;"
     >
-      <h2
-        style="display: flex; align-items: baseline; gap: 12px; margin: 0px 0px 10px; padding-bottom: 5px; border-bottom: 2px solid rgb(26, 26, 26); font-size: 13px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; color: rgb(26, 26, 26);"
+      <table
+        role="presentation"
+        style="width: 100%; border-collapse: collapse; border-spacing: 0px; table-layout: fixed;"
       >
-        <span
-          style="font-size: 10px; font-weight: 800; color: rgb(184, 50, 42); min-width: 18px; letter-spacing: 0.02em;"
-        >
-          III
-        </span>
-        Utbildning
-      </h2>
-      <div
-        class="cv-entry"
-        style="display: grid; grid-template-columns: 78px 1fr; gap: 14px; margin-bottom: 9px; padding-bottom: 9px; border-bottom: 1px solid rgb(214, 204, 186);"
-      >
-        <div
-          class="cv-datum"
-          style="font-size: 10.5px; font-weight: 700; color: rgb(184, 50, 42); letter-spacing: 0.04em; padding-top: 2px; line-height: 1.4;"
-        >
-          2014
-          <br />
-          – 
-          2019
-        </div>
-        <div
-          style="min-width: 0;"
-        >
-          <h3
-            style="font-size: 13.5px; font-weight: 800; color: rgb(26, 26, 26); letter-spacing: -0.01em; margin: 0px;"
-          >
-            Civilingenjör
-          </h3>
-          <p
-            style="font-size: 10.5px; font-weight: 600; color: rgb(85, 80, 73); text-transform: uppercase; letter-spacing: 0.08em; margin: 2px 0px 0px;"
-          >
-            KTH
-          </p>
-          <p
-            style="font-size: 11.5px; color: rgb(85, 80, 73); margin: 2px 0px 0px;"
-          >
-            Datateknik
-          </p>
-        </div>
-      </div>
+        <thead>
+          <tr>
+            <td
+              style="padding: 0px; vertical-align: top;"
+            >
+              <h2
+                style="display: flex; align-items: baseline; gap: 12px; margin: 0px 0px 10px; padding-bottom: 5px; border-bottom: 2px solid rgb(26, 26, 26); font-size: 13px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; color: rgb(26, 26, 26);"
+              >
+                <span
+                  style="font-size: 10px; font-weight: 800; color: rgb(184, 50, 42); min-width: 18px; letter-spacing: 0.02em;"
+                >
+                  III
+                </span>
+                Utbildning
+              </h2>
+            </td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td
+              style="padding: 0px; vertical-align: top;"
+            >
+              <div
+                class="cv-entry"
+                style="display: grid; grid-template-columns: 78px 1fr; gap: 14px; margin-bottom: 9px; padding-bottom: 9px; border-bottom: 1px solid rgb(214, 204, 186);"
+              >
+                <div
+                  class="cv-datum"
+                  style="font-size: 10.5px; font-weight: 700; color: rgb(184, 50, 42); letter-spacing: 0.04em; padding-top: 2px; line-height: 1.4;"
+                >
+                  2014
+                  <br />
+                  – 
+                  2019
+                </div>
+                <div
+                  style="min-width: 0;"
+                >
+                  <h3
+                    style="font-size: 13.5px; font-weight: 800; color: rgb(26, 26, 26); letter-spacing: -0.01em; margin: 0px;"
+                  >
+                    Civilingenjör
+                  </h3>
+                  <p
+                    style="font-size: 10.5px; font-weight: 600; color: rgb(85, 80, 73); text-transform: uppercase; letter-spacing: 0.08em; margin: 2px 0px 0px;"
+                  >
+                    KTH
+                  </p>
+                  <p
+                    style="font-size: 11.5px; color: rgb(85, 80, 73); margin: 2px 0px 0px;"
+                  >
+                    Datateknik
+                  </p>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </section>
     <section
       class="cv-keep"
@@ -694,168 +782,212 @@ exports[`CV-mallar — snapshot regression > BudapestTemplate 1`] = `
       </p>
     </section>
     <section
+      class="cv-postsektion"
       style="margin-bottom: 28px;"
     >
-      <h2
-        style="font-size: 12px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: rgb(44, 62, 80); margin: 0px 0px 16px; padding-bottom: 7px; border-bottom: 1px solid rgb(227, 231, 236);"
+      <table
+        role="presentation"
+        style="width: 100%; border-collapse: collapse; border-spacing: 0px; table-layout: fixed;"
       >
-        Arbetslivserfarenhet
-      </h2>
-      <div
-        class="cv-entry"
-      >
-        <div
-          style="display: grid; grid-template-columns: 122px 18px 1fr; gap: 10px;"
-        >
-          <div
-            style="padding-bottom: 16px;"
-          >
-            <div
-              style="font-size: 12px; font-weight: 700; color: rgb(44, 62, 80); line-height: 1.35;"
+        <thead>
+          <tr>
+            <td
+              style="padding: 0px; vertical-align: top;"
             >
-              Tech AB
-            </div>
-            <div
-              class="cv-datum"
-              style="font-size: 11px; color: rgb(90, 102, 118); margin-top: 2px;"
-            >
-              jan 2022 – nu
-            </div>
-          </div>
-          <div
-            aria-hidden="true"
-            style="display: flex; flex-direction: column; align-items: center; padding-top: 4px;"
-          >
-            <div
-              style="width: 9px; height: 9px; border-radius: 50%; border: 2px solid rgb(44, 62, 80); background: rgb(255, 255, 255);"
-            />
-            <div
-              style="width: 1px; flex: 1 1 0%; background: rgb(203, 211, 220); margin-top: 4px;"
-            />
-          </div>
-          <div
-            style="min-width: 0; padding-bottom: 16px;"
-          >
-            <h3
-              style="font-size: 13.5px; font-weight: 700; color: rgb(44, 62, 80); margin: 0px;"
-            >
-              Senior Frontend Developer
-            </h3>
-            <div
-              style="font-size: 12px; line-height: 1.6; color: rgb(64, 75, 88); margin-top: 4px;"
-            >
-              <p
-                class="cv-stycke"
+              <h2
+                style="font-size: 12px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: rgb(44, 62, 80); margin: 0px 0px 16px; padding-bottom: 7px; border-bottom: 1px solid rgb(227, 231, 236);"
               >
-                Leder frontend-team. Migrerade legacy Angular till React.
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div
-        class="cv-entry"
-      >
-        <div
-          style="display: grid; grid-template-columns: 122px 18px 1fr; gap: 10px;"
-        >
-          <div
-            style="padding-bottom: 16px;"
-          >
-            <div
-              style="font-size: 12px; font-weight: 700; color: rgb(44, 62, 80); line-height: 1.35;"
+                Arbetslivserfarenhet
+              </h2>
+            </td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td
+              style="padding: 0px; vertical-align: top;"
             >
-              Webb-byrån
-            </div>
-            <div
-              class="cv-datum"
-              style="font-size: 11px; color: rgb(90, 102, 118); margin-top: 2px;"
-            >
-              jun 2019 – dec 2021
-            </div>
-          </div>
-          <div
-            aria-hidden="true"
-            style="display: flex; flex-direction: column; align-items: center; padding-top: 4px;"
-          >
-            <div
-              style="width: 9px; height: 9px; border-radius: 50%; border: 2px solid rgb(44, 62, 80); background: rgb(255, 255, 255);"
-            />
-          </div>
-          <div
-            style="min-width: 0; padding-bottom: 16px;"
-          >
-            <h3
-              style="font-size: 13.5px; font-weight: 700; color: rgb(44, 62, 80); margin: 0px;"
-            >
-              Frontend Developer
-            </h3>
-            <div
-              style="font-size: 12px; line-height: 1.6; color: rgb(64, 75, 88); margin-top: 4px;"
-            >
-              <p
-                class="cv-stycke"
+              <div
+                class="cv-entry"
               >
-                Byggde komponentbibliotek och e-handelslösningar.
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
+                <div
+                  style="display: grid; grid-template-columns: 122px 18px 1fr; gap: 10px;"
+                >
+                  <div
+                    style="padding-bottom: 16px;"
+                  >
+                    <div
+                      style="font-size: 12px; font-weight: 700; color: rgb(44, 62, 80); line-height: 1.35;"
+                    >
+                      Tech AB
+                    </div>
+                    <div
+                      class="cv-datum"
+                      style="font-size: 11px; color: rgb(90, 102, 118); margin-top: 2px;"
+                    >
+                      jan 2022 – nu
+                    </div>
+                  </div>
+                  <div
+                    aria-hidden="true"
+                    style="display: flex; flex-direction: column; align-items: center; padding-top: 4px;"
+                  >
+                    <div
+                      style="width: 9px; height: 9px; border-radius: 50%; border: 2px solid rgb(44, 62, 80); background: rgb(255, 255, 255);"
+                    />
+                    <div
+                      style="width: 1px; flex: 1 1 0%; background: rgb(203, 211, 220); margin-top: 4px;"
+                    />
+                  </div>
+                  <div
+                    style="min-width: 0; padding-bottom: 16px;"
+                  >
+                    <h3
+                      style="font-size: 13.5px; font-weight: 700; color: rgb(44, 62, 80); margin: 0px;"
+                    >
+                      Senior Frontend Developer
+                    </h3>
+                    <div
+                      style="font-size: 12px; line-height: 1.6; color: rgb(64, 75, 88); margin-top: 4px;"
+                    >
+                      <p
+                        class="cv-stycke"
+                      >
+                        Leder frontend-team. Migrerade legacy Angular till React.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="cv-entry"
+              >
+                <div
+                  style="display: grid; grid-template-columns: 122px 18px 1fr; gap: 10px;"
+                >
+                  <div
+                    style="padding-bottom: 16px;"
+                  >
+                    <div
+                      style="font-size: 12px; font-weight: 700; color: rgb(44, 62, 80); line-height: 1.35;"
+                    >
+                      Webb-byrån
+                    </div>
+                    <div
+                      class="cv-datum"
+                      style="font-size: 11px; color: rgb(90, 102, 118); margin-top: 2px;"
+                    >
+                      jun 2019 – dec 2021
+                    </div>
+                  </div>
+                  <div
+                    aria-hidden="true"
+                    style="display: flex; flex-direction: column; align-items: center; padding-top: 4px;"
+                  >
+                    <div
+                      style="width: 9px; height: 9px; border-radius: 50%; border: 2px solid rgb(44, 62, 80); background: rgb(255, 255, 255);"
+                    />
+                  </div>
+                  <div
+                    style="min-width: 0; padding-bottom: 16px;"
+                  >
+                    <h3
+                      style="font-size: 13.5px; font-weight: 700; color: rgb(44, 62, 80); margin: 0px;"
+                    >
+                      Frontend Developer
+                    </h3>
+                    <div
+                      style="font-size: 12px; line-height: 1.6; color: rgb(64, 75, 88); margin-top: 4px;"
+                    >
+                      <p
+                        class="cv-stycke"
+                      >
+                        Byggde komponentbibliotek och e-handelslösningar.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </section>
     <section
+      class="cv-postsektion"
       style="margin-bottom: 28px;"
     >
-      <h2
-        style="font-size: 12px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: rgb(44, 62, 80); margin: 0px 0px 16px; padding-bottom: 7px; border-bottom: 1px solid rgb(227, 231, 236);"
+      <table
+        role="presentation"
+        style="width: 100%; border-collapse: collapse; border-spacing: 0px; table-layout: fixed;"
       >
-        Utbildning
-      </h2>
-      <div
-        class="cv-entry"
-      >
-        <div
-          style="display: grid; grid-template-columns: 122px 18px 1fr; gap: 10px;"
-        >
-          <div
-            style="padding-bottom: 14px;"
-          >
-            <div
-              style="font-size: 12px; font-weight: 700; color: rgb(44, 62, 80); line-height: 1.35;"
+        <thead>
+          <tr>
+            <td
+              style="padding: 0px; vertical-align: top;"
             >
-              KTH
-            </div>
-            <div
-              class="cv-datum"
-              style="font-size: 11px; color: rgb(90, 102, 118); margin-top: 2px;"
+              <h2
+                style="font-size: 12px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: rgb(44, 62, 80); margin: 0px 0px 16px; padding-bottom: 7px; border-bottom: 1px solid rgb(227, 231, 236);"
+              >
+                Utbildning
+              </h2>
+            </td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td
+              style="padding: 0px; vertical-align: top;"
             >
-              2014 – 2019
-            </div>
-          </div>
-          <div
-            aria-hidden="true"
-            style="display: flex; flex-direction: column; align-items: center; padding-top: 4px;"
-          >
-            <div
-              style="width: 9px; height: 9px; border-radius: 50%; border: 2px solid rgb(44, 62, 80); background: rgb(255, 255, 255);"
-            />
-          </div>
-          <div
-            style="min-width: 0; padding-bottom: 14px;"
-          >
-            <h3
-              style="font-size: 13.5px; font-weight: 700; color: rgb(44, 62, 80); margin: 0px;"
-            >
-              Civilingenjör
-            </h3>
-            <p
-              style="font-size: 12px; color: rgb(64, 75, 88); margin: 2px 0px 0px;"
-            >
-              Datateknik
-            </p>
-          </div>
-        </div>
-      </div>
+              <div
+                class="cv-entry"
+              >
+                <div
+                  style="display: grid; grid-template-columns: 122px 18px 1fr; gap: 10px;"
+                >
+                  <div
+                    style="padding-bottom: 14px;"
+                  >
+                    <div
+                      style="font-size: 12px; font-weight: 700; color: rgb(44, 62, 80); line-height: 1.35;"
+                    >
+                      KTH
+                    </div>
+                    <div
+                      class="cv-datum"
+                      style="font-size: 11px; color: rgb(90, 102, 118); margin-top: 2px;"
+                    >
+                      2014 – 2019
+                    </div>
+                  </div>
+                  <div
+                    aria-hidden="true"
+                    style="display: flex; flex-direction: column; align-items: center; padding-top: 4px;"
+                  >
+                    <div
+                      style="width: 9px; height: 9px; border-radius: 50%; border: 2px solid rgb(44, 62, 80); background: rgb(255, 255, 255);"
+                    />
+                  </div>
+                  <div
+                    style="min-width: 0; padding-bottom: 14px;"
+                  >
+                    <h3
+                      style="font-size: 13.5px; font-weight: 700; color: rgb(44, 62, 80); margin: 0px;"
+                    >
+                      Civilingenjör
+                    </h3>
+                    <p
+                      style="font-size: 12px; color: rgb(64, 75, 88); margin: 2px 0px 0px;"
+                    >
+                      Datateknik
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </section>
   </main>
   <aside
@@ -1144,121 +1276,165 @@ exports[`CV-mallar — snapshot regression > CenteredTemplate 1`] = `
       </ul>
     </section>
     <section
+      class="cv-postsektion"
       style="margin-bottom: 20px;"
     >
-      <h2
-        style="font-size: 11px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: rgb(30, 58, 95); margin: 0px 0px 11px; padding-bottom: 5px; border-bottom: 1px solid rgb(215, 222, 231);"
+      <table
+        role="presentation"
+        style="width: 100%; border-collapse: collapse; border-spacing: 0px; table-layout: fixed;"
       >
-        Erfarenhet
-      </h2>
-      <div
-        class="cv-entry"
-        style="padding-left: 14px; border-left: 2px solid rgb(215, 222, 231); margin-bottom: 11px;"
-      >
-        <div
-          style="display: flex; justify-content: space-between; align-items: baseline;"
-        >
-          <h3
-            style="font-size: 14px; font-weight: 600; color: rgb(17, 24, 39); margin: 0px;"
-          >
-            Senior Frontend Developer
-          </h3>
-          <span
-            class="cv-datum"
-            style="font-size: 11.5px; color: rgb(91, 100, 114); white-space: nowrap; margin-left: 16px;"
-          >
-            jan 2022 – nu
-          </span>
-        </div>
-        <p
-          style="font-size: 12.5px; color: rgb(30, 58, 95); margin: 2px 0px 0px; font-weight: 500;"
-        >
-          Tech AB
-        </p>
-        <div
-          style="font-size: 12.5px; line-height: 1.55; color: rgb(63, 70, 82); margin-top: 4px;"
-        >
-          <p
-            class="cv-stycke"
-          >
-            Leder frontend-team. Migrerade legacy Angular till React.
-          </p>
-        </div>
-      </div>
-      <div
-        class="cv-entry"
-        style="padding-left: 14px; border-left: 2px solid rgb(215, 222, 231); margin-bottom: 11px;"
-      >
-        <div
-          style="display: flex; justify-content: space-between; align-items: baseline;"
-        >
-          <h3
-            style="font-size: 14px; font-weight: 600; color: rgb(17, 24, 39); margin: 0px;"
-          >
-            Frontend Developer
-          </h3>
-          <span
-            class="cv-datum"
-            style="font-size: 11.5px; color: rgb(91, 100, 114); white-space: nowrap; margin-left: 16px;"
-          >
-            jun 2019 – dec 2021
-          </span>
-        </div>
-        <p
-          style="font-size: 12.5px; color: rgb(30, 58, 95); margin: 2px 0px 0px; font-weight: 500;"
-        >
-          Webb-byrån
-        </p>
-        <div
-          style="font-size: 12.5px; line-height: 1.55; color: rgb(63, 70, 82); margin-top: 4px;"
-        >
-          <p
-            class="cv-stycke"
-          >
-            Byggde komponentbibliotek och e-handelslösningar.
-          </p>
-        </div>
-      </div>
+        <thead>
+          <tr>
+            <td
+              style="padding: 0px; vertical-align: top;"
+            >
+              <h2
+                style="font-size: 11px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: rgb(30, 58, 95); margin: 0px 0px 11px; padding-bottom: 5px; border-bottom: 1px solid rgb(215, 222, 231);"
+              >
+                Erfarenhet
+              </h2>
+            </td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td
+              style="padding: 0px; vertical-align: top;"
+            >
+              <div
+                class="cv-entry"
+                style="padding-left: 14px; border-left: 2px solid rgb(215, 222, 231); margin-bottom: 11px;"
+              >
+                <div
+                  style="display: flex; justify-content: space-between; align-items: baseline;"
+                >
+                  <h3
+                    style="font-size: 14px; font-weight: 600; color: rgb(17, 24, 39); margin: 0px;"
+                  >
+                    Senior Frontend Developer
+                  </h3>
+                  <span
+                    class="cv-datum"
+                    style="font-size: 11.5px; color: rgb(91, 100, 114); white-space: nowrap; margin-left: 16px;"
+                  >
+                    jan 2022 – nu
+                  </span>
+                </div>
+                <p
+                  style="font-size: 12.5px; color: rgb(30, 58, 95); margin: 2px 0px 0px; font-weight: 500;"
+                >
+                  Tech AB
+                </p>
+                <div
+                  style="font-size: 12.5px; line-height: 1.55; color: rgb(63, 70, 82); margin-top: 4px;"
+                >
+                  <p
+                    class="cv-stycke"
+                  >
+                    Leder frontend-team. Migrerade legacy Angular till React.
+                  </p>
+                </div>
+              </div>
+              <div
+                class="cv-entry"
+                style="padding-left: 14px; border-left: 2px solid rgb(215, 222, 231); margin-bottom: 11px;"
+              >
+                <div
+                  style="display: flex; justify-content: space-between; align-items: baseline;"
+                >
+                  <h3
+                    style="font-size: 14px; font-weight: 600; color: rgb(17, 24, 39); margin: 0px;"
+                  >
+                    Frontend Developer
+                  </h3>
+                  <span
+                    class="cv-datum"
+                    style="font-size: 11.5px; color: rgb(91, 100, 114); white-space: nowrap; margin-left: 16px;"
+                  >
+                    jun 2019 – dec 2021
+                  </span>
+                </div>
+                <p
+                  style="font-size: 12.5px; color: rgb(30, 58, 95); margin: 2px 0px 0px; font-weight: 500;"
+                >
+                  Webb-byrån
+                </p>
+                <div
+                  style="font-size: 12.5px; line-height: 1.55; color: rgb(63, 70, 82); margin-top: 4px;"
+                >
+                  <p
+                    class="cv-stycke"
+                  >
+                    Byggde komponentbibliotek och e-handelslösningar.
+                  </p>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </section>
     <section
+      class="cv-postsektion"
       style="margin-bottom: 20px;"
     >
-      <h2
-        style="font-size: 11px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: rgb(30, 58, 95); margin: 0px 0px 11px; padding-bottom: 5px; border-bottom: 1px solid rgb(215, 222, 231);"
+      <table
+        role="presentation"
+        style="width: 100%; border-collapse: collapse; border-spacing: 0px; table-layout: fixed;"
       >
-        Utbildning
-      </h2>
-      <div
-        class="cv-entry"
-        style="padding-left: 14px; border-left: 2px solid rgb(215, 222, 231); margin-bottom: 11px;"
-      >
-        <div
-          style="display: flex; justify-content: space-between; align-items: baseline;"
-        >
-          <h3
-            style="font-size: 13.5px; font-weight: 600; color: rgb(17, 24, 39); margin: 0px;"
-          >
-            Civilingenjör
-          </h3>
-          <span
-            class="cv-datum"
-            style="font-size: 11.5px; color: rgb(91, 100, 114); white-space: nowrap; margin-left: 16px;"
-          >
-            2014 – 2019
-          </span>
-        </div>
-        <p
-          style="font-size: 12.5px; color: rgb(30, 58, 95); margin: 2px 0px 0px; font-weight: 500;"
-        >
-          KTH
-          <span
-            style="color: rgb(91, 100, 114); font-weight: 400;"
-          >
-             · 
-            Datateknik
-          </span>
-        </p>
-      </div>
+        <thead>
+          <tr>
+            <td
+              style="padding: 0px; vertical-align: top;"
+            >
+              <h2
+                style="font-size: 11px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: rgb(30, 58, 95); margin: 0px 0px 11px; padding-bottom: 5px; border-bottom: 1px solid rgb(215, 222, 231);"
+              >
+                Utbildning
+              </h2>
+            </td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td
+              style="padding: 0px; vertical-align: top;"
+            >
+              <div
+                class="cv-entry"
+                style="padding-left: 14px; border-left: 2px solid rgb(215, 222, 231); margin-bottom: 11px;"
+              >
+                <div
+                  style="display: flex; justify-content: space-between; align-items: baseline;"
+                >
+                  <h3
+                    style="font-size: 13.5px; font-weight: 600; color: rgb(17, 24, 39); margin: 0px;"
+                  >
+                    Civilingenjör
+                  </h3>
+                  <span
+                    class="cv-datum"
+                    style="font-size: 11.5px; color: rgb(91, 100, 114); white-space: nowrap; margin-left: 16px;"
+                  >
+                    2014 – 2019
+                  </span>
+                </div>
+                <p
+                  style="font-size: 12.5px; color: rgb(30, 58, 95); margin: 2px 0px 0px; font-weight: 500;"
+                >
+                  KTH
+                  <span
+                    style="color: rgb(91, 100, 114); font-weight: 400;"
+                  >
+                     · 
+                    Datateknik
+                  </span>
+                </p>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </section>
     <section
       class="cv-keep"
@@ -1390,123 +1566,167 @@ exports[`CV-mallar — snapshot regression > ChicagoTemplate 1`] = `
       </p>
     </section>
     <section
+      class="cv-postsektion"
       style="margin-bottom: 28px;"
     >
-      <h2
-        style="font-size: 10.5px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: rgb(17, 24, 39); margin: 0px 0px 13px;"
+      <table
+        role="presentation"
+        style="width: 100%; border-collapse: collapse; border-spacing: 0px; table-layout: fixed;"
       >
-        Arbetslivserfarenhet
-      </h2>
-      <div
-        class="cv-entry"
-        style="margin-bottom: 17px;"
-      >
-        <div
-          style="display: flex; justify-content: space-between; align-items: baseline;"
-        >
-          <h3
-            style="font-size: 13.5px; font-weight: 700; color: rgb(17, 24, 39); margin: 0px;"
-          >
-            Senior Frontend Developer
-            <span
-              style="font-weight: 500; color: rgb(55, 65, 81);"
+        <thead>
+          <tr>
+            <td
+              style="padding: 0px; vertical-align: top;"
             >
-              , 
-              Tech AB
-            </span>
-          </h3>
-          <span
-            class="cv-datum"
-            style="font-size: 11px; color: rgb(91, 100, 114); white-space: nowrap; margin-left: 14px;"
-          >
-            jan 2022 – nu
-          </span>
-        </div>
-        <div
-          style="font-size: 12px; line-height: 1.65; color: rgb(55, 65, 81); margin-top: 4px;"
-        >
-          <p
-            class="cv-stycke"
-          >
-            Leder frontend-team. Migrerade legacy Angular till React.
-          </p>
-        </div>
-      </div>
-      <div
-        class="cv-entry"
-        style="margin-bottom: 17px;"
-      >
-        <div
-          style="display: flex; justify-content: space-between; align-items: baseline;"
-        >
-          <h3
-            style="font-size: 13.5px; font-weight: 700; color: rgb(17, 24, 39); margin: 0px;"
-          >
-            Frontend Developer
-            <span
-              style="font-weight: 500; color: rgb(55, 65, 81);"
+              <h2
+                style="font-size: 10.5px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: rgb(17, 24, 39); margin: 0px 0px 13px;"
+              >
+                Arbetslivserfarenhet
+              </h2>
+            </td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td
+              style="padding: 0px; vertical-align: top;"
             >
-              , 
-              Webb-byrån
-            </span>
-          </h3>
-          <span
-            class="cv-datum"
-            style="font-size: 11px; color: rgb(91, 100, 114); white-space: nowrap; margin-left: 14px;"
-          >
-            jun 2019 – dec 2021
-          </span>
-        </div>
-        <div
-          style="font-size: 12px; line-height: 1.65; color: rgb(55, 65, 81); margin-top: 4px;"
-        >
-          <p
-            class="cv-stycke"
-          >
-            Byggde komponentbibliotek och e-handelslösningar.
-          </p>
-        </div>
-      </div>
+              <div
+                class="cv-entry"
+                style="margin-bottom: 17px;"
+              >
+                <div
+                  style="display: flex; justify-content: space-between; align-items: baseline;"
+                >
+                  <h3
+                    style="font-size: 13.5px; font-weight: 700; color: rgb(17, 24, 39); margin: 0px;"
+                  >
+                    Senior Frontend Developer
+                    <span
+                      style="font-weight: 500; color: rgb(55, 65, 81);"
+                    >
+                      , 
+                      Tech AB
+                    </span>
+                  </h3>
+                  <span
+                    class="cv-datum"
+                    style="font-size: 11px; color: rgb(91, 100, 114); white-space: nowrap; margin-left: 14px;"
+                  >
+                    jan 2022 – nu
+                  </span>
+                </div>
+                <div
+                  style="font-size: 12px; line-height: 1.65; color: rgb(55, 65, 81); margin-top: 4px;"
+                >
+                  <p
+                    class="cv-stycke"
+                  >
+                    Leder frontend-team. Migrerade legacy Angular till React.
+                  </p>
+                </div>
+              </div>
+              <div
+                class="cv-entry"
+                style="margin-bottom: 17px;"
+              >
+                <div
+                  style="display: flex; justify-content: space-between; align-items: baseline;"
+                >
+                  <h3
+                    style="font-size: 13.5px; font-weight: 700; color: rgb(17, 24, 39); margin: 0px;"
+                  >
+                    Frontend Developer
+                    <span
+                      style="font-weight: 500; color: rgb(55, 65, 81);"
+                    >
+                      , 
+                      Webb-byrån
+                    </span>
+                  </h3>
+                  <span
+                    class="cv-datum"
+                    style="font-size: 11px; color: rgb(91, 100, 114); white-space: nowrap; margin-left: 14px;"
+                  >
+                    jun 2019 – dec 2021
+                  </span>
+                </div>
+                <div
+                  style="font-size: 12px; line-height: 1.65; color: rgb(55, 65, 81); margin-top: 4px;"
+                >
+                  <p
+                    class="cv-stycke"
+                  >
+                    Byggde komponentbibliotek och e-handelslösningar.
+                  </p>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </section>
     <section
+      class="cv-postsektion"
       style="margin-bottom: 28px;"
     >
-      <h2
-        style="font-size: 10.5px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: rgb(17, 24, 39); margin: 0px 0px 13px;"
+      <table
+        role="presentation"
+        style="width: 100%; border-collapse: collapse; border-spacing: 0px; table-layout: fixed;"
       >
-        Utbildning
-      </h2>
-      <div
-        class="cv-entry"
-        style="margin-bottom: 13px;"
-      >
-        <div
-          style="display: flex; justify-content: space-between; align-items: baseline;"
-        >
-          <h3
-            style="font-size: 13.5px; font-weight: 700; color: rgb(17, 24, 39); margin: 0px;"
-          >
-            Civilingenjör
-            <span
-              style="font-weight: 500; color: rgb(55, 65, 81);"
+        <thead>
+          <tr>
+            <td
+              style="padding: 0px; vertical-align: top;"
             >
-              , 
-              KTH
-            </span>
-          </h3>
-          <span
-            class="cv-datum"
-            style="font-size: 11px; color: rgb(91, 100, 114); white-space: nowrap; margin-left: 14px;"
-          >
-            2014 – 2019
-          </span>
-        </div>
-        <p
-          style="font-size: 11.5px; color: rgb(91, 100, 114); margin: 1px 0px 0px;"
-        >
-          Datateknik
-        </p>
-      </div>
+              <h2
+                style="font-size: 10.5px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: rgb(17, 24, 39); margin: 0px 0px 13px;"
+              >
+                Utbildning
+              </h2>
+            </td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td
+              style="padding: 0px; vertical-align: top;"
+            >
+              <div
+                class="cv-entry"
+                style="margin-bottom: 13px;"
+              >
+                <div
+                  style="display: flex; justify-content: space-between; align-items: baseline;"
+                >
+                  <h3
+                    style="font-size: 13.5px; font-weight: 700; color: rgb(17, 24, 39); margin: 0px;"
+                  >
+                    Civilingenjör
+                    <span
+                      style="font-weight: 500; color: rgb(55, 65, 81);"
+                    >
+                      , 
+                      KTH
+                    </span>
+                  </h3>
+                  <span
+                    class="cv-datum"
+                    style="font-size: 11px; color: rgb(91, 100, 114); white-space: nowrap; margin-left: 14px;"
+                  >
+                    2014 – 2019
+                  </span>
+                </div>
+                <p
+                  style="font-size: 11.5px; color: rgb(91, 100, 114); margin: 1px 0px 0px;"
+                >
+                  Datateknik
+                </p>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </section>
   </main>
   <aside
@@ -1798,129 +2018,173 @@ exports[`CV-mallar — snapshot regression > CreativeTemplate 1`] = `
       </ul>
     </section>
     <section
+      class="cv-postsektion"
       style="margin-bottom: 22px;"
     >
-      <h2
-        style="display: flex; align-items: center; gap: 10px; font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: rgb(162, 20, 100); margin: 0px 0px 12px;"
+      <table
+        role="presentation"
+        style="width: 100%; border-collapse: collapse; border-spacing: 0px; table-layout: fixed;"
       >
-        Erfarenhet
-        <span
-          aria-hidden="true"
-          style="flex: 1 1 0%; height: 2px; background: rgb(251, 231, 241); border-radius: 1px;"
-        />
-      </h2>
-      <div
-        class="cv-entry"
-        style="margin-bottom: 14px;"
-      >
-        <div
-          style="display: flex; justify-content: space-between; align-items: baseline; gap: 14px;"
-        >
-          <h3
-            style="font-size: 14.5px; font-weight: 700; color: rgb(26, 26, 26); margin: 0px;"
-          >
-            Senior Frontend Developer
-          </h3>
-          <span
-            class="cv-datum"
-            style="font-size: 10.5px; font-weight: 600; color: rgb(126, 15, 77); background: rgb(251, 231, 241); padding: 2px 9px; border-radius: 100px; white-space: nowrap;"
-          >
-            jan 2022 – nu
-          </span>
-        </div>
-        <p
-          style="font-size: 12.5px; margin: 2px 0px 0px; color: rgb(162, 20, 100); font-weight: 500;"
-        >
-          Tech AB
-        </p>
-        <div
-          style="font-size: 12.5px; line-height: 1.55; color: rgb(58, 58, 58); margin-top: 5px;"
-        >
-          <p
-            class="cv-stycke"
-          >
-            Leder frontend-team. Migrerade legacy Angular till React.
-          </p>
-        </div>
-      </div>
-      <div
-        class="cv-entry"
-        style="margin-bottom: 14px;"
-      >
-        <div
-          style="display: flex; justify-content: space-between; align-items: baseline; gap: 14px;"
-        >
-          <h3
-            style="font-size: 14.5px; font-weight: 700; color: rgb(26, 26, 26); margin: 0px;"
-          >
-            Frontend Developer
-          </h3>
-          <span
-            class="cv-datum"
-            style="font-size: 10.5px; font-weight: 600; color: rgb(126, 15, 77); background: rgb(251, 231, 241); padding: 2px 9px; border-radius: 100px; white-space: nowrap;"
-          >
-            jun 2019 – dec 2021
-          </span>
-        </div>
-        <p
-          style="font-size: 12.5px; margin: 2px 0px 0px; color: rgb(162, 20, 100); font-weight: 500;"
-        >
-          Webb-byrån
-        </p>
-        <div
-          style="font-size: 12.5px; line-height: 1.55; color: rgb(58, 58, 58); margin-top: 5px;"
-        >
-          <p
-            class="cv-stycke"
-          >
-            Byggde komponentbibliotek och e-handelslösningar.
-          </p>
-        </div>
-      </div>
+        <thead>
+          <tr>
+            <td
+              style="padding: 0px; vertical-align: top;"
+            >
+              <h2
+                style="display: flex; align-items: center; gap: 10px; font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: rgb(162, 20, 100); margin: 0px 0px 12px;"
+              >
+                Erfarenhet
+                <span
+                  aria-hidden="true"
+                  style="flex: 1 1 0%; height: 2px; background: rgb(251, 231, 241); border-radius: 1px;"
+                />
+              </h2>
+            </td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td
+              style="padding: 0px; vertical-align: top;"
+            >
+              <div
+                class="cv-entry"
+                style="margin-bottom: 14px;"
+              >
+                <div
+                  style="display: flex; justify-content: space-between; align-items: baseline; gap: 14px;"
+                >
+                  <h3
+                    style="font-size: 14.5px; font-weight: 700; color: rgb(26, 26, 26); margin: 0px;"
+                  >
+                    Senior Frontend Developer
+                  </h3>
+                  <span
+                    class="cv-datum"
+                    style="font-size: 10.5px; font-weight: 600; color: rgb(126, 15, 77); background: rgb(251, 231, 241); padding: 2px 9px; border-radius: 100px; white-space: nowrap;"
+                  >
+                    jan 2022 – nu
+                  </span>
+                </div>
+                <p
+                  style="font-size: 12.5px; margin: 2px 0px 0px; color: rgb(162, 20, 100); font-weight: 500;"
+                >
+                  Tech AB
+                </p>
+                <div
+                  style="font-size: 12.5px; line-height: 1.55; color: rgb(58, 58, 58); margin-top: 5px;"
+                >
+                  <p
+                    class="cv-stycke"
+                  >
+                    Leder frontend-team. Migrerade legacy Angular till React.
+                  </p>
+                </div>
+              </div>
+              <div
+                class="cv-entry"
+                style="margin-bottom: 14px;"
+              >
+                <div
+                  style="display: flex; justify-content: space-between; align-items: baseline; gap: 14px;"
+                >
+                  <h3
+                    style="font-size: 14.5px; font-weight: 700; color: rgb(26, 26, 26); margin: 0px;"
+                  >
+                    Frontend Developer
+                  </h3>
+                  <span
+                    class="cv-datum"
+                    style="font-size: 10.5px; font-weight: 600; color: rgb(126, 15, 77); background: rgb(251, 231, 241); padding: 2px 9px; border-radius: 100px; white-space: nowrap;"
+                  >
+                    jun 2019 – dec 2021
+                  </span>
+                </div>
+                <p
+                  style="font-size: 12.5px; margin: 2px 0px 0px; color: rgb(162, 20, 100); font-weight: 500;"
+                >
+                  Webb-byrån
+                </p>
+                <div
+                  style="font-size: 12.5px; line-height: 1.55; color: rgb(58, 58, 58); margin-top: 5px;"
+                >
+                  <p
+                    class="cv-stycke"
+                  >
+                    Byggde komponentbibliotek och e-handelslösningar.
+                  </p>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </section>
     <section
+      class="cv-postsektion"
       style="margin-bottom: 22px;"
     >
-      <h2
-        style="display: flex; align-items: center; gap: 10px; font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: rgb(162, 20, 100); margin: 0px 0px 12px;"
+      <table
+        role="presentation"
+        style="width: 100%; border-collapse: collapse; border-spacing: 0px; table-layout: fixed;"
       >
-        Utbildning
-        <span
-          aria-hidden="true"
-          style="flex: 1 1 0%; height: 2px; background: rgb(251, 231, 241); border-radius: 1px;"
-        />
-      </h2>
-      <div
-        class="cv-entry"
-        style="margin-bottom: 11px;"
-      >
-        <div
-          style="display: flex; justify-content: space-between; align-items: baseline; gap: 14px;"
-        >
-          <h3
-            style="font-size: 14px; font-weight: 700; color: rgb(26, 26, 26); margin: 0px;"
-          >
-            Civilingenjör
-          </h3>
-          <span
-            class="cv-datum"
-            style="font-size: 11px; color: rgb(92, 92, 92); white-space: nowrap;"
-          >
-            2014 – 2019
-          </span>
-        </div>
-        <p
-          style="font-size: 12.5px; margin: 2px 0px 0px; color: rgb(162, 20, 100); font-weight: 500;"
-        >
-          KTH
-          <span
-            style="color: rgb(92, 92, 92); font-weight: 400;"
-          >
-             · 
-            Datateknik
-          </span>
-        </p>
-      </div>
+        <thead>
+          <tr>
+            <td
+              style="padding: 0px; vertical-align: top;"
+            >
+              <h2
+                style="display: flex; align-items: center; gap: 10px; font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: rgb(162, 20, 100); margin: 0px 0px 12px;"
+              >
+                Utbildning
+                <span
+                  aria-hidden="true"
+                  style="flex: 1 1 0%; height: 2px; background: rgb(251, 231, 241); border-radius: 1px;"
+                />
+              </h2>
+            </td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td
+              style="padding: 0px; vertical-align: top;"
+            >
+              <div
+                class="cv-entry"
+                style="margin-bottom: 11px;"
+              >
+                <div
+                  style="display: flex; justify-content: space-between; align-items: baseline; gap: 14px;"
+                >
+                  <h3
+                    style="font-size: 14px; font-weight: 700; color: rgb(26, 26, 26); margin: 0px;"
+                  >
+                    Civilingenjör
+                  </h3>
+                  <span
+                    class="cv-datum"
+                    style="font-size: 11px; color: rgb(92, 92, 92); white-space: nowrap;"
+                  >
+                    2014 – 2019
+                  </span>
+                </div>
+                <p
+                  style="font-size: 12.5px; margin: 2px 0px 0px; color: rgb(162, 20, 100); font-weight: 500;"
+                >
+                  KTH
+                  <span
+                    style="color: rgb(92, 92, 92); font-weight: 400;"
+                  >
+                     · 
+                    Datateknik
+                  </span>
+                </p>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </section>
     <section
       class="cv-keep"
@@ -2063,121 +2327,165 @@ exports[`CV-mallar — snapshot regression > ExecutiveTemplate 1`] = `
       </p>
     </section>
     <section
+      class="cv-postsektion"
       style="margin-bottom: 20px;"
     >
-      <h2
-        style="font-size: 11.5px; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase; color: rgb(122, 90, 18); margin: 0px 0px 11px; padding-bottom: 5px; border-bottom: 1px solid rgb(232, 217, 176);"
+      <table
+        role="presentation"
+        style="width: 100%; border-collapse: collapse; border-spacing: 0px; table-layout: fixed;"
       >
-        Erfarenhet
-      </h2>
-      <div
-        class="cv-entry"
-        style="margin-bottom: 12px;"
-      >
-        <div
-          style="display: flex; justify-content: space-between; align-items: baseline;"
-        >
-          <h3
-            style="font-size: 15px; font-weight: 600; color: rgb(26, 26, 26); margin: 0px;"
-          >
-            Senior Frontend Developer
-          </h3>
-          <span
-            class="cv-datum"
-            style="font-size: 11.5px; font-style: italic; color: rgb(94, 90, 82); white-space: nowrap; margin-left: 16px;"
-          >
-            jan 2022 – nuvarande
-          </span>
-        </div>
-        <p
-          style="font-size: 13px; margin: 1px 0px 0px; color: rgb(122, 90, 18);"
-        >
-          Tech AB
-        </p>
-        <div
-          style="font-size: 12.5px; line-height: 1.55; color: rgb(51, 51, 51); margin-top: 4px;"
-        >
-          <p
-            class="cv-stycke"
-          >
-            Leder frontend-team. Migrerade legacy Angular till React.
-          </p>
-        </div>
-      </div>
-      <div
-        class="cv-entry"
-        style="margin-bottom: 12px;"
-      >
-        <div
-          style="display: flex; justify-content: space-between; align-items: baseline;"
-        >
-          <h3
-            style="font-size: 15px; font-weight: 600; color: rgb(26, 26, 26); margin: 0px;"
-          >
-            Frontend Developer
-          </h3>
-          <span
-            class="cv-datum"
-            style="font-size: 11.5px; font-style: italic; color: rgb(94, 90, 82); white-space: nowrap; margin-left: 16px;"
-          >
-            jun 2019 – dec 2021
-          </span>
-        </div>
-        <p
-          style="font-size: 13px; margin: 1px 0px 0px; color: rgb(122, 90, 18);"
-        >
-          Webb-byrån
-        </p>
-        <div
-          style="font-size: 12.5px; line-height: 1.55; color: rgb(51, 51, 51); margin-top: 4px;"
-        >
-          <p
-            class="cv-stycke"
-          >
-            Byggde komponentbibliotek och e-handelslösningar.
-          </p>
-        </div>
-      </div>
+        <thead>
+          <tr>
+            <td
+              style="padding: 0px; vertical-align: top;"
+            >
+              <h2
+                style="font-size: 11.5px; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase; color: rgb(122, 90, 18); margin: 0px 0px 11px; padding-bottom: 5px; border-bottom: 1px solid rgb(232, 217, 176);"
+              >
+                Erfarenhet
+              </h2>
+            </td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td
+              style="padding: 0px; vertical-align: top;"
+            >
+              <div
+                class="cv-entry"
+                style="margin-bottom: 12px;"
+              >
+                <div
+                  style="display: flex; justify-content: space-between; align-items: baseline;"
+                >
+                  <h3
+                    style="font-size: 15px; font-weight: 600; color: rgb(26, 26, 26); margin: 0px;"
+                  >
+                    Senior Frontend Developer
+                  </h3>
+                  <span
+                    class="cv-datum"
+                    style="font-size: 11.5px; font-style: italic; color: rgb(94, 90, 82); white-space: nowrap; margin-left: 16px;"
+                  >
+                    jan 2022 – nuvarande
+                  </span>
+                </div>
+                <p
+                  style="font-size: 13px; margin: 1px 0px 0px; color: rgb(122, 90, 18);"
+                >
+                  Tech AB
+                </p>
+                <div
+                  style="font-size: 12.5px; line-height: 1.55; color: rgb(51, 51, 51); margin-top: 4px;"
+                >
+                  <p
+                    class="cv-stycke"
+                  >
+                    Leder frontend-team. Migrerade legacy Angular till React.
+                  </p>
+                </div>
+              </div>
+              <div
+                class="cv-entry"
+                style="margin-bottom: 12px;"
+              >
+                <div
+                  style="display: flex; justify-content: space-between; align-items: baseline;"
+                >
+                  <h3
+                    style="font-size: 15px; font-weight: 600; color: rgb(26, 26, 26); margin: 0px;"
+                  >
+                    Frontend Developer
+                  </h3>
+                  <span
+                    class="cv-datum"
+                    style="font-size: 11.5px; font-style: italic; color: rgb(94, 90, 82); white-space: nowrap; margin-left: 16px;"
+                  >
+                    jun 2019 – dec 2021
+                  </span>
+                </div>
+                <p
+                  style="font-size: 13px; margin: 1px 0px 0px; color: rgb(122, 90, 18);"
+                >
+                  Webb-byrån
+                </p>
+                <div
+                  style="font-size: 12.5px; line-height: 1.55; color: rgb(51, 51, 51); margin-top: 4px;"
+                >
+                  <p
+                    class="cv-stycke"
+                  >
+                    Byggde komponentbibliotek och e-handelslösningar.
+                  </p>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </section>
     <section
+      class="cv-postsektion"
       style="margin-bottom: 20px;"
     >
-      <h2
-        style="font-size: 11.5px; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase; color: rgb(122, 90, 18); margin: 0px 0px 11px; padding-bottom: 5px; border-bottom: 1px solid rgb(232, 217, 176);"
+      <table
+        role="presentation"
+        style="width: 100%; border-collapse: collapse; border-spacing: 0px; table-layout: fixed;"
       >
-        Utbildning
-      </h2>
-      <div
-        class="cv-entry"
-        style="margin-bottom: 9px;"
-      >
-        <div
-          style="display: flex; justify-content: space-between; align-items: baseline;"
-        >
-          <h3
-            style="font-size: 14px; font-weight: 600; color: rgb(26, 26, 26); margin: 0px;"
-          >
-            Civilingenjör
-          </h3>
-          <span
-            class="cv-datum"
-            style="font-size: 11.5px; font-style: italic; color: rgb(94, 90, 82); white-space: nowrap; margin-left: 16px;"
-          >
-            2014 – 2019
-          </span>
-        </div>
-        <p
-          style="font-size: 13px; margin: 1px 0px 0px; color: rgb(122, 90, 18);"
-        >
-          KTH
-          <span
-            style="color: rgb(94, 90, 82); font-style: italic;"
-          >
-             · 
-            Datateknik
-          </span>
-        </p>
-      </div>
+        <thead>
+          <tr>
+            <td
+              style="padding: 0px; vertical-align: top;"
+            >
+              <h2
+                style="font-size: 11.5px; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase; color: rgb(122, 90, 18); margin: 0px 0px 11px; padding-bottom: 5px; border-bottom: 1px solid rgb(232, 217, 176);"
+              >
+                Utbildning
+              </h2>
+            </td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td
+              style="padding: 0px; vertical-align: top;"
+            >
+              <div
+                class="cv-entry"
+                style="margin-bottom: 9px;"
+              >
+                <div
+                  style="display: flex; justify-content: space-between; align-items: baseline;"
+                >
+                  <h3
+                    style="font-size: 14px; font-weight: 600; color: rgb(26, 26, 26); margin: 0px;"
+                  >
+                    Civilingenjör
+                  </h3>
+                  <span
+                    class="cv-datum"
+                    style="font-size: 11.5px; font-style: italic; color: rgb(94, 90, 82); white-space: nowrap; margin-left: 16px;"
+                  >
+                    2014 – 2019
+                  </span>
+                </div>
+                <p
+                  style="font-size: 13px; margin: 1px 0px 0px; color: rgb(122, 90, 18);"
+                >
+                  KTH
+                  <span
+                    style="color: rgb(94, 90, 82); font-style: italic;"
+                  >
+                     · 
+                    Datateknik
+                  </span>
+                </p>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </section>
     <section
       class="cv-keep"
@@ -2328,115 +2636,159 @@ exports[`CV-mallar — snapshot regression > ManhattanTemplate 1`] = `
       </p>
     </section>
     <section
+      class="cv-postsektion"
       style="margin-bottom: 22px;"
     >
-      <h2
-        style="font-size: 11px; font-weight: 700; letter-spacing: 0.24em; text-transform: uppercase; color: rgb(26, 26, 26); margin: 0px 0px 12px;"
+      <table
+        role="presentation"
+        style="width: 100%; border-collapse: collapse; border-spacing: 0px; table-layout: fixed;"
       >
-        Erfarenhet
-      </h2>
-      <div
-        class="cv-entry"
-        style="padding-left: 13px; border-left: 2px solid rgb(176, 122, 76); margin-bottom: 13px;"
-      >
-        <div
-          style="display: flex; justify-content: space-between; align-items: baseline;"
-        >
-          <h3
-            style="font-family: "Playfair Display", Georgia, serif; font-size: 15px; font-weight: 600; color: rgb(15, 27, 45); margin: 0px;"
-          >
-            Senior Frontend Developer
-          </h3>
-          <span
-            class="cv-datum"
-            style="font-size: 11px; font-weight: 600; letter-spacing: 0.03em; color: rgb(138, 90, 46); white-space: nowrap; margin-left: 14px;"
-          >
-            jan 2022 – nuvarande
-          </span>
-        </div>
-        <p
-          style="font-size: 12.5px; font-style: italic; color: rgb(90, 90, 90); margin: 2px 0px 0px;"
-        >
-          Tech AB
-        </p>
-        <div
-          style="font-size: 12.5px; line-height: 1.55; color: rgb(58, 58, 58); margin-top: 4px;"
-        >
-          <p
-            class="cv-stycke"
-          >
-            Leder frontend-team. Migrerade legacy Angular till React.
-          </p>
-        </div>
-      </div>
-      <div
-        class="cv-entry"
-        style="padding-left: 13px; border-left: 2px solid rgb(176, 122, 76); margin-bottom: 13px;"
-      >
-        <div
-          style="display: flex; justify-content: space-between; align-items: baseline;"
-        >
-          <h3
-            style="font-family: "Playfair Display", Georgia, serif; font-size: 15px; font-weight: 600; color: rgb(15, 27, 45); margin: 0px;"
-          >
-            Frontend Developer
-          </h3>
-          <span
-            class="cv-datum"
-            style="font-size: 11px; font-weight: 600; letter-spacing: 0.03em; color: rgb(138, 90, 46); white-space: nowrap; margin-left: 14px;"
-          >
-            jun 2019 – dec 2021
-          </span>
-        </div>
-        <p
-          style="font-size: 12.5px; font-style: italic; color: rgb(90, 90, 90); margin: 2px 0px 0px;"
-        >
-          Webb-byrån
-        </p>
-        <div
-          style="font-size: 12.5px; line-height: 1.55; color: rgb(58, 58, 58); margin-top: 4px;"
-        >
-          <p
-            class="cv-stycke"
-          >
-            Byggde komponentbibliotek och e-handelslösningar.
-          </p>
-        </div>
-      </div>
+        <thead>
+          <tr>
+            <td
+              style="padding: 0px; vertical-align: top;"
+            >
+              <h2
+                style="font-size: 11px; font-weight: 700; letter-spacing: 0.24em; text-transform: uppercase; color: rgb(26, 26, 26); margin: 0px 0px 12px;"
+              >
+                Erfarenhet
+              </h2>
+            </td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td
+              style="padding: 0px; vertical-align: top;"
+            >
+              <div
+                class="cv-entry"
+                style="padding-left: 13px; border-left: 2px solid rgb(176, 122, 76); margin-bottom: 13px;"
+              >
+                <div
+                  style="display: flex; justify-content: space-between; align-items: baseline;"
+                >
+                  <h3
+                    style="font-family: "Playfair Display", Georgia, serif; font-size: 15px; font-weight: 600; color: rgb(15, 27, 45); margin: 0px;"
+                  >
+                    Senior Frontend Developer
+                  </h3>
+                  <span
+                    class="cv-datum"
+                    style="font-size: 11px; font-weight: 600; letter-spacing: 0.03em; color: rgb(138, 90, 46); white-space: nowrap; margin-left: 14px;"
+                  >
+                    jan 2022 – nuvarande
+                  </span>
+                </div>
+                <p
+                  style="font-size: 12.5px; font-style: italic; color: rgb(90, 90, 90); margin: 2px 0px 0px;"
+                >
+                  Tech AB
+                </p>
+                <div
+                  style="font-size: 12.5px; line-height: 1.55; color: rgb(58, 58, 58); margin-top: 4px;"
+                >
+                  <p
+                    class="cv-stycke"
+                  >
+                    Leder frontend-team. Migrerade legacy Angular till React.
+                  </p>
+                </div>
+              </div>
+              <div
+                class="cv-entry"
+                style="padding-left: 13px; border-left: 2px solid rgb(176, 122, 76); margin-bottom: 13px;"
+              >
+                <div
+                  style="display: flex; justify-content: space-between; align-items: baseline;"
+                >
+                  <h3
+                    style="font-family: "Playfair Display", Georgia, serif; font-size: 15px; font-weight: 600; color: rgb(15, 27, 45); margin: 0px;"
+                  >
+                    Frontend Developer
+                  </h3>
+                  <span
+                    class="cv-datum"
+                    style="font-size: 11px; font-weight: 600; letter-spacing: 0.03em; color: rgb(138, 90, 46); white-space: nowrap; margin-left: 14px;"
+                  >
+                    jun 2019 – dec 2021
+                  </span>
+                </div>
+                <p
+                  style="font-size: 12.5px; font-style: italic; color: rgb(90, 90, 90); margin: 2px 0px 0px;"
+                >
+                  Webb-byrån
+                </p>
+                <div
+                  style="font-size: 12.5px; line-height: 1.55; color: rgb(58, 58, 58); margin-top: 4px;"
+                >
+                  <p
+                    class="cv-stycke"
+                  >
+                    Byggde komponentbibliotek och e-handelslösningar.
+                  </p>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </section>
     <section
+      class="cv-postsektion"
       style="margin-bottom: 22px;"
     >
-      <h2
-        style="font-size: 11px; font-weight: 700; letter-spacing: 0.24em; text-transform: uppercase; color: rgb(26, 26, 26); margin: 0px 0px 12px;"
+      <table
+        role="presentation"
+        style="width: 100%; border-collapse: collapse; border-spacing: 0px; table-layout: fixed;"
       >
-        Utbildning
-      </h2>
-      <div
-        class="cv-entry"
-        style="padding-left: 13px; border-left: 2px solid rgb(176, 122, 76); margin-bottom: 13px;"
-      >
-        <div
-          style="display: flex; justify-content: space-between; align-items: baseline;"
-        >
-          <h3
-            style="font-family: "Playfair Display", Georgia, serif; font-size: 14.5px; font-weight: 600; color: rgb(15, 27, 45); margin: 0px;"
-          >
-            Civilingenjör
-          </h3>
-          <span
-            class="cv-datum"
-            style="font-size: 11px; font-weight: 600; letter-spacing: 0.03em; color: rgb(138, 90, 46); white-space: nowrap; margin-left: 14px;"
-          >
-            2014 – 2019
-          </span>
-        </div>
-        <p
-          style="font-size: 12.5px; font-style: italic; color: rgb(90, 90, 90); margin: 2px 0px 0px;"
-        >
-          KTH · Datateknik
-        </p>
-      </div>
+        <thead>
+          <tr>
+            <td
+              style="padding: 0px; vertical-align: top;"
+            >
+              <h2
+                style="font-size: 11px; font-weight: 700; letter-spacing: 0.24em; text-transform: uppercase; color: rgb(26, 26, 26); margin: 0px 0px 12px;"
+              >
+                Utbildning
+              </h2>
+            </td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td
+              style="padding: 0px; vertical-align: top;"
+            >
+              <div
+                class="cv-entry"
+                style="padding-left: 13px; border-left: 2px solid rgb(176, 122, 76); margin-bottom: 13px;"
+              >
+                <div
+                  style="display: flex; justify-content: space-between; align-items: baseline;"
+                >
+                  <h3
+                    style="font-family: "Playfair Display", Georgia, serif; font-size: 14.5px; font-weight: 600; color: rgb(15, 27, 45); margin: 0px;"
+                  >
+                    Civilingenjör
+                  </h3>
+                  <span
+                    class="cv-datum"
+                    style="font-size: 11px; font-weight: 600; letter-spacing: 0.03em; color: rgb(138, 90, 46); white-space: nowrap; margin-left: 14px;"
+                  >
+                    2014 – 2019
+                  </span>
+                </div>
+                <p
+                  style="font-size: 12.5px; font-style: italic; color: rgb(90, 90, 90); margin: 2px 0px 0px;"
+                >
+                  KTH · Datateknik
+                </p>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </section>
   </main>
   <aside
@@ -2621,115 +2973,159 @@ exports[`CV-mallar — snapshot regression > MinimalTemplate 1`] = `
     </p>
   </section>
   <section
+    class="cv-postsektion"
     style="margin-bottom: 22px;"
   >
-    <h2
-      style="font-size: 10.5px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: rgb(107, 107, 107); margin: 0px 0px 10px;"
+    <table
+      role="presentation"
+      style="width: 100%; border-collapse: collapse; border-spacing: 0px; table-layout: fixed;"
     >
-      Erfarenhet
-    </h2>
-    <div
-      class="cv-entry"
-      style="margin-bottom: 13px;"
-    >
-      <div
-        style="display: flex; justify-content: space-between; align-items: baseline;"
-      >
-        <h3
-          style="font-size: 14px; font-weight: 600; color: rgb(17, 17, 17); margin: 0px;"
-        >
-          Senior Frontend Developer
-        </h3>
-        <span
-          class="cv-datum"
-          style="font-size: 11px; color: rgb(107, 107, 107); white-space: nowrap; margin-left: 16px;"
-        >
-          jan 2022 – nu
-        </span>
-      </div>
-      <p
-        style="font-size: 12.5px; color: rgb(89, 89, 89); margin: 2px 0px 0px;"
-      >
-        Tech AB
-      </p>
-      <div
-        style="font-size: 12.5px; line-height: 1.55; color: rgb(51, 51, 51); margin-top: 5px; max-width: 88ch;"
-      >
-        <p
-          class="cv-stycke"
-        >
-          Leder frontend-team. Migrerade legacy Angular till React.
-        </p>
-      </div>
-    </div>
-    <div
-      class="cv-entry"
-      style="margin-bottom: 13px;"
-    >
-      <div
-        style="display: flex; justify-content: space-between; align-items: baseline;"
-      >
-        <h3
-          style="font-size: 14px; font-weight: 600; color: rgb(17, 17, 17); margin: 0px;"
-        >
-          Frontend Developer
-        </h3>
-        <span
-          class="cv-datum"
-          style="font-size: 11px; color: rgb(107, 107, 107); white-space: nowrap; margin-left: 16px;"
-        >
-          jun 2019 – dec 2021
-        </span>
-      </div>
-      <p
-        style="font-size: 12.5px; color: rgb(89, 89, 89); margin: 2px 0px 0px;"
-      >
-        Webb-byrån
-      </p>
-      <div
-        style="font-size: 12.5px; line-height: 1.55; color: rgb(51, 51, 51); margin-top: 5px; max-width: 88ch;"
-      >
-        <p
-          class="cv-stycke"
-        >
-          Byggde komponentbibliotek och e-handelslösningar.
-        </p>
-      </div>
-    </div>
+      <thead>
+        <tr>
+          <td
+            style="padding: 0px; vertical-align: top;"
+          >
+            <h2
+              style="font-size: 10.5px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: rgb(107, 107, 107); margin: 0px 0px 10px;"
+            >
+              Erfarenhet
+            </h2>
+          </td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td
+            style="padding: 0px; vertical-align: top;"
+          >
+            <div
+              class="cv-entry"
+              style="margin-bottom: 13px;"
+            >
+              <div
+                style="display: flex; justify-content: space-between; align-items: baseline;"
+              >
+                <h3
+                  style="font-size: 14px; font-weight: 600; color: rgb(17, 17, 17); margin: 0px;"
+                >
+                  Senior Frontend Developer
+                </h3>
+                <span
+                  class="cv-datum"
+                  style="font-size: 11px; color: rgb(107, 107, 107); white-space: nowrap; margin-left: 16px;"
+                >
+                  jan 2022 – nu
+                </span>
+              </div>
+              <p
+                style="font-size: 12.5px; color: rgb(89, 89, 89); margin: 2px 0px 0px;"
+              >
+                Tech AB
+              </p>
+              <div
+                style="font-size: 12.5px; line-height: 1.55; color: rgb(51, 51, 51); margin-top: 5px; max-width: 88ch;"
+              >
+                <p
+                  class="cv-stycke"
+                >
+                  Leder frontend-team. Migrerade legacy Angular till React.
+                </p>
+              </div>
+            </div>
+            <div
+              class="cv-entry"
+              style="margin-bottom: 13px;"
+            >
+              <div
+                style="display: flex; justify-content: space-between; align-items: baseline;"
+              >
+                <h3
+                  style="font-size: 14px; font-weight: 600; color: rgb(17, 17, 17); margin: 0px;"
+                >
+                  Frontend Developer
+                </h3>
+                <span
+                  class="cv-datum"
+                  style="font-size: 11px; color: rgb(107, 107, 107); white-space: nowrap; margin-left: 16px;"
+                >
+                  jun 2019 – dec 2021
+                </span>
+              </div>
+              <p
+                style="font-size: 12.5px; color: rgb(89, 89, 89); margin: 2px 0px 0px;"
+              >
+                Webb-byrån
+              </p>
+              <div
+                style="font-size: 12.5px; line-height: 1.55; color: rgb(51, 51, 51); margin-top: 5px; max-width: 88ch;"
+              >
+                <p
+                  class="cv-stycke"
+                >
+                  Byggde komponentbibliotek och e-handelslösningar.
+                </p>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </section>
   <section
+    class="cv-postsektion"
     style="margin-bottom: 22px;"
   >
-    <h2
-      style="font-size: 10.5px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: rgb(107, 107, 107); margin: 0px 0px 10px;"
+    <table
+      role="presentation"
+      style="width: 100%; border-collapse: collapse; border-spacing: 0px; table-layout: fixed;"
     >
-      Utbildning
-    </h2>
-    <div
-      class="cv-entry"
-      style="margin-bottom: 10px;"
-    >
-      <div
-        style="display: flex; justify-content: space-between; align-items: baseline;"
-      >
-        <h3
-          style="font-size: 13px; font-weight: 600; color: rgb(17, 17, 17); margin: 0px;"
-        >
-          Civilingenjör
-        </h3>
-        <span
-          class="cv-datum"
-          style="font-size: 11px; color: rgb(107, 107, 107); white-space: nowrap; margin-left: 16px;"
-        >
-          2014 – 2019
-        </span>
-      </div>
-      <p
-        style="font-size: 12.5px; color: rgb(89, 89, 89); margin: 2px 0px 0px;"
-      >
-        KTH · Datateknik
-      </p>
-    </div>
+      <thead>
+        <tr>
+          <td
+            style="padding: 0px; vertical-align: top;"
+          >
+            <h2
+              style="font-size: 10.5px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: rgb(107, 107, 107); margin: 0px 0px 10px;"
+            >
+              Utbildning
+            </h2>
+          </td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td
+            style="padding: 0px; vertical-align: top;"
+          >
+            <div
+              class="cv-entry"
+              style="margin-bottom: 10px;"
+            >
+              <div
+                style="display: flex; justify-content: space-between; align-items: baseline;"
+              >
+                <h3
+                  style="font-size: 13px; font-weight: 600; color: rgb(17, 17, 17); margin: 0px;"
+                >
+                  Civilingenjör
+                </h3>
+                <span
+                  class="cv-datum"
+                  style="font-size: 11px; color: rgb(107, 107, 107); white-space: nowrap; margin-left: 16px;"
+                >
+                  2014 – 2019
+                </span>
+              </div>
+              <p
+                style="font-size: 12.5px; color: rgb(89, 89, 89); margin: 2px 0px 0px;"
+              >
+                KTH · Datateknik
+              </p>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </section>
   <section
     class="cv-keep"
@@ -2870,132 +3266,176 @@ exports[`CV-mallar — snapshot regression > ModernTemplate 1`] = `
       </p>
     </section>
     <section
+      class="cv-postsektion"
       style="margin-bottom: 24px;"
     >
-      <h2
-        style="font-size: 10.5px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: rgb(95, 95, 95); margin: 0px 0px 12px; padding-bottom: 6px; border-bottom: 1px solid rgb(236, 236, 236);"
+      <table
+        role="presentation"
+        style="width: 100%; border-collapse: collapse; border-spacing: 0px; table-layout: fixed;"
       >
-        Erfarenhet
-      </h2>
-      <div
-        style="display: flex; flex-direction: column; gap: 15px;"
-      >
-        <div
-          class="cv-entry"
-          style="display: grid; grid-template-columns: 78px 1fr; gap: 16px;"
-        >
-          <div
-            class="cv-datum"
-            style="font-size: 11px; color: rgb(95, 95, 95); line-height: 1.45; padding-top: 2px;"
-          >
-            jan 2022
-            <br />
-            – 
-            nu
-          </div>
-          <div
-            style="min-width: 0;"
-          >
-            <h3
-              style="font-size: 14px; font-weight: 600; color: rgb(15, 15, 15); margin: 0px;"
+        <thead>
+          <tr>
+            <td
+              style="padding: 0px; vertical-align: top;"
             >
-              Senior Frontend Developer
-            </h3>
-            <p
-              style="font-size: 12.5px; margin: 2px 0px 0px; color: rgb(79, 70, 229);"
-            >
-              Tech AB
-            </p>
-            <div
-              style="font-size: 12.5px; line-height: 1.55; color: rgb(58, 58, 58); margin-top: 5px;"
-            >
-              <p
-                class="cv-stycke"
+              <h2
+                style="font-size: 10.5px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: rgb(95, 95, 95); margin: 0px 0px 12px; padding-bottom: 6px; border-bottom: 1px solid rgb(236, 236, 236);"
               >
-                Leder frontend-team. Migrerade legacy Angular till React.
-              </p>
-            </div>
-          </div>
-        </div>
-        <div
-          class="cv-entry"
-          style="display: grid; grid-template-columns: 78px 1fr; gap: 16px;"
-        >
-          <div
-            class="cv-datum"
-            style="font-size: 11px; color: rgb(95, 95, 95); line-height: 1.45; padding-top: 2px;"
-          >
-            jun 2019
-            <br />
-            – 
-            dec 2021
-          </div>
-          <div
-            style="min-width: 0;"
-          >
-            <h3
-              style="font-size: 14px; font-weight: 600; color: rgb(15, 15, 15); margin: 0px;"
+                Erfarenhet
+              </h2>
+            </td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td
+              style="padding: 0px; vertical-align: top;"
             >
-              Frontend Developer
-            </h3>
-            <p
-              style="font-size: 12.5px; margin: 2px 0px 0px; color: rgb(79, 70, 229);"
-            >
-              Webb-byrån
-            </p>
-            <div
-              style="font-size: 12.5px; line-height: 1.55; color: rgb(58, 58, 58); margin-top: 5px;"
-            >
-              <p
-                class="cv-stycke"
+              <div
+                style="display: flex; flex-direction: column; gap: 15px;"
               >
-                Byggde komponentbibliotek och e-handelslösningar.
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
+                <div
+                  class="cv-entry"
+                  style="display: grid; grid-template-columns: 78px 1fr; gap: 16px;"
+                >
+                  <div
+                    class="cv-datum"
+                    style="font-size: 11px; color: rgb(95, 95, 95); line-height: 1.45; padding-top: 2px;"
+                  >
+                    jan 2022
+                    <br />
+                    – 
+                    nu
+                  </div>
+                  <div
+                    style="min-width: 0;"
+                  >
+                    <h3
+                      style="font-size: 14px; font-weight: 600; color: rgb(15, 15, 15); margin: 0px;"
+                    >
+                      Senior Frontend Developer
+                    </h3>
+                    <p
+                      style="font-size: 12.5px; margin: 2px 0px 0px; color: rgb(79, 70, 229);"
+                    >
+                      Tech AB
+                    </p>
+                    <div
+                      style="font-size: 12.5px; line-height: 1.55; color: rgb(58, 58, 58); margin-top: 5px;"
+                    >
+                      <p
+                        class="cv-stycke"
+                      >
+                        Leder frontend-team. Migrerade legacy Angular till React.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="cv-entry"
+                  style="display: grid; grid-template-columns: 78px 1fr; gap: 16px;"
+                >
+                  <div
+                    class="cv-datum"
+                    style="font-size: 11px; color: rgb(95, 95, 95); line-height: 1.45; padding-top: 2px;"
+                  >
+                    jun 2019
+                    <br />
+                    – 
+                    dec 2021
+                  </div>
+                  <div
+                    style="min-width: 0;"
+                  >
+                    <h3
+                      style="font-size: 14px; font-weight: 600; color: rgb(15, 15, 15); margin: 0px;"
+                    >
+                      Frontend Developer
+                    </h3>
+                    <p
+                      style="font-size: 12.5px; margin: 2px 0px 0px; color: rgb(79, 70, 229);"
+                    >
+                      Webb-byrån
+                    </p>
+                    <div
+                      style="font-size: 12.5px; line-height: 1.55; color: rgb(58, 58, 58); margin-top: 5px;"
+                    >
+                      <p
+                        class="cv-stycke"
+                      >
+                        Byggde komponentbibliotek och e-handelslösningar.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </section>
     <section
+      class="cv-postsektion"
       style="margin-bottom: 24px;"
     >
-      <h2
-        style="font-size: 10.5px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: rgb(95, 95, 95); margin: 0px 0px 12px; padding-bottom: 6px; border-bottom: 1px solid rgb(236, 236, 236);"
+      <table
+        role="presentation"
+        style="width: 100%; border-collapse: collapse; border-spacing: 0px; table-layout: fixed;"
       >
-        Utbildning
-      </h2>
-      <div
-        style="display: flex; flex-direction: column; gap: 11px;"
-      >
-        <div
-          class="cv-entry"
-          style="display: grid; grid-template-columns: 78px 1fr; gap: 16px;"
-        >
-          <div
-            class="cv-datum"
-            style="font-size: 11px; color: rgb(95, 95, 95); line-height: 1.45; padding-top: 2px;"
-          >
-            2014
-            <br />
-            – 
-            2019
-          </div>
-          <div
-            style="min-width: 0;"
-          >
-            <h3
-              style="font-size: 13.5px; font-weight: 600; color: rgb(15, 15, 15); margin: 0px;"
+        <thead>
+          <tr>
+            <td
+              style="padding: 0px; vertical-align: top;"
             >
-              Civilingenjör
-            </h3>
-            <p
-              style="font-size: 12.5px; margin: 2px 0px 0px; color: rgb(95, 95, 95);"
+              <h2
+                style="font-size: 10.5px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: rgb(95, 95, 95); margin: 0px 0px 12px; padding-bottom: 6px; border-bottom: 1px solid rgb(236, 236, 236);"
+              >
+                Utbildning
+              </h2>
+            </td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td
+              style="padding: 0px; vertical-align: top;"
             >
-              KTH · Datateknik
-            </p>
-          </div>
-        </div>
-      </div>
+              <div
+                style="display: flex; flex-direction: column; gap: 11px;"
+              >
+                <div
+                  class="cv-entry"
+                  style="display: grid; grid-template-columns: 78px 1fr; gap: 16px;"
+                >
+                  <div
+                    class="cv-datum"
+                    style="font-size: 11px; color: rgb(95, 95, 95); line-height: 1.45; padding-top: 2px;"
+                  >
+                    2014
+                    <br />
+                    – 
+                    2019
+                  </div>
+                  <div
+                    style="min-width: 0;"
+                  >
+                    <h3
+                      style="font-size: 13.5px; font-weight: 600; color: rgb(15, 15, 15); margin: 0px;"
+                    >
+                      Civilingenjör
+                    </h3>
+                    <p
+                      style="font-size: 12.5px; margin: 2px 0px 0px; color: rgb(95, 95, 95);"
+                    >
+                      KTH · Datateknik
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </section>
   </main>
   <aside
@@ -3268,115 +3708,159 @@ exports[`CV-mallar — snapshot regression > NordicTemplate 1`] = `
       </p>
     </section>
     <section
+      class="cv-postsektion"
       style="margin-bottom: 24px;"
     >
-      <h2
-        style="font-size: 10.5px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: rgb(91, 107, 128); margin: 0px 0px 12px; padding-bottom: 6px; border-bottom: 1px solid rgb(226, 232, 240);"
+      <table
+        role="presentation"
+        style="width: 100%; border-collapse: collapse; border-spacing: 0px; table-layout: fixed;"
       >
-        Erfarenhet
-      </h2>
-      <div
-        class="cv-entry"
-        style="margin-bottom: 14px;"
-      >
-        <div
-          style="display: flex; justify-content: space-between; align-items: baseline;"
-        >
-          <h3
-            style="font-size: 14px; font-weight: 600; color: rgb(15, 23, 42); margin: 0px;"
-          >
-            Senior Frontend Developer
-          </h3>
-          <span
-            class="cv-datum"
-            style="font-size: 11px; color: rgb(91, 107, 128); white-space: nowrap; margin-left: 14px;"
-          >
-            jan 2022 – nu
-          </span>
-        </div>
-        <p
-          style="font-size: 12.5px; color: rgb(3, 105, 161); margin: 2px 0px 0px;"
-        >
-          Tech AB
-        </p>
-        <div
-          style="font-size: 12.5px; line-height: 1.6; color: rgb(51, 65, 85); margin-top: 5px;"
-        >
-          <p
-            class="cv-stycke"
-          >
-            Leder frontend-team. Migrerade legacy Angular till React.
-          </p>
-        </div>
-      </div>
-      <div
-        class="cv-entry"
-        style="margin-bottom: 14px;"
-      >
-        <div
-          style="display: flex; justify-content: space-between; align-items: baseline;"
-        >
-          <h3
-            style="font-size: 14px; font-weight: 600; color: rgb(15, 23, 42); margin: 0px;"
-          >
-            Frontend Developer
-          </h3>
-          <span
-            class="cv-datum"
-            style="font-size: 11px; color: rgb(91, 107, 128); white-space: nowrap; margin-left: 14px;"
-          >
-            jun 2019 – dec 2021
-          </span>
-        </div>
-        <p
-          style="font-size: 12.5px; color: rgb(3, 105, 161); margin: 2px 0px 0px;"
-        >
-          Webb-byrån
-        </p>
-        <div
-          style="font-size: 12.5px; line-height: 1.6; color: rgb(51, 65, 85); margin-top: 5px;"
-        >
-          <p
-            class="cv-stycke"
-          >
-            Byggde komponentbibliotek och e-handelslösningar.
-          </p>
-        </div>
-      </div>
+        <thead>
+          <tr>
+            <td
+              style="padding: 0px; vertical-align: top;"
+            >
+              <h2
+                style="font-size: 10.5px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: rgb(91, 107, 128); margin: 0px 0px 12px; padding-bottom: 6px; border-bottom: 1px solid rgb(226, 232, 240);"
+              >
+                Erfarenhet
+              </h2>
+            </td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td
+              style="padding: 0px; vertical-align: top;"
+            >
+              <div
+                class="cv-entry"
+                style="margin-bottom: 14px;"
+              >
+                <div
+                  style="display: flex; justify-content: space-between; align-items: baseline;"
+                >
+                  <h3
+                    style="font-size: 14px; font-weight: 600; color: rgb(15, 23, 42); margin: 0px;"
+                  >
+                    Senior Frontend Developer
+                  </h3>
+                  <span
+                    class="cv-datum"
+                    style="font-size: 11px; color: rgb(91, 107, 128); white-space: nowrap; margin-left: 14px;"
+                  >
+                    jan 2022 – nu
+                  </span>
+                </div>
+                <p
+                  style="font-size: 12.5px; color: rgb(3, 105, 161); margin: 2px 0px 0px;"
+                >
+                  Tech AB
+                </p>
+                <div
+                  style="font-size: 12.5px; line-height: 1.6; color: rgb(51, 65, 85); margin-top: 5px;"
+                >
+                  <p
+                    class="cv-stycke"
+                  >
+                    Leder frontend-team. Migrerade legacy Angular till React.
+                  </p>
+                </div>
+              </div>
+              <div
+                class="cv-entry"
+                style="margin-bottom: 14px;"
+              >
+                <div
+                  style="display: flex; justify-content: space-between; align-items: baseline;"
+                >
+                  <h3
+                    style="font-size: 14px; font-weight: 600; color: rgb(15, 23, 42); margin: 0px;"
+                  >
+                    Frontend Developer
+                  </h3>
+                  <span
+                    class="cv-datum"
+                    style="font-size: 11px; color: rgb(91, 107, 128); white-space: nowrap; margin-left: 14px;"
+                  >
+                    jun 2019 – dec 2021
+                  </span>
+                </div>
+                <p
+                  style="font-size: 12.5px; color: rgb(3, 105, 161); margin: 2px 0px 0px;"
+                >
+                  Webb-byrån
+                </p>
+                <div
+                  style="font-size: 12.5px; line-height: 1.6; color: rgb(51, 65, 85); margin-top: 5px;"
+                >
+                  <p
+                    class="cv-stycke"
+                  >
+                    Byggde komponentbibliotek och e-handelslösningar.
+                  </p>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </section>
     <section
+      class="cv-postsektion"
       style="margin-bottom: 24px;"
     >
-      <h2
-        style="font-size: 10.5px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: rgb(91, 107, 128); margin: 0px 0px 12px; padding-bottom: 6px; border-bottom: 1px solid rgb(226, 232, 240);"
+      <table
+        role="presentation"
+        style="width: 100%; border-collapse: collapse; border-spacing: 0px; table-layout: fixed;"
       >
-        Utbildning
-      </h2>
-      <div
-        class="cv-entry"
-        style="margin-bottom: 11px;"
-      >
-        <div
-          style="display: flex; justify-content: space-between; align-items: baseline;"
-        >
-          <h3
-            style="font-size: 13.5px; font-weight: 600; color: rgb(15, 23, 42); margin: 0px;"
-          >
-            Civilingenjör
-          </h3>
-          <span
-            class="cv-datum"
-            style="font-size: 11px; color: rgb(91, 107, 128); white-space: nowrap; margin-left: 14px;"
-          >
-            2014 – 2019
-          </span>
-        </div>
-        <p
-          style="font-size: 12.5px; color: rgb(91, 107, 128); margin: 2px 0px 0px;"
-        >
-          KTH · Datateknik
-        </p>
-      </div>
+        <thead>
+          <tr>
+            <td
+              style="padding: 0px; vertical-align: top;"
+            >
+              <h2
+                style="font-size: 10.5px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: rgb(91, 107, 128); margin: 0px 0px 12px; padding-bottom: 6px; border-bottom: 1px solid rgb(226, 232, 240);"
+              >
+                Utbildning
+              </h2>
+            </td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td
+              style="padding: 0px; vertical-align: top;"
+            >
+              <div
+                class="cv-entry"
+                style="margin-bottom: 11px;"
+              >
+                <div
+                  style="display: flex; justify-content: space-between; align-items: baseline;"
+                >
+                  <h3
+                    style="font-size: 13.5px; font-weight: 600; color: rgb(15, 23, 42); margin: 0px;"
+                  >
+                    Civilingenjör
+                  </h3>
+                  <span
+                    class="cv-datum"
+                    style="font-size: 11px; color: rgb(91, 107, 128); white-space: nowrap; margin-left: 14px;"
+                  >
+                    2014 – 2019
+                  </span>
+                </div>
+                <p
+                  style="font-size: 12.5px; color: rgb(91, 107, 128); margin: 2px 0px 0px;"
+                >
+                  KTH · Datateknik
+                </p>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </section>
   </main>
   <aside
@@ -3596,63 +4080,85 @@ exports[`CV-mallar — snapshot regression > RotterdamTemplate 1`] = `
       </p>
     </section>
     <section
+      class="cv-postsektion"
       style="margin-bottom: 30px;"
     >
-      <h2
-        style="font-size: 10.5px; font-weight: 700; letter-spacing: 0.24em; text-transform: uppercase; color: rgb(31, 41, 55); margin: 0px 0px 12px; padding-bottom: 6px; border-bottom: 1px solid rgb(31, 41, 55);"
+      <table
+        role="presentation"
+        style="width: 100%; border-collapse: collapse; border-spacing: 0px; table-layout: fixed;"
       >
-        Erfarenhet
-      </h2>
-      <div
-        class="cv-entry"
-        style="margin-bottom: 20px;"
-      >
-        <h3
-          style="font-size: 14px; font-weight: 700; color: rgb(31, 41, 55); margin: 0px;"
-        >
-          Senior Frontend Developer
-        </h3>
-        <p
-          class="cv-datum"
-          style="font-size: 11px; font-weight: 500; color: rgb(91, 100, 114); margin: 3px 0px 0px; letter-spacing: 0.03em;"
-        >
-          Tech AB · jan 2022 – nuvarande
-        </p>
-        <div
-          style="font-size: 12px; line-height: 1.65; color: rgb(55, 65, 81); margin-top: 6px;"
-        >
-          <p
-            class="cv-stycke"
-          >
-            Leder frontend-team. Migrerade legacy Angular till React.
-          </p>
-        </div>
-      </div>
-      <div
-        class="cv-entry"
-        style="margin-bottom: 20px;"
-      >
-        <h3
-          style="font-size: 14px; font-weight: 700; color: rgb(31, 41, 55); margin: 0px;"
-        >
-          Frontend Developer
-        </h3>
-        <p
-          class="cv-datum"
-          style="font-size: 11px; font-weight: 500; color: rgb(91, 100, 114); margin: 3px 0px 0px; letter-spacing: 0.03em;"
-        >
-          Webb-byrån · jun 2019 – dec 2021
-        </p>
-        <div
-          style="font-size: 12px; line-height: 1.65; color: rgb(55, 65, 81); margin-top: 6px;"
-        >
-          <p
-            class="cv-stycke"
-          >
-            Byggde komponentbibliotek och e-handelslösningar.
-          </p>
-        </div>
-      </div>
+        <thead>
+          <tr>
+            <td
+              style="padding: 0px; vertical-align: top;"
+            >
+              <h2
+                style="font-size: 10.5px; font-weight: 700; letter-spacing: 0.24em; text-transform: uppercase; color: rgb(31, 41, 55); margin: 0px 0px 12px; padding-bottom: 6px; border-bottom: 1px solid rgb(31, 41, 55);"
+              >
+                Erfarenhet
+              </h2>
+            </td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td
+              style="padding: 0px; vertical-align: top;"
+            >
+              <div
+                class="cv-entry"
+                style="margin-bottom: 20px;"
+              >
+                <h3
+                  style="font-size: 14px; font-weight: 700; color: rgb(31, 41, 55); margin: 0px;"
+                >
+                  Senior Frontend Developer
+                </h3>
+                <p
+                  class="cv-datum"
+                  style="font-size: 11px; font-weight: 500; color: rgb(91, 100, 114); margin: 3px 0px 0px; letter-spacing: 0.03em;"
+                >
+                  Tech AB · jan 2022 – nuvarande
+                </p>
+                <div
+                  style="font-size: 12px; line-height: 1.65; color: rgb(55, 65, 81); margin-top: 6px;"
+                >
+                  <p
+                    class="cv-stycke"
+                  >
+                    Leder frontend-team. Migrerade legacy Angular till React.
+                  </p>
+                </div>
+              </div>
+              <div
+                class="cv-entry"
+                style="margin-bottom: 20px;"
+              >
+                <h3
+                  style="font-size: 14px; font-weight: 700; color: rgb(31, 41, 55); margin: 0px;"
+                >
+                  Frontend Developer
+                </h3>
+                <p
+                  class="cv-datum"
+                  style="font-size: 11px; font-weight: 500; color: rgb(91, 100, 114); margin: 3px 0px 0px; letter-spacing: 0.03em;"
+                >
+                  Webb-byrån · jun 2019 – dec 2021
+                </p>
+                <div
+                  style="font-size: 12px; line-height: 1.65; color: rgb(55, 65, 81); margin-top: 6px;"
+                >
+                  <p
+                    class="cv-stycke"
+                  >
+                    Byggde komponentbibliotek och e-handelslösningar.
+                  </p>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </section>
   </main>
   <aside
@@ -3750,38 +4256,62 @@ exports[`CV-mallar — snapshot regression > RotterdamTemplate 1`] = `
         </li>
       </ul>
     </section>
-    <section>
-      <h2
-        style="font-size: 10.5px; font-weight: 700; letter-spacing: 0.24em; text-transform: uppercase; color: rgb(31, 41, 55); margin: 0px 0px 12px; padding-bottom: 6px; border-bottom: 1px solid rgb(31, 41, 55);"
+    <section
+      class="cv-postsektion"
+      style="margin-bottom: 12px;"
+    >
+      <table
+        role="presentation"
+        style="width: 100%; border-collapse: collapse; border-spacing: 0px; table-layout: fixed;"
       >
-        Utbildning
-      </h2>
-      <div
-        class="cv-entry"
-        style="margin-bottom: 12px;"
-      >
-        <h3
-          style="font-size: 11.5px; font-weight: 700; color: rgb(31, 41, 55); margin: 0px; line-height: 1.35;"
-        >
-          Civilingenjör
-        </h3>
-        <div
-          style="font-size: 10.5px; color: rgb(55, 65, 81); margin-top: 1px;"
-        >
-          KTH
-        </div>
-        <div
-          style="font-size: 10.5px; color: rgb(91, 100, 114);"
-        >
-          Datateknik
-        </div>
-        <div
-          class="cv-datum"
-          style="font-size: 10.5px; color: rgb(91, 100, 114);"
-        >
-          2014 – 2019
-        </div>
-      </div>
+        <thead>
+          <tr>
+            <td
+              style="padding: 0px; vertical-align: top;"
+            >
+              <h2
+                style="font-size: 10.5px; font-weight: 700; letter-spacing: 0.24em; text-transform: uppercase; color: rgb(31, 41, 55); margin: 0px 0px 12px; padding-bottom: 6px; border-bottom: 1px solid rgb(31, 41, 55);"
+              >
+                Utbildning
+              </h2>
+            </td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td
+              style="padding: 0px; vertical-align: top;"
+            >
+              <div
+                class="cv-entry"
+                style="margin-bottom: 12px;"
+              >
+                <h3
+                  style="font-size: 11.5px; font-weight: 700; color: rgb(31, 41, 55); margin: 0px; line-height: 1.35;"
+                >
+                  Civilingenjör
+                </h3>
+                <div
+                  style="font-size: 10.5px; color: rgb(55, 65, 81); margin-top: 1px;"
+                >
+                  KTH
+                </div>
+                <div
+                  style="font-size: 10.5px; color: rgb(91, 100, 114);"
+                >
+                  Datateknik
+                </div>
+                <div
+                  class="cv-datum"
+                  style="font-size: 10.5px; color: rgb(91, 100, 114);"
+                >
+                  2014 – 2019
+                </div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </section>
     <section
       class="cv-keep"

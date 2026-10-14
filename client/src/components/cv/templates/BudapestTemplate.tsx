@@ -13,6 +13,7 @@
  *   `text-transform`, så den som kopierar texten får "Om mig".
  */
 
+import { PostSektion } from './PostSektion'
 import type { CSSProperties, ReactNode } from 'react'
 import type { TemplateProps } from './types'
 import { getLanguageLevelDisplay, getSkillName, getInitials } from './helpers'
@@ -200,8 +201,7 @@ export function BudapestTemplate({ data, fullName, rubrikniva }: TemplateProps) 
         )}
 
         {data.workExperience.length > 0 && (
-          <section style={{ marginBottom: '28px' }}>
-            <Sektion style={huvudrubrik}>Arbetslivserfarenhet</Sektion>
+          <PostSektion style={{ marginBottom: '28px' }} rubrik={<Sektion style={huvudrubrik}>Arbetslivserfarenhet</Sektion>}>
             {data.workExperience.map((job, i) => (
               <div key={job.id} className="cv-entry">
                 <div style={{ display: 'grid', gridTemplateColumns: '122px 18px 1fr', gap: '10px' }}>
@@ -220,12 +220,11 @@ export function BudapestTemplate({ data, fullName, rubrikniva }: TemplateProps) 
                 </div>
               </div>
             ))}
-          </section>
+          </PostSektion>
         )}
 
         {data.education.length > 0 && (
-          <section style={{ marginBottom: '28px' }}>
-            <Sektion style={huvudrubrik}>Utbildning</Sektion>
+          <PostSektion style={{ marginBottom: '28px' }} rubrik={<Sektion style={huvudrubrik}>Utbildning</Sektion>}>
             {data.education.map((edu, i) => (
               <div key={edu.id} className="cv-entry">
                 <div style={{ display: 'grid', gridTemplateColumns: '122px 18px 1fr', gap: '10px' }}>
@@ -245,7 +244,7 @@ export function BudapestTemplate({ data, fullName, rubrikniva }: TemplateProps) 
                 </div>
               </div>
             ))}
-          </section>
+          </PostSektion>
         )}
       </main>
 

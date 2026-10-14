@@ -11,6 +11,7 @@
  * - Datumpillret behåller sin form men i en ton som klarar 4,5:1.
  */
 
+import { PostSektion } from './PostSektion'
 import type { CSSProperties } from 'react'
 import { Mail, Phone, MapPin } from '@/components/ui/icons'
 import type { TemplateProps } from './types'
@@ -188,8 +189,7 @@ export function CreativeTemplate({ data, fullName, rubrikniva }: TemplateProps) 
         )}
 
         {data.workExperience.length > 0 && (
-          <section style={sektion}>
-            <Rubrik tagg={Sektion}>Erfarenhet</Rubrik>
+          <PostSektion style={sektion} rubrik={<Rubrik tagg={Sektion}>Erfarenhet</Rubrik>}>
             {data.workExperience.map((job) => (
               <div key={job.id} className="cv-entry" style={{ marginBottom: '14px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: '14px' }}>
@@ -216,12 +216,11 @@ export function CreativeTemplate({ data, fullName, rubrikniva }: TemplateProps) 
                 <Beskrivning text={job.description} style={{ fontSize: '12.5px', lineHeight: 1.55, color: TEXT, marginTop: '5px' }} />
               </div>
             ))}
-          </section>
+          </PostSektion>
         )}
 
         {data.education.length > 0 && (
-          <section style={sektion}>
-            <Rubrik tagg={Sektion}>Utbildning</Rubrik>
+          <PostSektion style={sektion} rubrik={<Rubrik tagg={Sektion}>Utbildning</Rubrik>}>
             {data.education.map((edu) => (
               <div key={edu.id} className="cv-entry" style={{ marginBottom: '11px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: '14px' }}>
@@ -242,7 +241,7 @@ export function CreativeTemplate({ data, fullName, rubrikniva }: TemplateProps) 
                 <Beskrivning text={edu.description} style={{ fontSize: '12.5px', lineHeight: 1.55, color: TEXT, marginTop: '4px' }} />
               </div>
             ))}
-          </section>
+          </PostSektion>
         )}
 
         {data.languages.length > 0 && (

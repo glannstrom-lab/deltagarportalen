@@ -13,6 +13,7 @@
  * - Datumen står i en egen kolumn som "dec 2025 / – nu", tabulära siffror.
  */
 
+import { PostSektion } from './PostSektion'
 import type { CSSProperties } from 'react'
 import { Mail, Phone, MapPin } from '@/components/ui/icons'
 import type { TemplateProps } from './types'
@@ -103,8 +104,7 @@ export function ModernTemplate({ data, fullName, rubrikniva }: TemplateProps) {
         )}
 
         {data.workExperience.length > 0 && (
-          <section style={{ marginBottom: '24px' }}>
-            <Sektion style={huvudrubrik}>Erfarenhet</Sektion>
+          <PostSektion style={{ marginBottom: '24px' }} rubrik={<Sektion style={huvudrubrik}>Erfarenhet</Sektion>}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
               {data.workExperience.map((job) => {
                 const p = periodDelar(job.startDate, job.endDate, job.current)
@@ -133,12 +133,11 @@ export function ModernTemplate({ data, fullName, rubrikniva }: TemplateProps) {
                 )
               })}
             </div>
-          </section>
+          </PostSektion>
         )}
 
         {data.education.length > 0 && (
-          <section style={{ marginBottom: '24px' }}>
-            <Sektion style={huvudrubrik}>Utbildning</Sektion>
+          <PostSektion style={{ marginBottom: '24px' }} rubrik={<Sektion style={huvudrubrik}>Utbildning</Sektion>}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '11px' }}>
               {data.education.map((edu) => {
                 const p = periodDelar(edu.startDate, edu.endDate, edu.current)
@@ -166,7 +165,7 @@ export function ModernTemplate({ data, fullName, rubrikniva }: TemplateProps) {
                 )
               })}
             </div>
-          </section>
+          </PostSektion>
         )}
 
         {data.certificates.length > 0 && (

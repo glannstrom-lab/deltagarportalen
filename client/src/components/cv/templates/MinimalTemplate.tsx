@@ -10,6 +10,7 @@
  * med, beskrivningarnas radbrytningar och punktlistor bevarade.
  */
 
+import { PostSektion } from './PostSektion'
 import type { CSSProperties } from 'react'
 import type { TemplateProps } from './types'
 import { getLanguageLevelDisplay, getSkillName } from './helpers'
@@ -105,8 +106,7 @@ export function MinimalTemplate({ data, fullName, rubrikniva }: TemplateProps) {
       )}
 
       {data.workExperience.length > 0 && (
-        <section style={sektion}>
-          <Sektion style={sektionsrubrik}>Erfarenhet</Sektion>
+        <PostSektion style={sektion} rubrik={<Sektion style={sektionsrubrik}>Erfarenhet</Sektion>}>
           {data.workExperience.map((job) => (
             <div key={job.id} className="cv-entry" style={{ marginBottom: '13px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
@@ -124,12 +124,11 @@ export function MinimalTemplate({ data, fullName, rubrikniva }: TemplateProps) {
               />
             </div>
           ))}
-        </section>
+        </PostSektion>
       )}
 
       {data.education.length > 0 && (
-        <section style={sektion}>
-          <Sektion style={sektionsrubrik}>Utbildning</Sektion>
+        <PostSektion style={sektion} rubrik={<Sektion style={sektionsrubrik}>Utbildning</Sektion>}>
           {data.education.map((edu) => (
             <div key={edu.id} className="cv-entry" style={{ marginBottom: '10px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
@@ -147,7 +146,7 @@ export function MinimalTemplate({ data, fullName, rubrikniva }: TemplateProps) {
               />
             </div>
           ))}
-        </section>
+        </PostSektion>
       )}
 
       {data.skills.length > 0 && (

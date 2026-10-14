@@ -13,6 +13,7 @@
  *   nu "dec 2025 – nuvarande" i gemener med tabulära siffror.
  */
 
+import { PostSektion } from './PostSektion'
 import type { CSSProperties } from 'react'
 import type { TemplateProps } from './types'
 import { getLanguageLevelDisplay, getSkillName, getInitials } from './helpers'
@@ -117,8 +118,7 @@ export function ManhattanTemplate({ data, fullName, rubrikniva }: TemplateProps)
         )}
 
         {data.workExperience.length > 0 && (
-          <section style={{ marginBottom: '22px' }}>
-            <Sektion style={huvudrubrik}>Erfarenhet</Sektion>
+          <PostSektion style={{ marginBottom: '22px' }} rubrik={<Sektion style={huvudrubrik}>Erfarenhet</Sektion>}>
             {data.workExperience.map((job) => (
               <div key={job.id} className="cv-entry" style={post}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
@@ -133,12 +133,11 @@ export function ManhattanTemplate({ data, fullName, rubrikniva }: TemplateProps)
                 <Beskrivning text={job.description} style={{ fontSize: '12.5px', lineHeight: 1.55, color: TEXT, marginTop: '4px' }} />
               </div>
             ))}
-          </section>
+          </PostSektion>
         )}
 
         {data.education.length > 0 && (
-          <section style={{ marginBottom: '22px' }}>
-            <Sektion style={huvudrubrik}>Utbildning</Sektion>
+          <PostSektion style={{ marginBottom: '22px' }} rubrik={<Sektion style={huvudrubrik}>Utbildning</Sektion>}>
             {data.education.map((edu) => (
               <div key={edu.id} className="cv-entry" style={post}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
@@ -153,7 +152,7 @@ export function ManhattanTemplate({ data, fullName, rubrikniva }: TemplateProps)
                 <Beskrivning text={edu.description} style={{ fontSize: '12.5px', lineHeight: 1.55, color: TEXT, marginTop: '4px' }} />
               </div>
             ))}
-          </section>
+          </PostSektion>
         )}
       </main>
 

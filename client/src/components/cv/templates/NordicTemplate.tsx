@@ -10,6 +10,7 @@
  *   börjar med namnet, inte med ordet "Kontakt".
  */
 
+import { PostSektion } from './PostSektion'
 import type { CSSProperties } from 'react'
 import type { TemplateProps } from './types'
 import { getLanguageLevelDisplay, getSkillName, getInitials } from './helpers'
@@ -81,8 +82,7 @@ export function NordicTemplate({ data, fullName, rubrikniva }: TemplateProps) {
         )}
 
         {data.workExperience.length > 0 && (
-          <section style={{ marginBottom: '24px' }}>
-            <Sektion style={huvudrubrik}>Erfarenhet</Sektion>
+          <PostSektion style={{ marginBottom: '24px' }} rubrik={<Sektion style={huvudrubrik}>Erfarenhet</Sektion>}>
             {data.workExperience.map((job) => (
               <div key={job.id} className="cv-entry" style={{ marginBottom: '14px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
@@ -98,12 +98,11 @@ export function NordicTemplate({ data, fullName, rubrikniva }: TemplateProps) {
                 <Beskrivning text={job.description} style={{ fontSize: '12.5px', lineHeight: 1.6, color: TEXT, marginTop: '5px' }} />
               </div>
             ))}
-          </section>
+          </PostSektion>
         )}
 
         {data.education.length > 0 && (
-          <section style={{ marginBottom: '24px' }}>
-            <Sektion style={huvudrubrik}>Utbildning</Sektion>
+          <PostSektion style={{ marginBottom: '24px' }} rubrik={<Sektion style={huvudrubrik}>Utbildning</Sektion>}>
             {data.education.map((edu) => (
               <div key={edu.id} className="cv-entry" style={{ marginBottom: '11px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
@@ -118,7 +117,7 @@ export function NordicTemplate({ data, fullName, rubrikniva }: TemplateProps) {
                 <Beskrivning text={edu.description} style={{ fontSize: '12.5px', lineHeight: 1.6, color: TEXT, marginTop: '4px' }} />
               </div>
             ))}
-          </section>
+          </PostSektion>
         )}
 
         {data.certificates.length > 0 && (

@@ -16,6 +16,7 @@
  * - Språkrubriken var portalens UI-språk; nu svenska som resten.
  */
 
+import { PostSektion } from './PostSektion'
 import type { CSSProperties } from 'react'
 import type { TemplateProps } from './types'
 import { getLanguageLevelDisplay, getSkillName, getInitials } from './helpers'
@@ -152,8 +153,7 @@ export function BerlinTemplate({ data, fullName, rubrikniva }: TemplateProps) {
         )}
 
         {data.workExperience.length > 0 && (
-          <section style={{ marginBottom: '16px' }}>
-            <Rubrik tagg={Sektion} nr={nasta()}>Erfarenhet</Rubrik>
+          <PostSektion style={{ marginBottom: '16px' }} rubrik={<Rubrik tagg={Sektion} nr={nasta()}>Erfarenhet</Rubrik>}>
             {data.workExperience.map((job) => {
               const p = periodDelar(job.startDate, job.endDate, job.current)
               return (
@@ -176,12 +176,11 @@ export function BerlinTemplate({ data, fullName, rubrikniva }: TemplateProps) {
                 </div>
               )
             })}
-          </section>
+          </PostSektion>
         )}
 
         {data.education.length > 0 && (
-          <section style={{ marginBottom: '16px' }}>
-            <Rubrik tagg={Sektion} nr={nasta()}>Utbildning</Rubrik>
+          <PostSektion style={{ marginBottom: '16px' }} rubrik={<Rubrik tagg={Sektion} nr={nasta()}>Utbildning</Rubrik>}>
             {data.education.map((edu) => {
               const p = periodDelar(edu.startDate, edu.endDate, edu.current)
               return (
@@ -209,7 +208,7 @@ export function BerlinTemplate({ data, fullName, rubrikniva }: TemplateProps) {
                 </div>
               )
             })}
-          </section>
+          </PostSektion>
         )}
 
         {data.skills.length > 0 && (

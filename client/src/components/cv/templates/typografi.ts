@@ -179,4 +179,13 @@ export const CV_GRUNDSTIL = `
   break-inside: avoid;
   page-break-inside: avoid;
 }
+/* PostSektion lägger posterna i en tabellcell, där sista postens marginal inte
+   längre kollapsar med sektionens. Utan nollningen blev glappet till nästa
+   sektion större — och i PDF:en kunde marginalen ensam spilla över på en ny
+   sida, där tabellhuvudet då upprepades ovanför ingenting. !important
+   eftersom mallarna sätter marginalen inline på posten. */
+.cv-preview .cv-postsektion td > :last-child,
+.cv-preview .cv-postsektion td > :last-child > .cv-entry:last-child {
+  margin-bottom: 0 !important;
+}
 `
