@@ -92,6 +92,14 @@ export interface UserProfile {
   icf: ICFScores
   strongInterest: StrongInterestCategories
   coverage: ProfileCoverage
+  /**
+   * Råsvaren (1–5) på frågorna om förutsättningar, per fråge-id. Domänvärdet i
+   * `icf` är ett avrundat medel — `motorik` och `energi` har två frågor var,
+   * och "1 på grovmotorik, 5 på finmotorik" blir 3 där. Uteslutningen måste
+   * därför läsa frågan, inte domänen. Valfri: en profil byggd någon annanstans
+   * faller tillbaka på domänvärdet.
+   */
+  icfSvar?: Record<string, number>
 }
 
 export interface JobRequirements {
@@ -141,6 +149,47 @@ export interface JobChallenges {
   resande?: number
 }
 
+/**
+ * Vad ett yrke belastar — en dimension per fråga i avsnittet "Dina
+ * förutsättningar" (2026-10-14).
+ *
+ * Varför: ICF-svaren gav bara anpassningsförslag och varningar, aldrig
+ * uteslutning. Den som svarade "blir lätt överväldigad" av ljud och ljus fick
+ * Ljudtekniker som nummer 1 av 165 — utan ens en varning, eftersom
+ * `challenges.sensorisk` stod på 3 och varningen krävde > 3. Belastningen är
+ * därför ett eget fält, härlett ur de frågor som faktiskt ställs, så att
+ * kopplingen fråga → yrke går att läsa och granska rad för rad.
+ *
+ * Grad: 2 = centralt i yrket (det går inte att göra jobbet utan det),
+ *       1 = ett inslag (förekommer, men går ofta att anpassa runt).
+ * Märkningen är en bedömning gjord 2026-10-14 ur `challenges`, `icf` och
+ * yrkesbeskrivningen, inte en mätning. Siffror, inte text — fältet ska inte
+ * översättas (overlayen går bara in i strängar).
+ */
+export type Belastning =
+  | 'komplext_tankande'   // icf_cog — minne, planering, problemlösning
+  | 'samspel'             // icf_com — mycket kontakt, samarbete, uttrycka sig
+  | 'langvarigt_fokus'    // icf_con — fokus länge, trots störningar
+  | 'rorlighet'           // icf_mot_grov — stå, gå, röra sig
+  | 'finmotorik'          // icf_mot_fin — stadiga händer, precision
+  | 'sinnesintryck'       // icf_sen — ljud, ljus och andra sinnesintryck
+  | 'fysisk_ork'          // icf_en_fys — fysiskt aktiv/tungt hela dagen
+  | 'mental_anstrangning' // icf_en_men — mentalt krävande, högt tempo, press
+
+export type Belastningsgrad = 1 | 2
+
+/** Vilken fråga varje belastning svarar mot. Frågan ställs positivt: 1 = mycket svårt. */
+export const BELASTNING_FRAGA: Record<Belastning, string> = {
+  komplext_tankande: 'icf_cog',
+  samspel: 'icf_com',
+  langvarigt_fokus: 'icf_con',
+  rorlighet: 'icf_mot_grov',
+  finmotorik: 'icf_mot_fin',
+  sinnesintryck: 'icf_sen',
+  fysisk_ork: 'icf_en_fys',
+  mental_anstrangning: 'icf_en_men',
+}
+
 export interface JobEducation {
   name: string
   length: string
@@ -156,6 +205,8 @@ export interface Occupation {
   icf: ICFScores
   categories: JobRequirements
   challenges: JobChallenges
+  /** Se `Belastning`. Obligatoriskt: ett nytt yrke utan märkning ska inte kompilera. */
+  belastning: Partial<Record<Belastning, Belastningsgrad>>
   salary: string
   education: JobEducation
   prognosis: 'growing' | 'stable' | 'declining'
@@ -552,6 +603,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 5, kommunikation: 5, koncentration: 5, motorik: 3, sensorisk: 4, energi: 4 },
     categories: { vard: 5, forskning: 4, analytisk: 4, social: 4, noggrannhet: 5, kommunikation: 3 },
     challenges: { fysisk_rorlighet: 4, social_energi: 4, tidspress: 4, multitasking: 4, koncentration: 5 },
+    belastning: { rorlighet: 1, fysisk_ork: 1, finmotorik: 1, samspel: 2, langvarigt_fokus: 2, mental_anstrangning: 2, komplext_tankande: 2 },
     salary: '45 000 - 85 000 kr/mån',
     education: { name: 'Läkarprogrammet', length: '5,5 år + AT 1,5 år', type: 'Universitet' },
     prognosis: 'growing',
@@ -568,6 +620,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 5, kommunikation: 3, koncentration: 5, motorik: 2, sensorisk: 3, energi: 3 },
     categories: { teknisk: 5, analytisk: 5, it: 4, forskning: 3, noggrannhet: 4 },
     challenges: { stillasittande: 4, koncentration: 5, multitasking: 3 },
+    belastning: { langvarigt_fokus: 2, komplext_tankande: 2 },
     salary: '38 000 - 65 000 kr/mån',
     education: { name: 'Civilingenjörsprogram', length: '5 år', type: 'Teknisk högskola' },
     prognosis: 'growing',
@@ -584,6 +637,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 5, kommunikation: 5, koncentration: 4, motorik: 2, sensorisk: 4, energi: 3 },
     categories: { social: 5, analytisk: 4, kommunikation: 4, pedagogik: 3, vard: 4 },
     challenges: { social_energi: 5, koncentration: 4, stillasittande: 4 },
+    belastning: { samspel: 2, langvarigt_fokus: 1, mental_anstrangning: 1, komplext_tankande: 2 },
     salary: '35 000 - 55 000 kr/mån',
     education: { name: 'Psykologprogrammet', length: '5 år + PTP 1 år', type: 'Universitet' },
     prognosis: 'growing',
@@ -600,6 +654,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 5, kommunikation: 2, koncentration: 5, motorik: 2, sensorisk: 3, energi: 3 },
     categories: { it: 5, teknisk: 5, analytisk: 4, noggrannhet: 4 },
     challenges: { stillasittande: 5, koncentration: 5, social_energi: 2 },
+    belastning: { langvarigt_fokus: 2, komplext_tankande: 2 },
     salary: '38 000 - 70 000 kr/mån',
     education: { name: 'Systemvetenskap/Datateknik', length: '3-5 år', type: 'Universitet/YH' },
     prognosis: 'growing',
@@ -616,6 +671,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 4, kommunikation: 3, koncentration: 4, motorik: 2, sensorisk: 3, energi: 3 },
     categories: { kreativ: 5, teknisk: 4, analytisk: 3, kommunikation: 3, noggrannhet: 4 },
     challenges: { stillasittande: 4, koncentration: 4, multitasking: 3 },
+    belastning: { langvarigt_fokus: 1, komplext_tankande: 1 },
     salary: '35 000 - 55 000 kr/mån',
     education: { name: 'Arkitektprogrammet', length: '5 år', type: 'Konsthögskola' },
     prognosis: 'stable',
@@ -632,6 +688,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 4, kommunikation: 5, koncentration: 4, motorik: 3, sensorisk: 3, energi: 3 },
     categories: { pedagogik: 5, kommunikation: 5, social: 4, forskning: 3 },
     challenges: { social_energi: 5, fysisk_rorlighet: 3, tidspress: 3, multitasking: 4 },
+    belastning: { samspel: 2, mental_anstrangning: 1, komplext_tankande: 1 },
     salary: '32 000 - 45 000 kr/mån',
     education: { name: 'Lärarutbildning', length: '4-5,5 år', type: 'Universitet' },
     prognosis: 'growing',
@@ -648,6 +705,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 4, kommunikation: 3, koncentration: 5, motorik: 2, sensorisk: 3, energi: 3 },
     categories: { ekonomi: 5, analytisk: 5, noggrannhet: 5 },
     challenges: { stillasittande: 5, koncentration: 5, tidspress: 4 },
+    belastning: { langvarigt_fokus: 2, mental_anstrangning: 1, komplext_tankande: 1 },
     salary: '35 000 - 60 000 kr/mån',
     education: { name: 'Ekonomprogrammet', length: '3-4 år', type: 'Universitet' },
     prognosis: 'stable',
@@ -664,6 +722,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 5, kommunikation: 5, koncentration: 5, motorik: 2, sensorisk: 3, energi: 3 },
     categories: { analytisk: 5, kommunikation: 5, noggrannhet: 5, ledarskap_organisation: 3 },
     challenges: { stillasittande: 4, koncentration: 5, tidspress: 5, social_energi: 4 },
+    belastning: { samspel: 2, langvarigt_fokus: 2, mental_anstrangning: 2, komplext_tankande: 2 },
     salary: '40 000 - 90 000 kr/mån',
     education: { name: 'Juristprogrammet', length: '4,5 år', type: 'Universitet' },
     prognosis: 'stable',
@@ -680,6 +739,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 5, kommunikation: 3, koncentration: 5, motorik: 2, sensorisk: 3, energi: 3 },
     categories: { forskning: 5, analytisk: 5, noggrannhet: 4 },
     challenges: { stillasittande: 4, koncentration: 5, social_energi: 2 },
+    belastning: { langvarigt_fokus: 2, komplext_tankande: 2 },
     salary: '32 000 - 55 000 kr/mån',
     education: { name: 'Doktorsexamen', length: '8-10 år totalt', type: 'Universitet' },
     prognosis: 'stable',
@@ -696,6 +756,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 4, kommunikation: 4, koncentration: 4, motorik: 3, sensorisk: 4, energi: 4 },
     categories: { natur: 5, vard: 4, analytisk: 4, praktisk: 3 },
     challenges: { fysisk_rorlighet: 4, fysisk_styrka: 3, social_energi: 3, tidspress: 3 },
+    belastning: { rorlighet: 1, fysisk_ork: 1, finmotorik: 1, samspel: 1, komplext_tankande: 1 },
     salary: '38 000 - 55 000 kr/mån',
     education: { name: 'Veterinärprogrammet', length: '5,5 år', type: 'SLU' },
     prognosis: 'growing',
@@ -712,6 +773,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 4, kommunikation: 4, koncentration: 4, motorik: 4, sensorisk: 4, energi: 4 },
     categories: { vard: 5, social: 5, praktisk: 3, noggrannhet: 4 },
     challenges: { fysisk_rorlighet: 5, social_energi: 5, tidspress: 4, multitasking: 5 },
+    belastning: { rorlighet: 2, fysisk_ork: 2, finmotorik: 1, samspel: 2, mental_anstrangning: 2, komplext_tankande: 1 },
     salary: '32 000 - 45 000 kr/mån',
     education: { name: 'Sjuksköterskeprogrammet', length: '3 år', type: 'Universitet' },
     prognosis: 'growing',
@@ -728,6 +790,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 4, kommunikation: 5, koncentration: 3, motorik: 2, sensorisk: 3, energi: 4 },
     categories: { kreativ: 4, kommunikation: 5, ekonomi: 3, analytisk: 3 },
     challenges: { tidspress: 4, multitasking: 4, social_energi: 4 },
+    belastning: { samspel: 2, mental_anstrangning: 1, komplext_tankande: 1 },
     salary: '32 000 - 55 000 kr/mån',
     education: { name: 'Medie-/Kommunikationsprogram', length: '3-4 år', type: 'Universitet' },
     prognosis: 'stable',
@@ -745,6 +808,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 3, kommunikation: 3, koncentration: 4, motorik: 4, sensorisk: 3, energi: 4 },
     categories: { teknisk: 5, praktisk: 5, noggrannhet: 4 },
     challenges: { fysisk_rorlighet: 5, fysisk_styrka: 4, koncentration: 4 },
+    belastning: { rorlighet: 2, fysisk_ork: 2, finmotorik: 1, langvarigt_fokus: 1 },
     salary: '28 000 - 42 000 kr/mån',
     education: { name: 'El- och energiprogrammet', length: '3 år gymn + lärling', type: 'Gymnasium' },
     prognosis: 'growing',
@@ -761,6 +825,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 2, kommunikation: 2, koncentration: 3, motorik: 5, sensorisk: 3, energi: 5 },
     categories: { praktisk: 5, teknisk: 3, noggrannhet: 3 },
     challenges: { fysisk_styrka: 5, fysisk_rorlighet: 5, sensorisk: 3 },
+    belastning: { sinnesintryck: 1, rorlighet: 2, fysisk_ork: 2, finmotorik: 1 },
     salary: '27 000 - 38 000 kr/mån',
     education: { name: 'Bygg- och anläggningsprogrammet', length: '3 år gymn', type: 'Gymnasium' },
     prognosis: 'growing',
@@ -777,6 +842,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 2, kommunikation: 2, koncentration: 4, motorik: 4, sensorisk: 3, energi: 4 },
     categories: { kreativ: 4, praktisk: 5, stresshantering: 4 },
     challenges: { fysisk_rorlighet: 5, tidspress: 5, sensorisk: 3, multitasking: 5 },
+    belastning: { sinnesintryck: 1, rorlighet: 2, fysisk_ork: 2, finmotorik: 1, mental_anstrangning: 2 },
     salary: '25 000 - 38 000 kr/mån',
     education: { name: 'Restaurang- och livsmedelsprogrammet', length: '3 år gymn', type: 'Gymnasium' },
     prognosis: 'stable',
@@ -793,6 +859,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 2, kommunikation: 4, koncentration: 3, motorik: 4, sensorisk: 3, energi: 3 },
     categories: { kreativ: 4, social: 4, praktisk: 4 },
     challenges: { fysisk_rorlighet: 5, social_energi: 5, repetitivt: 4 },
+    belastning: { rorlighet: 2, fysisk_ork: 2, finmotorik: 2, samspel: 2 },
     salary: '22 000 - 32 000 kr/mån',
     education: { name: 'Hantverksprogrammet - frisör', length: '3 år gymn', type: 'Gymnasium' },
     prognosis: 'stable',
@@ -809,6 +876,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 2, kommunikation: 4, koncentration: 3, motorik: 4, sensorisk: 4, energi: 4 },
     categories: { vard: 5, social: 5, praktisk: 3 },
     challenges: { fysisk_rorlighet: 5, fysisk_styrka: 4, social_energi: 5, tidspress: 4 },
+    belastning: { rorlighet: 2, fysisk_ork: 2, samspel: 2, mental_anstrangning: 1 },
     salary: '26 000 - 32 000 kr/mån',
     education: { name: 'Vård- och omsorgsprogrammet', length: '3 år gymn', type: 'Gymnasium' },
     prognosis: 'growing',
@@ -825,6 +893,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 2, kommunikation: 2, koncentration: 4, motorik: 3, sensorisk: 3, energi: 3 },
     categories: { praktisk: 3, noggrannhet: 3 },
     challenges: { stillasittande: 5, koncentration: 4, social_energi: 1, repetitivt: 4 },
+    belastning: { langvarigt_fokus: 2 },
     salary: '27 000 - 35 000 kr/mån',
     education: { name: 'Transportprogrammet + CE-körkort', length: '3 år gymn', type: 'Gymnasium' },
     prognosis: 'stable',
@@ -841,6 +910,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 2, kommunikation: 4, koncentration: 2, motorik: 3, sensorisk: 3, energi: 3 },
     categories: { social: 4, kommunikation: 4, ekonomi: 2 },
     challenges: { fysisk_rorlighet: 4, social_energi: 5, repetitivt: 3 },
+    belastning: { rorlighet: 1, fysisk_ork: 1, samspel: 2 },
     salary: '23 000 - 30 000 kr/mån',
     education: { name: 'Handelsprogrammet', length: '3 år gymn', type: 'Gymnasium' },
     prognosis: 'declining',
@@ -857,6 +927,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 2, kommunikation: 2, koncentration: 3, motorik: 5, sensorisk: 3, energi: 4 },
     categories: { natur: 5, praktisk: 5, kreativ: 3 },
     challenges: { fysisk_rorlighet: 5, fysisk_styrka: 4, social_energi: 2 },
+    belastning: { rorlighet: 2, fysisk_ork: 2 },
     salary: '25 000 - 33 000 kr/mån',
     education: { name: 'Naturbruksprogrammet', length: '3 år gymn', type: 'Gymnasium' },
     prognosis: 'stable',
@@ -873,6 +944,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 3, kommunikation: 2, koncentration: 4, motorik: 4, sensorisk: 3, energi: 4 },
     categories: { teknisk: 5, praktisk: 5, analytisk: 3, noggrannhet: 4 },
     challenges: { fysisk_rorlighet: 4, fysisk_styrka: 4, koncentration: 4 },
+    belastning: { sinnesintryck: 1, rorlighet: 1, fysisk_ork: 2, finmotorik: 1, langvarigt_fokus: 1 },
     salary: '27 000 - 38 000 kr/mån',
     education: { name: 'Fordon- och transportprogrammet', length: '3 år gymn', type: 'Gymnasium' },
     prognosis: 'stable',
@@ -889,6 +961,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 2, kommunikation: 4, koncentration: 3, motorik: 3, sensorisk: 4, energi: 3 },
     categories: { social: 5, vard: 4, praktisk: 3 },
     challenges: { fysisk_rorlighet: 4, fysisk_styrka: 3, social_energi: 5, flexibilitet: 4 },
+    belastning: { rorlighet: 1, fysisk_ork: 1, samspel: 2 },
     salary: '24 000 - 30 000 kr/mån',
     education: { name: 'Ingen formell utbildning krävs', length: 'Introduktion', type: 'Intern utbildning' },
     prognosis: 'growing',
@@ -906,6 +979,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 2, kommunikation: 2, koncentration: 4, motorik: 4, sensorisk: 3, energi: 4 },
     categories: { praktisk: 5, kreativ: 4, noggrannhet: 4 },
     challenges: { fysisk_rorlighet: 4, tidspress: 4, sensorisk: 3 },
+    belastning: { sinnesintryck: 1, rorlighet: 1, fysisk_ork: 1, finmotorik: 1, mental_anstrangning: 1 },
     salary: '24 000 - 32 000 kr/mån',
     education: { name: 'Restaurang- och livsmedelsprogrammet', length: '3 år gymn', type: 'Gymnasium' },
     prognosis: 'stable',
@@ -922,6 +996,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 3, kommunikation: 3, koncentration: 4, motorik: 4, sensorisk: 3, energi: 4 },
     categories: { teknisk: 5, praktisk: 5, noggrannhet: 4 },
     challenges: { fysisk_rorlighet: 5, fysisk_styrka: 4, koncentration: 4 },
+    belastning: { rorlighet: 2, fysisk_ork: 2, finmotorik: 1, langvarigt_fokus: 1 },
     salary: '28 000 - 40 000 kr/mån',
     education: { name: 'VVS- och fastighetsprogrammet', length: '3 år gymn', type: 'Gymnasium' },
     prognosis: 'growing',
@@ -938,6 +1013,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 4, kommunikation: 5, koncentration: 4, motorik: 2, sensorisk: 4, energi: 3 },
     categories: { social: 5, vard: 4, analytisk: 3, kommunikation: 4 },
     challenges: { social_energi: 5, koncentration: 4, stillasittande: 3 },
+    belastning: { samspel: 2, langvarigt_fokus: 1, mental_anstrangning: 1, komplext_tankande: 1 },
     salary: '30 000 - 45 000 kr/mån',
     education: { name: 'Socionomprogrammet', length: '3,5 år', type: 'Universitet' },
     prognosis: 'growing',
@@ -954,6 +1030,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 4, kommunikation: 4, koncentration: 4, motorik: 4, sensorisk: 4, energi: 4 },
     categories: { social: 4, praktisk: 4, ledarskap_organisation: 3, analytisk: 3 },
     challenges: { fysisk_rorlighet: 4, fysisk_styrka: 4, social_energi: 4, tidspress: 4 },
+    belastning: { sinnesintryck: 1, rorlighet: 1, fysisk_ork: 2, samspel: 1, mental_anstrangning: 1, komplext_tankande: 1 },
     salary: '32 000 - 45 000 kr/mån',
     education: { name: 'Polisutbildningen', length: '2,5 år', type: 'Polishögskolan' },
     prognosis: 'stable',
@@ -972,6 +1049,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 5, kommunikation: 3, koncentration: 5, motorik: 2, sensorisk: 3, energi: 3 },
     categories: { it: 5, analytisk: 5, forskning: 4, noggrannhet: 4 },
     challenges: { stillasittande: 5, koncentration: 5, social_energi: 2 },
+    belastning: { langvarigt_fokus: 2, komplext_tankande: 2 },
     salary: '45 000 - 80 000 kr/mån',
     education: { name: 'Data Science/Statistik/Matematik', length: '3-5 år', type: 'Universitet' },
     prognosis: 'growing',
@@ -988,6 +1066,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 4, kommunikation: 4, koncentration: 4, motorik: 2, sensorisk: 3, energi: 3 },
     categories: { kreativ: 5, it: 4, analytisk: 3, kommunikation: 4 },
     challenges: { stillasittande: 4, koncentration: 4, tidspress: 3 },
+    belastning: { langvarigt_fokus: 1, komplext_tankande: 1 },
     salary: '35 000 - 60 000 kr/mån',
     education: { name: 'UX-design/Interaktionsdesign', length: '2-3 år', type: 'YH/Universitet' },
     prognosis: 'growing',
@@ -1004,6 +1083,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 4, kommunikation: 4, koncentration: 4, motorik: 2, sensorisk: 3, energi: 3 },
     categories: { it: 5, teknisk: 4, kommunikation: 4, social: 3 },
     challenges: { social_energi: 4, koncentration: 4, tidspress: 4 },
+    belastning: { samspel: 1, langvarigt_fokus: 1, mental_anstrangning: 1, komplext_tankande: 1 },
     salary: '28 000 - 42 000 kr/mån',
     education: { name: 'IT-tekniker/IT-support', length: '2 år', type: 'YH' },
     prognosis: 'growing',
@@ -1021,6 +1101,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 4, kommunikation: 5, koncentration: 4, motorik: 4, sensorisk: 4, energi: 4 },
     categories: { vard: 5, social: 4, analytisk: 3, praktisk: 4 },
     challenges: { fysisk_rorlighet: 5, social_energi: 4, fysisk_styrka: 3 },
+    belastning: { rorlighet: 2, fysisk_ork: 2, samspel: 2, komplext_tankande: 1 },
     salary: '32 000 - 45 000 kr/mån',
     education: { name: 'Fysioterapeutprogrammet', length: '3 år', type: 'Universitet' },
     prognosis: 'growing',
@@ -1037,6 +1118,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 4, kommunikation: 5, koncentration: 4, motorik: 3, sensorisk: 4, energi: 3 },
     categories: { vard: 5, social: 5, kreativ: 3, praktisk: 3 },
     challenges: { social_energi: 4, koncentration: 4, fysisk_rorlighet: 3 },
+    belastning: { samspel: 2, langvarigt_fokus: 1, komplext_tankande: 1 },
     salary: '30 000 - 42 000 kr/mån',
     education: { name: 'Arbetsterapeutprogrammet', length: '3 år', type: 'Universitet' },
     prognosis: 'growing',
@@ -1053,6 +1135,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 4, kommunikation: 4, koncentration: 5, motorik: 5, sensorisk: 4, energi: 4 },
     categories: { vard: 5, noggrannhet: 5, teknisk: 4, social: 3 },
     challenges: { fysisk_rorlighet: 4, precision: 5, koncentration: 5, social_energi: 4 },
+    belastning: { sinnesintryck: 1, rorlighet: 1, fysisk_ork: 1, finmotorik: 2, samspel: 1, langvarigt_fokus: 2, komplext_tankande: 1 },
     salary: '38 000 - 60 000 kr/mån',
     education: { name: 'Tandläkarprogrammet', length: '5 år', type: 'Universitet' },
     prognosis: 'stable',
@@ -1069,6 +1152,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 3, kommunikation: 4, koncentration: 4, motorik: 5, sensorisk: 4, energi: 3 },
     categories: { vard: 5, noggrannhet: 5, social: 4 },
     challenges: { precision: 5, koncentration: 4, social_energi: 4 },
+    belastning: { finmotorik: 2, samspel: 1, langvarigt_fokus: 1 },
     salary: '30 000 - 40 000 kr/mån',
     education: { name: 'Tandhygienistprogrammet', length: '2 år', type: 'Universitet' },
     prognosis: 'stable',
@@ -1086,6 +1170,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 4, kommunikation: 3, koncentration: 4, motorik: 2, sensorisk: 3, energi: 3 },
     categories: { kreativ: 5, teknisk: 3, noggrannhet: 4, it: 3 },
     challenges: { stillasittande: 5, koncentration: 4, tidspress: 4 },
+    belastning: { langvarigt_fokus: 1, mental_anstrangning: 1, komplext_tankande: 1 },
     salary: '28 000 - 50 000 kr/mån',
     education: { name: 'Grafisk design/Kommunikation', length: '2-3 år', type: 'YH/Universitet' },
     prognosis: 'stable',
@@ -1102,6 +1187,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 3, kommunikation: 3, koncentration: 4, motorik: 3, sensorisk: 3, energi: 3 },
     categories: { kreativ: 5, teknisk: 3, praktisk: 3 },
     challenges: { fysisk_rorlighet: 4, tidspress: 4, social_energi: 3 },
+    belastning: { rorlighet: 1, fysisk_ork: 1, mental_anstrangning: 1 },
     salary: '25 000 - 45 000 kr/mån',
     education: { name: 'Fotografisk bild/Visuell kommunikation', length: '2-3 år', type: 'YH/Konsthögskola' },
     prognosis: 'stable',
@@ -1118,6 +1204,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 4, kommunikation: 5, koncentration: 4, motorik: 2, sensorisk: 3, energi: 4 },
     categories: { kreativ: 4, kommunikation: 5, analytisk: 4 },
     challenges: { tidspress: 5, social_energi: 4, koncentration: 4 },
+    belastning: { samspel: 2, langvarigt_fokus: 1, mental_anstrangning: 2, komplext_tankande: 1 },
     salary: '28 000 - 50 000 kr/mån',
     education: { name: 'Journalistik/Medie- och kommunikation', length: '3 år', type: 'Universitet' },
     prognosis: 'declining',
@@ -1134,6 +1221,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 3, kommunikation: 3, koncentration: 4, motorik: 4, sensorisk: 3, energi: 3 },
     categories: { kreativ: 5, konst_kultur: 5 },
     challenges: { social_energi: 4, osakra_forutsattningar: 5, koncentration: 4 },
+    belastning: { sinnesintryck: 2, finmotorik: 2, samspel: 1, langvarigt_fokus: 1 },
     salary: '20 000 - 50 000 kr/mån',
     education: { name: 'Musikutbildning', length: '2-4 år', type: 'Musikhögskola' },
     prognosis: 'stable',
@@ -1151,6 +1239,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 4, kommunikation: 3, koncentration: 5, motorik: 2, sensorisk: 3, energi: 3 },
     categories: { ekonomi: 5, noggrannhet: 5, analytisk: 4 },
     challenges: { stillasittande: 5, koncentration: 5, tidspress: 4 },
+    belastning: { langvarigt_fokus: 2, mental_anstrangning: 1, komplext_tankande: 1 },
     salary: '32 000 - 55 000 kr/mån',
     education: { name: 'Redovisning/Ekonomi', length: '2-3 år', type: 'YH/Universitet' },
     prognosis: 'growing',
@@ -1167,6 +1256,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 5, kommunikation: 3, koncentration: 5, motorik: 2, sensorisk: 3, energi: 3 },
     categories: { ekonomi: 5, analytisk: 5, ledarskap_organisation: 3, noggrannhet: 4 },
     challenges: { stillasittande: 5, koncentration: 5, tidspress: 4 },
+    belastning: { langvarigt_fokus: 2, mental_anstrangning: 1, komplext_tankande: 2 },
     salary: '45 000 - 75 000 kr/mån',
     education: { name: 'Ekonomie kandidat/Civilekonom', length: '3-4 år', type: 'Universitet' },
     prognosis: 'growing',
@@ -1183,6 +1273,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 4, kommunikation: 5, koncentration: 4, motorik: 2, sensorisk: 3, energi: 3 },
     categories: { social: 5, ledarskap_organisation: 4, kommunikation: 4, analytisk: 3 },
     challenges: { social_energi: 5, koncentration: 4, tidspress: 3 },
+    belastning: { samspel: 2, langvarigt_fokus: 1, komplext_tankande: 1 },
     salary: '32 000 - 55 000 kr/mån',
     education: { name: 'Personal- och arbetslivsprogrammet/HR', length: '3 år', type: 'Universitet/YH' },
     prognosis: 'stable',
@@ -1199,6 +1290,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 3, kommunikation: 3, koncentration: 4, motorik: 2, sensorisk: 3, energi: 3 },
     categories: { administration_kontor: 5, noggrannhet: 4, kommunikation: 3 },
     challenges: { stillasittande: 5, koncentration: 4, repetitivt: 4 },
+    belastning: { langvarigt_fokus: 1 },
     salary: '26 000 - 35 000 kr/mån',
     education: { name: 'Administration/Kontor', length: '1-2 år', type: 'Komvux/YH' },
     prognosis: 'declining',
@@ -1216,6 +1308,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 2, kommunikation: 4, koncentration: 4, motorik: 4, sensorisk: 3, energi: 4 },
     categories: { social: 5, kommunikation: 4, praktisk: 3 },
     challenges: { fysisk_rorlighet: 5, social_energi: 5, tidspress: 5, multitasking: 5 },
+    belastning: { sinnesintryck: 1, rorlighet: 2, fysisk_ork: 2, samspel: 2, mental_anstrangning: 2 },
     salary: '24 000 - 32 000 kr/mån + dricks',
     education: { name: 'Restaurang- och livsmedelsprogrammet', length: '3 år gymn', type: 'Gymnasium' },
     prognosis: 'stable',
@@ -1232,6 +1325,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 2, kommunikation: 4, koncentration: 4, motorik: 4, sensorisk: 3, energi: 4 },
     categories: { social: 5, kommunikation: 4, kreativ: 3 },
     challenges: { social_energi: 5, tidspress: 5, kvallsarbete: 5 },
+    belastning: { sinnesintryck: 2, samspel: 2, mental_anstrangning: 2 },
     salary: '24 000 - 32 000 kr/mån + dricks',
     education: { name: 'Bartenderutbildning', length: '6-12 mån', type: 'Privat utbildning' },
     prognosis: 'stable',
@@ -1248,6 +1342,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 3, kommunikation: 4, koncentration: 3, motorik: 2, sensorisk: 3, energi: 3 },
     categories: { social: 5, kommunikation: 4, administration_kontor: 3 },
     challenges: { social_energi: 5, multitasking: 4, stillasittande: 3 },
+    belastning: { samspel: 2, mental_anstrangning: 1 },
     salary: '25 000 - 35 000 kr/mån',
     education: { name: 'Hotell- och turismprogrammet', length: '3 år gymn', type: 'Gymnasium' },
     prognosis: 'stable',
@@ -1264,6 +1359,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 2, kommunikation: 4, koncentration: 3, motorik: 3, sensorisk: 3, energi: 3 },
     categories: { social: 4, kommunikation: 3, affarer_forsaljning: 3 },
     challenges: { social_energi: 4, fysisk_rorlighet: 4, repetitivt: 3 },
+    belastning: { rorlighet: 1, fysisk_ork: 1, samspel: 1 },
     salary: '23 000 - 30 000 kr/mån',
     education: { name: 'Handelsprogrammet', length: '3 år gymn', type: 'Gymnasium' },
     prognosis: 'declining',
@@ -1281,6 +1377,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 2, kommunikation: 2, koncentration: 5, motorik: 5, sensorisk: 3, energi: 4 },
     categories: { teknisk: 5, praktisk: 5, noggrannhet: 5 },
     challenges: { fysisk_rorlighet: 4, precision: 5, sensorisk: 4 },
+    belastning: { sinnesintryck: 2, rorlighet: 1, fysisk_ork: 1, finmotorik: 2 },
     salary: '28 000 - 40 000 kr/mån',
     education: { name: 'Industritekniska programmet/Svets', length: '3 år gymn', type: 'Gymnasium' },
     prognosis: 'stable',
@@ -1297,6 +1394,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 3, kommunikation: 2, koncentration: 5, motorik: 4, sensorisk: 3, energi: 3 },
     categories: { teknisk: 5, it: 4, noggrannhet: 5, praktisk: 4 },
     challenges: { stillasittande: 4, koncentration: 5, repetitivt: 4 },
+    belastning: { langvarigt_fokus: 2 },
     salary: '28 000 - 38 000 kr/mån',
     education: { name: 'CNC-tekniker/Maskinteknik', length: '1-2 år', type: 'YH' },
     prognosis: 'growing',
@@ -1313,6 +1411,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 2, kommunikation: 2, koncentration: 3, motorik: 4, sensorisk: 3, energi: 4 },
     categories: { praktisk: 5, noggrannhet: 3, teknisk: 2 },
     challenges: { fysisk_styrka: 4, fysisk_rorlighet: 4, repetitivt: 4 },
+    belastning: { sinnesintryck: 1, rorlighet: 1, fysisk_ork: 2 },
     salary: '24 000 - 32 000 kr/mån',
     education: { name: 'Ingen formell utbildning krävs', length: 'Introduktion', type: 'Intern utbildning' },
     prognosis: 'growing',
@@ -1329,6 +1428,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 4, kommunikation: 4, koncentration: 4, motorik: 2, sensorisk: 3, energi: 4 },
     categories: { ledarskap_organisation: 5, teknisk: 4, ekonomi: 3, noggrannhet: 4 },
     challenges: { tidspress: 5, social_energi: 4, multitasking: 5 },
+    belastning: { samspel: 1, mental_anstrangning: 2, komplext_tankande: 1 },
     salary: '50 000 - 80 000 kr/mån',
     education: { name: 'Industriell ekonomi/Produktionsteknik', length: '3-5 år', type: 'Universitet' },
     prognosis: 'stable',
@@ -1346,6 +1446,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 4, kommunikation: 5, koncentration: 4, motorik: 4, sensorisk: 4, energi: 4 },
     categories: { pedagogik: 5, social: 5, kreativ: 4 },
     challenges: { social_energi: 5, fysisk_rorlighet: 4, multitasking: 5 },
+    belastning: { sinnesintryck: 1, rorlighet: 1, fysisk_ork: 1, samspel: 2, mental_anstrangning: 2, komplext_tankande: 1 },
     salary: '28 000 - 38 000 kr/mån',
     education: { name: 'Förskollärarprogrammet', length: '3,5 år', type: 'Universitet' },
     prognosis: 'growing',
@@ -1362,6 +1463,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 2, kommunikation: 4, koncentration: 3, motorik: 4, sensorisk: 4, energi: 4 },
     categories: { vard: 5, social: 5, pedagogik: 4 },
     challenges: { social_energi: 5, fysisk_rorlighet: 4, fysisk_styrka: 3 },
+    belastning: { sinnesintryck: 1, rorlighet: 1, fysisk_ork: 1, samspel: 2 },
     salary: '24 000 - 30 000 kr/mån',
     education: { name: 'Barn- och fritidsprogrammet', length: '3 år gymn', type: 'Gymnasium' },
     prognosis: 'growing',
@@ -1378,6 +1480,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 5, kommunikation: 5, koncentration: 4, motorik: 2, sensorisk: 4, energi: 3 },
     categories: { pedagogik: 5, social: 5, vard: 4, analytisk: 3 },
     challenges: { social_energi: 5, koncentration: 4, stillasittande: 3 },
+    belastning: { samspel: 2, langvarigt_fokus: 1, komplext_tankande: 2 },
     salary: '38 000 - 52 000 kr/mån',
     education: { name: 'Specialpedagogik', length: '1,5 år', type: 'Universitet (påbyggnad)' },
     prognosis: 'growing',
@@ -1395,6 +1498,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 5, kommunikation: 3, koncentration: 5, motorik: 2, sensorisk: 3, energi: 3 },
     categories: { natur: 5, forskning: 5, analytisk: 4 },
     challenges: { stillasittande: 3, koncentration: 5, social_energi: 2 },
+    belastning: { langvarigt_fokus: 2, komplext_tankande: 2 },
     salary: '32 000 - 50 000 kr/mån',
     education: { name: 'Biologi/Naturvetenskap', length: '3-5 år', type: 'Universitet' },
     prognosis: 'stable',
@@ -1411,6 +1515,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 4, kommunikation: 3, koncentration: 4, motorik: 3, sensorisk: 3, energi: 4 },
     categories: { natur: 5, teknisk: 3, ledarskap_organisation: 3, ekonomi: 3 },
     challenges: { fysisk_rorlighet: 4, social_energi: 3, osakra_forutsattningar: 4 },
+    belastning: { rorlighet: 1, fysisk_ork: 1, komplext_tankande: 1 },
     salary: '32 000 - 48 000 kr/mån',
     education: { name: 'Agronomprogrammet', length: '3 år', type: 'SLU' },
     prognosis: 'stable',
@@ -1427,6 +1532,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 4, kommunikation: 4, koncentration: 4, motorik: 2, sensorisk: 3, energi: 3 },
     categories: { natur: 4, analytisk: 4, noggrannhet: 5, ledarskap_organisation: 3 },
     challenges: { stillasittande: 3, koncentration: 4, tidspress: 3 },
+    belastning: { langvarigt_fokus: 1, komplext_tankande: 1 },
     salary: '35 000 - 50 000 kr/mån',
     education: { name: 'Miljö- och hälsoskydd/Miljövetenskap', length: '3 år', type: 'Universitet' },
     prognosis: 'stable',
@@ -1443,6 +1549,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 2, kommunikation: 2, koncentration: 3, motorik: 5, sensorisk: 3, energi: 5 },
     categories: { natur: 5, praktisk: 5, teknisk: 3 },
     challenges: { fysisk_styrka: 5, fysisk_rorlighet: 5, utomhusarbete: 5, osakra_forutsattningar: 4 },
+    belastning: { rorlighet: 2, fysisk_ork: 2 },
     salary: '25 000 - 35 000 kr/mån',
     education: { name: 'Skogsbruk/Maskinförare', length: '1-3 år', type: 'Gymnasium/Komvux' },
     prognosis: 'stable',
@@ -1460,6 +1567,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 4, kommunikation: 5, koncentration: 4, motorik: 2, sensorisk: 3, energi: 4 },
     categories: { affarer_forsaljning: 5, kommunikation: 5, ledarskap_organisation: 3 },
     challenges: { social_energi: 5, tidspress: 4, osakra_forutsattningar: 4 },
+    belastning: { samspel: 2, mental_anstrangning: 1, komplext_tankande: 1 },
     salary: '35 000 - 70 000 kr/mån (provision)',
     education: { name: 'Fastighetsmäklarprogrammet', length: '2 år', type: 'YH' },
     prognosis: 'stable',
@@ -1476,6 +1584,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 2, kommunikation: 3, koncentration: 3, motorik: 4, sensorisk: 3, energi: 4 },
     categories: { praktisk: 5, teknisk: 4, noggrannhet: 3 },
     challenges: { fysisk_rorlighet: 4, fysisk_styrka: 3, social_energi: 3 },
+    belastning: { rorlighet: 1, fysisk_ork: 1 },
     salary: '26 000 - 36 000 kr/mån',
     education: { name: 'Fastighetsskötarutbildning', length: '1-2 år', type: 'YH/Folkhögskola' },
     prognosis: 'stable',
@@ -1492,6 +1601,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 2, kommunikation: 2, koncentration: 4, motorik: 5, sensorisk: 3, energi: 4 },
     categories: { praktisk: 5, teknisk: 4, noggrannhet: 5 },
     challenges: { fysisk_rorlighet: 5, precision: 5, fysisk_styrka: 3 },
+    belastning: { rorlighet: 2, fysisk_ork: 2, finmotorik: 2 },
     salary: '26 000 - 36 000 kr/mån',
     education: { name: 'Glasmästarutbildning', length: '2 år', type: 'Lärlingsutbildning' },
     prognosis: 'stable',
@@ -1509,6 +1619,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 3, kommunikation: 3, koncentration: 4, motorik: 3, sensorisk: 4, energi: 3 },
     categories: { social: 3, praktisk: 3, ledarskap_organisation: 2 },
     challenges: { social_energi: 4, kvallsarbete: 5, koncentration: 4 },
+    belastning: { sinnesintryck: 1, samspel: 1, langvarigt_fokus: 1 },
     salary: '25 000 - 35 000 kr/mån',
     education: { name: 'Väktarutbildning/Ordningsvaktsutbildning', length: '4-6 veckor', type: 'Privat utbildning' },
     prognosis: 'growing',
@@ -1526,6 +1637,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 3, kommunikation: 5, koncentration: 4, motorik: 2, sensorisk: 4, energi: 3 },
     categories: { social: 5, vard: 4, kommunikation: 4 },
     challenges: { social_energi: 5, emotionell_belastning: 5, koncentration: 4 },
+    belastning: { samspel: 2, langvarigt_fokus: 1, mental_anstrangning: 2 },
     salary: '28 000 - 40 000 kr/mån',
     education: { name: 'Begravningsentreprenörutbildning', length: '2 år', type: 'YH' },
     prognosis: 'stable',
@@ -1542,6 +1654,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 3, kommunikation: 5, koncentration: 4, motorik: 3, sensorisk: 4, energi: 4 },
     categories: { social: 5, kommunikation: 5, vard: 3 },
     challenges: { social_energi: 5, tidspress: 4, flexibilitet: 5, jetlag: 4 },
+    belastning: { sinnesintryck: 1, samspel: 2, mental_anstrangning: 1 },
     salary: '25 000 - 35 000 kr/mån',
     education: { name: 'Kabinpersonalutbildning', length: '6-12 mån', type: 'YH/Flygbolagsutbildning' },
     prognosis: 'growing',
@@ -1558,6 +1671,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 3, kommunikation: 2, koncentration: 4, motorik: 4, sensorisk: 3, energi: 4 },
     categories: { teknisk: 4, praktisk: 5, noggrannhet: 4 },
     challenges: { fysisk_rorlighet: 4, social_isolering: 5, flexibilitet: 5 },
+    belastning: { sinnesintryck: 1, rorlighet: 1, fysisk_ork: 1 },
     salary: '28 000 - 45 000 kr/mån',
     education: { name: 'Sjöfartsutbildning/Sjöman', length: '1-2 år', type: 'Gymnasium/YH' },
     prognosis: 'stable',
@@ -1576,6 +1690,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 5, kommunikation: 3, koncentration: 5, motorik: 2, sensorisk: 3, energi: 3 },
     categories: { it: 5, analytisk: 5, noggrannhet: 5 },
     challenges: { stillasittande: 5, koncentration: 5, tidspress: 4 },
+    belastning: { langvarigt_fokus: 2, mental_anstrangning: 1, komplext_tankande: 2 },
     salary: '40 000 - 70 000 kr/mån',
     education: { name: 'Cybersäkerhet/Nätverkssäkerhet', length: '2-4 år', type: 'YH/Universitet' },
     prognosis: 'growing',
@@ -1592,6 +1707,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 4, kommunikation: 3, koncentration: 4, motorik: 3, sensorisk: 3, energi: 3 },
     categories: { it: 5, teknisk: 4, noggrannhet: 4 },
     challenges: { stillasittande: 4, koncentration: 4 },
+    belastning: { langvarigt_fokus: 1, komplext_tankande: 1 },
     salary: '32 000 - 50 000 kr/mån',
     education: { name: 'Nätverksteknik/IT-infrastruktur', length: '2 år', type: 'YH' },
     prognosis: 'growing',
@@ -1609,6 +1725,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 4, kommunikation: 5, koncentration: 4, motorik: 4, sensorisk: 4, energi: 4 },
     categories: { vard: 5, social: 5, praktisk: 3 },
     challenges: { social_energi: 5, fysisk_rorlighet: 4, tidspress: 4 },
+    belastning: { rorlighet: 1, fysisk_ork: 1, samspel: 2, mental_anstrangning: 1, komplext_tankande: 1 },
     salary: '35 000 - 48 000 kr/mån',
     education: { name: 'Barnmorskeprogrammet', length: '1,5 år', type: 'Universitet (påbyggnad)' },
     prognosis: 'growing',
@@ -1625,6 +1742,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 4, kommunikation: 5, koncentration: 4, motorik: 3, sensorisk: 4, energi: 4 },
     categories: { vard: 5, social: 5, pedagogik: 4 },
     challenges: { social_energi: 5, koncentration: 4 },
+    belastning: { samspel: 2, langvarigt_fokus: 1, komplext_tankande: 1 },
     salary: '34 000 - 46 000 kr/mån',
     education: { name: 'Sjuksköterskeprogrammet + vidareutb.', length: '3 + 1 år', type: 'Universitet' },
     prognosis: 'growing',
@@ -1641,6 +1759,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 4, kommunikation: 5, koncentration: 4, motorik: 2, sensorisk: 4, energi: 3 },
     categories: { social: 5, vard: 4, pedagogik: 3 },
     challenges: { social_energi: 5, koncentration: 4 },
+    belastning: { samspel: 2, langvarigt_fokus: 1, mental_anstrangning: 1, komplext_tankande: 1 },
     salary: '32 000 - 45 000 kr/mån',
     education: { name: 'Socionomprogrammet', length: '3,5 år', type: 'Universitet' },
     prognosis: 'growing',
@@ -1658,6 +1777,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 5, kommunikation: 4, koncentration: 4, motorik: 2, sensorisk: 3, energi: 4 },
     categories: { kreativ: 5, ledarskap_organisation: 4, kommunikation: 4 },
     challenges: { tidspress: 5, social_energi: 4, koncentration: 4 },
+    belastning: { samspel: 1, langvarigt_fokus: 1, mental_anstrangning: 2, komplext_tankande: 2 },
     salary: '40 000 - 70 000 kr/mån',
     education: { name: 'Grafisk design/Art Direction', length: '3 år', type: 'Konsthögskola/Universitet' },
     prognosis: 'stable',
@@ -1674,6 +1794,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 3, kommunikation: 5, koncentration: 4, motorik: 4, sensorisk: 3, energi: 3 },
     categories: { kreativ: 5, konst_kultur: 5, social: 4 },
     challenges: { social_energi: 5, osakra_forutsattningar: 5, koncentration: 4 },
+    belastning: { sinnesintryck: 1, samspel: 2, langvarigt_fokus: 1 },
     salary: '20 000 - 60 000 kr/mån (varierar mycket)',
     education: { name: 'Teaterutbildning/Skådespeleri', length: '2-4 år', type: 'Teaterhögskola' },
     prognosis: 'stable',
@@ -1690,6 +1811,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 5, kommunikation: 4, koncentration: 5, motorik: 2, sensorisk: 3, energi: 3 },
     categories: { kreativ: 5, kommunikation: 5, analytisk: 3 },
     challenges: { stillasittande: 5, koncentration: 5, osakra_forutsattningar: 4 },
+    belastning: { langvarigt_fokus: 2, komplext_tankande: 2 },
     salary: '25 000 - 50 000 kr/mån',
     education: { name: 'Journalistik/Skrivande/Kreativt skrivande', length: '2-3 år', type: 'Universitet/YH' },
     prognosis: 'stable',
@@ -1707,6 +1829,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 4, kommunikation: 5, koncentration: 4, motorik: 2, sensorisk: 3, energi: 4 },
     categories: { affarer_forsaljning: 5, kommunikation: 5, ledarskap_organisation: 4 },
     challenges: { social_energi: 5, tidspress: 4, osakra_forutsattningar: 3 },
+    belastning: { samspel: 2, mental_anstrangning: 1, komplext_tankande: 1 },
     salary: '40 000 - 80 000 kr/mån (inkl. provision)',
     education: { name: 'Ekonomi/Marknadsföring/Försäljning', length: '2-3 år', type: 'YH/Universitet' },
     prognosis: 'growing',
@@ -1723,6 +1846,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 4, kommunikation: 4, koncentration: 4, motorik: 2, sensorisk: 3, energi: 3 },
     categories: { ekonomi: 4, analytisk: 4, noggrannhet: 4 },
     challenges: { tidspress: 4, koncentration: 4 },
+    belastning: { langvarigt_fokus: 1, mental_anstrangning: 1, komplext_tankande: 1 },
     salary: '35 000 - 55 000 kr/mån',
     education: { name: 'Inköp/Logistik/Supply chain', length: '2-3 år', type: 'YH/Universitet' },
     prognosis: 'stable',
@@ -1740,6 +1864,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 2, kommunikation: 2, koncentration: 4, motorik: 5, sensorisk: 3, energi: 4 },
     categories: { praktisk: 5, teknisk: 3, noggrannhet: 5, kreativ: 3 },
     challenges: { fysisk_rorlighet: 5, precision: 5, fysisk_styrka: 3 },
+    belastning: { rorlighet: 2, fysisk_ork: 2, finmotorik: 2 },
     salary: '28 000 - 40 000 kr/mån',
     education: { name: 'Bygg- och anläggningsprogrammet', length: '3 år gymn', type: 'Gymnasium' },
     prognosis: 'stable',
@@ -1756,6 +1881,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 2, kommunikation: 2, koncentration: 4, motorik: 5, sensorisk: 3, energi: 4 },
     categories: { praktisk: 5, kreativ: 4, noggrannhet: 4 },
     challenges: { fysisk_rorlighet: 5, precision: 4 },
+    belastning: { rorlighet: 2, fysisk_ork: 2, finmotorik: 1 },
     salary: '27 000 - 38 000 kr/mån',
     education: { name: 'Bygg- och anläggningsprogrammet', length: '3 år gymn', type: 'Gymnasium' },
     prognosis: 'stable',
@@ -1773,6 +1899,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 4, kommunikation: 3, koncentration: 4, motorik: 2, sensorisk: 3, energi: 3 },
     categories: { analytisk: 4, noggrannhet: 4, ekonomi: 3 },
     challenges: { stillasittande: 4, koncentration: 4, tidspress: 4 },
+    belastning: { langvarigt_fokus: 1, mental_anstrangning: 1, komplext_tankande: 1 },
     salary: '32 000 - 50 000 kr/mån',
     education: { name: 'Logistik/Supply Chain Management', length: '2-3 år', type: 'YH/Universitet' },
     prognosis: 'growing',
@@ -1789,6 +1916,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 2, kommunikation: 4, koncentration: 4, motorik: 3, sensorisk: 3, energi: 3 },
     categories: { social: 4, praktisk: 3, kommunikation: 3 },
     challenges: { stillasittande: 5, social_energi: 4, koncentration: 4 },
+    belastning: { samspel: 1, langvarigt_fokus: 1 },
     salary: '25 000 - 40 000 kr/mån',
     education: { name: 'Taxiförarlegitimation', length: 'Kort utbildning', type: 'Transportstyrelsen' },
     prognosis: 'declining',
@@ -1806,6 +1934,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 2, kommunikation: 2, koncentration: 3, motorik: 4, sensorisk: 3, energi: 4 },
     categories: { praktisk: 5, noggrannhet: 4 },
     challenges: { fysisk_rorlighet: 4, repetitivt: 4, sensorisk: 3 },
+    belastning: { sinnesintryck: 1, rorlighet: 1, fysisk_ork: 1 },
     salary: '24 000 - 32 000 kr/mån',
     education: { name: 'Lokalvård/Städutbildning', length: 'Kort utbildning', type: 'Komvux/Företag' },
     prognosis: 'stable',
@@ -1822,6 +1951,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 2, kommunikation: 3, koncentration: 3, motorik: 4, sensorisk: 3, energi: 4 },
     categories: { praktisk: 5, teknisk: 4, noggrannhet: 3 },
     challenges: { fysisk_rorlighet: 4, fysisk_styrka: 3 },
+    belastning: { rorlighet: 1, fysisk_ork: 1 },
     salary: '26 000 - 35 000 kr/mån',
     education: { name: 'Fastighetsutbildning/Vaktmästarutbildning', length: '1-2 år', type: 'Komvux/YH' },
     prognosis: 'stable',
@@ -1840,6 +1970,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 5, kommunikation: 3, koncentration: 5, motorik: 2, sensorisk: 3, energi: 3 },
     categories: { it: 5, teknisk: 5, analytisk: 4, noggrannhet: 4 },
     challenges: { stillasittande: 5, koncentration: 5, tidspress: 4 },
+    belastning: { langvarigt_fokus: 2, mental_anstrangning: 1, komplext_tankande: 2 },
     salary: '45 000 - 75 000 kr/mån',
     education: { name: 'Systemvetenskap/Datateknik', length: '3-5 år', type: 'Universitet' },
     prognosis: 'growing',
@@ -1856,6 +1987,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 5, kommunikation: 3, koncentration: 5, motorik: 2, sensorisk: 3, energi: 3 },
     categories: { it: 5, analytisk: 5, noggrannhet: 5 },
     challenges: { stillasittande: 5, koncentration: 5, tidspress: 4 },
+    belastning: { langvarigt_fokus: 2, mental_anstrangning: 1, komplext_tankande: 2 },
     salary: '42 000 - 70 000 kr/mån',
     education: { name: 'IT-säkerhet/Datateknik', length: '3-5 år', type: 'Universitet/YH' },
     prognosis: 'growing',
@@ -1872,6 +2004,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 5, kommunikation: 3, koncentration: 5, motorik: 2, sensorisk: 3, energi: 3 },
     categories: { it: 5, kreativ: 5, teknisk: 4 },
     challenges: { stillasittande: 5, koncentration: 5, tidspress: 4 },
+    belastning: { langvarigt_fokus: 2, mental_anstrangning: 1, komplext_tankande: 2 },
     salary: '35 000 - 60 000 kr/mån',
     education: { name: 'Spelutveckling/Datateknik', length: '3-5 år', type: 'Universitet/YH' },
     prognosis: 'growing',
@@ -1888,6 +2021,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 4, kommunikation: 3, koncentration: 4, motorik: 2, sensorisk: 3, energi: 3 },
     categories: { kreativ: 5, it: 4, teknisk: 3, kommunikation: 3 },
     challenges: { stillasittande: 5, koncentration: 4, tidspress: 3 },
+    belastning: { langvarigt_fokus: 1, komplext_tankande: 1 },
     salary: '30 000 - 50 000 kr/mån',
     education: { name: 'Webbdesign/Digital design', length: '2-3 år', type: 'YH/Universitet' },
     prognosis: 'stable',
@@ -1905,6 +2039,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 4, kommunikation: 5, koncentration: 4, motorik: 2, sensorisk: 3, energi: 3 },
     categories: { vard: 5, social: 4, analytisk: 4, forskning: 3 },
     challenges: { social_energi: 4, stillasittande: 3, koncentration: 4 },
+    belastning: { samspel: 2, langvarigt_fokus: 1, komplext_tankande: 1 },
     salary: '30 000 - 42 000 kr/mån',
     education: { name: 'Dietistprogrammet', length: '3 år', type: 'Universitet' },
     prognosis: 'growing',
@@ -1921,6 +2056,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 4, kommunikation: 4, koncentration: 4, motorik: 4, sensorisk: 4, energi: 3 },
     categories: { vard: 4, teknisk: 4, social: 4, noggrannhet: 5 },
     challenges: { precision: 5, social_energi: 4, stillasittande: 4 },
+    belastning: { finmotorik: 2, samspel: 1, komplext_tankande: 1 },
     salary: '32 000 - 45 000 kr/mån',
     education: { name: 'Optikerutbildning', length: '3 år', type: 'Universitet' },
     prognosis: 'stable',
@@ -1937,6 +2073,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 4, kommunikation: 4, koncentration: 5, motorik: 4, sensorisk: 4, energi: 5 },
     categories: { vard: 5, praktisk: 4, social: 4, noggrannhet: 4 },
     challenges: { fysisk_rorlighet: 5, tidspress: 5, social_energi: 4, fysisk_styrka: 4 },
+    belastning: { sinnesintryck: 1, rorlighet: 2, fysisk_ork: 2, samspel: 1, mental_anstrangning: 2, komplext_tankande: 1 },
     salary: '32 000 - 40 000 kr/mån',
     education: { name: 'Ambulanssjukvårdare', length: '3 år', type: 'YH' },
     prognosis: 'growing',
@@ -1954,6 +2091,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 3, kommunikation: 4, koncentration: 5, motorik: 5, sensorisk: 4, energi: 3 },
     categories: { kreativ: 5, praktisk: 4, social: 3 },
     challenges: { precision: 5, koncentration: 5, stillasittande: 4 },
+    belastning: { finmotorik: 2, langvarigt_fokus: 2 },
     salary: '25 000 - 50 000 kr/mån',
     education: { name: 'Tatueringsutbildning (lärlingsplats)', length: '1-3 år', type: 'Privat' },
     prognosis: 'stable',
@@ -1970,6 +2108,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 2, kommunikation: 4, koncentration: 4, motorik: 4, sensorisk: 3, energi: 3 },
     categories: { kreativ: 5, praktisk: 4, social: 4, natur: 3 },
     challenges: { fysisk_rorlighet: 4, social_energi: 4, sensorisk: 3 },
+    belastning: { sinnesintryck: 1, rorlighet: 1, fysisk_ork: 1, finmotorik: 1, samspel: 1 },
     salary: '23 000 - 30 000 kr/mån',
     education: { name: 'Floristutbildning', length: '2 år', type: 'YH/Gymnasium' },
     prognosis: 'stable',
@@ -1986,6 +2125,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 3, kommunikation: 3, koncentration: 5, motorik: 5, sensorisk: 4, energi: 3 },
     categories: { kreativ: 4, praktisk: 5, noggrannhet: 5 },
     challenges: { precision: 5, stillasittande: 5, koncentration: 4 },
+    belastning: { finmotorik: 2, langvarigt_fokus: 1 },
     salary: '25 000 - 38 000 kr/mån',
     education: { name: 'Textil och mode', length: '2-3 år', type: 'YH/Gymnasium' },
     prognosis: 'declining',
@@ -2003,6 +2143,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 2, kommunikation: 2, koncentration: 4, motorik: 5, sensorisk: 3, energi: 5 },
     categories: { natur: 5, praktisk: 5, utomhusarbete: 5 },
     challenges: { fysisk_styrka: 5, fysisk_rorlighet: 5, vaderberoende: 5 },
+    belastning: { rorlighet: 2, fysisk_ork: 2 },
     salary: '27 000 - 38 000 kr/mån',
     education: { name: 'Naturbruksprogrammet', length: '3 år gymn', type: 'Gymnasium' },
     prognosis: 'stable',
@@ -2019,6 +2160,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 3, kommunikation: 2, koncentration: 4, motorik: 4, sensorisk: 3, energi: 5 },
     categories: { natur: 5, praktisk: 5, utomhusarbete: 5 },
     challenges: { fysisk_styrka: 5, fysisk_rorlighet: 5, vaderberoende: 5, osakra_forutsattningar: 4 },
+    belastning: { rorlighet: 2, fysisk_ork: 2 },
     salary: '25 000 - 45 000 kr/mån',
     education: { name: 'Fiskeutbildning', length: '1-2 år', type: 'Folkhögskola/YH' },
     prognosis: 'declining',
@@ -2035,6 +2177,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 2, kommunikation: 3, koncentration: 3, motorik: 4, sensorisk: 4, energi: 4 },
     categories: { natur: 5, praktisk: 4, vard: 3, utomhusarbete: 4 },
     challenges: { fysisk_rorlighet: 5, fysisk_styrka: 4, vaderberoende: 3 },
+    belastning: { rorlighet: 2, fysisk_ork: 2 },
     salary: '24 000 - 32 000 kr/mån',
     education: { name: 'Djurvård', length: '3 år gymn', type: 'Gymnasium' },
     prognosis: 'stable',
@@ -2052,6 +2195,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 5, kommunikation: 3, koncentration: 5, motorik: 2, sensorisk: 3, energi: 3 },
     categories: { forskning: 5, natur: 5, analytisk: 4 },
     challenges: { stillasittande: 4, koncentration: 5, social_energi: 2 },
+    belastning: { langvarigt_fokus: 2, komplext_tankande: 2 },
     salary: '32 000 - 50 000 kr/mån',
     education: { name: 'Biologiprogrammet', length: '3-5 år', type: 'Universitet' },
     prognosis: 'stable',
@@ -2068,6 +2212,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 5, kommunikation: 3, koncentration: 5, motorik: 3, sensorisk: 4, energi: 3 },
     categories: { forskning: 5, analytisk: 5, noggrannhet: 5 },
     challenges: { stillasittande: 4, koncentration: 5, precision: 5 },
+    belastning: { finmotorik: 2, langvarigt_fokus: 2, komplext_tankande: 2 },
     salary: '35 000 - 55 000 kr/mån',
     education: { name: 'Kemiprogrammet', length: '3-5 år', type: 'Universitet' },
     prognosis: 'stable',
@@ -2084,6 +2229,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 4, kommunikation: 2, koncentration: 5, motorik: 4, sensorisk: 4, energi: 3 },
     categories: { forskning: 4, analytisk: 4, noggrannhet: 5 },
     challenges: { stillasittande: 4, precision: 5, repetitivt: 4 },
+    belastning: { finmotorik: 2, komplext_tankande: 1 },
     salary: '28 000 - 40 000 kr/mån',
     education: { name: 'Laboratorieutbildning', length: '2-3 år', type: 'YH' },
     prognosis: 'stable',
@@ -2101,6 +2247,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 4, kommunikation: 4, koncentration: 5, motorik: 5, sensorisk: 4, energi: 5 },
     categories: { praktisk: 5, social: 4, ledarskap_organisation: 3 },
     challenges: { fysisk_styrka: 5, fysisk_rorlighet: 5, tidspress: 5, sensorisk: 4 },
+    belastning: { sinnesintryck: 2, rorlighet: 2, fysisk_ork: 2, mental_anstrangning: 2, komplext_tankande: 1 },
     salary: '30 000 - 42 000 kr/mån',
     education: { name: 'Räddningstjänstutbildning (SMO)', length: '2 år', type: 'MSB' },
     prognosis: 'stable',
@@ -2117,6 +2264,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 3, kommunikation: 3, koncentration: 4, motorik: 3, sensorisk: 4, energi: 4 },
     categories: { praktisk: 3, social: 3, noggrannhet: 3 },
     challenges: { fysisk_rorlighet: 4, social_energi: 3, kvallsarbete: 5 },
+    belastning: { sinnesintryck: 1, rorlighet: 1, fysisk_ork: 1 },
     salary: '26 000 - 35 000 kr/mån',
     education: { name: 'Väktarutbildning', length: '8 veckor', type: 'Bevakningsföretag' },
     prognosis: 'growing',
@@ -2134,6 +2282,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 4, kommunikation: 5, koncentration: 4, motorik: 2, sensorisk: 3, energi: 4 },
     categories: { kreativ: 4, kommunikation: 5, ledarskap_organisation: 4, social: 4 },
     challenges: { tidspress: 5, social_energi: 5, multitasking: 5, flexibilitet: 5 },
+    belastning: { sinnesintryck: 1, samspel: 2, mental_anstrangning: 2, komplext_tankande: 1 },
     salary: '28 000 - 45 000 kr/mån',
     education: { name: 'Event Management', length: '2 år', type: 'YH' },
     prognosis: 'growing',
@@ -2150,6 +2299,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 3, kommunikation: 5, koncentration: 3, motorik: 3, sensorisk: 3, energi: 4 },
     categories: { social: 5, kommunikation: 5, pedagogik: 4 },
     challenges: { social_energi: 5, fysisk_rorlighet: 4, flexibilitet: 5 },
+    belastning: { rorlighet: 1, fysisk_ork: 1, samspel: 2 },
     salary: '25 000 - 38 000 kr/mån',
     education: { name: 'Turism och resande', length: '2-3 år', type: 'YH/Gymnasium' },
     prognosis: 'growing',
@@ -2167,6 +2317,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 4, kommunikation: 5, koncentration: 4, motorik: 2, sensorisk: 3, energi: 3 },
     categories: { ekonomi: 5, kommunikation: 4, social: 4, analytisk: 3 },
     challenges: { social_energi: 5, stillasittande: 4, tidspress: 3 },
+    belastning: { samspel: 2, komplext_tankande: 1 },
     salary: '32 000 - 50 000 kr/mån',
     education: { name: 'Ekonom/Bank och finans', length: '3 år', type: 'Universitet/YH' },
     prognosis: 'declining',
@@ -2183,6 +2334,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 4, kommunikation: 4, koncentration: 4, motorik: 2, sensorisk: 3, energi: 3 },
     categories: { analytisk: 4, noggrannhet: 5, kommunikation: 3 },
     challenges: { stillasittande: 5, repetitivt: 4, social_energi: 3 },
+    belastning: { komplext_tankande: 1 },
     salary: '30 000 - 45 000 kr/mån',
     education: { name: 'Försäkring/Ekonomi', length: '2-3 år', type: 'YH/Universitet' },
     prognosis: 'stable',
@@ -2200,6 +2352,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 5, kommunikation: 5, koncentration: 4, motorik: 2, sensorisk: 3, energi: 4 },
     categories: { ledarskap_organisation: 5, kommunikation: 5, analytisk: 4 },
     challenges: { tidspress: 5, social_energi: 4, multitasking: 5 },
+    belastning: { samspel: 2, mental_anstrangning: 2, komplext_tankande: 2 },
     salary: '40 000 - 70 000 kr/mån',
     education: { name: 'Projektledning/Management', length: '3-5 år', type: 'Universitet' },
     prognosis: 'growing',
@@ -2216,6 +2369,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 5, kommunikation: 5, koncentration: 4, motorik: 2, sensorisk: 3, energi: 4 },
     categories: { ledarskap_organisation: 5, affarer_forsaljning: 5, kreativ: 4 },
     challenges: { tidspress: 5, osakra_forutsattningar: 5, multitasking: 5 },
+    belastning: { samspel: 2, mental_anstrangning: 2, komplext_tankande: 2 },
     salary: '0 - 150 000+ kr/mån',
     education: { name: 'Varierar/Ingen formell utbildning krävs', length: 'Varierar', type: 'Varierar' },
     prognosis: 'growing',
@@ -2234,6 +2388,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 5, kommunikation: 4, koncentration: 5, motorik: 4, sensorisk: 5, energi: 4 },
     categories: { teknisk: 5, noggrannhet: 5, analytisk: 4 },
     challenges: { koncentration: 5, tidspress: 4, oregelbundna_tider: 5 },
+    belastning: { sinnesintryck: 1, langvarigt_fokus: 2, mental_anstrangning: 1, komplext_tankande: 2 },
     salary: '50 000 - 120 000 kr/mån',
     education: { name: 'Trafikflygarutbildning', length: '2-3 år', type: 'Flygskola' },
     prognosis: 'growing',
@@ -2250,6 +2405,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 5, kommunikation: 5, koncentration: 5, motorik: 2, sensorisk: 4, energi: 4 },
     categories: { teknisk: 4, noggrannhet: 5, analytisk: 5, kommunikation: 4 },
     challenges: { koncentration: 5, tidspress: 5, multitasking: 5 },
+    belastning: { samspel: 2, langvarigt_fokus: 2, mental_anstrangning: 2, komplext_tankande: 2 },
     salary: '45 000 - 80 000 kr/mån',
     education: { name: 'Flygledare (LFV)', length: '2 år', type: 'LFV Utbildning' },
     prognosis: 'stable',
@@ -2266,6 +2422,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 3, kommunikation: 5, koncentration: 4, motorik: 4, sensorisk: 3, energi: 4 },
     categories: { social: 5, kommunikation: 5, praktisk: 3 },
     challenges: { social_energi: 5, oregelbundna_tider: 5, fysisk_rorlighet: 4 },
+    belastning: { sinnesintryck: 1, rorlighet: 1, fysisk_ork: 1, samspel: 2 },
     salary: '25 000 - 38 000 kr/mån',
     education: { name: 'Kabinpersonalutbildning', length: '6-12 veckor', type: 'Flygbolag' },
     prognosis: 'growing',
@@ -2282,6 +2439,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 3, kommunikation: 3, koncentration: 4, motorik: 3, sensorisk: 4, energi: 3 },
     categories: { praktisk: 4, social: 3, noggrannhet: 3 },
     challenges: { stillasittande: 5, koncentration: 4, social_energi: 3 },
+    belastning: { langvarigt_fokus: 2 },
     salary: '27 000 - 35 000 kr/mån',
     education: { name: 'D-körkort + YKB', length: '3-6 månader', type: 'Trafikskola' },
     prognosis: 'stable',
@@ -2299,6 +2457,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 4, kommunikation: 2, koncentration: 5, motorik: 5, sensorisk: 5, energi: 3 },
     categories: { teknisk: 5, praktisk: 5, noggrannhet: 5 },
     challenges: { precision: 5, stillasittande: 5, koncentration: 5 },
+    belastning: { finmotorik: 2, langvarigt_fokus: 2, komplext_tankande: 1 },
     salary: '28 000 - 42 000 kr/mån',
     education: { name: 'Urmakarutbildning', length: '2-3 år', type: 'YH/Lärling' },
     prognosis: 'declining',
@@ -2315,6 +2474,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 3, kommunikation: 3, koncentration: 5, motorik: 5, sensorisk: 4, energi: 3 },
     categories: { kreativ: 5, praktisk: 5, noggrannhet: 5 },
     challenges: { precision: 5, stillasittande: 5, koncentration: 5 },
+    belastning: { finmotorik: 2, langvarigt_fokus: 2 },
     salary: '28 000 - 45 000 kr/mån',
     education: { name: 'Guldsmedsutbildning', length: '3 år', type: 'Gymnasium/YH' },
     prognosis: 'stable',
@@ -2331,6 +2491,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 3, kommunikation: 2, koncentration: 5, motorik: 5, sensorisk: 4, energi: 4 },
     categories: { kreativ: 5, praktisk: 5, konst_kultur: 5 },
     challenges: { fysisk_rorlighet: 4, koncentration: 5, varme: 5 },
+    belastning: { sinnesintryck: 1, rorlighet: 1, fysisk_ork: 1, finmotorik: 2, langvarigt_fokus: 2 },
     salary: '25 000 - 40 000 kr/mån',
     education: { name: 'Glasblåsarutbildning', length: '2-3 år', type: 'Konstskola/Lärling' },
     prognosis: 'declining',
@@ -2347,6 +2508,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 3, kommunikation: 2, koncentration: 4, motorik: 5, sensorisk: 4, energi: 3 },
     categories: { kreativ: 5, praktisk: 5, konst_kultur: 5 },
     challenges: { koncentration: 4, fysisk_rorlighet: 3 },
+    belastning: { finmotorik: 1, langvarigt_fokus: 1 },
     salary: '22 000 - 38 000 kr/mån',
     education: { name: 'Keramikutbildning', length: '2-3 år', type: 'Konstskola/Folkhögskola' },
     prognosis: 'stable',
@@ -2363,6 +2525,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 3, kommunikation: 2, koncentration: 4, motorik: 5, sensorisk: 3, energi: 4 },
     categories: { praktisk: 5, kreativ: 4, noggrannhet: 4 },
     challenges: { fysisk_rorlighet: 4, precision: 4, fysisk_styrka: 3 },
+    belastning: { rorlighet: 1, fysisk_ork: 1, finmotorik: 1 },
     salary: '26 000 - 38 000 kr/mån',
     education: { name: 'Möbelsnickeri/Tapetserarutbildning', length: '2-3 år', type: 'YH/Lärling' },
     prognosis: 'stable',
@@ -2380,6 +2543,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 5, kommunikation: 5, koncentration: 4, motorik: 2, sensorisk: 4, energi: 4 },
     categories: { kreativ: 5, kommunikation: 5, ledarskap_organisation: 5, konst_kultur: 5 },
     challenges: { tidspress: 5, social_energi: 5, osakra_forutsattningar: 5 },
+    belastning: { sinnesintryck: 1, samspel: 2, mental_anstrangning: 2, komplext_tankande: 2 },
     salary: '30 000 - 100 000+ kr/mån',
     education: { name: 'Filmutbildning/Regi', length: '3-5 år', type: 'Filmskola/Universitet' },
     prognosis: 'stable',
@@ -2396,6 +2560,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 4, kommunikation: 3, koncentration: 5, motorik: 3, sensorisk: 5, energi: 3 },
     categories: { teknisk: 5, kreativ: 4, konst_kultur: 4 },
     challenges: { koncentration: 5, oregelbundna_tider: 4, sensorisk: 3 },
+    belastning: { sinnesintryck: 2, langvarigt_fokus: 2, komplext_tankande: 1 },
     salary: '28 000 - 50 000 kr/mån',
     education: { name: 'Ljudteknik', length: '2-3 år', type: 'YH/Folkhögskola' },
     prognosis: 'stable',
@@ -2412,6 +2577,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 4, kommunikation: 3, koncentration: 4, motorik: 4, sensorisk: 4, energi: 4 },
     categories: { teknisk: 5, kreativ: 4, konst_kultur: 4 },
     challenges: { oregelbundna_tider: 5, fysisk_rorlighet: 4, koncentration: 4 },
+    belastning: { sinnesintryck: 2, rorlighet: 1, fysisk_ork: 1, langvarigt_fokus: 1, komplext_tankande: 1 },
     salary: '27 000 - 45 000 kr/mån',
     education: { name: 'Ljus- och scenteknik', length: '2 år', type: 'YH' },
     prognosis: 'stable',
@@ -2428,6 +2594,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 4, kommunikation: 5, koncentration: 4, motorik: 4, sensorisk: 4, energi: 4 },
     categories: { kreativ: 5, kommunikation: 5, konst_kultur: 5 },
     challenges: { social_energi: 5, osakra_forutsattningar: 5, koncentration: 4 },
+    belastning: { sinnesintryck: 1, samspel: 2, langvarigt_fokus: 1, komplext_tankande: 1 },
     salary: '20 000 - 80 000 kr/mån',
     education: { name: 'Scenskola/Teaterhögskola', length: '3-4 år', type: 'Konsthögskola' },
     prognosis: 'stable',
@@ -2444,6 +2611,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 3, kommunikation: 4, koncentration: 4, motorik: 5, sensorisk: 4, energi: 5 },
     categories: { kreativ: 5, konst_kultur: 5, praktisk: 4 },
     challenges: { fysisk_rorlighet: 5, koncentration: 4, osakra_forutsattningar: 4 },
+    belastning: { sinnesintryck: 1, rorlighet: 2, fysisk_ork: 2, langvarigt_fokus: 1 },
     salary: '22 000 - 45 000 kr/mån',
     education: { name: 'Dansutbildning', length: '3-4 år', type: 'Danshögskola' },
     prognosis: 'stable',
@@ -2460,6 +2628,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 4, kommunikation: 4, koncentration: 4, motorik: 2, sensorisk: 3, energi: 3 },
     categories: { pedagogik: 4, social: 4, analytisk: 3, administration_kontor: 3 },
     challenges: { stillasittande: 4, social_energi: 3, repetitivt: 3 },
+    belastning: { komplext_tankande: 1 },
     salary: '28 000 - 38 000 kr/mån',
     education: { name: 'Biblioteks- och informationsvetenskap', length: '3 år', type: 'Universitet' },
     prognosis: 'declining',
@@ -2476,6 +2645,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 4, kommunikation: 3, koncentration: 5, motorik: 2, sensorisk: 3, energi: 3 },
     categories: { analytisk: 4, noggrannhet: 5, forskning: 4 },
     challenges: { stillasittande: 5, repetitivt: 4, social_energi: 2 },
+    belastning: { komplext_tankande: 1 },
     salary: '30 000 - 42 000 kr/mån',
     education: { name: 'Arkivvetenskap', length: '3-5 år', type: 'Universitet' },
     prognosis: 'stable',
@@ -2493,6 +2663,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 3, kommunikation: 5, koncentration: 3, motorik: 4, sensorisk: 3, energi: 5 },
     categories: { social: 5, vard: 3, kommunikation: 4, praktisk: 4 },
     challenges: { social_energi: 5, fysisk_rorlighet: 5, oregelbundna_tider: 4 },
+    belastning: { rorlighet: 2, fysisk_ork: 2, samspel: 2 },
     salary: '25 000 - 50 000 kr/mån',
     education: { name: 'PT-utbildning', length: '6-12 månader', type: 'Privat utbildning' },
     prognosis: 'growing',
@@ -2509,6 +2680,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 5, kommunikation: 5, koncentration: 5, motorik: 3, sensorisk: 4, energi: 4 },
     categories: { vard: 5, analytisk: 5, forskning: 4, social: 4 },
     challenges: { tidspress: 4, social_energi: 4, oregelbundna_tider: 4 },
+    belastning: { samspel: 2, mental_anstrangning: 1, komplext_tankande: 2 },
     salary: '50 000 - 90 000 kr/mån',
     education: { name: 'Läkarprogrammet + specialisering', length: '7-10 år', type: 'Universitet' },
     prognosis: 'growing',
@@ -2525,6 +2697,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 3, kommunikation: 5, koncentration: 4, motorik: 4, sensorisk: 4, energi: 4 },
     categories: { pedagogik: 5, social: 4, natur: 5, praktisk: 4 },
     challenges: { fysisk_rorlighet: 5, social_energi: 4, utomhusarbete: 5 },
+    belastning: { rorlighet: 2, fysisk_ork: 2, samspel: 2 },
     salary: '24 000 - 35 000 kr/mån',
     education: { name: 'Rid- och hästutbildning', length: '2-3 år', type: 'Gymnasium/Folkhögskola' },
     prognosis: 'stable',
@@ -2541,6 +2714,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 3, kommunikation: 5, koncentration: 4, motorik: 4, sensorisk: 4, energi: 4 },
     categories: { pedagogik: 5, social: 5, praktisk: 4 },
     challenges: { social_energi: 5, fysisk_rorlighet: 4, koncentration: 4 },
+    belastning: { sinnesintryck: 1, rorlighet: 1, fysisk_ork: 1, samspel: 2, langvarigt_fokus: 1 },
     salary: '24 000 - 32 000 kr/mån',
     education: { name: 'Simlärare/Badmästarutbildning', length: '6-12 månader', type: 'Svenska Livräddningssällskapet' },
     prognosis: 'stable',
@@ -2558,6 +2732,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 4, kommunikation: 3, koncentration: 4, motorik: 5, sensorisk: 4, energi: 5 },
     categories: { natur: 5, praktisk: 5, utomhusarbete: 5, affarer_forsaljning: 3 },
     challenges: { fysisk_styrka: 5, fysisk_rorlighet: 5, vaderberoende: 5, oregelbundna_tider: 5 },
+    belastning: { rorlighet: 2, fysisk_ork: 2, komplext_tankande: 1 },
     salary: '25 000 - 50 000 kr/mån',
     education: { name: 'Naturbruksprogrammet/Lantmästare', length: '2-4 år', type: 'Gymnasium/SLU' },
     prognosis: 'stable',
@@ -2574,6 +2749,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 5, kommunikation: 4, koncentration: 4, motorik: 3, sensorisk: 4, energi: 3 },
     categories: { natur: 5, forskning: 5, analytisk: 4, utomhusarbete: 3 },
     challenges: { social_energi: 3, utomhusarbete: 3 },
+    belastning: { komplext_tankande: 2 },
     salary: '35 000 - 55 000 kr/mån',
     education: { name: 'Agronomprogrammet', length: '5 år', type: 'SLU' },
     prognosis: 'growing',
@@ -2590,6 +2766,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 4, kommunikation: 4, koncentration: 4, motorik: 4, sensorisk: 4, energi: 4 },
     categories: { vard: 5, natur: 4, praktisk: 4, social: 3 },
     challenges: { fysisk_rorlighet: 4, social_energi: 3, fysisk_styrka: 3 },
+    belastning: { rorlighet: 1, fysisk_ork: 1, komplext_tankande: 1 },
     salary: '26 000 - 35 000 kr/mån',
     education: { name: 'Djursjukskötarutbildning', length: '3 år', type: 'Universitet' },
     prognosis: 'growing',
@@ -2606,6 +2783,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 3, kommunikation: 5, koncentration: 4, motorik: 4, sensorisk: 4, energi: 4 },
     categories: { social: 4, pedagogik: 5, natur: 4, praktisk: 4 },
     challenges: { fysisk_rorlighet: 5, social_energi: 4, utomhusarbete: 4 },
+    belastning: { rorlighet: 2, fysisk_ork: 2, samspel: 2 },
     salary: '22 000 - 35 000 kr/mån',
     education: { name: 'Hundtränare/Etologiutbildning', length: '1-2 år', type: 'Privat/Folkhögskola' },
     prognosis: 'growing',
@@ -2623,6 +2801,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 4, kommunikation: 2, koncentration: 5, motorik: 4, sensorisk: 3, energi: 3 },
     categories: { teknisk: 5, praktisk: 5, noggrannhet: 5, it: 3 },
     challenges: { koncentration: 5, repetitivt: 4, stillasittande: 3 },
+    belastning: { langvarigt_fokus: 2, komplext_tankande: 1 },
     salary: '30 000 - 42 000 kr/mån',
     education: { name: 'Industriteknisk/CNC-utbildning', length: '2 år', type: 'YH/Gymnasium' },
     prognosis: 'stable',
@@ -2639,6 +2818,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 5, kommunikation: 3, koncentration: 5, motorik: 3, sensorisk: 3, energi: 3 },
     categories: { teknisk: 5, it: 5, analytisk: 4, noggrannhet: 4 },
     challenges: { koncentration: 5, stillasittande: 4 },
+    belastning: { langvarigt_fokus: 2, komplext_tankande: 2 },
     salary: '38 000 - 55 000 kr/mån',
     education: { name: 'Automationsteknik/Robotteknik', length: '2-3 år', type: 'YH' },
     prognosis: 'growing',
@@ -2655,6 +2835,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 4, kommunikation: 3, koncentration: 5, motorik: 2, sensorisk: 4, energi: 3 },
     categories: { analytisk: 5, noggrannhet: 5, teknisk: 4 },
     challenges: { koncentration: 5, stillasittande: 4, repetitivt: 4 },
+    belastning: { langvarigt_fokus: 2, komplext_tankande: 1 },
     salary: '35 000 - 50 000 kr/mån',
     education: { name: 'Kvalitetsteknik/Produktionsteknik', length: '2-3 år', type: 'YH/Universitet' },
     prognosis: 'stable',
@@ -2672,6 +2853,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 4, kommunikation: 4, koncentration: 4, motorik: 2, sensorisk: 3, energi: 3 },
     categories: { ekonomi: 4, analytisk: 4, affarer_forsaljning: 4, kommunikation: 4 },
     challenges: { tidspress: 4, social_energi: 4 },
+    belastning: { samspel: 1, mental_anstrangning: 1, komplext_tankande: 1 },
     salary: '35 000 - 55 000 kr/mån',
     education: { name: 'Ekonomi/Logistik', length: '3 år', type: 'Universitet/YH' },
     prognosis: 'stable',
@@ -2688,6 +2870,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 4, kommunikation: 5, koncentration: 4, motorik: 3, sensorisk: 3, energi: 4 },
     categories: { affarer_forsaljning: 5, kommunikation: 5, social: 5, ekonomi: 3 },
     challenges: { social_energi: 5, tidspress: 4, oregelbundna_tider: 5 },
+    belastning: { samspel: 2, mental_anstrangning: 1, komplext_tankande: 1 },
     salary: '30 000 - 100 000+ kr/mån',
     education: { name: 'Fastighetsmäklarutbildning', length: '2 år', type: 'Universitet/YH' },
     prognosis: 'stable',
@@ -2704,6 +2887,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 4, kommunikation: 5, koncentration: 4, motorik: 2, sensorisk: 3, energi: 4 },
     categories: { affarer_forsaljning: 5, kommunikation: 5, ledarskap_organisation: 4, social: 5 },
     challenges: { social_energi: 5, tidspress: 4, resande: 4 },
+    belastning: { samspel: 2, mental_anstrangning: 1, komplext_tankande: 1 },
     salary: '40 000 - 80 000 kr/mån',
     education: { name: 'Ekonomi/Marknadsföring', length: '3-5 år', type: 'Universitet' },
     prognosis: 'stable',
@@ -2721,6 +2905,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 4, kommunikation: 4, koncentration: 4, motorik: 3, sensorisk: 4, energi: 3 },
     categories: { analytisk: 4, noggrannhet: 5, kommunikation: 3 },
     challenges: { oregelbundna_tider: 4, social_energi: 3 },
+    belastning: { komplext_tankande: 1 },
     salary: '30 000 - 42 000 kr/mån',
     education: { name: 'Tullverkets grundutbildning', length: '1 år', type: 'Internutbildning' },
     prognosis: 'stable',
@@ -2737,6 +2922,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 5, kommunikation: 4, koncentration: 4, motorik: 3, sensorisk: 4, energi: 3 },
     categories: { natur: 5, analytisk: 5, forskning: 3, kommunikation: 4 },
     challenges: { utomhusarbete: 4, social_energi: 4 },
+    belastning: { samspel: 1, komplext_tankande: 2 },
     salary: '32 000 - 45 000 kr/mån',
     education: { name: 'Miljövetenskap/Miljöteknik', length: '3-5 år', type: 'Universitet' },
     prognosis: 'growing',
@@ -2753,6 +2939,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 4, kommunikation: 5, koncentration: 4, motorik: 2, sensorisk: 3, energi: 3 },
     categories: { social: 5, kommunikation: 5, ledarskap_organisation: 3 },
     challenges: { social_energi: 5, tidspress: 4 },
+    belastning: { samspel: 2, mental_anstrangning: 1, komplext_tankande: 1 },
     salary: '30 000 - 40 000 kr/mån',
     education: { name: 'Samhällsvetenskap/Beteendevetenskap', length: '3 år', type: 'Universitet' },
     prognosis: 'stable',
@@ -2770,6 +2957,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 5, kommunikation: 3, koncentration: 5, motorik: 4, sensorisk: 5, energi: 3 },
     categories: { analytisk: 5, noggrannhet: 5, forskning: 4 },
     challenges: { koncentration: 5, precision: 5, oregelbundna_tider: 4 },
+    belastning: { sinnesintryck: 1, finmotorik: 2, langvarigt_fokus: 2, komplext_tankande: 2 },
     salary: '32 000 - 48 000 kr/mån',
     education: { name: 'Forensisk vetenskap/Kriminaltekniker', length: '3-5 år', type: 'Universitet/Polishögskolan' },
     prognosis: 'stable',
@@ -2786,6 +2974,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 5, kommunikation: 5, koncentration: 5, motorik: 2, sensorisk: 4, energi: 4 },
     categories: { kommunikation: 5, social: 4, analytisk: 3 },
     challenges: { koncentration: 5, social_energi: 4, tidspress: 4 },
+    belastning: { samspel: 2, langvarigt_fokus: 2, mental_anstrangning: 1, komplext_tankande: 2 },
     salary: '28 000 - 50 000 kr/mån',
     education: { name: 'Tolkutbildning', length: '1-3 år', type: 'Folkhögskola/Universitet' },
     prognosis: 'growing',
@@ -2802,6 +2991,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 5, kommunikation: 4, koncentration: 5, motorik: 2, sensorisk: 3, energi: 3 },
     categories: { kreativ: 4, analytisk: 4, kommunikation: 4, noggrannhet: 5 },
     challenges: { stillasittande: 5, koncentration: 5, social_energi: 2 },
+    belastning: { langvarigt_fokus: 2, komplext_tankande: 2 },
     salary: '30 000 - 50 000 kr/mån',
     education: { name: 'Översättarutbildning/Språk', length: '3-5 år', type: 'Universitet' },
     prognosis: 'declining',
@@ -2818,6 +3008,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 5, kommunikation: 4, koncentration: 5, motorik: 2, sensorisk: 3, energi: 3 },
     categories: { forskning: 5, analytisk: 5, it: 4, kommunikation: 3 },
     challenges: { koncentration: 5, oregelbundna_tider: 4 },
+    belastning: { langvarigt_fokus: 2, komplext_tankande: 2 },
     salary: '35 000 - 50 000 kr/mån',
     education: { name: 'Meteorologi/Fysik', length: '5 år', type: 'Universitet' },
     prognosis: 'stable',
@@ -2834,6 +3025,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 4, kommunikation: 5, koncentration: 4, motorik: 5, sensorisk: 4, energi: 4 },
     categories: { vard: 5, social: 4, praktisk: 5 },
     challenges: { fysisk_rorlighet: 5, social_energi: 4, fysisk_styrka: 3 },
+    belastning: { rorlighet: 2, fysisk_ork: 2, samspel: 2, komplext_tankande: 1 },
     salary: '35 000 - 55 000 kr/mån',
     education: { name: 'Naprapatprogrammet', length: '4 år', type: 'Privat högskola' },
     prognosis: 'growing',
@@ -2850,6 +3042,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 3, kommunikation: 4, koncentration: 4, motorik: 5, sensorisk: 4, energi: 4 },
     categories: { vard: 4, social: 4, praktisk: 5 },
     challenges: { fysisk_rorlighet: 5, social_energi: 4, fysisk_styrka: 4 },
+    belastning: { rorlighet: 2, fysisk_ork: 2, samspel: 1 },
     salary: '24 000 - 40 000 kr/mån',
     education: { name: 'Massageterapiutbildning', length: '1-2 år', type: 'Privat utbildning/YH' },
     prognosis: 'growing',
@@ -2878,6 +3071,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 2, kommunikation: 3, koncentration: 3, motorik: 4, sensorisk: 3, energi: 4 },
     categories: { praktisk: 4, noggrannhet: 3, social: 2 },
     challenges: { fysisk_rorlighet: 4, tidspress: 4, sensorisk: 3, social_energi: 2 },
+    belastning: { sinnesintryck: 1, rorlighet: 1, fysisk_ork: 1, mental_anstrangning: 1 },
     salary: '24 000 - 28 000 kr/mån',
     education: { name: 'Ingen formell utbildning krävs', length: 'Upplärning på plats', type: 'Arbetsplatsutbildning' },
     prognosis: 'stable',
@@ -2894,6 +3088,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 3, kommunikation: 4, koncentration: 4, motorik: 1, sensorisk: 3, energi: 3 },
     categories: { affarer_forsaljning: 4, kommunikation: 4, administration_kontor: 3, social: 4 },
     challenges: { stillasittande: 4, social_energi: 4, multitasking: 4, koncentration: 3 },
+    belastning: { samspel: 2, mental_anstrangning: 1 },
     salary: '26 000 - 32 000 kr/mån',
     education: { name: 'Gymnasium, ofta med intern utbildning', length: 'Några veckor upplärning', type: 'Gymnasium' },
     prognosis: 'stable',
@@ -2910,6 +3105,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 3, kommunikation: 4, koncentration: 3, motorik: 4, sensorisk: 3, energi: 4 },
     categories: { vard: 5, social: 5, praktisk: 3, kommunikation: 3 },
     challenges: { fysisk_rorlighet: 4, social_energi: 4, kvallsarbete: 3, tidspress: 3 },
+    belastning: { rorlighet: 1, fysisk_ork: 1, samspel: 1 },
     salary: '25 000 - 29 000 kr/mån',
     education: { name: 'Ingen formell utbildning krävs — vård- och omsorgsutbildning är meriterande', length: 'Upplärning på plats', type: 'Arbetsplatsutbildning' },
     prognosis: 'growing',
@@ -2926,6 +3122,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 3, kommunikation: 5, koncentration: 3, motorik: 3, sensorisk: 3, energi: 3 },
     categories: { vard: 4, social: 5, kommunikation: 5, praktisk: 2 },
     challenges: { social_energi: 5, kvallsarbete: 3, multitasking: 2 },
+    belastning: { samspel: 2 },
     salary: '27 000 - 32 000 kr/mån',
     education: { name: 'Gymnasium, gärna vård och omsorg eller barn och fritid', length: '3 år', type: 'Gymnasium' },
     prognosis: 'growing',
@@ -2942,6 +3139,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 4, kommunikation: 5, koncentration: 4, motorik: 3, sensorisk: 3, energi: 4 },
     categories: { vard: 4, social: 5, kommunikation: 5, noggrannhet: 3 },
     challenges: { social_energi: 5, kvallsarbete: 4, tidspress: 3, koncentration: 3 },
+    belastning: { samspel: 2, mental_anstrangning: 1, komplext_tankande: 1 },
     salary: '28 000 - 34 000 kr/mån',
     education: { name: 'Behandlingspedagog eller motsvarande yrkeshögskola', length: '2 år', type: 'Yrkeshögskola' },
     prognosis: 'growing',
@@ -2958,6 +3156,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 3, kommunikation: 4, koncentration: 4, motorik: 3, sensorisk: 2, energi: 3 },
     categories: { social: 5, pedagogik: 4, kommunikation: 4, vard: 2 },
     challenges: { social_energi: 4, sensorisk: 4, multitasking: 3, koncentration: 3 },
+    belastning: { sinnesintryck: 2, samspel: 1 },
     salary: '24 000 - 29 000 kr/mån',
     education: { name: 'Gymnasium, gärna barn och fritid', length: '3 år', type: 'Gymnasium' },
     prognosis: 'stable',
@@ -2974,6 +3173,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 3, kommunikation: 2, koncentration: 4, motorik: 4, sensorisk: 3, energi: 3 },
     categories: { teknisk: 4, praktisk: 5, noggrannhet: 5 },
     challenges: { fysisk_rorlighet: 3, sensorisk: 4, koncentration: 4, kvallsarbete: 3 },
+    belastning: { sinnesintryck: 2, langvarigt_fokus: 1 },
     salary: '28 000 - 34 000 kr/mån',
     education: { name: 'Gymnasium industriteknik eller upplärning på plats', length: '3 år alternativt upplärning', type: 'Gymnasium' },
     prognosis: 'stable',
@@ -2990,6 +3190,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 2, kommunikation: 2, koncentration: 4, motorik: 5, sensorisk: 3, energi: 3 },
     categories: { praktisk: 5, noggrannhet: 5, teknisk: 3 },
     challenges: { fysisk_rorlighet: 4, koncentration: 4, stillasittande: 3, sensorisk: 3 },
+    belastning: { sinnesintryck: 1, rorlighet: 1, fysisk_ork: 1, finmotorik: 1, langvarigt_fokus: 1 },
     salary: '26 000 - 31 000 kr/mån',
     education: { name: 'Ingen formell utbildning krävs', length: 'Upplärning på plats', type: 'Arbetsplatsutbildning' },
     prognosis: 'stable',
@@ -3006,6 +3207,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 4, kommunikation: 2, koncentration: 4, motorik: 5, sensorisk: 3, energi: 4 },
     categories: { teknisk: 5, praktisk: 5, analytisk: 3, noggrannhet: 4 },
     challenges: { fysisk_rorlighet: 5, tidspress: 4, sensorisk: 3, kvallsarbete: 3 },
+    belastning: { sinnesintryck: 1, rorlighet: 2, fysisk_ork: 2, finmotorik: 1, mental_anstrangning: 1, komplext_tankande: 1 },
     salary: '30 000 - 38 000 kr/mån',
     education: { name: 'Gymnasium industriteknik eller el', length: '3 år', type: 'Gymnasium' },
     prognosis: 'growing',
@@ -3022,6 +3224,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 3, kommunikation: 2, koncentration: 4, motorik: 4, sensorisk: 4, energi: 3 },
     categories: { praktisk: 5, teknisk: 3, noggrannhet: 4 },
     challenges: { fysisk_rorlighet: 3, koncentration: 4, sensorisk: 4, kvallsarbete: 3 },
+    belastning: { sinnesintryck: 2, langvarigt_fokus: 1 },
     salary: '27 000 - 33 000 kr/mån',
     education: { name: 'Truckkort A + B', length: 'Några dagar', type: 'Certifikat' },
     prognosis: 'stable',
@@ -3038,6 +3241,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 2, kommunikation: 2, koncentration: 3, motorik: 5, sensorisk: 3, energi: 4 },
     categories: { praktisk: 5, noggrannhet: 3 },
     challenges: { fysisk_rorlighet: 5, kvallsarbete: 4, tidspress: 4, sensorisk: 3 },
+    belastning: { sinnesintryck: 1, rorlighet: 2, fysisk_ork: 2, mental_anstrangning: 1 },
     salary: '25 000 - 30 000 kr/mån',
     education: { name: 'Ingen formell utbildning krävs', length: 'Upplärning på plats', type: 'Arbetsplatsutbildning' },
     prognosis: 'stable',
@@ -3054,6 +3258,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 3, kommunikation: 3, koncentration: 4, motorik: 4, sensorisk: 4, energi: 4 },
     categories: { praktisk: 5, social: 2, noggrannhet: 3 },
     challenges: { fysisk_rorlighet: 4, tidspress: 5, koncentration: 4, kvallsarbete: 3 },
+    belastning: { rorlighet: 1, fysisk_ork: 1, langvarigt_fokus: 1, mental_anstrangning: 2 },
     salary: '26 000 - 31 000 kr/mån',
     education: { name: 'B-körkort', length: 'Körkortsutbildning', type: 'Certifikat' },
     prognosis: 'growing',
@@ -3070,6 +3275,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 2, kommunikation: 3, koncentration: 3, motorik: 4, sensorisk: 3, energi: 4 },
     categories: { praktisk: 4, social: 3, noggrannhet: 4 },
     challenges: { fysisk_rorlighet: 4, tidspress: 4, sensorisk: 3 },
+    belastning: { sinnesintryck: 1, rorlighet: 1, fysisk_ork: 1, mental_anstrangning: 1 },
     salary: '24 000 - 28 000 kr/mån',
     education: { name: 'Ingen formell utbildning krävs — livsmedelshygien är vanligt krav', length: 'Kort kurs', type: 'Arbetsplatsutbildning' },
     prognosis: 'stable',
@@ -3086,6 +3292,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 2, kommunikation: 2, koncentration: 3, motorik: 5, sensorisk: 3, energi: 4 },
     categories: { praktisk: 5, natur: 5, noggrannhet: 3 },
     challenges: { fysisk_rorlighet: 5, sensorisk: 2, kvallsarbete: 2 },
+    belastning: { rorlighet: 2, fysisk_ork: 2 },
     salary: '25 000 - 30 000 kr/mån',
     education: { name: 'Ingen formell utbildning krävs — trädgårdsutbildning är meriterande', length: 'Upplärning på plats', type: 'Arbetsplatsutbildning' },
     prognosis: 'stable',
@@ -3122,6 +3329,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 3, kommunikation: 3, koncentration: 3, motorik: 5, sensorisk: 4, energi: 4 },
     categories: { praktisk: 5, noggrannhet: 4, teknisk: 3 },
     challenges: { fysisk_rorlighet: 5, fysisk_styrka: 4, sensorisk: 5, kvallsarbete: 3 },
+    belastning: { sinnesintryck: 2, rorlighet: 2, fysisk_ork: 2 },
     salary: '27 000 - 33 000 kr/mån',
     education: { name: 'Ingen formell utbildning krävs — intern utbildning är vanlig', length: 'Upplärning på plats', type: 'Arbetsplatsutbildning' },
     prognosis: 'stable',
@@ -3138,6 +3346,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 2, kommunikation: 2, koncentration: 3, motorik: 5, sensorisk: 4, energi: 4 },
     categories: { praktisk: 5, natur: 3, noggrannhet: 3 },
     challenges: { fysisk_rorlighet: 5, fysisk_styrka: 4, sensorisk: 4, kvallsarbete: 2 },
+    belastning: { sinnesintryck: 2, rorlighet: 2, fysisk_ork: 2 },
     salary: '26 000 - 31 000 kr/mån',
     education: { name: 'Ingen formell utbildning krävs', length: 'Upplärning på plats', type: 'Arbetsplatsutbildning' },
     prognosis: 'growing',
@@ -3154,6 +3363,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 2, kommunikation: 2, koncentration: 3, motorik: 5, sensorisk: 4, energi: 5 },
     categories: { praktisk: 5, natur: 2 },
     challenges: { fysisk_rorlighet: 5, fysisk_styrka: 5, sensorisk: 4, kvallsarbete: 3 },
+    belastning: { sinnesintryck: 2, rorlighet: 2, fysisk_ork: 2 },
     salary: '27 000 - 32 000 kr/mån',
     education: { name: 'B- eller C-körkort beroende på tjänst', length: 'Körkortsutbildning', type: 'Certifikat' },
     prognosis: 'stable',
@@ -3170,6 +3380,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 2, kommunikation: 3, koncentration: 3, motorik: 5, sensorisk: 3, energi: 4 },
     categories: { praktisk: 5, noggrannhet: 4, social: 2 },
     challenges: { fysisk_rorlighet: 5, fysisk_styrka: 3, koncentration: 3 },
+    belastning: { rorlighet: 2, fysisk_ork: 2 },
     salary: '25 000 - 31 000 kr/mån',
     education: { name: 'Ingen formell utbildning krävs — liftutbildning kan behövas', length: 'Upplärning på plats', type: 'Arbetsplatsutbildning' },
     prognosis: 'stable',
@@ -3188,6 +3399,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 3, kommunikation: 2, koncentration: 4, motorik: 5, sensorisk: 3, energi: 4 },
     categories: { praktisk: 5, noggrannhet: 5, teknisk: 3 },
     challenges: { fysisk_rorlighet: 5, fysisk_styrka: 5, precision: 4 },
+    belastning: { rorlighet: 2, fysisk_ork: 2, finmotorik: 1 },
     salary: '30 000 - 38 000 kr/mån',
     education: { name: 'Bygg- och anläggningsprogrammet med lärlingstid', length: '3 år + lärling', type: 'Gymnasium' },
     prognosis: 'stable',
@@ -3204,6 +3416,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 3, kommunikation: 2, koncentration: 4, motorik: 5, sensorisk: 3, energi: 5 },
     categories: { praktisk: 5, noggrannhet: 4, teknisk: 3 },
     challenges: { fysisk_rorlighet: 5, fysisk_styrka: 5, precision: 3 },
+    belastning: { rorlighet: 2, fysisk_ork: 2 },
     salary: '30 000 - 37 000 kr/mån',
     education: { name: 'Bygg- och anläggningsprogrammet med lärlingstid', length: '3 år + lärling', type: 'Gymnasium' },
     prognosis: 'stable',
@@ -3220,6 +3433,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 2, kommunikation: 3, koncentration: 3, motorik: 5, sensorisk: 3, energi: 5 },
     categories: { praktisk: 5, teknisk: 3, natur: 2 },
     challenges: { fysisk_rorlighet: 5, fysisk_styrka: 5, sensorisk: 3, kvallsarbete: 2 },
+    belastning: { sinnesintryck: 1, rorlighet: 2, fysisk_ork: 2 },
     salary: '29 000 - 36 000 kr/mån',
     education: { name: 'Bygg- och anläggningsprogrammet eller upplärning på plats', length: '3 år alternativt upplärning', type: 'Gymnasium' },
     prognosis: 'growing',
@@ -3236,6 +3450,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 3, kommunikation: 2, koncentration: 5, motorik: 4, sensorisk: 4, energi: 3 },
     categories: { praktisk: 5, teknisk: 4, noggrannhet: 4 },
     challenges: { koncentration: 5, sensorisk: 4, stillasittande: 3, kvallsarbete: 2 },
+    belastning: { sinnesintryck: 2, langvarigt_fokus: 2 },
     salary: '31 000 - 39 000 kr/mån',
     education: { name: 'Yrkesbevis anläggningsmaskinförare', length: '1–2 år inkl. praktik', type: 'Yrkesutbildning' },
     prognosis: 'growing',
@@ -3252,6 +3467,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 3, kommunikation: 3, koncentration: 4, motorik: 5, sensorisk: 3, energi: 4 },
     categories: { praktisk: 5, noggrannhet: 5, kreativ: 2 },
     challenges: { fysisk_rorlighet: 5, precision: 5, sensorisk: 3 },
+    belastning: { sinnesintryck: 1, rorlighet: 2, fysisk_ork: 2, finmotorik: 2 },
     salary: '29 000 - 36 000 kr/mån',
     education: { name: 'Bygg- och anläggningsprogrammet eller lärling', length: '3 år alternativt lärling', type: 'Gymnasium' },
     prognosis: 'stable',
@@ -3268,6 +3484,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 3, kommunikation: 3, koncentration: 4, motorik: 5, sensorisk: 4, energi: 5 },
     categories: { praktisk: 5, noggrannhet: 5, teknisk: 3 },
     challenges: { fysisk_rorlighet: 5, fysisk_styrka: 5, koncentration: 4, precision: 3 },
+    belastning: { rorlighet: 2, fysisk_ork: 2, langvarigt_fokus: 1 },
     salary: '30 000 - 37 000 kr/mån',
     education: { name: 'Ställningsbyggarutbildning enligt Arbetsmiljöverkets krav', length: 'Några veckor till några månader', type: 'Certifikat' },
     prognosis: 'stable',
@@ -3284,6 +3501,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 3, kommunikation: 2, koncentration: 4, motorik: 5, sensorisk: 4, energi: 4 },
     categories: { praktisk: 5, noggrannhet: 5, teknisk: 4 },
     challenges: { fysisk_rorlighet: 5, precision: 5, koncentration: 4 },
+    belastning: { rorlighet: 2, fysisk_ork: 2, finmotorik: 2, langvarigt_fokus: 1 },
     salary: '30 000 - 38 000 kr/mån',
     education: { name: 'Bygg- och anläggningsprogrammet, inriktning plåtslageri', length: '3 år + lärling', type: 'Gymnasium' },
     prognosis: 'stable',
@@ -3302,6 +3520,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 2, kommunikation: 2, koncentration: 3, motorik: 5, sensorisk: 3, energi: 4 },
     categories: { praktisk: 5, noggrannhet: 5, social: 2 },
     challenges: { fysisk_rorlighet: 5, tidspress: 4, sensorisk: 3 },
+    belastning: { sinnesintryck: 1, rorlighet: 2, fysisk_ork: 2, mental_anstrangning: 1 },
     salary: '24 000 - 28 000 kr/mån',
     education: { name: 'Ingen formell utbildning krävs', length: 'Upplärning på plats', type: 'Arbetsplatsutbildning' },
     prognosis: 'stable',
@@ -3318,6 +3537,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 2, kommunikation: 4, koncentration: 3, motorik: 4, sensorisk: 3, energi: 4 },
     categories: { affarer_forsaljning: 3, social: 4, praktisk: 4, noggrannhet: 3 },
     challenges: { fysisk_rorlighet: 4, social_energi: 4, tidspress: 4, sensorisk: 3 },
+    belastning: { sinnesintryck: 1, rorlighet: 1, fysisk_ork: 1, samspel: 1, mental_anstrangning: 1 },
     salary: '24 000 - 28 000 kr/mån',
     education: { name: 'Ingen formell utbildning krävs', length: 'Upplärning på plats', type: 'Arbetsplatsutbildning' },
     prognosis: 'stable',
@@ -3336,6 +3556,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 3, kommunikation: 4, koncentration: 4, motorik: 4, sensorisk: 3, energi: 3 },
     categories: { social: 4, praktisk: 4, noggrannhet: 5, vard: 3 },
     challenges: { social_energi: 4, precision: 4, stillasittande: 3 },
+    belastning: { finmotorik: 1, samspel: 1 },
     salary: '25 000 - 32 000 kr/mån',
     education: { name: 'Hudterapeututbildning', length: '1–2 år', type: 'Yrkeshögskola' },
     prognosis: 'stable',
@@ -3352,6 +3573,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 3, kommunikation: 4, koncentration: 4, motorik: 5, sensorisk: 3, energi: 3 },
     categories: { vard: 4, social: 4, noggrannhet: 5, praktisk: 4 },
     challenges: { precision: 5, social_energi: 3, stillasittande: 4 },
+    belastning: { finmotorik: 2 },
     salary: '26 000 - 32 000 kr/mån',
     education: { name: 'Medicinsk fotterapeututbildning', length: '1 år', type: 'Yrkesutbildning' },
     prognosis: 'growing',
@@ -3368,6 +3590,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 2, kommunikation: 4, koncentration: 4, motorik: 5, sensorisk: 3, energi: 4 },
     categories: { konst_kultur: 3, social: 4, praktisk: 5, noggrannhet: 4 },
     challenges: { fysisk_rorlighet: 4, social_energi: 4, precision: 5 },
+    belastning: { rorlighet: 1, fysisk_ork: 1, finmotorik: 2, samspel: 1 },
     salary: '24 000 - 32 000 kr/mån',
     education: { name: 'Barberar- eller frisörutbildning', length: '1–3 år', type: 'Gymnasium' },
     prognosis: 'stable',
@@ -3386,6 +3609,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 4, kommunikation: 3, koncentration: 5, motorik: 1, sensorisk: 2, energi: 3 },
     categories: { administration_kontor: 5, ekonomi: 5, noggrannhet: 5, analytisk: 3 },
     challenges: { stillasittande: 5, koncentration: 5, tidspress: 3 },
+    belastning: { langvarigt_fokus: 2, komplext_tankande: 1 },
     salary: '28 000 - 34 000 kr/mån',
     education: { name: 'Ekonomiprogrammet eller yrkeshögskola', length: '1–3 år', type: 'Gymnasium' },
     prognosis: 'stable',
@@ -3402,6 +3626,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 4, kommunikation: 4, koncentration: 5, motorik: 1, sensorisk: 2, energi: 3 },
     categories: { administration_kontor: 5, ekonomi: 4, noggrannhet: 5, kommunikation: 3 },
     challenges: { stillasittande: 5, koncentration: 5, tidspress: 4 },
+    belastning: { langvarigt_fokus: 2, mental_anstrangning: 1, komplext_tankande: 1 },
     salary: '31 000 - 38 000 kr/mån',
     education: { name: 'Yrkeshögskola löneadministration', length: '1–2 år', type: 'Yrkeshögskola' },
     prognosis: 'stable',
@@ -3418,6 +3643,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 4, kommunikation: 4, koncentration: 5, motorik: 2, sensorisk: 2, energi: 3 },
     categories: { administration_kontor: 5, vard: 3, noggrannhet: 5, kommunikation: 4 },
     challenges: { stillasittande: 5, koncentration: 5, tidspress: 3 },
+    belastning: { langvarigt_fokus: 2, komplext_tankande: 1 },
     salary: '29 000 - 35 000 kr/mån',
     education: { name: 'Yrkeshögskola vårdadministration', length: '1,5–2 år', type: 'Yrkeshögskola' },
     prognosis: 'growing',
@@ -3434,6 +3660,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 3, kommunikation: 4, koncentration: 5, motorik: 4, sensorisk: 3, energi: 3 },
     categories: { vard: 5, social: 4, noggrannhet: 5, praktisk: 3 },
     challenges: { precision: 4, social_energi: 3, stillasittande: 3, koncentration: 4 },
+    belastning: { sinnesintryck: 1, finmotorik: 1, langvarigt_fokus: 1 },
     salary: '27 000 - 33 000 kr/mån',
     education: { name: 'Tandsköterskeutbildning', length: '1,5 år', type: 'Yrkeshögskola' },
     prognosis: 'growing',
@@ -3450,6 +3677,7 @@ const occupationsRadata: Occupation[] = [
     icf: { kognitiv: 4, kommunikation: 4, koncentration: 5, motorik: 3, sensorisk: 3, energi: 3 },
     categories: { vard: 4, affarer_forsaljning: 3, noggrannhet: 5, social: 3 },
     challenges: { koncentration: 5, social_energi: 3, precision: 4 },
+    belastning: { finmotorik: 1, langvarigt_fokus: 2, komplext_tankande: 1 },
     salary: '27 000 - 33 000 kr/mån',
     education: { name: 'Apoteksteknikerutbildning', length: '1,5 år', type: 'Yrkeshögskola' },
     prognosis: 'stable',
@@ -3588,6 +3816,102 @@ export interface MatchKontext {
 const svenskaTexter: MatchTexter = (_nyckel, svenska, vars) =>
   vars ? svenska.replace(/\{\{(\w+)\}\}/g, (_m, n: string) => String(vars[n] ?? '')) : svenska
 
+// ===== BELASTNING MOT BESVÄR =====
+
+/**
+ * Svarsgränserna på frågornas 1–5-skala. Frågorna ställs positivt ("Jag
+ * hanterar ljud, ljus … bra"), så 1 = "Mycket svårt för mig" / "Blir lätt
+ * överväldigad" — stora besvär. 2 = måttliga besvär.
+ */
+export const STORA_BESVAR = 1
+export const MATTLIGA_BESVAR = 2
+
+export interface Belastningskrock {
+  belastning: Belastning
+  /** Hur centralt belastningen är i yrket. */
+  grad: Belastningsgrad
+  /** Hur stora besvär användaren angett. */
+  besvar: 'stora' | 'mattliga'
+}
+
+const BELASTNINGAR = Object.keys(BELASTNING_FRAGA) as Belastning[]
+
+/** Beskrivning av belastningen i löptext (reservtext till i18n-nyckeln). */
+export const belastningNamn: Record<Belastning, [nyckel: string, svenska: string]> = {
+  komplext_tankande: ['interestGuide.belastning.komplext_tankande', 'att minnas, planera och lösa problem'],
+  samspel: ['interestGuide.belastning.samspel', 'mycket kontakt och samarbete med andra'],
+  langvarigt_fokus: ['interestGuide.belastning.langvarigt_fokus', 'att hålla fokus länge trots störningar'],
+  rorlighet: ['interestGuide.belastning.rorlighet', 'att stå, gå och röra sig mycket'],
+  finmotorik: ['interestGuide.belastning.finmotorik', 'stadiga händer och precisionsarbete'],
+  sinnesintryck: ['interestGuide.belastning.sinnesintryck', 'ljud, ljus och andra sinnesintryck'],
+  fysisk_ork: ['interestGuide.belastning.fysisk_ork', 'fysisk ork hela arbetsdagen'],
+  mental_anstrangning: ['interestGuide.belastning.mental_anstrangning', 'mentalt krävande arbete och högt tempo'],
+}
+
+/** Råsvaret på en fråga, eller domänvärdet om profilen saknar råsvar. `undefined` = obesvarad. */
+function svarPaFraga(profil: UserProfile, frageId: string): number | undefined {
+  const ra = profil.icfSvar?.[frageId]
+  if (typeof ra === 'number') return ra
+  const doman = allQuestions.find(q => q.id === frageId)?.category as keyof ICFScores | undefined
+  // Utan svar på domänen är värdet ett standardvärde (3), inte ett besvär.
+  if (!doman || !profil.coverage?.icf?.[doman]) return undefined
+  return profil.icf[doman]
+}
+
+/** Var yrkets belastning möter något användaren angett som svårt. */
+export function belastningskrockar(profil: UserProfile, yrke: Occupation): Belastningskrock[] {
+  const ut: Belastningskrock[] = []
+  for (const b of BELASTNINGAR) {
+    const grad = yrke.belastning?.[b]
+    if (!grad) continue
+    const svar = svarPaFraga(profil, BELASTNING_FRAGA[b])
+    if (svar === undefined) continue
+    if (svar <= STORA_BESVAR) ut.push({ belastning: b, grad, besvar: 'stora' })
+    else if (svar <= MATTLIGA_BESVAR) ut.push({ belastning: b, grad, besvar: 'mattliga' })
+  }
+  return ut
+}
+
+/** Stora besvär med något som är centralt i yrket → yrket rekommenderas inte. */
+export function utesluterYrket(krockar: Belastningskrock[]): boolean {
+  return krockar.some(k => k.grad === 2 && k.besvar === 'stora')
+}
+
+/**
+ * Nedviktning för krockar som inte utesluter: måttliga besvär med något
+ * centralt (×0,85), stora besvär med ett inslag (×0,90). Måttliga besvär med
+ * ett inslag påverkar inte — det är vad anpassningar finns till för.
+ */
+function nedviktning(krockar: Belastningskrock[]): number {
+  return krockar.reduce((f, k) =>
+    k.grad === 2 && k.besvar === 'mattliga' ? f * 0.85
+      : k.grad === 1 && k.besvar === 'stora' ? f * 0.9
+        : f, 1)
+}
+
+export interface UteslutetYrke {
+  occupation: Occupation
+  /** Bara de krockar som utesluter (centralt + stora besvär). */
+  krockar: Belastningskrock[]
+}
+
+/**
+ * Yrkena `calculateJobMatches` lämnar bort, med skälet. Finns så att vyn kan
+ * säga ATT något utelämnats och varför — en lista som tyst krymper ser ut som
+ * att guiden inte hittade fler.
+ */
+export function uteslutnaYrken(
+  profil: UserProfile,
+  filterUniversity?: boolean | null,
+  yrken: Occupation[] = occupations
+): UteslutetYrke[] {
+  return yrken
+    .filter(o => filterUniversity === null || filterUniversity === undefined || o.requiresUniversity === filterUniversity)
+    .map(o => ({ occupation: o, krockar: belastningskrockar(profil, o) }))
+    .filter(x => utesluterYrket(x.krockar))
+    .map(x => ({ ...x, krockar: x.krockar.filter(k => k.grad === 2 && k.besvar === 'stora') }))
+}
+
 export function calculateJobMatches(
   profile: UserProfile,
   filterUniversity?: boolean | null,
@@ -3608,6 +3932,11 @@ export function calculateJobMatches(
         return null as unknown as JobMatch
       }
     }
+
+    // Stora besvär med något som är centralt i yrket: rekommendera det inte.
+    // Se `Belastning` och `uteslutnaYrken`.
+    const krockar = belastningskrockar(profile, occupation)
+    if (utesluterYrket(krockar)) return null as unknown as JobMatch
 
     let totalScore = 0
     let totalWeight = 0
@@ -3664,8 +3993,21 @@ export function calculateJobMatches(
     totalScore += topRiasecMatch * 0.10
     totalWeight += 0.10
 
-    const matchPercentage = Math.round((totalScore / totalWeight) * 100)
-    
+    /*
+      Belastningskrockar som inte utesluter viktar ned och får en varning
+      först i listan. Det här är det enda sättet förutsättningarna påverkar
+      poängen — domänmedlen i `icf` gör det fortfarande inte (se ovan).
+    */
+    const tx = ctx.texter ?? svenskaTexter
+    const krockVarningar = krockar
+      .filter(k => !(k.grad === 1 && k.besvar === 'mattliga'))
+      .map(k => k.grad === 2
+        ? tx('interestGuide.match.warn.belastningCentral', 'Yrket kräver mycket av något du angett som svårt: {{omrade}}', { omrade: tx(...belastningNamn[k.belastning]) })
+        : tx('interestGuide.match.warn.belastningInslag', 'Yrket innehåller en del av något du angett som mycket svårt: {{omrade}}', { omrade: tx(...belastningNamn[k.belastning]) }))
+    warnings.unshift(...krockVarningar)
+
+    const matchPercentage = Math.round((totalScore / totalWeight) * 100 * nedviktning(krockar))
+
     // Bestäm lämplighet baserat på matchningsprocent och varningar
     const isSuitable = matchPercentage >= 65 && warnings.length <= 1
     const needsAdaptation = adaptations.length > 0 || (matchPercentage >= 55 && matchPercentage < 75)
@@ -4119,6 +4461,7 @@ export function calculateUserProfile(answers: Record<string, number>): UserProfi
   const icfValues: Record<keyof ICFScores, number[]> = {
     kognitiv: [], kommunikation: [], koncentration: [], motorik: [], sensorisk: [], energi: [],
   }
+  const icfSvar: Record<string, number> = {}
 
   // Summera svar
   // Värden från QuestionCard är 1-5, normalisera till 0-1 skala
@@ -4156,6 +4499,7 @@ export function calculateUserProfile(answers: Record<string, number>): UserProfi
     } else if (question.section === 'icf') {
       const category = question.category as keyof ICFScores
       if (icfValues[category]) icfValues[category].push(skala1till5)
+      icfSvar[questionId] = Math.min(5, Math.max(1, Math.round(value)))
     }
   })
 
@@ -4220,7 +4564,7 @@ export function calculateUserProfile(answers: Record<string, number>): UserProfi
     total: allQuestions.length,
   }
 
-  return { riasec, bigFive, icf, strongInterest, coverage }
+  return { riasec, bigFive, icf, strongInterest, coverage, icfSvar }
 }
 
 /**

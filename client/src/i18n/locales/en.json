@@ -3578,7 +3578,9 @@
         "socialtKravande": "The work is socially demanding, with a lot of contact with people",
         "koncentration": "The work needs high concentration for long periods",
         "sensorisk": "The workplace can have loud sounds, bright light or other strong sensory input",
-        "tidspress": "The work often means time pressure and a fast pace"
+        "tidspress": "The work often means time pressure and a fast pace",
+        "belastningCentral": "This job asks a lot of something you said is hard for you: {{omrade}}",
+        "belastningInslag": "This job includes some of something you said is very hard for you: {{omrade}}"
       },
       "adapt": {
         "rorlighet": "Motor skills: Ask for adapted tasks or aids for mobility",
@@ -3625,6 +3627,22 @@
         "middle": "Your answers were close to the middle on the areas this job needs. That means the job neither stands out nor is ruled out. Have a look at it if it appeals to you.",
         "none": "Nothing in your answers points especially to this job. That does not mean you could not enjoy it. It only means these questions did not pick it up."
       }
+    },
+    "belastning": {
+      "komplext_tankande": "remembering, planning and solving problems",
+      "samspel": "a lot of contact and teamwork with other people",
+      "langvarigt_fokus": "keeping focus for a long time, even with distractions",
+      "rorlighet": "standing, walking and moving a lot",
+      "finmotorik": "steady hands and precise work",
+      "sinnesintryck": "sound, light and other sensory input",
+      "fysisk_ork": "physical energy for the whole working day",
+      "mental_anstrangning": "mentally demanding work and a fast pace"
+    },
+    "uteslutna": {
+      "summary_one": "{{count}} job is not shown, because it asks a lot of something you said is very hard for you",
+      "summary_other": "{{count}} jobs are not shown, because they ask a lot of something you said is very hard for you",
+      "lead": "This is based on your answers in the part about your abilities. It does not mean you can never work with any of these jobs. If one of them interests you, talk to your job coach.",
+      "rad": "{{yrke}} – needs {{omrade}}"
     }
   },
   "international": {

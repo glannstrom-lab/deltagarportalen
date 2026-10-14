@@ -13,6 +13,7 @@ import {
   type JobMatch,
 } from '@/services/interestGuideData'
 import { useYrken, useMatchKontext } from '@/services/useIntresseguideInnehall'
+import { UteslutnaYrken } from '@/components/interest-guide/UteslutnaYrken'
 import { LoadingState, InfoCard, Button, Card, EmptyState } from '@/components/ui'
 import { interestGuideApi } from '@/services/cloudStorage'
 import {
@@ -306,6 +307,9 @@ export default function OccupationsTab() {
           )}
         </Card>
       </motion.div>
+
+      {/* Yrken som inte visas p.g.a. en belastningskrock — med skälet */}
+      <UteslutnaYrken profile={profile} filterUniversity={filterUni} yrken={yrken} />
 
       {/* Results */}
       <motion.div

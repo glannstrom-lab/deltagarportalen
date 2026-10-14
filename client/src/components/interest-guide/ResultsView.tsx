@@ -13,6 +13,7 @@ import { ICFSection } from './ICFSection'
 import { HealthConsentGate } from '@/components/consent/HealthConsentGate'
 import { useAuthStore } from '@/stores/authStore'
 import { JobCard } from './JobCard'
+import { UteslutnaYrken } from './UteslutnaYrken'
 import { Button } from '@/components/ui/Button'
 import {
   GraduationCap,
@@ -476,6 +477,8 @@ export function ResultsView({ profile }: ResultsViewProps) {
               />
             ))}
           </div>
+
+          <UteslutnaYrken profile={profile} filterUniversity={filterUni} yrken={yrken} />
 
           <p className="text-center text-sm text-stone-600 dark:text-stone-400">
             {t('interestGuide.rv.showingTop', 'Visar de {{shown}} yrken som ligger närmast dina svar av {{total}} möjliga yrken', { shown: topMatches.length, total: matches.length })}

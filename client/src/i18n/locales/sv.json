@@ -3578,7 +3578,9 @@
         "socialtKravande": "Arbetet är socialt krävande med mycket mänsklig kontakt",
         "koncentration": "Arbetet kräver hög koncentrationsförmåga under långa perioder",
         "sensorisk": "Arbetsmiljön kan innebära starka ljud, ljus eller andra sinnesintryck",
-        "tidspress": "Arbetet innebär ofta tidspress och högt tempo"
+        "tidspress": "Arbetet innebär ofta tidspress och högt tempo",
+        "belastningCentral": "Yrket kräver mycket av något du angett som svårt: {{omrade}}",
+        "belastningInslag": "Yrket innehåller en del av något du angett som mycket svårt: {{omrade}}"
       },
       "adapt": {
         "rorlighet": "Motorik: Be om anpassade arbetsuppgifter eller hjälpmedel för rörlighet",
@@ -3625,6 +3627,22 @@
         "middle": "Dina svar låg nära mitten på de områden yrket kräver. Det gör att yrket varken sticker ut eller sorteras bort — titta på det om det lockar dig.",
         "none": "Inget i dina svar pekar särskilt mot det här yrket. Det betyder inte att du inte skulle kunna trivas — bara att just de här frågorna inte fångade det."
       }
+    },
+    "belastning": {
+      "komplext_tankande": "att minnas, planera och lösa problem",
+      "samspel": "mycket kontakt och samarbete med andra",
+      "langvarigt_fokus": "att hålla fokus länge trots störningar",
+      "rorlighet": "att stå, gå och röra sig mycket",
+      "finmotorik": "stadiga händer och precisionsarbete",
+      "sinnesintryck": "ljud, ljus och andra sinnesintryck",
+      "fysisk_ork": "fysisk ork hela arbetsdagen",
+      "mental_anstrangning": "mentalt krävande arbete och högt tempo"
+    },
+    "uteslutna": {
+      "summary_one": "{{count}} yrke visas inte, eftersom det kräver mycket av något du har sagt är mycket svårt för dig",
+      "summary_other": "{{count}} yrken visas inte, eftersom de kräver mycket av något du har sagt är mycket svårt för dig",
+      "lead": "Det här bygger på dina svar i delen om dina förutsättningar. Det betyder inte att du aldrig kan arbeta med något av dem. Prata gärna med din konsulent om ett av yrkena lockar dig.",
+      "rad": "{{yrke}} – kräver {{omrade}}"
     }
   },
   "international": {
