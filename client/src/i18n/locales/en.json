@@ -531,6 +531,14 @@
       "dropHere": "Drag your CV here, or choose it from your computer.",
       "privacyDescriptions": "Your own descriptions of each role don't come along — you write those yourself, so they turn out exactly as you want them.",
       "privacyContact": "Email and phone number are removed before the text is sent to the AI. We take them from the file here in your browser instead, so they are never sent anywhere. Check that they are correct before you save.",
+      "linkedin": {
+        "title": "Do you have a LinkedIn profile? Then you can start from it",
+        "steg1": "Open your profile on linkedin.com on a computer. It does not work in the mobile app.",
+        "steg2": "Click the Resources button under your name.",
+        "steg3": "Choose Save to PDF. The file goes to your downloads.",
+        "steg4": "Drag the file here, or choose it with the button above.",
+        "note": "We only read what is in the file. You fill in anything that is not on LinkedIn yourself afterwards."
+      },
       "orKeepFile": "Would you rather keep the file as it is, without turning it into fields?",
       "orKeepFileLink": "Upload it under Your saved CVs",
       "wait": "It takes about half a minute. Don't close the window.",
@@ -5671,7 +5679,30 @@
       "changePassword": "Change password",
       "currentPassword": "Current password",
       "currentPasswordPlaceholder": "Enter your current password",
-      "updatePassword": "Update password"
+      "updatePassword": "Update password",
+      "mfa": {
+        "rubrik": "Two-step login",
+        "beskrivning": "Log in with your password and a code from an app on your phone. Then it is not enough for someone to get your password.",
+        "slaPa": "Turn on two-step login",
+        "steg1": "Install an authenticator app on your phone, for example Microsoft Authenticator or Google Authenticator.",
+        "steg2": "Scan the QR code with the app.",
+        "steg3": "Type the code that the app shows.",
+        "qrAlt": "QR code to scan with the authenticator app",
+        "kanInteSkanna": "Can you not scan it? Type this code into the app:",
+        "kodEtikett": "Code from the app (six digits)",
+        "bekrafta": "Confirm and turn on",
+        "arPa": "Two-step login is on.",
+        "stangAv": "Turn off two-step login",
+        "felKod": "The code is not correct. Check that the clock on your phone is right and type the code that is shown now.",
+        "felAnnat": "It did not work right now. Try again in a while.",
+        "grindRubrik": "Type the code from your app",
+        "grindText": "You have two-step login turned on. Open the authenticator app on your phone and type the code for Jobin.",
+        "logaIn": "Continue",
+        "loggaUt": "Log out",
+        "tappatApp": "Have you lost your phone? Contact the person who manages your organisation, or support, and we will reset two-step login.",
+        "kravRubrik": "Turn on two-step login to continue",
+        "kravText": "You are a manager or administrator and can see information about all participants in the organisation. Because of this, two-step login is needed before you enter the workspace. It takes about two minutes."
+      }
     },
     "programSelector": {
       "title": "Programme",

@@ -7,6 +7,7 @@ import { lazy, Suspense } from 'react'
 import { Routes, Route, Navigate, useLocation, useSearchParams } from 'react-router-dom'
 import { PageLayout } from '@/components/layout/PageLayout'
 import { LoadingState } from '@/components/ui/LoadingState'
+import { KravTvaSteg } from '@/components/auth/MfaGrind'
 import { handlaggareFarOppna } from '@/data/consultantTabs'
 import { flikSokvag, MOBIL_FLIKRAD_DOLJ_BOTTENNAV, MOBIL_FLIKRAD_DOLJ_HANDLAGGARE } from './consultantFlikar'
 import { useKonsulentFlikar } from './useKonsulentFlikar'
@@ -52,7 +53,7 @@ export default function Consultant() {
         domain="info"
         className={enbartHandlaggare ? MOBIL_FLIKRAD_DOLJ_HANDLAGGARE : MOBIL_FLIKRAD_DOLJ_BOTTENNAV}
       >
-        {dolpTillRollerna ? <LoadingState /> : <Suspense fallback={<LoadingState />}>
+        {dolpTillRollerna ? <LoadingState /> : <KravTvaSteg><Suspense fallback={<LoadingState />}>
           <Routes>
             <Route index element={<OverviewTab />} />
             <Route path="participants" element={<ParticipantsTab />} />
@@ -64,7 +65,7 @@ export default function Consultant() {
             <Route path="resources" element={<ResourcesTab />} />
             <Route path="settings" element={<SettingsTab />} />
           </Routes>
-        </Suspense>}
+        </Suspense></KravTvaSteg>}
       </PageLayout>
 
       {/*

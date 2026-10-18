@@ -1,5 +1,6 @@
 import { useState, useEffect, useEffectEvent } from 'react'
 import { BytLosenord } from '@/components/settings/BytLosenord'
+import { TvaStegsInloggning } from '@/components/settings/TvaStegsInloggning'
 import { useTranslation } from 'react-i18next'
 import { Link, useSearchParams } from 'react-router-dom'
 import { useSettingsStore } from '../stores/settingsStore'
@@ -911,8 +912,10 @@ function SettingsInner() {
                 <BytLosenord />
               </Card>
 
-              {/* RD18: "Tvåfaktorsautentisering" med en "Aktivera"-knapp utan onClick
-                  är borttagen. Portalen har ingen tvåstegsinloggning att slå på. */}
+              {/* RD18 tog bort en attrapp-knapp; KSL25/KF (2026-10-18) byggde den på riktigt (Supabase TOTP). */}
+              <Card variant="flat">
+                <TvaStegsInloggning />
+              </Card>
             </div>
           </div>
         )

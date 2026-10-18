@@ -49,8 +49,12 @@ export interface ImportPeriod {
 
 /** Start och slut, med intervall i startfältet uppdelat ("2019–2024", "mars 2019 - nu"). */
 export function tolkaImportPeriod(start: string | undefined, slut: string | undefined, pagar: boolean): ImportPeriod {
-  let s = (start ?? '').trim()
-  let e = (slut ?? '').trim()
+  // KF7: LinkedIns PDF-export skriver varaktigheten efter perioden — "January 2020 - Present
+  // (3 years 2 months)", på svenska "(3 år 2 månader)". Parentesen är härledd, inte ett datum;
+  // utan att den stryks känns "Present" inte igen och slutdatumet blir råtext.
+  const utanVaraktighet = (v: string | undefined) => (v ?? '').replace(/\s*\([^)]*\)\s*$/, '').trim()
+  let s = utanVaraktighet(start)
+  let e = utanVaraktighet(slut)
   let current = pagar
   // "2019-03" / "2019/3" är år-månad, inget intervall. Allt annat med ett streck mellan två
   // delar är ett intervall: "2019–2024", "mars 2019 - nu", "2019-03 – 2021-06".

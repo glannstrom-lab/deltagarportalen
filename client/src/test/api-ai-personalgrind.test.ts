@@ -131,3 +131,30 @@ describe('/api/ai: konsulent-rapportutkast kräver personalroll', () => {
     expect(openrouter).toHaveLength(1)
   })
 })
+
+// KF6 (2026-10-18): lägesbilden är samma slag som rapportutkastet — undantagen
+// den inloggades brytare, alltså MÅSTE personalgrinden gälla den också.
+describe('/api/ai: konsulent-lagesbild kräver personalroll', () => {
+  const lagesbild = () => ({
+    method: 'POST',
+    headers: { authorization: 'Bearer tok' },
+    body: { function: 'konsulent-lagesbild', data: { underlag: { idag: '2026-10-18', narvaro: {}, journal: [], mal: [] } } },
+  })
+
+  it('en deltagare (USER) nekas — ingenting går till OpenRouter', async () => {
+    const { openrouter } = stubNetwork({ role: 'USER', roles: ['USER'], ai_enabled: false })
+    const { res, captured } = makeRes()
+    await laddaHandler()(lagesbild(), res)
+    expect(captured.status).toBe(403)
+    expect(captured.body).toMatchObject({ reason: 'not_staff' })
+    expect(openrouter).toHaveLength(0)
+  })
+
+  it('en konsulent släpps igenom', async () => {
+    const { openrouter } = stubNetwork({ role: 'USER', roles: ['USER', 'CONSULTANT'] })
+    const { res, captured } = makeRes()
+    await laddaHandler()(lagesbild(), res)
+    expect(captured.status).toBe(200)
+    expect(openrouter).toHaveLength(1)
+  })
+})

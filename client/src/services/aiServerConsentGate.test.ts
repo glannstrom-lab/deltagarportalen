@@ -153,8 +153,11 @@ describe('checkArt9Consent', () => {
  * `checkArt9Consent`, inte här).
  */
 describe('AI_ENABLED_EXEMPT_FUNCTIONS', () => {
-  it('undantar exakt konsulentfunktionen — inte fler, inte färre (sta-* borta 2026-09-12)', () => {
+  // KF6 (2026-10-18): konsulent-lagesbild tillkom — samma slag (deltagarens data, personalens anrop,
+  // personalgrinden + organisationens brytare gäller). Varje ny rad här ska ha det skälet.
+  it('undantar exakt konsulentfunktionerna — inte fler, inte färre (sta-* borta 2026-09-12)', () => {
     expect([...aiHandler.AI_ENABLED_EXEMPT_FUNCTIONS].sort()).toEqual([
+      'konsulent-lagesbild',
       'konsulent-rapportutkast',
     ])
   })

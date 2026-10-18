@@ -9,6 +9,9 @@
 import { describe, it, expect, vi, afterEach, beforeEach } from 'vitest'
 import { render, screen, cleanup } from '@testing-library/react'
 import { MemoryRouter, Routes, Route } from 'react-router-dom'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+// MfaGrind/TvaStegsInloggning (KSL25, 2026-10-18) läser React Query — appen har alltid en klient.
+const nyKlient = () => new QueryClient({ defaultOptions: { queries: { retry: false } } })
 import type { Foretagskonto } from '@/hooks/useForetagskonto'
 
 const konto = vi.hoisted(() => ({
@@ -60,7 +63,7 @@ function sattProfil(delar: Partial<Profile>) {
 
 function rendera() {
   return render(
-    <MemoryRouter initialEntries={['/cv']}>
+    <QueryClientProvider client={nyKlient()}><MemoryRouter initialEntries={['/cv']}>
       <Routes>
         <Route
           element={
@@ -72,7 +75,7 @@ function rendera() {
           <Route path="/cv" element={<div>innehåll</div>} />
         </Route>
       </Routes>
-    </MemoryRouter>
+    </MemoryRouter></QueryClientProvider>
   )
 }
 

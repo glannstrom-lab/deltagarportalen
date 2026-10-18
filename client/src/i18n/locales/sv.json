@@ -531,6 +531,14 @@
       "dropHere": "Dra hit ditt CV, eller välj det från datorn.",
       "privacyDescriptions": "Dina egna beskrivningar av tjänsterna följer inte med — dem skriver du in själv, så att de blir precis som du vill ha dem.",
       "privacyContact": "E-post och telefonnummer stryks innan texten skickas till AI:n. Vi hämtar dem ur filen här i din webbläsare i stället, så de skickas aldrig iväg. Kontrollera att de stämmer innan du sparar.",
+      "linkedin": {
+        "title": "Har du en profil på LinkedIn? Då kan du börja därifrån",
+        "steg1": "Öppna din profil på linkedin.com i en dator. Det går inte i mobilappen.",
+        "steg2": "Klicka på knappen Resurser under ditt namn.",
+        "steg3": "Välj Spara som PDF. Filen hamnar bland dina nedladdningar.",
+        "steg4": "Dra in filen här, eller välj den med knappen ovanför.",
+        "note": "Vi läser bara det som står i filen. Det du inte har skrivit på LinkedIn fyller du i själv efteråt."
+      },
       "orKeepFile": "Vill du hellre spara filen som den är, utan att göra om den till fält?",
       "orKeepFileLink": "Ladda upp den under Dina sparade CV",
       "wait": "Det tar ungefär en halv minut. Stäng inte fönstret.",
@@ -5671,7 +5679,30 @@
       "changePassword": "Ändra lösenord",
       "currentPassword": "Nuvarande lösenord",
       "currentPasswordPlaceholder": "Ange ditt nuvarande lösenord",
-      "updatePassword": "Uppdatera lösenord"
+      "updatePassword": "Uppdatera lösenord",
+      "mfa": {
+        "rubrik": "Tvåstegsinloggning",
+        "beskrivning": "Logga in med lösenord och en kod från en app i telefonen. Då räcker det inte att någon kommer över ditt lösenord.",
+        "slaPa": "Slå på tvåstegsinloggning",
+        "steg1": "Installera en autentiseringsapp i telefonen, till exempel Microsoft Authenticator eller Google Authenticator.",
+        "steg2": "Skanna QR-koden med appen.",
+        "steg3": "Skriv in koden som appen visar.",
+        "qrAlt": "QR-kod att skanna med autentiseringsappen",
+        "kanInteSkanna": "Går det inte att skanna? Skriv in den här koden i appen:",
+        "kodEtikett": "Kod från appen (sex siffror)",
+        "bekrafta": "Bekräfta och slå på",
+        "arPa": "Tvåstegsinloggning är på.",
+        "stangAv": "Stäng av tvåstegsinloggning",
+        "felKod": "Koden stämmer inte. Kontrollera att telefonens klocka går rätt och skriv in den kod som visas nu.",
+        "felAnnat": "Det gick inte just nu. Försök igen om en stund.",
+        "grindRubrik": "Skriv in koden från din app",
+        "grindText": "Du har tvåstegsinloggning på. Öppna autentiseringsappen i telefonen och skriv in koden för Jobin.",
+        "logaIn": "Fortsätt",
+        "loggaUt": "Logga ut",
+        "tappatApp": "Har du tappat telefonen? Kontakta den som administrerar er organisation, eller support, så återställer vi tvåstegsinloggningen.",
+        "kravRubrik": "Slå på tvåstegsinloggning för att fortsätta",
+        "kravText": "Du är chef eller administratör och ser uppgifter om hela organisationens deltagare. Därför krävs tvåstegsinloggning innan du kommer in i arbetsytan. Det tar ungefär två minuter."
+      }
     },
     "programSelector": {
       "title": "Projekt",

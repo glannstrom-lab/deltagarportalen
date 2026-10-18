@@ -28,7 +28,7 @@ import { useState, useRef, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import {
-  Upload, FileText, Loader2, X, Check, AlertCircle, Sparkles, RefreshCw
+  Upload, FileText, Loader2, X, Check, AlertCircle, Sparkles, RefreshCw, Linkedin, ChevronDown
 } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 import { useFocusTrap } from '@/hooks/useFocusTrap'
@@ -374,6 +374,28 @@ export function CVImportModal({ isOpen, onClose, onImported }: CVImportModalProp
                   }}
                 />
               </div>
+
+              {/* KF7: LinkedIns "Spara som PDF" är en vanlig PDF och läses av samma väg som
+                  ett CV. Det som saknades var att någon berättade det. Ingen LinkedIn-API,
+                  ingen skrapning — personen hämtar själv sin egen fil. */}
+              <details className="group rounded-xl border border-stone-200 dark:border-stone-700">
+                <summary className="flex items-center gap-3 p-4 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                  <Linkedin className="w-5 h-5 text-[var(--c-text)] flex-shrink-0" aria-hidden="true" />
+                  <span className="flex-1 text-sm font-medium text-stone-800 dark:text-stone-200">
+                    {t('cv.import.linkedin.title')}
+                  </span>
+                  <ChevronDown className="w-4 h-4 text-stone-500 transition-transform group-open:rotate-180" aria-hidden="true" />
+                </summary>
+                <div className="px-4 pb-4">
+                  <ol className="list-decimal pl-5 text-sm text-stone-700 dark:text-stone-300 space-y-1.5">
+                    <li>{t('cv.import.linkedin.steg1')}</li>
+                    <li>{t('cv.import.linkedin.steg2')}</li>
+                    <li>{t('cv.import.linkedin.steg3')}</li>
+                    <li>{t('cv.import.linkedin.steg4')}</li>
+                  </ol>
+                  <p className="text-sm text-stone-600 dark:text-stone-400 mt-3">{t('cv.import.linkedin.note')}</p>
+                </div>
+              </details>
 
               {/* Vad som händer med filen. Står här, före valet, inte efteråt. */}
               <div className="rounded-xl bg-stone-50 dark:bg-stone-800/50 border border-stone-200 dark:border-stone-700 p-4">

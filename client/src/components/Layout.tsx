@@ -41,6 +41,7 @@ import { OnboardingFlow } from './onboarding/OnboardingFlow'
 // DP1 (2026-09-24): villkor + integritetspolicy i efterhand för konton som
 // aldrig såg registreringens kryssrutor (Google-inloggning, äldre e-postkonton).
 import { SamtyckeSteg } from './auth/SamtyckeSteg'
+import { MfaGrind } from './auth/MfaGrind'
 import { saknadeGrundsamtycken } from '@/services/consentApi'
 import { SamlingarFab } from './SamlingarFab'
 // Steg 1 i navigationsomläggningen (2026-08-17): Ctrl/⌘ K når alla 25
@@ -328,6 +329,7 @@ function ForetagSkal({ isMobile, showBars, pathname, org }: {
       </div>
       {/* DP1: samma steg som i deltagarskalet, utan AI-rutan — företaget har inga AI-funktioner. */}
       <SamtyckeSteg visaAiVal={false} />
+      <MfaGrind />
     </>
   )
 }
@@ -639,6 +641,8 @@ export default function Layout() {
         {/* Global welkomstmodal — visas bara om profile.onboarding_completed === false.
             DP1: först när villkoren är godkända, se `saknarGrundsamtycke`. */}
         {saknarGrundsamtycke ? <SamtyckeSteg /> : <OnboardingFlow />}
+        {/* KSL25/KF: den som har tvåsteg på anger koden innan appen visas. */}
+        <MfaGrind />
       </div>
     </>
   )

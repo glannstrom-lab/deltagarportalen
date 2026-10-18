@@ -248,7 +248,7 @@ describe('callAI — allmän AI-av-grind (B28)', () => {
     expect(mockFetch).toHaveBeenCalledTimes(1)
   })
 
-  it.each(['konsulent-rapportutkast'])(
+  it.each(['konsulent-rapportutkast', 'konsulent-lagesbild'])(
     'grindar INTE %s — den bär en ANNAN persons (deltagarens) data, inte den inloggades',
     async (fn) => {
       mockProfile = { ai_consent_at: '2026-08-01T10:00:00Z', ai_enabled: false }

@@ -42,6 +42,7 @@ import { AktivitetsplanSektion } from '@/components/consultant/AktivitetsplanSek
 import { useAktivitetsplan } from '@/components/consultant/aktivitetsplan/useAktivitetsplan'
 import { VeckanKort } from '@/components/consultant/aktivitetsplan/VeckanKort'
 import { SpaltYta } from '@/components/consultant/SpaltYta'
+import { LagesbildKort } from '@/components/consultant/LagesbildKort'
 import { Tidslinje } from '@/components/consultant/Tidslinje'
 import { useRegelverk, useRegelverkForPlan } from '@/components/consultant/useRegelverk'
 import { Motesklocka } from '@/components/consultant/Motesklocka'
@@ -1019,6 +1020,8 @@ export function ParticipantDetailPage() {
                 : prev)}
             />
             {placeringKort}
+            {/* KF6: AI-lägesbild inför möte/överlämning — sparas inte. */}
+            {participantId && <LagesbildKort participantId={participantId} />}
             <SpaltYta ikon="deltagare" rubrik="Om deltagaren" testId="om-deltagaren">
               <dl className="m-0 grid grid-cols-[auto_minmax(0,1fr)] gap-x-4 gap-y-2.5 text-sm">
                 <dt className="text-[var(--j-blak-3)]">{t('consultant.participantDetail.lastContact')}</dt>

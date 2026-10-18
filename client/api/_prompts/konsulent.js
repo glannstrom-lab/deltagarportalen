@@ -21,4 +21,44 @@ module.exports = {
       responseKey: 'utkast'
     };
   },
+
+  // KF6 (2026-10-18): "Läget just nu" — kort lägesbild av en deltagare inför
+  // möte eller överlämning. Underlaget minimeras i klienten
+  // (components/consultant/lagesbildUnderlag.ts): frånvaro utan orsak, ingen
+  // fritext ur planen, inga CONCERN-anteckningar, inget namn.
+  'konsulent-lagesbild': (data) => {
+    const u = data?.underlag || {};
+    const n = u.narvaro || {};
+    const plan = u.plan
+      ? `status ${u.plan.status || 'okänd'}, start ${u.plan.start || 'okänt'}${u.plan.slut ? ', slut ' + u.plan.slut : ''}${typeof u.plan.timmarPerVecka === 'number' ? ', mål ' + u.plan.timmarPerVecka + ' h/vecka' : ''}${u.plan.mall ? ', mall: ' + u.plan.mall : ''}`
+      : 'Ingen aktivitetsplan.';
+    const journal = (Array.isArray(u.journal) ? u.journal.slice(0, 30) : [])
+      .map((j) => `- [${j.datum || 'okänt datum'}] (${j.kategori || 'GENERAL'}) ${j.text || ''}`)
+      .join('\n');
+    const mal = (Array.isArray(u.mal) ? u.mal.slice(0, 20) : [])
+      .map((g) => `- ${g.titel || ''} — status: ${g.status || 'okänd'}${g.deadline ? ', deadline ' + g.deadline : ''}`)
+      .join('\n');
+    return {
+      system: 'Du ger en arbetskonsulent en kort lägesbild av en deltagare inför ett möte eller en överlämning. Skriv på svenska, sakligt och kort: högst sex punkter, en mening var, sist en punkt som börjar "Att ta upp:". Varje punkt slutar med källan inom hakparentes: [journal ÅÅÅÅ-MM-DD], [närvaro], [mål], [plan] eller [möte]. Hitta ALDRIG på händelser, siffror eller orsaker som inte står i underlaget. Gissa aldrig varför någon varit frånvarande och skriv inget om hälsa. Inga värdeomdömen om personen. Saknas underlag, skriv det. Referera alltid till personen som "deltagaren".',
+      user: `Dagens datum: ${u.idag || 'okänt'}
+
+PLAN:
+${plan}
+
+NÄRVARO SENASTE ${n.dagar || 28} DAGARNA (pass): närvarande ${n.narvarande ?? 0}, frånvaro ${n.franvaro ?? 0}, ej markerat ${n.ejMarkerat ?? 0}. Kommande pass: ${n.kommande ?? 0}.
+
+NÄSTA MÖTE: ${u.nastaMote || 'inget bokat'}
+
+JOURNAL (senaste först):
+${journal || 'Inga anteckningar.'}
+
+MÅL:
+${mal || 'Inga registrerade mål.'}
+
+Skriv lägesbilden:`,
+      maxTokens: 900,
+      reasoningEffort: 'low',
+      responseKey: 'lagesbild'
+    };
+  },
 };

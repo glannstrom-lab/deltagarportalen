@@ -22,6 +22,14 @@ describe('SJ2: CV-importens datum', () => {
     expect(tolkaImportPeriod('2019-03', '2020-05', false)).toEqual({ startDate: '2019-03', endDate: '2020-05', current: false })
     expect(tolkaImportPeriod('2019', 'Pågående', false)).toEqual({ startDate: '2019', endDate: '', current: true })
   })
+  it('KF7: LinkedIns varaktighet inom parentes stryks — på engelska och svenska', () => {
+    expect(tolkaImportPeriod('January 2020 - Present (3 years 2 months)', '', false))
+      .toEqual({ startDate: '2020-01', endDate: '', current: true })
+    expect(tolkaImportPeriod('March 2018 - June 2020 (2 years 4 months)', '', false))
+      .toEqual({ startDate: '2018-03', endDate: '2020-06', current: false })
+    expect(tolkaImportPeriod('januari 2020', 'nu (3 år 2 månader)', false))
+      .toEqual({ startDate: '2020-01', endDate: '', current: true })
+  })
 })
 
 describe('SJ2: e-post och telefon ur texten i webbläsaren', () => {

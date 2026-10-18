@@ -14,6 +14,9 @@
 import { describe, it, expect, vi, afterEach, beforeEach } from 'vitest'
 import { render, screen, cleanup } from '@testing-library/react'
 import { MemoryRouter, Routes, Route } from 'react-router-dom'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+// MfaGrind/TvaStegsInloggning (KSL25, 2026-10-18) läser React Query — appen har alltid en klient.
+const nyKlient = () => new QueryClient({ defaultOptions: { queries: { retry: false } } })
 
 // Måste ligga före importen av Layout: vi.mock hissas, men modulen läses vid
 // import och flaggan är ett konstant uttryck i features.ts.
@@ -46,13 +49,13 @@ beforeEach(() => {
 
 function rendera() {
   return render(
-    <MemoryRouter initialEntries={['/cv']}>
+    <QueryClientProvider client={nyKlient()}><MemoryRouter initialEntries={['/cv']}>
       <Routes>
         <Route element={<Layout />}>
           <Route path="/cv" element={<div>innehåll</div>} />
         </Route>
       </Routes>
-    </MemoryRouter>
+    </MemoryRouter></QueryClientProvider>
   )
 }
 

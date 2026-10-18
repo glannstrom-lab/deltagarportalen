@@ -12,6 +12,9 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
 import { render, screen, cleanup, within } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+// MfaGrind/TvaStegsInloggning (KSL25, 2026-10-18) läser React Query — appen har alltid en klient.
+const nyKlient = () => new QueryClient({ defaultOptions: { queries: { retry: false } } })
 import type { ReactNode } from 'react'
 import sv from '@/i18n/locales/sv.json'
 
@@ -45,9 +48,9 @@ afterEach(cleanup)
 
 function renderSettings(section?: string) {
   return render(
-    <MemoryRouter initialEntries={[section ? `/settings?section=${section}` : '/settings']}>
+    <QueryClientProvider client={nyKlient()}><MemoryRouter initialEntries={[section ? `/settings?section=${section}` : '/settings']}>
       <Settings />
-    </MemoryRouter>,
+    </MemoryRouter></QueryClientProvider>,
   )
 }
 

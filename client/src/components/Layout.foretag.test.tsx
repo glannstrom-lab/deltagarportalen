@@ -17,6 +17,9 @@
 import { describe, it, expect, vi, afterEach, beforeEach } from 'vitest'
 import { render, screen, cleanup, fireEvent } from '@testing-library/react'
 import { MemoryRouter, Routes, Route } from 'react-router-dom'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+// MfaGrind/TvaStegsInloggning (KSL25, 2026-10-18) läser React Query — appen har alltid en klient.
+const nyKlient = () => new QueryClient({ defaultOptions: { queries: { retry: false } } })
 import type { Foretagskonto } from '@/hooks/useForetagskonto'
 
 const konto = vi.hoisted(() => ({
@@ -94,7 +97,7 @@ function somPersonalMedForetag() {
 
 function rendera(sokvag = '/foretag') {
   return render(
-    <MemoryRouter initialEntries={[sokvag]}>
+    <QueryClientProvider client={nyKlient()}><MemoryRouter initialEntries={[sokvag]}>
       <ForetagskontoProvider>
         <Routes>
           <Route element={<Layout />}>
@@ -103,7 +106,7 @@ function rendera(sokvag = '/foretag') {
           </Route>
         </Routes>
       </ForetagskontoProvider>
-    </MemoryRouter>
+    </MemoryRouter></QueryClientProvider>
   )
 }
 
@@ -200,11 +203,11 @@ describe('negativ kontroll — testet kan falla', () => {
 describe('mobilen: samma regel i huvudmenyn och profilpanelen', () => {
   function renderaMeny() {
     return render(
-      <MemoryRouter initialEntries={['/foretag']}>
+      <QueryClientProvider client={nyKlient()}><MemoryRouter initialEntries={['/foretag']}>
         <ForetagskontoProvider>
           <MobileMainMenu isOpen onClose={() => {}} />
         </ForetagskontoProvider>
-      </MemoryRouter>
+      </MemoryRouter></QueryClientProvider>
     )
   }
 
@@ -231,11 +234,11 @@ describe('mobilen: samma regel i huvudmenyn och profilpanelen', () => {
     somForetag()
     mobil.pa = true
     render(
-      <MemoryRouter initialEntries={['/foretag']}>
+      <QueryClientProvider client={nyKlient()}><MemoryRouter initialEntries={['/foretag']}>
         <ForetagskontoProvider>
           <MobileTopBar />
         </ForetagskontoProvider>
-      </MemoryRouter>
+      </MemoryRouter></QueryClientProvider>
     )
     expect(screen.queryByTestId('kris')).toBeNull()
     expect(screen.queryByRole('button', { name: /sök efter en sida/i })).toBeNull()

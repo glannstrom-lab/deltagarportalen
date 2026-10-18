@@ -221,6 +221,7 @@ const RATE_LIMITS = {
   'ai-team-chat': { limit: 50, windowMinutes: 15 },
   'vecko-reflektion': { limit: 5, windowMinutes: 60 },
   'konsulent-rapportutkast': { limit: 10, windowMinutes: 15 },
+  'konsulent-lagesbild': { limit: 20, windowMinutes: 15 },
   'default': { limit: 20, windowMinutes: 15 }
 };
 
@@ -435,6 +436,7 @@ async function checkArt9Consent(supabase, userId) {
 // är INTE undantagna — de är precis den läcka B28 hittade.
 const AI_ENABLED_EXEMPT_FUNCTIONS = new Set([
   'konsulent-rapportutkast',
+  'konsulent-lagesbild', // KF6 — samma resonemang: deltagarens data, personalens anrop
 ]);
 
 /**

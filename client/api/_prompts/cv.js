@@ -53,7 +53,10 @@ ABSOLUTA REGLER:
 - location står ofta på samma rad som de överstrukna kontaktuppgifterna, nära toppen. Den går
   bra att ta med.
 - Personnummer, kön, hälsa, medborgarskap och foto ska ALDRIG med.
-- Ta INTE med arbetslivserfarenhet eller utbildning här. De hämtas separat.`,
+- Ta INTE med arbetslivserfarenhet eller utbildning här. De hämtas separat.
+- Texten kan vara en LinkedIn-export. Då betyder "Top Skills"/"Främsta kompetenser" skills, "Summary"/
+  "Sammanfattning" summary, rubriken under namnet title, och "Languages"/"Certifications" som vanligt.
+  Sidfoten "Page 1 of 3"/"Sida 1 av 3" och adressen till LinkedIn-profilen hör inte till något fält.`,
     user: `CV-TEXT (utläst ur uppladdad fil):
 ${(data?.cvText || '').substring(0, 10000)}
 
@@ -114,7 +117,10 @@ ABSOLUTA REGLER:
 - Skriv INGA beskrivningar. Formatet har ingen plats för dem.
 - Datum skrivs exakt som de står ("2019-03", "mars 2019", "2019"). Räkna inte om, fyll inte i saknade delar.
 - Saknas ett värde: skriv tom sträng "" på dess plats. Hoppa aldrig över en plats i arrayen.
-- Inga nyckelnamn, inga radbrytningar inuti arrayerna, ingen förklarande text.`,
+- Inga nyckelnamn, inga radbrytningar inuti arrayerna, ingen förklarande text.
+- Texten kan vara en LinkedIn-export (rubrikerna Experience/Erfarenhet, Education/Utbildning). Där står
+  varaktigheten inom parentes efter perioden, t.ex. "(3 years 2 months)" — ta inte med den. En arbetsgivare
+  kan stå en gång med flera roller under sig: varje roll är en egen tjänst med samma företag.`,
     user: `CV-TEXT (utläst ur uppladdad fil):
 ${(data?.cvText || '').substring(0, 10000)}
 
