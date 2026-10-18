@@ -3125,10 +3125,6 @@
       "sendEmail": "Send email",
       "call": "Call"
     },
-    "email": {
-      "bookingSubject": "Meeting request",
-      "bookingBody": "Hi {{name}},\n\nI would like to book a meeting.\n\nBest regards"
-    },
     "kontakt": {
       "skriv": "Write"
     },
@@ -3142,6 +3138,25 @@
       "serText": "What you share, and how to change it.",
       "lasloggText": "Every time your consultant opens your page.",
       "revokeText": "If you no longer want to be linked to your consultant."
+    },
+    "forslag": {
+      "rubrik": "Suggest a time",
+      "intro": "Choose a day and a time that suits you. Your consultant confirms the time or contacts you about another one.",
+      "datum": "Day",
+      "tid": "Time",
+      "hur": "How do you want to meet?",
+      "typ": {
+        "video": "Video",
+        "phone": "Phone",
+        "physical": "In person"
+      },
+      "meddelande": "Do you want to write something to your consultant? (optional)",
+      "skicka": "Send the suggestion",
+      "skickat": "Your suggestion has been sent. Your consultant confirms the time or suggests another one.",
+      "passerad": "Choose a time that has not already passed.",
+      "fel": "It could not be sent right now. Try again in a while.",
+      "vantar": "Your suggestions waiting for an answer",
+      "dragTillbaka": "Withdraw"
     }
   },
   "interestGuide": {

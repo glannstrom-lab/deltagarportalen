@@ -46,7 +46,7 @@ function tidText(iso: string): string {
 export function MotesKort({ lage, onBoka, onAndrat, onForsokIgen }: {
   lage: MotenLage
   onBoka: () => void
-  onAndrat: (id: string, status: 'completed' | 'cancelled') => void
+  onAndrat: (id: string, status: 'completed' | 'cancelled' | 'scheduled') => void
   onForsokIgen: () => void
 }) {
   const kundtyp = useOrgTypVisning()
@@ -54,7 +54,7 @@ export function MotesKort({ lage, onBoka, onAndrat, onForsokIgen }: {
   const [fel, setFel] = useState<string | null>(null)
   const nu = new Date()
 
-  const bekrafta = async (id: string, status: 'completed' | 'cancelled') => {
+  const bekrafta = async (id: string, status: 'completed' | 'cancelled' | 'scheduled') => {
     setSparar(id)
     setFel(null)
     try {
@@ -86,8 +86,34 @@ export function MotesKort({ lage, onBoka, onAndrat, onForsokIgen }: {
         const kommande = lage.moten
           .filter((m) => m.status === 'scheduled' && new Date(m.scheduled_at).getTime() > nu.getTime())
           .sort((a, b) => a.scheduled_at.localeCompare(b.scheduled_at))
+        // O13: deltagarens förslag på tid — bara framtida; ett förslag vars tid passerat är inaktuellt.
+        const forslag = lage.moten
+          .filter((m) => m.status === 'proposed' && new Date(m.scheduled_at).getTime() > nu.getTime())
+          .sort((a, b) => a.scheduled_at.localeCompare(b.scheduled_at))
         return (
           <div className="grid gap-3">
+            {forslag.length > 0 && (
+              <div className="grid gap-2" data-testid="motesforslag">
+                <p className="m-0 text-sm font-semibold text-[var(--s-vantar-text)]">Deltagaren föreslår en tid</p>
+                <ul className="m-0 p-0 list-none grid gap-2">
+                  {forslag.map((m) => (
+                    <li key={m.id} className="grid gap-2 rounded-[var(--j-r-m)] bg-[var(--s-vantar-bg)] px-3 py-2.5">
+                      <span className="text-sm font-semibold text-[var(--j-blak)]">{TYP_TEXT[m.meeting_type]} · {tidText(m.scheduled_at)}</span>
+                      {m.proposed_note && <span className="text-sm text-[var(--j-blak-2)]">"{m.proposed_note}"</span>}
+                      <span className="flex flex-wrap gap-2">
+                        <Button ton="kvarter" variant="secondary" size="sm" disabled={sparar !== null} onClick={() => void bekrafta(m.id, 'scheduled')}>
+                          {sparar === m.id ? <Loader2 className="w-4 h-4 animate-spin" aria-hidden="true" /> : null}
+                          Bekräfta tiden
+                        </Button>
+                        <Button ton="kvarter" variant="tertiary" size="sm" disabled={sparar !== null} onClick={() => void bekrafta(m.id, 'cancelled')}>
+                          Passar inte
+                        </Button>
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
             {/* Mötesklockan och regeln är Rusta och matcha-avtalets; kommunen har ingen (slipningen 2026-10-11). */}
             {kundtyp?.visaAvtalskrav && <Motesklocka klocka={motesklocka(k, nu)} />}
             {/* Med klockan säger raden bara något nytt när ett möte är bokat — annars upprepar den klockan. */}

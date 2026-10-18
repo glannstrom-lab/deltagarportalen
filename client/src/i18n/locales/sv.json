@@ -3125,10 +3125,6 @@
       "sendEmail": "Skicka e-post",
       "call": "Ring"
     },
-    "email": {
-      "bookingSubject": "Bokningsförfrågan",
-      "bookingBody": "Hej {{name}},\n\nJag skulle vilja boka ett möte.\n\nMed vänliga hälsningar"
-    },
     "kontakt": {
       "skriv": "Skriv"
     },
@@ -3142,6 +3138,25 @@
       "serText": "Vad du delar, och hur du ändrar det.",
       "lasloggText": "Varje gång din konsulent öppnar din sida.",
       "revokeText": "Om du inte vill ha kvar kopplingen till din konsulent."
+    },
+    "forslag": {
+      "rubrik": "Föreslå en tid",
+      "intro": "Välj en dag och en tid som passar dig. Din konsulent bekräftar tiden eller hör av sig om en annan.",
+      "datum": "Dag",
+      "tid": "Tid",
+      "hur": "Hur vill du ses?",
+      "typ": {
+        "video": "Video",
+        "phone": "Telefon",
+        "physical": "Träffas"
+      },
+      "meddelande": "Vill du skriva något till din konsulent? (frivilligt)",
+      "skicka": "Skicka förslaget",
+      "skickat": "Förslaget är skickat. Din konsulent bekräftar tiden eller föreslår en annan.",
+      "passerad": "Välj en tid som inte har varit än.",
+      "fel": "Det gick inte att skicka just nu. Försök igen om en stund.",
+      "vantar": "Dina förslag som väntar på svar",
+      "dragTillbaka": "Dra tillbaka"
     }
   },
   "interestGuide": {

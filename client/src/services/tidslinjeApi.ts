@@ -113,7 +113,7 @@ async function motesHandelser(participantId: string): Promise<TidslinjeHandelse[
     id: `mote-${m.id}`,
     typ: 'mote' as const,
     tidpunkt: m.scheduled_at,
-    titel: `${MOTESTYP[m.meeting_type as string] ?? 'Möte'}${m.status === 'cancelled' ? ' (inställt)' : ''}`,
+    titel: `${MOTESTYP[m.meeting_type as string] ?? 'Möte'}${m.status === 'cancelled' ? ' (inställt)' : m.status === 'proposed' ? ' (föreslaget av deltagaren)' : ''}`,
     detalj: m.notes ? kortText(m.notes) : undefined,
     sektion: 'overview' as const,
   }))

@@ -79,7 +79,7 @@ Av ~45 funktioner som minst en konkurrent har: **15 finns redan**, **16 står re
 | Leveransanalys i intervjuträningen (Big Interview, Yoodli) | **O10** | Inte byggd (inspelningen i `InterviewSimulator.tsx:409` är transkription, ingen tempo-/utfyllnadsanalys) |
 | Övning på rekryteringstester (Jobbcoach.ai, TRR) | **O11** | Inte byggd |
 | Kompetensintyg (Wundermatch, Lingio) | **O12** | Inte byggd |
-| Deltagaren föreslår mötestid | **O13** | Inte byggd — `MyConsultant.tsx:916` öppnar bara ett mejl "Bokningsförfrågan" |
+| Deltagaren föreslår mötestid | **O13** | ✅ Byggd 2026-10-18 (se O13) |
 | Videomöte i tjänsten | **O14** | Inte byggd, kräver CSP-ja |
 | Fler språk (Lingio 100+, AF Jobskills) | **O18 / MK4 / KM11** | O18 omscopad till sex kärnspråk; KM11 väntar på översättare |
 | Autofyll av externa ansökningsformulär (Huntr, Simplify) | **MK5** | Beslut + L |
@@ -3801,7 +3801,7 @@ Ingenting nytt. Fyra saker som användaren redan ser i gränssnittet men inte f�
 - Delas via samma mekanism som `SharedProfile` (`/profile/shared/:shareCode`).
 - **Klart när:** varje mening på intyget går att härleda till en rad i databasen.
 
-**O13 · Deltagaren ska kunna föreslå en tid** — *premiss verifierad, litet bygge*
+**O13 · Deltagaren ska kunna föreslå en tid** — ✅ *Byggd 2026-10-18 (spår KF fas 2): status `proposed` + `proposed_by`/`proposed_note` (migration `20261018150000`, körd i prod). RLS provad som demodeltagaren: förslag till egen konsulent OK; till annan, som bokat, i dåtid och självbekräftelse nekas; tillbakadragning OK; konsulenten ser förslaget. Min konsulent: "Boka möte" öppnar "Föreslå en tid" (sv/en/Lätt svenska) i stället för en mejllänk, väntande förslag kan dras tillbaka. Konsulentens möteskort: "Bekräfta tiden" / "Passar inte". Förslag räknas aldrig som möte (AnalyticsTab, lägesbilden och tidslinjen rättade). **Rest:** förslaget syns bara på deltagarsidan — en rad i konsulentens Min dag saknas.*
 - `consultant_meetings` finns, och `MyConsultant.tsx` visar redan nästa möte med
   möteslänk. Det som saknas är riktningen tillbaka: föreslå tid, konsulenten bekräftar.
 - **Klart när:** en deltagare kan boka utan att mejla.

@@ -63,7 +63,8 @@ export function byggLagesbildUnderlag(in_: {
     .map((j) => ({ datum: lokalDag(j.created_at), kategori: j.category || 'GENERAL', text: j.content.trim().slice(0, MAX_TEXT) }))
 
   const nasta = in_.moten
-    .filter((m) => m.status !== 'cancelled' && lokalDag(m.scheduled_at) >= in_.idag)
+    // Bara bokade möten — inte inställda och inte deltagarens förslag (O13).
+    .filter((m) => m.status === 'scheduled' && lokalDag(m.scheduled_at) >= in_.idag)
     .sort((a, b) => a.scheduled_at.localeCompare(b.scheduled_at))[0]
 
   return {

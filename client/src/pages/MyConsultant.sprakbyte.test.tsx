@@ -10,6 +10,9 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
 import { render, screen, cleanup, act } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+// O13 (2026-10-18): Min konsulent läser mötesförslagen via React Query — appen har alltid en klient.
+const nyKlient = () => new QueryClient({ defaultOptions: { queries: { retry: false } } })
 import type { ReactNode } from 'react'
 
 vi.mock('@/lib/supabase', () => {
@@ -52,7 +55,7 @@ describe('MyConsultant — språkbyte', () => {
     i18n.addResourceBundle('en', 'translation', en, true, true)
     await i18n.changeLanguage('sv')
     try {
-      render(<MemoryRouter><MyConsultant /></MemoryRouter>)
+      render(<QueryClientProvider client={nyKlient()}><MemoryRouter><MyConsultant /></MemoryRouter></QueryClientProvider>)
       expect(await screen.findByText(sv.myConsultant.consultant.yourConsultant)).toBeInTheDocument()
       await act(async () => { await i18n.changeLanguage('en') })
       expect(await screen.findByText(en.myConsultant.consultant.yourConsultant)).toBeInTheDocument()
@@ -70,7 +73,7 @@ describe('MyConsultant — datum och Lätt svenska (RD5/RD6)', () => {
     i18n.addResourceBundle('en', 'translation', en, true, true)
     await i18n.changeLanguage('en')
     try {
-      render(<MemoryRouter><MyConsultant /></MemoryRouter>)
+      render(<QueryClientProvider client={nyKlient()}><MemoryRouter><MyConsultant /></MemoryRouter></QueryClientProvider>)
       expect(await screen.findByText('27 September 2026')).toBeInTheDocument()
       expect(screen.queryByText('9/27/2026')).toBeNull()
     } finally {
@@ -83,7 +86,7 @@ describe('MyConsultant — datum och Lätt svenska (RD5/RD6)', () => {
     const latt = (await import('@/i18n/locales/sv-latt.json')).default as unknown as { myConsultant: { sharedInfo: { lastLogin: string } } }
     await sattLattSvenska(true)
     try {
-      render(<MemoryRouter><MyConsultant /></MemoryRouter>)
+      render(<QueryClientProvider client={nyKlient()}><MemoryRouter><MyConsultant /></MemoryRouter></QueryClientProvider>)
       expect(await screen.findByText(latt.myConsultant.sharedInfo.lastLogin)).toBeInTheDocument()
     } finally {
       await sattLattSvenska(false)

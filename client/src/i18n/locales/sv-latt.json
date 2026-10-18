@@ -1195,10 +1195,6 @@
       "sendEmail": "Skicka e-post",
       "call": "Ring"
     },
-    "email": {
-      "bookingSubject": "Jag vill boka ett möte",
-      "bookingBody": "Hej {{name}},\n\nJag vill boka ett möte.\n\nHälsningar"
-    },
     "kontakt": {
       "skriv": "Skriv"
     },
@@ -1212,6 +1208,25 @@
       "serText": "Vad du delar, och hur du ändrar det.",
       "lasloggText": "När din konsulent tittar på din sida.",
       "revokeText": "Om du inte vill ha kvar din konsulent."
+    },
+    "forslag": {
+      "rubrik": "Föreslå en tid",
+      "intro": "Välj en dag och en tid. Din konsulent svarar.",
+      "datum": "Dag",
+      "tid": "Tid",
+      "hur": "Hur vill du träffas?",
+      "typ": {
+        "video": "Video",
+        "phone": "Telefon",
+        "physical": "Träffas"
+      },
+      "meddelande": "Vill du skriva något? (du måste inte)",
+      "skicka": "Skicka",
+      "skickat": "Klart. Din konsulent svarar.",
+      "passerad": "Välj en tid som inte har varit.",
+      "fel": "Det gick inte. Försök igen senare.",
+      "vantar": "Dina förslag som väntar",
+      "dragTillbaka": "Ta bort"
     }
   },
   "common": {

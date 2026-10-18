@@ -34,7 +34,8 @@ export interface MoteRad {
   participant_id: string
   scheduled_at: string
   meeting_type: MoteTyp
-  status: 'scheduled' | 'completed' | 'cancelled'
+  /** O13: 'proposed' = deltagarens förslag, väntar på konsulenten. Räknas aldrig som möte. */
+  status: 'scheduled' | 'completed' | 'cancelled' | 'proposed'
 }
 
 export interface Kadens {
@@ -190,6 +191,8 @@ export interface DeltagarMote extends MoteRad {
   id: string
   duration_minutes: number | null
   location: string | null
+  /** O13: deltagarens rad till ett förslag. */
+  proposed_note?: string | null
 }
 
 /**
@@ -204,7 +207,7 @@ export async function hamtaMotenForDeltagare(participantId: string, idag: Date =
   fran.setDate(fran.getDate() - 180)
   const { data, error } = await supabase
     .from('consultant_meetings')
-    .select('id, participant_id, scheduled_at, meeting_type, status, duration_minutes, location')
+    .select('id, participant_id, scheduled_at, meeting_type, status, duration_minutes, location, proposed_note')
     .eq('consultant_id', user.id)
     .eq('participant_id', participantId)
     .gte('scheduled_at', fran.toISOString())
@@ -223,7 +226,7 @@ export function vantarPaBekraftelse(m: Pick<MoteRad, 'status' | 'scheduled_at'>,
 }
 
 /** Markerar ett möte som hållet eller inte av. RLS begränsar till egna möten. */
-export async function bekraftaMote(meetingId: string, status: 'completed' | 'cancelled'): Promise<void> {
+export async function bekraftaMote(meetingId: string, status: 'completed' | 'cancelled' | 'scheduled'): Promise<void> {
   const { data: { user }, error: authError } = await anvandareFranSession()
   if (authError) throw authError
   if (!user) throw new Error('Inte inloggad')

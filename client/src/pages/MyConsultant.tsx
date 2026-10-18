@@ -39,6 +39,7 @@ import { KvarterIkon } from '@/components/ui/icons/kvarter/KvarterIkon'
 import type { KvarterNamn } from '@/components/ui/icons/kvarter/ritningar'
 import { MerLista, MerRad } from '@/components/minvecka/MerRad'
 import { datumSprak, kortDatum } from '@/lib/datumsprak'
+import { ForeslaTidDialog, MinaMotesforslag } from '@/components/minkonsulent/ForeslaTid'
 
 // Types
 interface ConsultantInfo {
@@ -120,7 +121,8 @@ export function KonsulentHuvud({
 
   const merVal: MerMenyVal[] = [
     ...(tel && consultant.email ? [{ etikett: t('myConsultant.quickActions.sendEmail'), ikon: 'meddelande' as const, onClick: mejla }] : []),
-    ...(consultant.email ? [{ etikett: t('myConsultant.quickActions.bookMeeting'), ikon: 'kalender' as const, onClick: onBoka }] : []),
+    // O13: förslaget går inte längre via mejl — knappen behöver ingen e-postadress.
+    { etikett: t('myConsultant.quickActions.bookMeeting'), ikon: 'kalender' as const, onClick: onBoka },
   ]
 
   return (
@@ -589,6 +591,7 @@ function MyConsultantInner() {
   const { user, profile } = useAuthStore()
   const [loading, setLoading] = useState(true)
   const [consultant, setConsultant] = useState<ConsultantInfo | null>(null)
+  const [visaForslag, setVisaForslag] = useState(false)
   const [nextMeeting, setNextMeeting] = useState<NextMeeting | null>(null)
   const [messages, setMessages] = useState<Message[]>([])
   const [goals, setGoals] = useState<Goal[]>([])
@@ -910,13 +913,9 @@ function MyConsultantInner() {
     }
   }
 
+  // O13 (2026-10-18): deltagaren föreslår en tid i portalen i stället för att mejla.
   const handleBookMeeting = () => {
-    // For now, open email with meeting request
-    if (consultant) {
-      const subject = encodeURIComponent(t('myConsultant.email.bookingSubject'))
-      const body = encodeURIComponent(t('myConsultant.email.bookingBody', { name: consultant.first_name }))
-      window.location.href = `mailto:${consultant.email}?subject=${subject}&body=${body}`
-    }
+    if (consultant) setVisaForslag(true)
   }
 
   const handleConsultantRevoked = () => {
@@ -1027,6 +1026,8 @@ function MyConsultantInner() {
             onSkriv={handleSkriv}
             onBoka={handleBookMeeting}
           />
+          <MinaMotesforslag />
+          {visaForslag && <ForeslaTidDialog consultantId={consultant.id} onStang={() => setVisaForslag(false)} />}
 
           <MessagesSection
             messages={messages}

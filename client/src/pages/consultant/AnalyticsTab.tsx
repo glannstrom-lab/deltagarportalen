@@ -347,7 +347,8 @@ export function AnalyticsTab() {
         .eq('consultant_id', user.id)
         .gte('scheduled_at', thirtyDaysAgo.toISOString())
         .lte('scheduled_at', now.toISOString())
-        .neq('status', 'cancelled')
+        // O13: 'proposed' (deltagarens förslag) är inget möte — bara bokade och hållna räknas.
+        .in('status', ['scheduled', 'completed'])
 
       // Fetch previous period data for trend calculations
       const periodLength = now.getTime() - startDate.getTime()

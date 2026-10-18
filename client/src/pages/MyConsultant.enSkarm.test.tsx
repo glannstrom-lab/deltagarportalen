@@ -15,6 +15,9 @@ import { describe, it, expect, vi, afterEach } from 'vitest'
 import { render, screen, cleanup, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+// O13 (2026-10-18): Min konsulent läser mötesförslagen via React Query — appen har alltid en klient.
+const nyKlient = () => new QueryClient({ defaultOptions: { queries: { retry: false } } })
 import type { ReactNode } from 'react'
 
 let motesRad: Record<string, unknown> | null = null
@@ -62,7 +65,7 @@ afterEach(() => {
 })
 
 function sida() {
-  return render(<MemoryRouter><MyConsultant /></MemoryRouter>)
+  return render(<QueryClientProvider client={nyKlient()}><MemoryRouter><MyConsultant /></MemoryRouter></QueryClientProvider>)
 }
 
 describe('Min konsulent — en skärm', () => {
