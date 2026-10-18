@@ -76,7 +76,7 @@ Av ~45 funktioner som minst en konkurrent har: **15 finns redan**, **16 står re
 | Matchning av hela annonsflödet mot CV (Wundermatch, Jobbmatch.ai) | **O5** | Inte byggd (ingen `jobstream`) |
 | Web Push (alla appar) | **O7** | Inte byggd — `SettingsSections.tsx:13` säger själv "noll träffar på pushManager" |
 | CV + brev från en annons (Cowrite, Huntr, Jobbmatch.ai) | **O9** | ✅ Bron byggd 2026-10-18 (se O9) |
-| Leveransanalys i intervjuträningen (Big Interview, Yoodli) | **O10** | Inte byggd (inspelningen i `InterviewSimulator.tsx:409` är transkription, ingen tempo-/utfyllnadsanalys) |
+| Leveransanalys i intervjuträningen (Big Interview, Yoodli) | **O10** | ✅ Steg 1 byggt 2026-10-18 (se O10) |
 | Övning på rekryteringstester (Jobbcoach.ai, TRR) | **O11** | Inte byggd |
 | Kompetensintyg (Wundermatch, Lingio) | **O12** | Inte byggd |
 | Deltagaren föreslår mötestid | **O13** | ✅ Byggd 2026-10-18 (se O13) |
@@ -3776,7 +3776,7 @@ Ingenting nytt. Fyra saker som användaren redan ser i gränssnittet men inte f�
 
 ### Våg 3 — djup i det vi redan äger (8–16 veckor)
 
-**O10 · Leveransanalys i intervjusimulatorn** — *premiss delvis, dela i två steg*
+**O10 · Leveransanalys i intervjusimulatorn** — ✅ *Steg 1 byggt 2026-10-18 (spår KF fas 3): `services/talLeverans.ts` räknar ur taligenkänningens text och tiden mikrofonen var på — ord, ord per minut (pauser inräknade) och ordbaserade utfyllnadsord (liksom, alltså, asså, typ — inte "typ av" —, eh/öh när de kommer med). Visas under varje sagt svar i historiken, med texten att inget ljud sparas, att "eh"/"öh" ofta tas bort av taligenkänningen och att det inte finns något rätt tempo (ingen norm utan belägg). 4 tester. **Steg 2 oförändrat** (DPIA före röststyrka/pauslängd) — notera att simulatorn redan har en lokal inspelning för nedladdning (`useAudioRecorder`), som inte analyseras.* — *premiss delvis, dela i två steg*
 - **Steg 1, utan nytt ljud:** räkna utfyllnadsord och taltempo ur transkriptionen med
   tidsstämplar från `SpeechRecognition`. Kostar ingenting rättsligt.
 - **Steg 2, kräver DPIA-tillägg:** `MediaRecorder` för pauslängd, röststyrka och tonläge.

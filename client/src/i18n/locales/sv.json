@@ -6897,6 +6897,15 @@
       "title": "Din progress",
       "answered": "Besvarat",
       "questionsUnit": "frågor"
+    },
+    "leverans": {
+      "rubrik": "Så lät svaret",
+      "rad": "{{ord}} ord på {{tid}} med mikrofonen på — ungefär {{tempo}} ord i minuten, pauser inräknade.",
+      "tidMin": "{{min}} min {{sek}} s",
+      "tidSek": "{{sek}} sekunder",
+      "fyller": "Ord som ofta fyller ut: {{lista}}.",
+      "ingaFyller": "Inga vanliga utfyllnadsord hittades.",
+      "integritet": "Räknat ur taligenkänningens text, i din webbläsare. Inget ljud sparas. Taligenkänningen tar ofta bort \"eh\" och \"öh\", så de räknas inte säkert. Jämför med dina egna svar — det finns inget rätt tempo."
     }
   },
   "profile": {

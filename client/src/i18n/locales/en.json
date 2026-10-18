@@ -6897,6 +6897,15 @@
       "title": "Your progress",
       "answered": "Answered",
       "questionsUnit": "questions"
+    },
+    "leverans": {
+      "rubrik": "How the answer sounded",
+      "rad": "{{ord}} words in {{tid}} with the microphone on — about {{tempo}} words per minute, pauses included.",
+      "tidMin": "{{min}} min {{sek}} s",
+      "tidSek": "{{sek}} seconds",
+      "fyller": "Words often used as fillers: {{lista}}.",
+      "ingaFyller": "No common filler words were found.",
+      "integritet": "Counted from the speech recognition text, in your browser. No audio is saved. Speech recognition often removes \"eh\" and \"uh\", so they are not counted reliably. Compare with your own answers — there is no correct speed."
     }
   },
   "profile": {

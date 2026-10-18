@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useMemo, useRef, memo } from 'react'
 import { useTranslation } from 'react-i18next'
+import { analyseraTal, type TalAnalys } from '@/services/talLeverans'
 import { Send, User, Bot, RefreshCw, Lightbulb, Star, Clock, ChevronDown, ChevronUp, Zap, Download, ListTodo, TrendingUp, Mic, MicOff, Pause, Play, HelpCircle, Circle, Save, CheckCircle2, AlertTriangle, History } from '@/components/ui/icons'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
@@ -27,9 +28,34 @@ import { datumSprak } from '@/lib/datumsprak'
 import { formatLocalDate } from '@/services/aktivitetSchema'
 import { artikelOmIntervju } from './intervjuArtiklar'
 
+/**
+ * O10 steg 1: en rad om hur svaret levererades. Siffror, inget omdöme — portalen sätter
+ * inget "rätt" tempo utan belägg. Begränsningarna står i texten.
+ */
+function LeveransRad({ analys }: { analys: TalAnalys }) {
+  const { t } = useTranslation()
+  const min = Math.floor(analys.sekunder / 60)
+  const sek = analys.sekunder % 60
+  const tid = min > 0 ? t('interviewSimulator.leverans.tidMin', { min, sek }) : t('interviewSimulator.leverans.tidSek', { sek })
+  return (
+    <div className="rounded-xl border border-stone-200 dark:border-stone-700 p-3 text-sm text-stone-700 dark:text-stone-300 space-y-1" data-testid="leverans">
+      <p className="m-0 font-medium text-stone-800 dark:text-stone-100">{t('interviewSimulator.leverans.rubrik')}</p>
+      <p className="m-0">{t('interviewSimulator.leverans.rad', { ord: analys.ord, tid, tempo: analys.ordPerMinut })}</p>
+      <p className="m-0">
+        {analys.utfyllnad.length > 0
+          ? t('interviewSimulator.leverans.fyller', { lista: analys.utfyllnad.map((u) => `${u.ord} ×${u.antal}`).join(', ') })
+          : t('interviewSimulator.leverans.ingaFyller')}
+      </p>
+      <p className="m-0 text-xs text-stone-500 dark:text-stone-400">{t('interviewSimulator.leverans.integritet')}</p>
+    </div>
+  )
+}
+
 interface FragaSvar {
   fraga: string
   svar: string
+  /** O10 steg 1: hur svaret levererades, om det sades in med mikrofonen. Inget ljud sparas. */
+  leverans?: TalAnalys | null
   rating?: number
   /**
    * Varifrån betyget kommer. B12 (2026-08-05): tidigare gick det inte att
@@ -410,6 +436,18 @@ function InterviewSimulatorInner() {
 
   // Ref for speech recognition cleanup
   const recognitionRef = useRef<SpeechRecognition | null>(null)
+  // O10 steg 1: tid med mikrofonen på och den talade texten, per svar.
+  const talStartRef = useRef<number | null>(null)
+  const talSekunderRef = useRef(0)
+  const taltextRef = useRef('')
+  const taltextSessionRef = useRef('')
+  const avslutaTalSession = useCallback(() => {
+    if (talStartRef.current === null) return
+    talSekunderRef.current += (Date.now() - talStartRef.current) / 1000
+    taltextRef.current = `${taltextRef.current} ${taltextSessionRef.current}`.trim()
+    talStartRef.current = null
+    taltextSessionRef.current = ''
+  }, [])
   /**
    * Texten som redan stod i rutan när inspelningen startade.
    *
@@ -560,12 +598,14 @@ function InterviewSimulatorInner() {
       for (let i = 0; i < event.results.length; i++) {
         transcript += event.results[i][0].transcript
       }
+      taltextSessionRef.current = transcript
       // Lägg till efter det som redan stod där i stället för att ersätta det.
       const bas = talBasRef.current
       setAnvandarSvar(bas ? `${bas.replace(/\s+$/, '')} ${transcript}` : transcript)
     }
 
     recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
+      avslutaTalSession()
       setIsRecording(false)
       recognitionRef.current = null
       // Nekad mikrofon var helt tyst förut — knappen slog bara om tillbaka och
@@ -581,16 +621,19 @@ function InterviewSimulatorInner() {
     }
 
     recognition.onend = () => {
+      avslutaTalSession()
       setIsRecording(false)
       recognitionRef.current = null
     }
 
     talBasRef.current = anvandarSvar
     setTalFel(null)
+    talStartRef.current = Date.now()
+    taltextSessionRef.current = ''
     recognition.start()
     setIsRecording(true)
     recognitionRef.current = recognition
-  }, [isRecording, anvandarSvar, t])
+  }, [isRecording, anvandarSvar, t, avslutaTalSession])
 
   /** Stoppar tal-till-text om den är igång. Anropas när frågan byts. */
   const stoppaTal = useCallback(() => {
@@ -677,13 +720,19 @@ function InterviewSimulatorInner() {
     setIsTimerRunning(false)
     setSupportPhrase(null)
     setAiFel(null)
+    // O10 steg 1: räkna leveransen innan talet stoppas — onend kommer först efteråt.
+    avslutaTalSession()
+    const leverans = analyseraTal(taltextRef.current, talSekunderRef.current)
+    taltextRef.current = ''
+    talSekunderRef.current = 0
     // Stoppa tal-till-text innan frågan byts. Utan det fortsatte
     // `event.results` att växa och talet från förra frågan kröp in i nästa.
     stoppaTal()
     // Inget betyg innan någon faktiskt satt ett — varken AI eller deltagare.
     const nyFragaSvar: FragaSvar = {
       fraga: nuvarandeFraga,
-      svar: anvandarSvar
+      svar: anvandarSvar,
+      leverans,
     }
 
     try {
@@ -767,7 +816,7 @@ function InterviewSimulatorInner() {
       // eller skärmläsare tappade sin plats efter varje svar.
       requestAnimationFrame(() => svarRef.current?.focus())
     }
-  }, [anvandarSvar, isLoading, nuvarandeFraga, roll, foretag, historik, antalFragor, selectedCategory, stoppaTal])
+  }, [anvandarSvar, isLoading, nuvarandeFraga, roll, foretag, historik, antalFragor, selectedCategory, stoppaTal, avslutaTalSession])
 
   const handleSetRating = useCallback((index: number, rating: number) => {
     setHistorik(prev => {
@@ -1354,6 +1403,7 @@ ${t('interviewSimulator.download.tipsForImprovement')}:
                     <p className="text-sm font-medium text-emerald-700 dark:text-emerald-400 mb-1">{t('interviewSimulator.session.yourAnswer')}</p>
                     <p className="text-stone-800 dark:text-stone-200">{fs.svar}</p>
                   </div>
+                  {fs.leverans && <LeveransRad analys={fs.leverans} />}
                   {fs.feedback && (
                     <div data-ai-generated="true" className="bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/20 p-3 rounded-xl text-sm text-[var(--c-text)] dark:text-[var(--c-text)] border border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50">
                       <strong>{t('interviewSimulator.session.aiFeedback')}</strong> {fs.feedback}
@@ -1480,6 +1530,7 @@ ${t('interviewSimulator.download.tipsForImprovement')}:
                     <p className="text-sm font-medium text-emerald-700 dark:text-emerald-400 mb-1">{t('interviewSimulator.session.yourAnswer')}</p>
                     <p className="text-stone-800 dark:text-stone-200">{fs.svar}</p>
                   </div>
+                  {fs.leverans && <LeveransRad analys={fs.leverans} />}
                 </div>
 
                 {/* Rating och feedback */}
