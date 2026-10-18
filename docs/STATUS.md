@@ -55,6 +55,10 @@
 | **KSL20** | R&M: nivå-på-plan, fristbevakning, avvikelser i AF:s format, slutredovisning. Kräver migration. Samma underlag. | R62 |
 | **MK1** | Matchningsleverans mot riktiga arbetsgivare saknas — produktval, ej beslutat. | R3100 |
 | **KM11** | Arabiska/somaliska/tigrinja/dari för "Min vecka": väntar på översättare. | R2887 |
+| **KF1** (spår KF, 2026-10-18) | Import av AF-beslut: be en R&M-leverantör (HelloLilly/Misa) om en avidentifierad exempelfil ur KA-Webbstöd — formatet är inte offentligt. | spår KF |
+| **KF4** | SMS-påminnelser: ny SMS-leverantör = nytt biträde + kostnad per SMS; vem betalar? | spår KF |
+| **KF8** | EU-only AI som säljlöfte — rör modellåsningen (EU-provider utan fallback). | spår KF |
+| **KF9 / KF10** | Videointervjuträning (rekommendation: avstå) · partnerskap med Lingio för yrkessvenska. | spår KF |
 
 ### Migrationer som väntar
 - `supabase/migrations/PENDING_20260728_drop_job_applications.sql` — destruktiv DROP. **Kontrollerat: tabellen har 0 rader i prod.** Behöver bara ditt ja (R7158).
@@ -92,6 +96,7 @@ Inte hunnet kontrollera (antagna öppna): KSL18 (demoleverantörens Nordfrakt-f�
 - **SE1+SE2** guide-sammanslagning beslutad i `kannibalisering.md`, men blockerad av SE4 tills `vercel.json` får ett ja.
 - **Rester utan blockering** (R447): supabase-js-versionerna.
 - **MK2** SCB:s lönestrukturstatistik är öppen och gratis — hämtning kan byggas.
+- **Spår KF (2026-10-18), utan beslut:** KF5 deltagarens bekräftelse av planen (S–M), KF6 AI-sammanfattning för konsulenten (M, art. 9-grind), KF7 LinkedIn-PDF → CV i webbläsaren (S–M), KF2 faktureringsunderlag (M, läs AF:s anvisning först), KF3 utredning av export till Treserva/Combine/Lifecare. Fas 1 börjar dock med **SSO1** och **KSL25-MFA**, som inte är byggda.
 
 ## 4. Pausat eller avslutat med flit
 - **STA / Steg till arbete** — arkiverad 2026-09-12 (`archive/2026-09-sta/`). Bygg inte "för STA".

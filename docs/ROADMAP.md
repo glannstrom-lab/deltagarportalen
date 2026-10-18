@@ -1,6 +1,8 @@
 # Roadmap — Jobin (Deltagarportalen)
 
-> **Senast 2026-10-12:** roadmap-pass med fem Sonnet-agenter — KSL14–KSL17 byggda, UT3 rättad, intresseguidens och jobbflikarnas svenska översatt (172 nycklar), måendets sparfel syns, `scbSalaryApi` raderad. Status för KSL21–KSL25 rättad mot commits `d545e26d`/`62571529`. Se avsnittet "Konsulentvyn 2026-10-11" nedan.
+> **Senast 2026-10-18:** konkurrensanalysen (`docs/konkurrensanalys-2026-10.md`, ~50 aktörer) bruten ned till **spår KF** — varje funktion en konkurrent har, premissgranskad mot koden: vad som redan finns, vad som redan står här (O/MK/KSL/SSO1), vad som är nytt (KF1–KF10) och vad vi avstår. Fyra faser. Se första avsnittet nedan.
+>
+> **2026-10-12:** roadmap-pass med fem Sonnet-agenter — KSL14–KSL17 byggda, UT3 rättad, intresseguidens och jobbflikarnas svenska översatt (172 nycklar), måendets sparfel syns, `scbSalaryApi` raderad. Status för KSL21–KSL25 rättad mot commits `d545e26d`/`62571529`. Se avsnittet "Konsulentvyn 2026-10-11" nedan.
 >
 > **2026-10-11:** konsulentvyn slipad för kommun och Rusta och matcha (avsnittet "Konsulentvyn 2026-10-11" nedan), inbyggda guider för konsulent och deltagare, säljberedskap i säkerhet, och research om båda kundgrupperna. Förra:
 >
@@ -28,6 +30,95 @@
 **Så underhålls dokumentet:** Ett plandokument. Avklarat flyttas till §9. Nya idéer förs in under rätt spår — aldrig i nya plandokument. Detaljspecar (STA, AF-API, EU) är bilagor enligt §8.
 
 **Så tas en punkt:** Premissgranska först — se `CLAUDE.md § Premissgranskning`. Läs koden, spåra konsumenter, kolla schemat mot `information_schema`, mät i stället för att lita på siffrorna här. Rapportera "premissen håller / håller inte" och föreslå bygg / omscopa / avskriv **innan** du bygger. Raderna nedan beskriver vad någon trodde när de skrevs — sex av dem visade sig ha fel premiss 2026-07-27.
+
+---
+
+## Spår KF — Konkurrenternas funktioner 2026-10-18: allt någon annan har, och planen dit
+
+**Underlag:** `docs/konkurrensanalys-2026-10.md` (sju agenter, ~50 aktörer i fem segment) · översikt https://claude.ai/artifact/3o4LALAy3jYqCjMVDzMzqq. Bygger på spår O (2026-08-25) och MK1–MK5 (2026-08-31) — **ingen funktion som redan står där har fått ett nytt ID**, den står i tabellen med sin gamla post och status mätt i dag.
+
+**Princip för ordningen:** pengarna kommer från organisationer (2 990 kr/mån + 290 kr/konsulent), och Workbuster sitter redan hos dem (HelloLilly, Täby, Academedia, Arcus). Fas 1 är därför det en kommun eller Rusta och matcha-leverantör kräver *innan avtal*, fas 2 det som gör Jobin till den deltagarsida Workbuster köper in från Cowrite. Bredd för deltagaren kommer efter.
+
+### Premissgranskning — mätt i koden 2026-10-18
+
+Av ~45 funktioner som minst en konkurrent har: **15 finns redan**, **16 står redan i roadmapen**, **10 är nya** (KF1–KF10), resten avstår vi från med skäl.
+
+**Finns redan — ingen post (belägg):**
+
+| Konkurrent har | Jobin har | Belägg |
+|---|---|---|
+| Ansökningstracker/kanban (Teal, Huntr, CVMaker) | ja | `components/applications/` |
+| Konverteringstratt för ansökningar (Wundermatch) | ja, per deltagare | `ApplicationsAnalytics.tsx:164` `ConversionFunnel` |
+| Kontakttracker (Teal) | ja | `ApplicationsContacts.tsx` |
+| CV-översättning (CVMaker) | ja, i AI-skrivhjälpen | `AIWritingAssistant.tsx:23` (`'translate'`), monterad i `CVBuilder.tsx` |
+| Personlig CV-/profilsida (Kickresume) | delningslänk | `ProfileSharing.tsx`, `/profile/shared/:shareCode` |
+| Uppläsning av artiklar (informationsverige) — **O19** | ja | `components/knowledge-base/TextToSpeech.tsx` i `pages/Article.tsx`. O19:s klart-kriterium (pausbar, utskrift obruten) ej omprövat |
+| Jobbevakning via mejl — **O1** | ja | DE1 2026-09-12 (Resend EU) |
+| Installerbar app — **O2** | ja (PWA) | se O2 ✅ |
+| Aktivitetsrapport till AF — **O3** | ja | `aktivitetsrapport.ts` |
+| ATS-kontroll — **O4** | ja | se O4 ✅ |
+| Yrkesprognoser (AF, TRR Rikta) — **MK3** | ja | `af-prognos` |
+| Schema, närvaro, aktivitetskrav — **O15** | ja | spår KM, `aktivitetsplan/` |
+| Ledningsvy för chef (Workbuster dashboard) | ja | `ChefsVy.tsx` (CH2/CH8) |
+| Resultatuppföljning för resultatersättning (Workbuster) | ja | `PlaceringDeltagareKort.tsx` (väntar → verifierad → fakturerad), `followup_3m/6m` |
+| AI-utkast till rapport för konsulenten (Workbuster AI) | grund finns | `api/_prompts/konsulent.js` `konsulent-rapportutkast`, `ReportDraftDialog.tsx`; slutredovisning i AF:s format = KSL20 |
+
+**Står redan i roadmapen — status i dag (ingen ny post):**
+
+| Konkurrent har | Post | Status 2026-10-18 |
+|---|---|---|
+| SSO för kommunpersonal (Workbuster, Rezi Enterprise) | **SSO1** (beslut 2026-09-12) | **Inte byggd** — noll träffar på `azure`/`signInWithSSO` i koden |
+| MFA för personal | **KSL25** | Inte byggd (noll träffar på `auth.mfa`) |
+| BankID (Workbuster, Cowrite, AF, Saco) | **O20** | Beslut — väntar på att en kommun kräver det |
+| Slutredovisning/avvikelser i AF:s format | **KSL20** | Underlag klart, kräver migration |
+| IVO-/Kolada-underlag för kommun | **KSL19** | Läkarintygsflaggan byggd, resten migration |
+| Lönestatistik med verklig data (Vision, Saco, TRR, CraftIT) | **MK2** | Byggbar, SCB-tabellen provkörd; `scbSalaryApi` raderad 2026-10-12 (var en annan, död väg) |
+| Matchning av hela annonsflödet mot CV (Wundermatch, Jobbmatch.ai) | **O5** | Inte byggd (ingen `jobstream`) |
+| Web Push (alla appar) | **O7** | Inte byggd — `SettingsSections.tsx:13` säger själv "noll träffar på pushManager" |
+| CV + brev från en annons (Cowrite, Huntr, Jobbmatch.ai) | **O9** | Omscopad 2026-08-26; ingen "förberedd ansökan" i koden |
+| Leveransanalys i intervjuträningen (Big Interview, Yoodli) | **O10** | Inte byggd (inspelningen i `InterviewSimulator.tsx:409` är transkription, ingen tempo-/utfyllnadsanalys) |
+| Övning på rekryteringstester (Jobbcoach.ai, TRR) | **O11** | Inte byggd |
+| Kompetensintyg (Wundermatch, Lingio) | **O12** | Inte byggd |
+| Deltagaren föreslår mötestid | **O13** | Inte byggd — `MyConsultant.tsx:916` öppnar bara ett mejl "Bokningsförfrågan" |
+| Videomöte i tjänsten | **O14** | Inte byggd, kräver CSP-ja |
+| Fler språk (Lingio 100+, AF Jobskills) | **O18 / MK4 / KM11** | O18 omscopad till sex kärnspråk; KM11 väntar på översättare |
+| Autofyll av externa ansökningsformulär (Huntr, Simplify) | **MK5** | Beslut + L |
+
+### Nya poster
+
+**Fas 1 — det kunden kräver innan avtal (0–6 veckor).** Ordning: SSO1 → KSL25-MFA → KF1 → KF2 → KF5 → KSL20 → KF3 → KF4.
+
+- [ ] **KF1** **Import av AF-beslut till deltagarlistan.** *Workbuster har det och det är deras vallgrav mot Rusta och matcha-leverantörerna:* leverantören får beslutet om en ny deltagare från AF (KA-Webbstöd/Rekvirera, Excel) och Workbuster skapar deltagaren ur filen. I Jobin skrivs varje deltagare in för hand. **Premiss att pröva först:** filformatet är inte offentligt — be en leverantör (HelloLilly kör Workbuster, Misa är R&M-leverantör) om en avidentifierad exempelfil innan en rad skrivs. Bygg som uppladdning + förhandsgranskning + bekräftelse (aldrig tyst import), dubblettkontroll mot befintliga deltagare, personnummer hanteras som i B29 (maskas, sparas inte i klartext). · L · **blockerad av exempelfil**
+- [ ] **KF2** **Underlag för leverantörens fakturering till AF.** Workbuster självfakturerar via Peppol och kopplar till Fortnox. Jobin har redan resultatersättningsflödet (väntar → verifierad → fakturerad) men ingen export. Bygg **inte** fakturering — bygg månadsunderlaget: per deltagare och avtal, genomförda insatser, resultatnivå och datum, i den ordning Rekvirera/fakturan kräver, som CSV + utskrift. Peppol/Fortnox skjuts tills en kund frågar. **Premiss:** läs AF:s faktureringsanvisning för ROM2 före bygge. · M
+- [ ] **KF3** **Export till kommunens verksamhetssystem (Treserva, Combine, Lifecare).** Ingen av dem har en arbetsmarknadsmodul, men aktivitetskravets journalföring och försörjningsstödsbeslut hamnar där. Konsulenten skriver alltså av Jobins närvaro och plan för hand. Första steget är en utredning, inte ett bygge: vilket importformat (om något) tar systemen emot, och räcker en strukturerad PDF/CSV per deltagare och månad (samma underlag som KM:s "Lämna underlag")? Hör ihop med Kolada-exporten i KSL19. · utred → M
+- [ ] **KF4** **SMS-påminnelser till deltagare.** Workbuster (SMS/e-post/portal) och Lingio (AI-kollega via SMS) når deltagare som inte öppnar mejl — vår målgrupp. Påminnelse om pass och möte, aldrig innehåll med personuppgifter utöver förnamn. **Beslut:** svensk SMS-leverantör (t.ex. 46elks) = nytt personuppgiftsbiträde, PUB-avtal och kostnad per SMS; vem betalar (ingår i licensen eller per organisation)? · beslut + M
+- [ ] **KF5** **Deltagarens bekräftelse av aktivitetsplanen.** Wundermatch har digital signering av handlingsplaner. Jobin har kvittens på underlag (`aktivitetsplan/`) men deltagaren bekräftar aldrig själva planen. Bygg en bekräftelse med tidsstämpel och planversion ("Jag har läst min plan", ångras genom att be om ändring) — juridiskt bindande signering kräver BankID och väntar på O20. · S–M
+- [ ] **KF6** **AI-sammanfattning av deltagaren för konsulenten.** Workbusters AI-funktion nr 1 (deltagarprofil-sammanfattning). Jobin har `konsulent-rapportutkast` för rapporter men ingen "läget just nu" vid överlämning eller inför möte. Bygg ovanpå samma prompt: plan, närvaro, journal, mål, senaste aktivitet → fem rader med källa per rad. **Villkor:** samma art. 9-grind och PII-sanering som `callAI`; hälsodata (mående, frånvaroorsak) ingår **inte** utan uttryckligt samtycke; AI-brytaren per organisation gäller; sanningsregeln (inget påstående utan rad i datan). · M
+
+**Fas 2 — deltagarsidan som slår Workbusters inköpta Cowrite (4–10 veckor).** Ordning: KF7 → O9 → MK2 → O13 → O5 → O7.
+
+- [ ] **KF7** **LinkedIn-import till CV.** Kickresume, Genzee och Cowrite tar in en LinkedIn-profil. Jobins "LinkedIn-import" togs bort 2026-07-10 (B4) för att den var en "Kommer snart"-attrapp (`CompetenceSection.tsx:57`). Rätt väg nu: LinkedIns egen "Spara som PDF" laddas upp och tolkas **i webbläsaren** av samma parser som CV-uppladdningen (`memory: cv-uppladdning-och-jobbmatchning` — lägg inte parsningen på servern). Ingen LinkedIn-API, ingen skrapning. · S–M
+
+**Fas 3 — djup i det vi redan äger (8–16 veckor):** O10 → O11 → O12 → O14 → O17. Inga nya poster; se spår O.
+
+**Fas 4 — räckvidd, förtroende, beslut (kvartal):**
+
+- [ ] **KF8** **AI som stannar i EU — som säljbart löfte.** Ingen konkurrent kan säga det: Cowrite kör Gemini och Anthropic i USA (egen integritetspolicy), Jobin OpenRouter + Perplexity. KSL25 gjorde "EU-leverantör först" och `data_collection: deny`. Kvar: avgör om `openai/gpt-oss-120b` kan köras **enbart** hos EU-leverantör via OpenRouters providerval (utan fallback utanför EU), mät pris och svarstid, och stäng Perplexity helt för organisationer (redan av sedan 2026-09-12). Först när det är verifierat får det stå i säljmaterialet. **Beslut Mikael** — rör modellåsningen (`docs/AI_MODEL_LOCKING.md`). · beslut + S
+- [ ] **KF9** **Videobaserad intervjuträning (kamera).** Cowrite (AI-avatar), Big Interview (VideoAI) och Yoodli bedömer kroppsspråk och blick. **Förslag: avstå.** Ansiktsanalys är biometri, AI-akten förbjuder känsloigenkänning på arbetsplatser och i utbildning (art. 5.1 f) och klassar den som högrisk i övrigt — en jobbsökarträning är ett gränsfall vi inte ska testa juridiskt, och målgruppen inkluderar personer med funktionsnedsättning där "ögonkontakt" som mått är diskriminerande. O10 steg 1 (tempo, utfyllnadsord ur transkriptionen) ger det mesta av värdet utan kamera. · beslut (rekommendation: nej)
+- [ ] **KF10** **Partnerskap i stället för bygge: språk och yrkessvenska.** Lingio har yrkessvenska på 100+ språk och säljer redan till Mölndal, Skara, Töreboda och Stockholms Jobbtorg — samma kommuner, samma aktivitetskravsbudget. Att bygga språkkurser är fel skala för oss (O18 mätte 9 200 nycklar per språk). Utred länk/integration: Lingio-kurs som aktivitet i aktivitetsplanen, timmarna räknas mot kravet. · beslut (kanal)
+
+Samt de beslut som redan står och som avgör fas 1: **O20 BankID**, **O22 licens till leverantörer** (i praktiken taget — kundbilden 2026-09-12), **MK5 webbläsartillägg**.
+
+### Avstår vi från — med skäl
+
+| Konkurrent har | Varför inte |
+|---|---|
+| Massansökan/autoapply (LazyApply, AIApply, Wundermatch AI-Apply) | Kvalitetsproblem belagda (SVT 2026-05-06: fel ort i brev; LazyApply 2,4/5). O9 är vårt svar: förberedd ansökan som människan skickar. |
+| Live-souffleur under riktig intervju (Final Round AI) | Högrisk/omtvistat under AI-akten, bryter mot arbetsgivares villkor. Intervjusimulatorn förblir övning. |
+| Sökbar kandidatbank för arbetsgivare (AF Sök kandidater, Jobbcoach.ai "Bli upptäckt") | Beslutat: **aldrig kandidatsökning** (spår AG, O16). Konsulenten föreslår, arbetsgivaren svarar. |
+| Annonser från "hundratals källor" (Wundermatch, Jobbsafari) | O6 avskriven 2026-08-26 — ingen laglig väg utöver JobTech. *Wundermatchs påstående bör granskas: vilka källor, och på vilka villkor?* |
+| AI-screeningintervjuer för arbetsgivare (Hubert, Tengai) | Arbetsgivarens verktyg, inte deltagarens; ingen plats i Jobins kedja. |
+| Fakturering/bokföring i systemet (Workbuster Peppol, Fortnox) | KF2 ger underlaget; själva faktureringen bor i kundens ekonomisystem tills någon kund kräver annat. |
 
 ---
 
@@ -3753,7 +3844,7 @@ Ingenting nytt. Fyra saker som användaren redan ser i gränssnittet men inte f�
   börjar, annars fäller den varje ofullständigt språk.
 - Regeln står fast: **svenska myndighetsnamn översätts aldrig**, oavsett språk.
 
-**O19 · Uppläsning av artiklar** — *litet bygge, stor effekt*
+**O19 · Uppläsning av artiklar** — *litet bygge, stor effekt* — **finns 2026-10-18:** `TextToSpeech.tsx` i `pages/Article.tsx` (se spår KF); klart-kriteriet ej omprövat
 - informationsverige.se har uppläsning på sex språk. Vi har 163 artiklar och en målgrupp
   där lässvårigheter är vanliga.
 - Web Speech API:s `speechSynthesis` finns i webbläsaren och kostar ingenting.
