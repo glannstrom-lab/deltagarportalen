@@ -46,6 +46,7 @@ import { hamtaMoten, motesDatum, motesStart, type KonsulentMote } from '@/compon
 import { hamtaPlanensOrganisation, regelverkNycklar } from '@/components/minvecka/planensRegelverk'
 // RD25: "Din plan" — vem hon är hos, vem som beslutat, vad som räknas
 import { MinPlan } from '@/components/minvecka/MinPlan'
+import { PlanBekraftelse } from '@/components/minvecka/PlanBekraftelse'
 // 2026-10-11: "Vad förväntas av mig?"
 import { VadForvantas } from '@/components/minvecka/VadForvantas'
 import { NastaPass } from '@/components/minvecka/NastaPass'
@@ -620,6 +621,8 @@ export default function MinVecka() {
         <MerLista rubrik={t('minVecka.mer.rubrik', 'Mer om din vecka')} rubrikId="min-vecka-mer">
           <MerRad ikon="plan" rubrik={t('minVecka.plan.rubrik', 'Din plan')} text={t('minVecka.mer.planText', 'Var du är, vem som har bestämt och vad som räknas.')}>
             <MinPlan regelverk={regelverk} orgNamn={orgNamn} />
+            {/* KF5: "Jag har läst min plan" — kvittens med planversion, ingen underskrift. */}
+            {plan && <PlanBekraftelse plan={plan} />}
           </MerRad>
           <MerRad ikon="jobb" rubrik={t('minVecka.jobbsok.rubrik', 'Ditt jobbsökande den här veckan')} text={t('minVecka.mer.jobbsokText', 'Det du har gjort i Jobin, som din egen översikt.')}>
             {jobbsokQuery.isLoading || (!jobbsokQuery.data && !jobbsokQuery.isError) ? (

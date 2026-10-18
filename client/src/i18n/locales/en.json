@@ -9842,6 +9842,14 @@
     },
     "plan": {
       "rubrik": "Your plan",
+      "bekrafta": {
+        "fraga": "Have you read your plan? Confirm it here. Then your consultant knows that you agree on what applies.",
+        "knapp": "I have read my plan",
+        "klart": "You confirmed the plan on {{datum}}.",
+        "andrad": "The plan has changed since you confirmed it on {{datum}}. Read it and confirm again.",
+        "fel": "It could not be saved right now. Try again in a while.",
+        "forklaring": "This is not a signature. If you have questions about the plan, write to your consultant."
+      },
       "hos": "Your plan is with {{org}}.",
       "leverantor": {
         "hos": "You are with {{org}}. It is a provider in Rusta och matcha.",

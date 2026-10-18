@@ -9842,6 +9842,14 @@
     },
     "plan": {
       "rubrik": "Din plan",
+      "bekrafta": {
+        "fraga": "Har du läst din plan? Bekräfta det här, så vet din konsulent att ni är överens om vad som gäller.",
+        "knapp": "Jag har läst min plan",
+        "klart": "Du bekräftade planen {{datum}}.",
+        "andrad": "Planen har ändrats sedan du bekräftade den {{datum}}. Läs igenom den och bekräfta igen.",
+        "fel": "Det gick inte att spara just nu. Försök igen om en stund.",
+        "forklaring": "Det här är ingen underskrift. Har du frågor om planen, skriv till din konsulent."
+      },
       "hos": "Du har din plan hos {{org}}.",
       "leverantor": {
         "hos": "Du är hos {{org}}. Det är en leverantör i Rusta och matcha.",

@@ -184,6 +184,14 @@
     },
     "plan": {
       "rubrik": "Din plan",
+      "bekrafta": {
+        "fraga": "Har du läst din plan? Tryck på knappen. Då vet din konsulent att du har läst den.",
+        "knapp": "Jag har läst min plan",
+        "klart": "Du sa att du läst planen {{datum}}.",
+        "andrad": "Planen är ändrad sedan {{datum}}. Läs den igen. Tryck sedan på knappen.",
+        "fel": "Det gick inte. Försök igen senare.",
+        "forklaring": "Det är ingen underskrift. Fråga din konsulent om du undrar något."
+      },
       "hos": "Din plan är hos {{org}}.",
       "leverantor": {
         "hos": "Du är hos {{org}}. Det är ett företag i Rusta och matcha.",

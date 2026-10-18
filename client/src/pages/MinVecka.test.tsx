@@ -325,7 +325,9 @@ describe('Min vecka', () => {
       pass({ id: 's-idag', title: 'Språkcafé, nivå 2', location: 'Storgatan 1; plan 3', start_time: '09:00', end_time: '11:30' }),
     ])
     render(<MinVecka />)
-    await screen.findByText('Språkcafé, nivå 2')
+    // Under pågående pass (09:00–11:30) står titeln också som rubrik för nästa/pågående pass —
+    // CI kör i UTC och föll därför bara vissa klockslag (14, 16 och 18 okt 2026). Minst en räcker.
+    expect((await screen.findAllByText('Språkcafé, nivå 2')).length).toBeGreaterThan(0)
     const knappar = screen.getAllByRole('button', { name: /i kalendern/ })
     expect(knappar).toHaveLength(1)
     expect(knappar[0]).toHaveAccessibleName('Lägg till Språkcafé, nivå 2 i kalendern')

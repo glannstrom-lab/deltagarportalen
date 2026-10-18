@@ -12,7 +12,9 @@
  * texter har redan nycklar (consultant.underlag.*) och läses därifrån.
  */
 import { useTranslation } from 'react-i18next'
+import { useQuery } from '@tanstack/react-query'
 import { Button } from '@/components/ui/Button'
+import { planBekraftelseApi, bekraftelseLage } from '@/services/planBekraftelseApi'
 import { StatusChip } from '@/components/ui/StatusChip'
 import { KvarterIkon } from '@/components/ui/icons/kvarter/KvarterIkon'
 import { SpaltYta } from '../SpaltYta'
@@ -146,6 +148,17 @@ export function UnderlagYta({ sessions, underlag, underlagFel, egetId, paketLadd
 // Båda: planens fakta
 // ---------------------------------------------------------------------------
 
+/** KF5: har deltagaren bekräftat att hen läst DEN HÄR versionen av planen? */
+function PlanBekraftelseRad({ plan }: { plan: ActivityPlan }) {
+  const q = useQuery({ queryKey: ['plan-bekraftelse', plan.id], queryFn: () => planBekraftelseApi.lista(plan.id), staleTime: 60_000 })
+  if (q.isLoading) return <span className="text-[var(--j-blak-3)]">…</span>
+  if (q.isError || !q.data) return <span className="text-[var(--j-blak-3)]">Bekräftelsen kunde inte läsas</span>
+  const lage = bekraftelseLage(plan.updated_at, q.data)
+  if (lage.lage === 'aktuell') return <>Bekräftade att hen läst planen {langtDatum(formatLocalDate(new Date(lage.bekraftad)))}</>
+  if (lage.lage === 'aldre') return <>Bekräftade {langtDatum(formatLocalDate(new Date(lage.bekraftad)))} — planen har ändrats sedan dess</>
+  return <span className="text-[var(--j-blak-3)]">Har inte bekräftat planen i Min vecka</span>
+}
+
 export function PlanYta({ plan, arLeverantor, sparar, onHinder, onPlanSparad }: {
   plan: ActivityPlan
   arLeverantor: boolean
@@ -170,6 +183,8 @@ export function PlanYta({ plan, arLeverantor, sparar, onHinder, onPlanSparad }: 
           <dt className="text-[var(--j-blak-3)]">Beslutad</dt>
           <dd className="m-0">{langtDatum(plan.decided_at)}</dd>
         </>)}
+        <dt className="text-[var(--j-blak-3)]">Deltagaren</dt>
+        <dd className="m-0"><PlanBekraftelseRad plan={plan} /></dd>
       </dl>
       {/* RK40: ärende-/dossiernummer — matchning utan personnummer. */}
       {PLAN_PASS_KOLUMNER_FINNS && (

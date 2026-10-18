@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-11T15:57:56.887Z",
+  "generatedAt": "2026-10-18T11:18:20.505Z",
   "functions": [
     {
       "name": "activity_plan_handovers_guard",
@@ -937,6 +937,10 @@
     },
     {
       "name": "activity_catalog_items",
+      "rls": true
+    },
+    {
+      "name": "activity_plan_confirmations",
       "rls": true
     },
     {

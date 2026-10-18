@@ -14,6 +14,8 @@
  *  - Inget namn: personen är "deltagaren".
  */
 
+import { formatLocalDate } from '@/services/aktivitetSchema'
+
 export interface JournalRad { content: string; category: string | null; created_at: string }
 export interface MalRad { title: string | null; status: string | null; deadline: string | null }
 export interface PassRad { date: string; attendance: string | null }
@@ -28,6 +30,9 @@ export interface LagesbildUnderlag {
   mal: Array<{ titel: string; status: string; deadline: string | null }>
   nastaMote: string | null
 }
+
+/** Tidsstämpel → svenskt dygn. `.slice(0, 10)` ger UTC-dygnet, fel 00–02 (felklassen "idag i UTC"). */
+const lokalDag = (iso: string) => formatLocalDate(new Date(iso))
 
 const FRANVARO = new Set(['absent_valid', 'absent_invalid', 'sick', 'sick_certified'])
 const MAX_JOURNAL = 30
@@ -55,10 +60,10 @@ export function byggLagesbildUnderlag(in_: {
     .filter((j) => j.category !== 'CONCERN' && j.content?.trim())
     .sort((a, b) => b.created_at.localeCompare(a.created_at))
     .slice(0, MAX_JOURNAL)
-    .map((j) => ({ datum: j.created_at.slice(0, 10), kategori: j.category || 'GENERAL', text: j.content.trim().slice(0, MAX_TEXT) }))
+    .map((j) => ({ datum: lokalDag(j.created_at), kategori: j.category || 'GENERAL', text: j.content.trim().slice(0, MAX_TEXT) }))
 
   const nasta = in_.moten
-    .filter((m) => m.status !== 'cancelled' && m.scheduled_at.slice(0, 10) >= in_.idag)
+    .filter((m) => m.status !== 'cancelled' && lokalDag(m.scheduled_at) >= in_.idag)
     .sort((a, b) => a.scheduled_at.localeCompare(b.scheduled_at))[0]
 
   return {
@@ -69,7 +74,7 @@ export function byggLagesbildUnderlag(in_: {
     narvaro,
     journal,
     mal: in_.mal.map((g) => ({ titel: g.title || '', status: g.status || 'okänd', deadline: g.deadline ? g.deadline.slice(0, 10) : null })),
-    nastaMote: nasta ? nasta.scheduled_at.slice(0, 10) : null,
+    nastaMote: nasta ? lokalDag(nasta.scheduled_at) : null,
   }
 }
 
