@@ -105,3 +105,12 @@ Om kvaliteten är väsentligt sämre på vissa flöden — rollback per-funktion
 |-------|---------|-----------|
 | 2026-05-09 | Vercel-vägen (`ai.js`, `ai-stream.js`) låst på `gpt-oss-120b` via `AI_MODEL`-env. | Initialt commit |
 | 2026-05-15 | Tech-debt-audit upptäckte att edge-vägen fortfarande defaultar på Sonnet trots Mikaels policy. Defaults synkade till gpt-oss-120b. | Fas A av tech-debt-roadmap |
+
+## Leverantörsval (KF8, 2026-10-18)
+
+Modellen är oförändrad. Det som skiljer är **var** den körs, via OpenRouters provider routing i `client/api/ai.js`:
+
+- Konton kopplade till en organisation: bara `amazon-bedrock/eu-west-1`, `allow_fallbacks: false` (`OPENROUTER_PROVIDER_EU_STRIKT`).
+- Övriga: Bedrock Irland först, reserv tillåten, `data_collection: 'deny'` (`OPENROUTER_PROVIDER`).
+
+Grind: `src/test/api-ai-eu-strikt.test.ts`.

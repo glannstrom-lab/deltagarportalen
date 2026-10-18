@@ -36,6 +36,22 @@ const OPENROUTER_PROVIDER = {
   data_collection: 'deny',
 };
 
+/**
+ * KF8 (beslut Mikael 2026-10-18): konton kopplade till en organisation (personal i
+ * organization_members, eller deltagare vars konsulent tillhör en organisation via
+ * my_ai_policy) får BARA Bedrock i Irland — ingen reserv. Är Irland nere får de ett
+ * ärligt fel i stället för ett svar från en leverantör utanför EU. Det är det som gör
+ * att säljmaterialet får säga "AI-data stannar i EU" om organisationers konton.
+ * Övriga (fristående deltagare) behåller reserven ovan.
+ * Mätt 2026-10-18: 6 av 6 anrop svarade från Amazon Bedrock, 2,2–4,7 s.
+ */
+const OPENROUTER_PROVIDER_EU_STRIKT = {
+  // allow_fallbacks: false = bara leverantörerna i order används (OpenRouters provider routing).
+  order: ['amazon-bedrock/eu-west-1'],
+  allow_fallbacks: false,
+  data_collection: 'deny',
+};
+
 
 /** Enda källan till modellnamnet i den här filen. Lägg aldrig till en till. */
 function resolveModel() {
@@ -496,7 +512,8 @@ async function checkOrgAiEnabled(supabase, userId) {
     }
     const sparr = (data || []).find((r) => r && r.ai_enabled === false);
     if (sparr) return { allowed: false, reason: 'org_disabled', orgName: sparr.org_name || null };
-    return { allowed: true };
+    // KF8: en rad = deltagaren hör till en organisation → strikt EU.
+    return { allowed: true, orgKopplad: (data || []).length > 0 };
   } catch (err) {
     console.warn('[OrgAiGate] kastade (blockerar):', err.message);
     return { allowed: false, reason: 'lookup_failed' };
@@ -581,7 +598,8 @@ async function checkPersonalOrgAiEnabled(serviceClient, userId) {
       const sparr = orgs.find((r) => r && r.ai_enabled === false);
       if (sparr) return { allowed: false, reason: 'org_disabled', orgName: sparr.name || null };
     }
-    return { allowed: true };
+    // KF8: personal med minst ett medlemskap → strikt EU.
+    return { allowed: true, orgKopplad: (data || []).length > 0 };
   } catch (err) {
     console.warn('[PersonalOrgAiGate] kastade (blockerar):', err.message);
     return { allowed: false, reason: 'lookup_failed' };
@@ -1035,6 +1053,8 @@ const hanterare = async (req, res) => {
     // Kommunspåret: organisationens AI-brytare gäller alla funktioner som
     // rör deltagarens egna uppgifter — samma undantag som B28-grinden (de
     // konsulentfunktioner som behandlar en annan persons data).
+    // KF8: sätts av organisationsgrindarna nedan; avgör om reserven utanför EU tillåts.
+    let orgKopplad = false;
     if (!AI_ENABLED_EXEMPT_FUNCTIONS.has(fn)) {
       const orgGate = await checkOrgAiEnabled(supabaseAsUser, user.id);
       if (!orgGate.allowed) {
@@ -1047,6 +1067,7 @@ const hanterare = async (req, res) => {
           reason: orgGate.reason,
         });
       }
+      orgKopplad = orgGate.orgKopplad === true;
     } else {
       // BL2: de undantagna funktionerna är personalens egna. De slipper
       // deltagarens brytare (fel kontroll för en annan persons data), men
@@ -1088,6 +1109,7 @@ const hanterare = async (req, res) => {
           reason: personalOrgGate.reason,
         });
       }
+      orgKopplad = personalOrgGate.orgKopplad === true;
     }
 
     if (ART9_FUNCTIONS.has(fn)) {
@@ -1201,7 +1223,7 @@ const hanterare = async (req, res) => {
           body: JSON.stringify({
             // Låst modell — se resolveModel() i toppen av filen.
             model: resolveModel(),
-            provider: OPENROUTER_PROVIDER,
+            provider: orgKopplad ? OPENROUTER_PROVIDER_EU_STRIKT : OPENROUTER_PROVIDER,
             messages: [
               { role: 'system', content: prompt.system },
               { role: 'user', content: prompt.user }
@@ -1352,7 +1374,7 @@ const hanterare = async (req, res) => {
             // därmed köra en annan modell än låsningen. Nu samma väg som allt
             // annat — se resolveModel().
             model: resolveModel(),
-            provider: OPENROUTER_PROVIDER,
+            provider: orgKopplad ? OPENROUTER_PROVIDER_EU_STRIKT : OPENROUTER_PROVIDER,
             messages: [
               { role: 'system', content: 'Du genererar korta, relevanta följdfrågor baserat på en konversation. Svara ENDAST med en JSON-array med exakt 3 korta frågor (max 8 ord var). Exempel: ["Hur skriver jag ett bra CV?", "Vilka jobb passar mig?", "Tips för intervjuer?"]' },
               { role: 'user', content: `Användaren frågade: "${data?.meddelande}"\n\nAssistenten svarade: "${fullResponse.substring(0, 500)}"\n\nGenerera 3 naturliga följdfrågor på svenska:` }
@@ -1405,7 +1427,7 @@ const hanterare = async (req, res) => {
       body: JSON.stringify({
         // Låst modell — se resolveModel() i toppen av filen.
         model: resolveModel(),
-        provider: OPENROUTER_PROVIDER,
+        provider: orgKopplad ? OPENROUTER_PROVIDER_EU_STRIKT : OPENROUTER_PROVIDER,
         messages: [
           { role: 'system', content: prompt.system },
           { role: 'user', content: prompt.user }
@@ -1530,6 +1552,7 @@ module.exports.checkArt9Consent = checkArt9Consent;
 // B28: den allmänna AI-av-grinden och dess namngivna undantagslista — samma
 // motivering som ovan, testat är bättre än antaget för en fail-closed-grind.
 module.exports.AI_ENABLED_EXEMPT_FUNCTIONS = AI_ENABLED_EXEMPT_FUNCTIONS;
+module.exports.OPENROUTER_PROVIDER_EU_STRIKT = OPENROUTER_PROVIDER_EU_STRIKT;
 module.exports.checkAiEnabled = checkAiEnabled;
 // B29: PII-maskeringen. Exponerad så att servermaskering kan testas oberoende
 // av OpenRouter-anropet — annars syns ett trasigt regex bara som ett

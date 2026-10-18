@@ -20,9 +20,16 @@ describe('/api/ai → OpenRouter: data_collection deny', () => {
     expect(konst).toMatch(/allow_fallbacks: true/)
   })
 
+  it('KF8: den strikta EU-inställningen nekar också datainsamling och har ingen reserv', () => {
+    const strikt = kalla.match(/const OPENROUTER_PROVIDER_EU_STRIKT = \{([\s\S]*?)\};/)?.[1] ?? ''
+    expect(strikt).toMatch(/data_collection: 'deny'/)
+    expect(strikt).toMatch(/allow_fallbacks: false/)
+  })
+
   it('varje modellrad har provider-raden direkt efter sig', () => {
     const modellrader = kalla.match(/model: resolveModel\(\),/g) ?? []
-    const medProvider = kalla.match(/model: resolveModel\(\),\s*\r?\n\s*provider: OPENROUTER_PROVIDER,/g) ?? []
+    // KF8 (2026-10-18): organisationers konton väljer den strikta EU-inställningen — båda nekar datainsamling.
+    const medProvider = kalla.match(/model: resolveModel\(\),\s*\r?\n\s*provider: orgKopplad \? OPENROUTER_PROVIDER_EU_STRIKT : OPENROUTER_PROVIDER,/g) ?? []
     expect(modellrader.length).toBeGreaterThan(0)
     expect(medProvider.length).toBe(modellrader.length)
   })
