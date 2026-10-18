@@ -42,7 +42,7 @@ import { CreateApplicationModal } from '@/components/workflow';
 
 // Import tab components
 import { AlertsTab } from '@/components/jobs/AlertsTab';
-import { MatchesTab } from '@/components/jobs/MatchesTab';
+import { MatchningTab } from '@/components/jobs/MatchningTab';
 import { DailyJobTab } from '@/components/jobs/DailyJobTab';
 import { SlumpjobbetTab } from '@/components/jobs/SlumpjobbetTab';
 
@@ -1473,7 +1473,7 @@ function SavedJobsTab() {
   );
 }
 
-// ApplicationsTab, AlertsTab, MatchesTab are imported from @/components/jobs/
+// ApplicationsTab, AlertsTab, MatchningTab are imported from @/components/jobs/
 
 // Main component with routing
 export default function JobSearch() {
@@ -1542,7 +1542,7 @@ export default function JobSearch() {
           <Route path="slumpjobbet" element={<SlumpjobbetTab />} />
           <Route path="saved" element={<SavedJobsTab />} />
           <Route path="alerts" element={<AlertsTab />} />
-          <Route path="matches" element={<MatchesTab />} />
+          <Route path="matches" element={<MatchningTab />} />
           {/* Redirect old paths to the dedicated Applications page */}
           <Route path="applications" element={<Navigate to="/applications" replace />} />
           <Route path="crm" element={<Navigate to="/applications/contacts" replace />} />

@@ -1800,10 +1800,8 @@
     },
     "matches": {
       "title": "Job Matches",
-      "subtitle": "Select a source to see matching jobs",
       "searching": "Searching for matching jobs...",
       "errorLoading": "Could not load matches",
-      "missing": "Missing",
       "allLocations": "All locations",
       "location": "location",
       "locations": "locations",
@@ -1820,7 +1818,6 @@
         "possible": "Possible"
       },
       "showMoreMatches": "Show {{count}} more possible matches",
-      "refresh": "Refresh",
       "createProfileFirst": "Create your profile first",
       "createProfileDesc": "Once we know what you can do and what you want, we can find jobs that fit. Start with one of these:",
       "createCV": "Create CV",
@@ -1828,18 +1825,10 @@
       "setCareerGoals": "Set career goals",
       "noJobsFound": "No jobs found. Try selecting a different source or changing the location filter.",
       "sources": {
-        "myCV": "My CV",
         "cv": "CV",
-        "interestGuide": "Interest Guide",
         "interest": "Interests",
-        "careerGoals": "Career Goals",
         "career": "Career Goals"
       },
-      "stats": {
-        "sentence": "We are showing {{total}} jobs here. {{high}} of them look like strong matches.",
-        "sentenceNoStrong": "We are showing {{total}} jobs here, sorted by how closely they match what you have filled in."
-      },
-      "preferencesUsed": "Your preferences affect matching",
       "detail": {
         "foundViaSearch": "Found by your search \"{{term}}\"",
         "workedAs": "You have worked as {{title}}",
@@ -1847,26 +1836,81 @@
         "relatedExperience": "Related to your experience as {{title}}",
         "education": "Fits your education",
         "interest": "Interest: {{name}}",
-        "fitsInterest": "Fits your interest in {{name}}",
-        "relatedOccupation": "Related job",
         "desiredJob": "Job you want: {{role}}",
-        "careerGoal": "Career goal: {{role}}",
         "nearGoal": "Close to your goal: {{role}}",
         "licenseRequired": "Driving licence needed",
         "hasLicense": "You have a {{klass}} driving licence ✓",
         "needsLicense": "{{klass}} driving licence needed",
         "remote": "Remote work ✓",
-        "hasCar": "You have a car ✓"
+        "hasCar": "You have a car ✓",
+        "industry": "Your industry: {{omrade}}"
       },
-      "pref": {
-        "fulltime": "Full-time",
-        "parttime": "Part-time",
-        "remote": "Remote work",
-        "hybrid": "Hybrid",
-        "onsite": "On site",
-        "license": "Driving licence {{list}}",
-        "hasCar": "Has a car",
-        "change": "Change"
+      "faktor": {
+        "intro": "Tick what should count. What you untick does not affect the matching at all.",
+        "visa": "Show factors ({{antal}} chosen)",
+        "dolj": "Hide factors",
+        "underlagRubrik": "What we search for",
+        "villkorRubrik": "Conditions",
+        "fyllI": "Fill in",
+        "pendling": "Travel time is not used yet — the portal has no travel time data, and a guessed travel time would be wrong.",
+        "sparFel": "Your choice applies now but could not be saved for next time.",
+        "ingetUnderlag": "Nothing you chose can be searched for. Tick at least one thing under \"What we search for\".",
+        "resultat": "{{antal}} jobs, {{bra}} of them good or strong. Searched for: {{termer}}.",
+        "onskadeYrken": {
+          "namn": "Jobs I want",
+          "hjalp": "From your profile — counts the most.",
+          "saknas": "You have not added a job you want."
+        },
+        "tidigareYrken": {
+          "namn": "Jobs I have had",
+          "hjalp": "From the work experience in your CV.",
+          "saknas": "Your CV has no work experience."
+        },
+        "intresseguiden": {
+          "namn": "Interest guide suggestions",
+          "hjalp": "Jobs that fit your interests.",
+          "saknas": "You have not done the interest guide."
+        },
+        "kompetenser": {
+          "namn": "My skills",
+          "hjalp": "Gives points when the job ad mentions them.",
+          "saknas": "Your CV has no skills that can be searched for."
+        },
+        "utbildning": {
+          "namn": "My education",
+          "hjalp": "Gives points when the job ad mentions it.",
+          "saknas": "Your CV has no education."
+        },
+        "legitimation": {
+          "namn": "Hide jobs that need a licence I do not have",
+          "hjalp": "For example nurse or teacher.",
+          "saknas": ""
+        },
+        "besvar": {
+          "namn": "Hide jobs that clash with my difficulties",
+          "hjalp": "What the interest guide left out. Only counted in your browser.",
+          "saknas": "You have not added difficulties in the interest guide."
+        },
+        "bransch": {
+          "namn": "My industry",
+          "hjalp": "Gives points when the job is in your industry.",
+          "saknas": "You have not chosen an industry in your profile."
+        },
+        "anstallningsform": {
+          "namn": "Full-time or part-time",
+          "hjalp": "As you said in your profile.",
+          "saknas": "You have not said what kind of employment you want."
+        },
+        "distans": {
+          "namn": "Remote or on site",
+          "hjalp": "As you said in your profile.",
+          "saknas": "You have not said if you want to work remotely."
+        },
+        "korkort": {
+          "namn": "Driving licence and car",
+          "hjalp": "Points when you have what the job needs, fewer when you do not.",
+          "saknas": "You have not added a driving licence or car."
+        }
       }
     },
     "share": {

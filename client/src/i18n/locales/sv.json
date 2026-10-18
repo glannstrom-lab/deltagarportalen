@@ -1800,10 +1800,8 @@
     },
     "matches": {
       "title": "Jobbmatchningar",
-      "subtitle": "Välj källa för att se matchande jobb",
       "searching": "Söker efter matchande jobb...",
       "errorLoading": "Kunde inte ladda matchningar",
-      "missing": "Saknas",
       "allLocations": "Alla orter",
       "location": "ort",
       "locations": "orter",
@@ -1820,7 +1818,6 @@
         "possible": "Möjlig"
       },
       "showMoreMatches": "Visa {{count}} fler möjliga matchningar",
-      "refresh": "Uppdatera",
       "createProfileFirst": "Vi behöver veta mer om dig först",
       "createProfileDesc": "När vi vet vad du kan och vill kan vi hitta jobb som passar. Börja med någon av dessa:",
       "createCV": "Skapa CV",
@@ -1828,18 +1825,10 @@
       "setCareerGoals": "Sätt karriärmål",
       "noJobsFound": "Inga jobb matchade just nu. Prova en annan källa eller bredda din sökning.",
       "sources": {
-        "myCV": "Ditt CV",
         "cv": "CV",
-        "interestGuide": "Intresseguiden",
         "interest": "Intressen",
-        "careerGoals": "Karriärmål",
         "career": "Karriärmål"
       },
-      "stats": {
-        "sentence": "Vi visar {{total}} jobb här. {{high}} av dem ser ut som starka matchningar.",
-        "sentenceNoStrong": "Vi visar {{total}} jobb här, sorterade efter hur väl de liknar det du fyllt i."
-      },
-      "preferencesUsed": "Dina preferenser påverkar matchningen",
       "detail": {
         "foundViaSearch": "Hittades via sökningen ”{{term}}”",
         "workedAs": "Du har jobbat som {{title}}",
@@ -1847,26 +1836,81 @@
         "relatedExperience": "Relaterat till din erfarenhet som {{title}}",
         "education": "Matchar din utbildning",
         "interest": "Intresse: {{name}}",
-        "fitsInterest": "Passar ditt intresse för {{name}}",
-        "relatedOccupation": "Relaterat yrke",
         "desiredJob": "Önskat yrke: {{role}}",
-        "careerGoal": "Karriärmål: {{role}}",
         "nearGoal": "Nära ditt mål: {{role}}",
         "licenseRequired": "Körkort krävs",
         "hasLicense": "Du har {{klass}}-körkort ✓",
         "needsLicense": "{{klass}}-körkort krävs",
         "remote": "Distansarbete ✓",
-        "hasCar": "Har bil ✓"
+        "hasCar": "Har bil ✓",
+        "industry": "Din bransch: {{omrade}}"
       },
-      "pref": {
-        "fulltime": "Heltid",
-        "parttime": "Deltid",
-        "remote": "Distansarbete",
-        "hybrid": "Hybrid",
-        "onsite": "På plats",
-        "license": "Körkort {{list}}",
-        "hasCar": "Har bil",
-        "change": "Ändra"
+      "faktor": {
+        "intro": "Kryssa i vad som ska räknas. Det du bockar ur påverkar inte matchningen alls.",
+        "visa": "Visa faktorer ({{antal}} valda)",
+        "dolj": "Dölj faktorer",
+        "underlagRubrik": "Det här söks på",
+        "villkorRubrik": "Villkor",
+        "fyllI": "Fyll i",
+        "pendling": "Restid används inte ännu — portalen har ingen restidsdata, och en gissad restid vore fel.",
+        "sparFel": "Valet gäller nu men kunde inte sparas till nästa gång.",
+        "ingetUnderlag": "Inget av det du valt finns att söka på. Kryssa i minst en sak under \"Det här söks på\".",
+        "resultat": "{{antal}} jobb, varav {{bra}} bra eller starka. Sökt på: {{termer}}.",
+        "onskadeYrken": {
+          "namn": "Yrken jag vill ha",
+          "hjalp": "Ur din profil — väger tyngst.",
+          "saknas": "Du har inte angett något önskat yrke."
+        },
+        "tidigareYrken": {
+          "namn": "Yrken jag haft",
+          "hjalp": "Ur din arbetslivserfarenhet i CV:t.",
+          "saknas": "Ditt CV har ingen arbetslivserfarenhet."
+        },
+        "intresseguiden": {
+          "namn": "Intresseguidens förslag",
+          "hjalp": "Yrken som passar dina intressen.",
+          "saknas": "Du har inte gjort intresseguiden."
+        },
+        "kompetenser": {
+          "namn": "Mina kompetenser",
+          "hjalp": "Ger poäng när annonsen nämner dem.",
+          "saknas": "Ditt CV har inga kompetenser som går att söka på."
+        },
+        "utbildning": {
+          "namn": "Min utbildning",
+          "hjalp": "Ger poäng när annonsen nämner den.",
+          "saknas": "Ditt CV har ingen utbildning."
+        },
+        "legitimation": {
+          "namn": "Dölj jobb som kräver legitimation jag saknar",
+          "hjalp": "T.ex. sjuksköterska eller lärare.",
+          "saknas": ""
+        },
+        "besvar": {
+          "namn": "Dölj yrken som krockar med mina besvär",
+          "hjalp": "Det intresseguiden lämnat bort. Räknas bara i din webbläsare.",
+          "saknas": "Du har inte angett besvär i intresseguiden."
+        },
+        "bransch": {
+          "namn": "Min bransch",
+          "hjalp": "Ger poäng när jobbet är i din bransch.",
+          "saknas": "Du har inte valt bransch i profilen."
+        },
+        "anstallningsform": {
+          "namn": "Heltid eller deltid",
+          "hjalp": "Som du angett i profilen.",
+          "saknas": "Du har inte angett anställningsform."
+        },
+        "distans": {
+          "namn": "Distans eller på plats",
+          "hjalp": "Som du angett i profilen.",
+          "saknas": "Du har inte angett om du vill jobba på distans."
+        },
+        "korkort": {
+          "namn": "Körkort och bil",
+          "hjalp": "Poäng när du har det jobbet kräver, avdrag när du saknar det.",
+          "saknas": "Du har inte angett körkort eller bil."
+        }
       }
     },
     "share": {

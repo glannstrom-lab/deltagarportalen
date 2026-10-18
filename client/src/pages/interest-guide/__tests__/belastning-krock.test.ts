@@ -134,7 +134,7 @@ describe('Generellt: ingen central belastning mot stora besvär', () => {
 
 describe('Jobbmatchningen (Matchningar, Dagens jobb)', () => {
   it('använder inte ett uteslutet yrke som sökord', () => {
-    // Samma kedja som MatchesTab.tsx och DailyJobTab.tsx kör.
+    // Samma kedja som MatchningTab.tsx och DailyJobTab.tsx kör.
     const sokord = calculateJobMatches(calculateUserProfile(ljudprofil(1)))
       .filter(m => m.matchPercentage >= 50)
       .slice(0, 15)
@@ -149,7 +149,8 @@ describe('Jobbmatchningen (Matchningar, Dagens jobb)', () => {
   })
 
   it('hämtar yrkena via calculateJobMatches, inte direkt ur yrkeslistan', () => {
-    for (const fil of ['components/jobs/MatchesTab.tsx', 'components/jobs/DailyJobTab.tsx']) {
+    // MatchesTab.tsx ersattes 2026-10-18 av MatchningTab.tsx (en matchning, valbara faktorer).
+    for (const fil of ['components/jobs/MatchningTab.tsx', 'components/jobs/DailyJobTab.tsx']) {
       const k = kod(fil)
       expect(k, fil).toMatch(/calculateJobMatches\(/)
       expect(k, `${fil} läser yrkeslistan förbi filtret`).not.toMatch(/import[^;]*\boccupations\b[^;]*interestGuideData/)

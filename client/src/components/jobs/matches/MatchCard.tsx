@@ -64,7 +64,9 @@ export const MatchCard = memo(function MatchCard({
     career: { color: 'bg-[var(--c-accent)]/40 text-[var(--c-text)]', label: labels.career, icon: Target }
   }
 
-  const config = sourceConfig[source]
+  // Den gemensamma matchningen (2026-10-18) har ingen enskild källa — då ingen källbricka.
+  const config = source ? sourceConfig[source] : null
+  const chipFarg = config?.color ?? 'bg-[var(--c-accent)]/40 text-[var(--c-text)]'
 
   return (
     <div className="bg-white dark:bg-stone-900 rounded-xl border border-stone-200 dark:border-stone-700 overflow-hidden hover:shadow-lg transition-shadow">
@@ -83,11 +85,13 @@ export const MatchCard = memo(function MatchCard({
         </div>
 
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 mb-1">
-            <span className={cn("px-2 py-0.5 rounded-full text-xs font-medium", config.color)}>
-              {config.label}
-            </span>
-          </div>
+          {config && (
+            <div className="flex items-center gap-2 mb-1">
+              <span className={cn("px-2 py-0.5 rounded-full text-xs font-medium", config.color)}>
+                {config.label}
+              </span>
+            </div>
+          )}
           <h3 className="font-semibold text-stone-900 dark:text-stone-100 line-clamp-2 mb-1">
             {job.headline}
           </h3>
@@ -142,7 +146,7 @@ export const MatchCard = memo(function MatchCard({
           </p>
           <div className="flex flex-wrap gap-1">
             {matchDetails.slice(0, 6).map((detail, i) => (
-              <span key={i} className={cn("px-2 py-0.5 text-xs rounded", config.color)}>
+              <span key={i} className={cn("px-2 py-0.5 text-xs rounded", chipFarg)}>
                 {detail}
               </span>
             ))}

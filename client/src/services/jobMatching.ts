@@ -38,7 +38,8 @@ const svenskaTexter: MatchTexter = (_nyckel, svenska, vars) =>
 export interface MatchedJob {
   job: PlatsbankenJob
   score: number
-  source: MatchSource
+  /** Utelämnad sedan 2026-10-18: en matchning med valda faktorer har ingen enskild källa. */
+  source?: MatchSource
   matchDetails: string[]
 }
 

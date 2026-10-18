@@ -55,6 +55,11 @@ export interface PlatsbankenJob {
     label: string;
     concept_id?: string;
   };
+  /** Yrkesområde ur JobTech-taxonomin ("Transport, distribution, lager") — matchningens bransch. */
+  occupation_field?: {
+    label: string;
+    concept_id?: string;
+  };
   application_details?: {
     reference?: string;
     email?: string;
