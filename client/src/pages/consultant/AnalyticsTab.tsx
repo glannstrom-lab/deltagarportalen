@@ -36,6 +36,7 @@ import { ReportGeneratorDialog } from '@/components/consultant/ReportGeneratorDi
 import { InsightsPanel } from '@/components/consultant/InsightsPanel'
 import { IvoUnderlagSektion } from '@/components/consultant/IvoUnderlagSektion'
 import { AvtalskravKort } from '@/components/consultant/AvtalskravKort'
+import { GrundersattningKort } from '@/components/consultant/GrundersattningKort'
 import { orgTypVisning } from '@/components/consultant/orgTypVisning'
 import { orgApi, type OrgKind } from '@/services/orgApi'
 import type { ReportData } from '@/services/pdfReportGenerator'
@@ -675,6 +676,8 @@ export function AnalyticsTab() {
 
       {/* RM4: aktivitetsloggen mot avtalskravet (FFU §4.1.1) — timkrav per vecka och andel fysiska. */}
       {kundtypsVisning?.visaAvtalskrav && <AvtalskravKort />}
+      {/* KF2: grundersättningen per månad (FFU ROM2 §5.1) — bara leverantör. */}
+      {kundtypsVisning?.visaAvtalskrav && <GrundersattningKort />}
 
       {/* Header with Date Range and Export */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">

@@ -22,8 +22,8 @@
  *   väntar      uppföljningen är registrerad, underlaget inte verifierat
  *   verifierad  konsulenten har stämt av ett skriftligt underlag
  *   fakturerad  resultatersättningen för punkten är fakturerad
- * Beloppet enligt FFU §5.1 räknas inte här — portalen har inte avtalets
- * prislista, och ett gissat belopp är värre än inget.
+ * Beloppet enligt FFU §5.1 räknas i `rom2Ersattning.ts` (KF2, 2026-10-18 — prislistan
+ * hämtad ur förfrågningsunderlaget) och visas på placeringskortet för leverantör.
  *
  * Portalen skickar ingenting till Arbetsförmedlingen.
  */

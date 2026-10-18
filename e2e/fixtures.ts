@@ -1,4 +1,5 @@
 import { test as base, expect, Page } from '@playwright/test'
+import { totpKod } from './totp'
 
 /**
  * Custom test fixtures for Deltagarportalen E2E tests
@@ -45,6 +46,32 @@ export async function godkannSamtyckesstegOmDetVisas(page: Page) {
 }
 
 /**
+ * KSL25/KF (2026-10-18): kontot har tvåstegsinloggning på → MfaGrind visar en
+ * kodruta efter lösenordet. Koden räknas fram ur hemligheten i miljön. Saknas
+ * hemligheten fäller vi med ett begripligt fel i stället för en timeout längre fram.
+ */
+export async function angeTvastegskodOmDenKravs(page: Page, email: string) {
+  const ruta = page.getByRole('dialog', { name: /skriv in koden från din app|type the code from your app/i })
+  try {
+    await ruta.waitFor({ state: 'visible', timeout: 5000 })
+  } catch {
+    return
+  }
+  const hemlighet = email === TEST_CONSULTANT.email ? process.env.TEST_CONSULTANT_TOTP_SECRET : undefined
+  if (!hemlighet) throw new Error(`${email} har tvåstegsinloggning på, men TEST_CONSULTANT_TOTP_SECRET saknas i miljön`)
+  // En kod nära 30-sekundersgränsen kan hinna gå ut — försök med nästa om den första nekas.
+  for (const forskjutning of [0, 1]) {
+    await ruta.locator('#mfa-grind-kod').fill(totpKod(hemlighet, Date.now(), forskjutning))
+    await ruta.getByRole('button', { name: /fortsätt|continue/i }).click()
+    try {
+      await ruta.waitFor({ state: 'hidden', timeout: 8000 })
+      return
+    } catch { /* nästa kod */ }
+  }
+  throw new Error('Tvåstegskoden godtogs inte — kontrollera TEST_CONSULTANT_TOTP_SECRET')
+}
+
+/**
  * Page Object Model helpers
  */
 export class AuthHelper {
@@ -59,6 +86,7 @@ export class AuthHelper {
     // Vänta tills vi lämnat login — index redirectar numera till /#/oversikt
     // (C3, 2026-07-10), så matcha inte på trailing slash
     await this.page.waitForURL((u) => !u.toString().includes('/login'), { timeout: 15000 })
+    await angeTvastegskodOmDenKravs(this.page, email)
     await godkannSamtyckesstegOmDetVisas(this.page)
   }
 

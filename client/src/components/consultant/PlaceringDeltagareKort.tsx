@@ -9,8 +9,8 @@
  *
  * RR25 (resultatklockan): per uppföljningspunkt också status för
  * resultatersättningen — väntar → verifierad → fakturerad
- * (PENDING_20260927d_resultat_och_msfa, services/resultatklocka.ts). Belopp
- * visas inte: portalen har inte avtalets prislista.
+ * (PENDING_20260927d_resultat_och_msfa, services/resultatklocka.ts). Beloppet per
+ * steg visas för leverantör sedan KF2 (2026-10-18, rom2Ersattning.ts, FFU §5.1).
  *
  * Tre lägen: laddar / fel / klart. Ingen placering = ingen ruta (tom yta
  * fyller ingen funktion på översikten; "Registrera placering" finns i rubriken).
@@ -34,6 +34,8 @@ import {
 import { followupStatus, kanRegistreraUppfoljning, uppfoljningspunkt, type Uppfoljning } from '@/pages/consultant/placeringsmatt'
 import { formatLocalDate } from '@/services/aktivitetSchema'
 import { langtDatum } from './aktivitetEtiketter'
+import { resultatersattning, kr, ROM2_KALLA } from '@/services/rom2Ersattning'
+import type { Niva } from '@/services/placeringUtfall'
 import { BETALSTATUS_ETIKETT, RESULTAT_MSFA_FINNS, betalstatus, betalstatusDatum, nastaBetalsteg, resultatApi, type BetalPlacering } from '@/services/resultatklocka'
 
 export type PlaceringarLage =
@@ -71,7 +73,31 @@ function Betalrad({ p, vilken, onAndrad }: { p: Placement; vilken: Uppfoljning; 
   )
 }
 
-function UppfoljningRad({ p, vilken, idag, onRegistrera, onBetalstatusAndrad }: { p: Placement; vilken: Uppfoljning; idag: string; onRegistrera: (p: Placement, v: Uppfoljning) => void; onBetalstatusAndrad?: () => void }) {
+/**
+ * KF2 (2026-10-18): vad steget ger i resultatersättning enligt FFU ROM2 §5.1 — bara för
+ * leverantör. Före uppföljningen räknas på placeringens omfattning, efter på utfallet.
+ */
+function Ersattningsrad({ p, vilken, utfall }: { p: Placement; vilken: Uppfoljning; utfall: UppfoljningUtfall | null | undefined }) {
+  const x = p as unknown as { outcome_level?: Niva | null; scope_percent?: number | null; placement_type?: string | null }
+  const r = resultatersattning({
+    niva: x.outcome_level ?? null,
+    placeringstyp: (x.placement_type ?? null) as never,
+    omfattningProcent: x.scope_percent ?? null,
+    utfall: utfall ?? null,
+  }, vilken)
+  const steg = vilken === '3m' ? 'Resultatersättning 1' : 'Resultatersättning 2'
+  return (
+    <span className="block text-xs mt-1" data-testid={`rom2-${vilken}`} title={ROM2_KALLA}>
+      <span className="text-[var(--j-blak-2)]">
+        {steg}: {r.typ === 'belopp' ? <strong className="text-[var(--j-blak)]">{kr(r.belopp)}</strong> : r.typ === 'inget' ? 'ingen' : 'kan inte räknas'} — {r.grund}.
+      </span>
+      {vilken === '3m' && r.typ === 'belopp' && <span className="block text-[var(--j-blak-3)]">Begär den så fort villkoret är uppfyllt — byter deltagaren leverantör går den annars till nästa.</span>}
+      {vilken === '6m' && r.typ === 'belopp' && <span className="block text-[var(--j-blak-3)]">Begärs först när tjänsten hos er är avslutad.</span>}
+    </span>
+  )
+}
+
+function UppfoljningRad({ p, vilken, idag, onRegistrera, onBetalstatusAndrad, visaRom2 }: { p: Placement; vilken: Uppfoljning; idag: string; onRegistrera: (p: Placement, v: Uppfoljning) => void; onBetalstatusAndrad?: () => void; visaRom2?: boolean }) {
   const gjord = vilken === '3m' ? p.followup_3m : p.followup_6m
   const rubrik = vilken === '3m' ? '3 månader' : '6 månader'
   const punkt = uppfoljningspunkt(p.start_date ?? null, vilken)
@@ -97,6 +123,7 @@ function UppfoljningRad({ p, vilken, idag, onRegistrera, onBetalstatusAndrad }: 
     <li className="grid gap-2 py-2.5 border-t border-[var(--j-linje)] first:border-t-0">
       <p className="m-0 text-sm text-[var(--j-blak-2)]">
         <span className="font-semibold text-[var(--j-blak)]">{rubrik}:</span> {text}
+        {visaRom2 && <Ersattningsrad p={p} vilken={vilken} utfall={gjord ? utfall : null} />}
         {RESULTAT_MSFA_FINNS && onBetalstatusAndrad && <Betalrad p={p} vilken={vilken} onAndrad={onBetalstatusAndrad} />}
       </p>
       {!gjord && besked.tillaten && (
@@ -110,12 +137,14 @@ function UppfoljningRad({ p, vilken, idag, onRegistrera, onBetalstatusAndrad }: 
   )
 }
 
-export function PlaceringDeltagareKort({ lage, onForsokIgen, onRegistrera, onBetalstatusAndrad }: {
+export function PlaceringDeltagareKort({ lage, onForsokIgen, onRegistrera, onBetalstatusAndrad, visaRom2 = false }: {
   lage: PlaceringarLage
   onForsokIgen: () => void
   onRegistrera: (p: Placement, vilken: Uppfoljning) => void
   /** RR25: statusen ändrad — ladda om placeringarna. */
   onBetalstatusAndrad?: () => void
+  /** KF2: visa resultatersättningen enligt ROM2 — bara när kundtypen är leverantör. */
+  visaRom2?: boolean
 }) {
   const idag = formatLocalDate(new Date())
   if (lage.status === 'laddar') return null
@@ -153,8 +182,8 @@ export function PlaceringDeltagareKort({ lage, onForsokIgen, onRegistrera, onBet
               </p>
               {p.notes && <p className="m-0 text-xs text-[var(--j-blak-3)] whitespace-pre-wrap">{p.notes}</p>}
               <ul className="m-0 mt-2 p-0 list-none" aria-label={`Uppföljning av placeringen hos ${p.employer_name}`}>
-                <UppfoljningRad p={p} vilken="3m" idag={idag} onRegistrera={onRegistrera} onBetalstatusAndrad={onBetalstatusAndrad} />
-                <UppfoljningRad p={p} vilken="6m" idag={idag} onRegistrera={onRegistrera} onBetalstatusAndrad={onBetalstatusAndrad} />
+                <UppfoljningRad p={p} vilken="3m" idag={idag} onRegistrera={onRegistrera} onBetalstatusAndrad={onBetalstatusAndrad} visaRom2={visaRom2} />
+                <UppfoljningRad p={p} vilken="6m" idag={idag} onRegistrera={onRegistrera} onBetalstatusAndrad={onBetalstatusAndrad} visaRom2={visaRom2} />
               </ul>
             </li>
           )

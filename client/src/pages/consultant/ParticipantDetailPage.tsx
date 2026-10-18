@@ -850,6 +850,7 @@ export function ParticipantDetailPage() {
       onForsokIgen={laddaOmPlaceringar}
       onRegistrera={(placering, vilken) => setUppfoljning({ placering, vilken })}
       onBetalstatusAndrad={laddaOmPlaceringar}
+      visaRom2={kundRegelverk === 'leverantor'}
     />
   )
 

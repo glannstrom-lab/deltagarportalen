@@ -125,12 +125,12 @@ export function IvoUnderlagSektion() {
     : []
   const valdManadPlan = planerIManad.find((x) => x.plan.id === manadPlan) ?? null
 
-  const laddaNerManad = async () => {
+  const laddaNerManad = async (format: 'pdf' | 'csv' = 'pdf') => {
     if (!valdManadPlan) return
     setManadLaddar(true)
     setManadFel(null)
     try {
-      await laddaNerManadsunderlag({ plan: valdManadPlan.plan, ym: manad, participantName: valdManadPlan.namn })
+      await laddaNerManadsunderlag({ plan: valdManadPlan.plan, ym: manad, participantName: valdManadPlan.namn, format })
     } catch (err) {
       setManadFel(err instanceof Error ? `Månadsunderlaget kunde inte tas fram: ${err.message}` : 'Månadsunderlaget kunde inte tas fram.')
     } finally {
@@ -256,6 +256,10 @@ export function IvoUnderlagSektion() {
               <Button size="sm" variant="outline" onClick={() => void laddaNerManad()} disabled={!valdManadPlan || manadLaddar}>
                 <Download className="w-4 h-4 mr-1.5" aria-hidden="true" />
                 {manadLaddar ? 'Tar fram…' : 'Ladda ner månadsunderlag (PDF)'}
+              </Button>
+              {/* KF3: samma rader som fil, för kommunens eget system eller kalkylark. */}
+              <Button size="sm" variant="ghost" onClick={() => void laddaNerManad('csv')} disabled={!valdManadPlan || manadLaddar}>
+                Som CSV
               </Button>
             </div>
             {manadFel && <p role="alert" className="text-sm text-rose-700 dark:text-rose-300">{manadFel}</p>}

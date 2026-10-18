@@ -11,10 +11,12 @@
  * Svenska literaler: konsulentvyn översätts inte (DESIGN.md §2). Underlagets
  * texter har redan nycklar (consultant.underlag.*) och läses därifrån.
  */
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useQuery } from '@tanstack/react-query'
 import { Button } from '@/components/ui/Button'
 import { planBekraftelseApi, bekraftelseLage } from '@/services/planBekraftelseApi'
+import { GRUND_PER_DAG } from '@/services/rom2Ersattning'
 import { StatusChip } from '@/components/ui/StatusChip'
 import { KvarterIkon } from '@/components/ui/icons/kvarter/KvarterIkon'
 import { SpaltYta } from '../SpaltYta'
@@ -23,6 +25,7 @@ import { formatLocalDate } from '@/services/aktivitetSchema'
 import {
   FORSORJNINGSHINDER,
   FORSORJNINGSHINDER_ETIKETT,
+  aktivitetsplanApi,
   kanAngraUnderlag,
   type ActivityPlan,
   type ActivitySession,
@@ -148,6 +151,47 @@ export function UnderlagYta({ sessions, underlag, underlagFel, egetId, paketLadd
 // Båda: planens fakta
 // ---------------------------------------------------------------------------
 
+/**
+ * KF2: AF:s nivå och deltagandegrad — det grundersättningen räknas på (FFU ROM2 §5.1).
+ * Sparas direkt vid ändring; ett fel visas och värdet återställs.
+ */
+function Rom2PlanFalt({ plan, onPlanSparad }: { plan: ActivityPlan; onPlanSparad: (p: ActivityPlan) => void }) {
+  const [sparar, setSparar] = useState(false)
+  const [fel, setFel] = useState<string | null>(null)
+  const [grad, setGrad] = useState(plan.deltagandegrad != null ? String(plan.deltagandegrad) : '')
+  const spara = async (patch: Partial<Pick<ActivityPlan, 'rom_niva' | 'deltagandegrad'>>) => {
+    setSparar(true); setFel(null)
+    try { onPlanSparad(await aktivitetsplanApi.update(plan.id, patch)) }
+    catch (e) { setFel(e instanceof Error ? e.message : 'Kunde inte spara'); setGrad(plan.deltagandegrad != null ? String(plan.deltagandegrad) : '') }
+    finally { setSparar(false) }
+  }
+  const valtGrad = (v: string) => {
+    const n = v === '' ? null : Math.round(Number(v))
+    if (n !== null && (!Number.isFinite(n) || n < 1 || n > 100)) { setFel('Deltagandegraden ska vara 1–100 %'); return }
+    if (n !== (plan.deltagandegrad ?? null)) void spara({ deltagandegrad: n })
+  }
+  return (
+    <div className="grid gap-2 text-sm" data-testid="rom2-planfalt">
+      <div className="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-x-4 gap-y-2">
+        <label htmlFor={`rom-niva-${plan.id}`} className="text-[var(--j-blak-3)]">Nivå (AF)</label>
+        <select id={`rom-niva-${plan.id}`} disabled={sparar} value={plan.rom_niva ?? ''}
+          onChange={(e) => void spara({ rom_niva: (e.target.value || null) as ActivityPlan['rom_niva'] })}
+          className="min-h-[44px] sm:min-h-[36px] rounded-[var(--j-r-s)] border border-[var(--j-linje-2)] bg-[var(--j-kort)] text-[var(--j-blak)] px-2 py-1 text-sm">
+          <option value="">Inte angiven</option>
+          {(['A', 'B', 'C'] as const).map((n) => <option key={n} value={n}>{n} — {GRUND_PER_DAG[n]} kr/dag</option>)}
+        </select>
+        <label htmlFor={`rom-grad-${plan.id}`} className="text-[var(--j-blak-3)]">Deltagandegrad</label>
+        <span className="flex items-center gap-2">
+          <input id={`rom-grad-${plan.id}`} inputMode="numeric" disabled={sparar} value={grad} onChange={(e) => setGrad(e.target.value)} onBlur={(e) => valtGrad(e.target.value.trim())}
+            className="w-20 min-h-[44px] sm:min-h-[36px] rounded-[var(--j-r-s)] border border-[var(--j-linje-2)] bg-[var(--j-kort)] text-[var(--j-blak)] px-2 py-1 text-sm" />
+          <span className="text-[var(--j-blak-3)]">% {plan.deltagandegrad != null && plan.deltagandegrad < 100 ? '· 80 % av grundersättningen' : ''}</span>
+        </span>
+      </div>
+      {fel && <p role="alert" className="m-0 text-[var(--s-ogiltig-text)]">{fel}</p>}
+    </div>
+  )
+}
+
 /** KF5: har deltagaren bekräftat att hen läst DEN HÄR versionen av planen? */
 function PlanBekraftelseRad({ plan }: { plan: ActivityPlan }) {
   const q = useQuery({ queryKey: ['plan-bekraftelse', plan.id], queryFn: () => planBekraftelseApi.lista(plan.id), staleTime: 60_000 })
@@ -192,6 +236,7 @@ export function PlanYta({ plan, arLeverantor, sparar, onHinder, onPlanSparad }: 
           <ArendenummerFalt plan={plan} regelverk={arLeverantor ? 'leverantor' : 'kommun'} onSparad={onPlanSparad} />
         </dl>
       )}
+      {arLeverantor && <Rom2PlanFalt plan={plan} onPlanSparad={onPlanSparad} />}
       {!arLeverantor && (
         <div className="grid gap-1 text-sm" data-testid="rad-forsorjningshinder">
           <label htmlFor={`hinder-${plan.id}`} className="text-[var(--j-blak-3)]">Försörjningshinder</label>

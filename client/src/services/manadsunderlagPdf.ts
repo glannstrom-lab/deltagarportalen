@@ -156,6 +156,36 @@ export function passRader(sessions: readonly ManadsPass[], ym: string, participa
   ])
 }
 
+/**
+ * KF3 (2026-10-18): samma underlag som CSV. Ingen av kommunernas socialtjänstsystem
+ * (Treserva, Combine, Lifecare, Procapita) har ett publikt importformat för externa
+ * närvarouppgifter, och AF/SKR:s gemensamma kanal (GIF) kommer tidigast 2027. Tills dess
+ * får handläggaren både PDF:en att läsa och en strukturerad fil med exakt samma rader —
+ * samma funktioner (veckoRader, passRader), ingen egen räkning. Semikolon + BOM för svensk Excel.
+ */
+export function manadsunderlagCsv(input: ManadsunderlagInput): string {
+  const cell = (v: string) => (/[;"\n\r]/.test(v) ? `"${v.replace(/"/g, '""')}"` : v)
+  const rad = (r: readonly string[]) => r.map(cell).join(';')
+  const nu = input.nu ?? new Date()
+  const franvaro = input.regelverk === 'leverantor'
+    ? ['Frånvaro, anmäld i förväg', 'Frånvaro, inte anmäld']
+    : ['Giltig frånvaro', 'Ogiltig frånvaro']
+  return '\ufeff' + [
+    rad(['Månadsunderlag', manadEtikett(input.ym)]),
+    rad(['Deltagare', input.participantName || STRECK]),
+    ...(input.visaArende ?? PLAN_PASS_KOLUMNER_FINNS ? [rad([input.regelverk === 'leverantor' ? ARENDE_ETIKETT.leverantor : ARENDE_ETIKETT.kommun, input.plan.case_reference || STRECK])] : []),
+    rad(['Organisation', input.organizationName || STRECK]),
+    rad(['Framtaget av', input.framtagetAv]),
+    rad(['Framtaget', tidpunkt(nu.toISOString())]),
+    '',
+    rad(['Vecka', 'Dagar i månaden', 'Pass', 'Närvaro anvisat (h)', 'Eget jobbsökande kvitterat (h)', ...franvaro, 'Sjuk med intyg', 'Sjuk utan intyg', 'Ej markerade']),
+    ...veckoRader(input.sessions, input.ym).map(rad),
+    '',
+    rad(['Vecka', 'Datum', 'Tid', 'Aktivitet', 'Utfall', 'Intyg', 'Anteckning', 'Markerat av', 'Markerat']),
+    ...passRader(input.sessions, input.ym, input.plan.participant_id, input.namn).map(rad),
+  ].join('\r\n')
+}
+
 export interface ManadsunderlagInput {
   ym: string
   plan: Pick<ActivityPlan, 'id' | 'participant_id' | 'start_date' | 'end_date' | 'weekly_hours_target' | 'jobsearch_hours_per_week'> & { case_reference?: string | null }
@@ -342,6 +372,8 @@ export async function laddaNerManadsunderlag(args: {
   plan: ManadsunderlagInput['plan'] & Pick<ActivityPlan, 'org_id'>
   ym: string
   participantName?: string | null
+  /** KF3: 'csv' ger samma rader som strukturerad fil. Standard: PDF. */
+  format?: 'pdf' | 'csv'
 }): Promise<void> {
   const { plan, ym } = args
   const { from, to } = manadGranser(ym)
@@ -365,7 +397,7 @@ export async function laddaNerManadsunderlag(args: {
     : null
   const participantName = args.participantName?.trim() || namn[plan.participant_id] || ''
 
-  const doc = await generateManadsunderlagPDF({
+  const indata: ManadsunderlagInput = {
     ym,
     plan,
     participantName,
@@ -374,6 +406,19 @@ export async function laddaNerManadsunderlag(args: {
     sessions,
     namn,
     regelverk: medlemskap ? regelverkForPlan(medlemskap, plan.org_id) : null,
-  })
+  }
+  if (args.format === 'csv') {
+    const url = URL.createObjectURL(new Blob([manadsunderlagCsv(indata)], { type: 'text/csv;charset=utf-8' }))
+    const a = document.createElement('a')
+    a.href = url
+    a.download = manadsunderlagFilnamn(participantName, ym).replace(/\.pdf$/i, '.csv')
+    a.rel = 'noopener'
+    document.body.appendChild(a)
+    a.click()
+    a.remove()
+    setTimeout(() => URL.revokeObjectURL(url), 0)
+    return
+  }
+  const doc = await generateManadsunderlagPDF(indata)
   doc.save(manadsunderlagFilnamn(participantName, ym))
 }

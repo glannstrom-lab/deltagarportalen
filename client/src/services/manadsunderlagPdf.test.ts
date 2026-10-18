@@ -15,6 +15,7 @@ import {
   manadEtikett,
   manadsAnteckning,
   manadsunderlagFilnamn,
+  manadsunderlagCsv,
   passRader,
   stodmanadAlternativ,
   veckoRader,
@@ -116,5 +117,46 @@ describe('PDF:en', () => {
   it('en pågående månad säger att senare pass inte är bedömda', async () => {
     const doc = await generateManadsunderlagPDF({ ...input, nu: new Date('2026-10-15T08:00:00Z') })
     expect(avEskapera(doc.output())).toContain('Månaden är inte slut')
+  })
+})
+
+// KF3 (2026-10-18): samma underlag som CSV — samma rader som PDF:en, inga egna.
+describe('CSV:n', () => {
+  const input: ManadsunderlagInput = {
+    ym: '2026-10',
+    plan: { id: 'plan1', participant_id: 'p1', start_date: '2026-09-01', end_date: null, weekly_hours_target: 11, jobsearch_hours_per_week: 3, case_reference: 'ÄR-12' },
+    participantName: 'Anna Exempel',
+    framtagetAv: 'Karin Konsulent',
+    organizationName: 'Demokommun',
+    sessions: OKTOBER as never,
+    namn: { k1: 'Karin Konsulent' },
+    regelverk: 'kommun',
+    visaArende: true,
+    nu: new Date('2026-11-03T08:00:00Z'),
+  }
+
+  it('BOM, semikolon och samma vecko- och passrader som PDF:en', () => {
+    const csv = manadsunderlagCsv(input)
+    expect(csv.startsWith('\ufeff')).toBe(true)
+    const rader = csv.slice(1).split('\r\n')
+    expect(rader[0]).toBe('Månadsunderlag;oktober 2026')
+    expect(csv).toContain('Ärendenummer i verksamhetssystemet;ÄR-12')
+    expect(csv).not.toContain('[object Object]')
+    for (const r of veckoRader(OKTOBER as never, '2026-10')) expect(csv).toContain(r[0] + ';')
+    // passen i månaden, inte före eller efter
+    expect(passRader(OKTOBER as never, '2026-10', 'p1', { k1: 'Karin Konsulent' })).toHaveLength(4)
+    expect(csv).not.toContain('2 nov')
+  })
+
+  it('en anteckning med radbrytning eller semikolon citeras och bryter inte filen', () => {
+    const csv = manadsunderlagCsv(input)
+    // passet 6 okt har både konsulentens anteckning och deltagarens förklaring (två rader)
+    expect(csv).toMatch(/"Kom inte[^"]*\nDeltagarens förklaring[^"]*Bussen kom inte"/)
+  })
+
+  it('leverantör: frånvaron som fakta, aldrig giltig/ogiltig (KSL21)', () => {
+    const csv = manadsunderlagCsv({ ...input, regelverk: 'leverantor' })
+    expect(csv).toContain('Frånvaro, anmäld i förväg')
+    expect(csv).not.toContain('Giltig frånvaro')
   })
 })

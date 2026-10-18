@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-18T11:18:12.044Z",
+  "generatedAt": "2026-10-18T12:52:32.387Z",
   "note": "Genererad av client/scripts/refresh-schema-snapshot.cjs. Kör om efter varje migration och committa i samma commit. Läses av check-schema-drift.cjs.",
   "tables": {
     "account_deletion_requests": [
@@ -77,6 +77,7 @@
       "consultant_id",
       "created_at",
       "decided_at",
+      "deltagandegrad",
       "end_date",
       "forsorjningshinder",
       "id",
@@ -85,6 +86,7 @@
       "org_id",
       "participant_id",
       "plan_text",
+      "rom_niva",
       "start_date",
       "status",
       "target_reason",

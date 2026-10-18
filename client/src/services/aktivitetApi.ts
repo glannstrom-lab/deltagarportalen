@@ -78,6 +78,10 @@ export interface ActivityPlan {
   af_registered_at: string | null
   /** RK40 — PENDING_20260927d_plan_och_pass: ärende-/dossiernummer, aldrig personnummer. */
   case_reference?: string | null
+  /** KF2: Rusta och matcha — AF:s nivå för deltagaren (ur beslutet). */
+  rom_niva?: 'A' | 'B' | 'C' | null
+  /** KF2: Rusta och matcha — anvisad deltagandegrad i procent. */
+  deltagandegrad?: number | null
   created_at: string
   updated_at: string
 }
@@ -478,7 +482,7 @@ export const aktivitetsplanApi = {
     return (data ?? []).map((r) => mapSession(r as Record<string, unknown>))
   },
 
-  async update(planId: string, patch: Partial<Pick<ActivityPlan, 'weekly_hours_target' | 'jobsearch_hours_per_week' | 'target_reason' | 'plan_text' | 'decided_at' | 'status' | 'end_date' | 'forsorjningshinder' | 'nedsattning_underlag_lamnat_at' | 'af_registered_at'>>): Promise<ActivityPlan> {
+  async update(planId: string, patch: Partial<Pick<ActivityPlan, 'weekly_hours_target' | 'jobsearch_hours_per_week' | 'target_reason' | 'plan_text' | 'decided_at' | 'status' | 'end_date' | 'forsorjningshinder' | 'nedsattning_underlag_lamnat_at' | 'af_registered_at' | 'rom_niva' | 'deltagandegrad'>>): Promise<ActivityPlan> {
     const user = await requireUser()
     const { data, error } = await supabase
       .from('activity_plans')

@@ -390,6 +390,8 @@ jobs:
           TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
           TEST_CONSULTANT_EMAIL: ${{ secrets.TEST_CONSULTANT_EMAIL }}
           TEST_CONSULTANT_PASSWORD: ${{ secrets.TEST_CONSULTANT_PASSWORD }}
+          # KSL25 (2026-10-18): km-konsulent är chef och har tvåstegsinloggning — e2e räknar fram koden.
+          TEST_CONSULTANT_TOTP_SECRET: ${{ secrets.TEST_CONSULTANT_TOTP_SECRET }}
 
       - name: Upload Playwright report
         if: always()
