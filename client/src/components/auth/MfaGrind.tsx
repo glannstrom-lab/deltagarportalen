@@ -81,7 +81,7 @@ export function MfaGrind() {
 export function KravTvaSteg({ children }: { children: ReactNode }) {
   const { t } = useTranslation()
   const medlemskap = useQuery({ queryKey: ['org-medlemskap'], queryFn: () => orgApi.myMemberships(), staleTime: 5 * 60_000 })
-  const kravs = kraverTvaSteg((medlemskap.data ?? []).map((m) => m.role))
+  const kravs = kraverTvaSteg(medlemskap.data ?? [])
   const faktorer = useMfaFaktorer()
 
   if (!kravs) return <>{children}</>

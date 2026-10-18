@@ -10,12 +10,13 @@ import type { ReactNode } from 'react'
 
 const m = vi.hoisted(() => ({
   roller: [] as string[],
+  demo: false,
   faktorer: [] as Array<{ id: string; namn: string | null; verifierad: boolean; skapad: string }>,
   assurans: { nuvarande: 'aal1', nasta: 'aal1' } as { nuvarande: string; nasta: string },
 }))
 
 vi.mock('@/services/orgApi', () => ({
-  orgApi: { myMemberships: vi.fn(async () => m.roller.map((role, i) => ({ id: `m${i}`, role, organization: { id: 'o', name: 'Org' } }))) },
+  orgApi: { myMemberships: vi.fn(async () => m.roller.map((role, i) => ({ id: `m${i}`, role, organization: { id: 'o', name: 'Org', is_demo: m.demo } }))) },
 }))
 vi.mock('@/services/mfaApi', async (orig) => {
   const riktig = await orig<typeof import('@/services/mfaApi')>()
@@ -40,7 +41,7 @@ function med(ui: ReactNode) {
 const VERIFIERAD = { id: 'f1', namn: 'Jobin', verifierad: true, skapad: '2026-10-18' }
 
 describe('KravTvaSteg — chef och admin måste ha tvåsteg', () => {
-  beforeEach(() => { m.roller = []; m.faktorer = [] })
+  beforeEach(() => { m.roller = []; m.faktorer = []; m.demo = false })
 
   it('chef utan faktor ser påslaget, inte arbetsytan', async () => {
     m.roller = ['chef']
@@ -57,6 +58,12 @@ describe('KravTvaSteg — chef och admin måste ha tvåsteg', () => {
 
   it('konsulent utan faktor släpps in — frivilligt för konsulenter', async () => {
     m.roller = ['konsulent']
+    med(<KravTvaSteg><p>ARBETSYTAN</p></KravTvaSteg>)
+    expect(await screen.findByText('ARBETSYTAN')).toBeInTheDocument()
+  })
+
+  it('chef i en demoorganisation släpps in — delat demokonto kan inte ha en app (regression 2026-10-18)', async () => {
+    m.roller = ['chef']; m.demo = true
     med(<KravTvaSteg><p>ARBETSYTAN</p></KravTvaSteg>)
     expect(await screen.findByText('ARBETSYTAN')).toBeInTheDocument()
   })

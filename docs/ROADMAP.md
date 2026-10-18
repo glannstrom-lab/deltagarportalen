@@ -107,6 +107,12 @@ Av ~45 funktioner som minst en konkurrent har: **15 finns redan**, **16 står re
 - [ ] **KF9** **Videobaserad intervjuträning (kamera).** Cowrite (AI-avatar), Big Interview (VideoAI) och Yoodli bedömer kroppsspråk och blick. **Förslag: avstå.** Ansiktsanalys är biometri, AI-akten förbjuder känsloigenkänning på arbetsplatser och i utbildning (art. 5.1 f) och klassar den som högrisk i övrigt — en jobbsökarträning är ett gränsfall vi inte ska testa juridiskt, och målgruppen inkluderar personer med funktionsnedsättning där "ögonkontakt" som mått är diskriminerande. O10 steg 1 (tempo, utfyllnadsord ur transkriptionen) ger det mesta av värdet utan kamera. · beslut (rekommendation: nej)
 - [ ] **KF10** **Partnerskap i stället för bygge: språk och yrkessvenska.** Lingio har yrkessvenska på 100+ språk och säljer redan till Mölndal, Skara, Töreboda och Stockholms Jobbtorg — samma kommuner, samma aktivitetskravsbudget. Att bygga språkkurser är fel skala för oss (O18 mätte 9 200 nycklar per språk). Utred länk/integration: Lingio-kurs som aktivitet i aktivitetsplanen, timmarna räknas mot kravet. · beslut (kanal)
 
+**Verifierat i drift 2026-10-18** (efter deploy `ff221feb`):
+- **MFA:** hela kedjan mot prod med en riktig TOTP-kod på testkontot — fel kod → `mfa_verification_failed`, rätt kod → `aal2`, ny lösenordsinloggning → `aal1`/nästa `aal2` (exakt det läge där `MfaGrind` visar kodrutan), faktorn borttagen efteråt.
+- **KF6:** `/api/ai` på jobin.se — deltagare → 403 `not_staff`; Demokommunens konsulent → 403 `org_disabled` (AI av som standard för organisationer, KSL25); testkonsulent → 200 på 3,5 s: sex punkter, källa på varje, inget om hälsa, inga gissade orsaker.
+
+- [ ] **KF11** **aal2 i RLS för chefens organisationsbreda läsrätt.** MFA-kravet för chef/admin (KSL25, byggt 2026-10-18) är en klientgrind: den som har lösenordet men inte telefonen når inte arbetsytan i UI:t, men kan fortfarande anropa PostgREST direkt med en `aal1`-token. Lägg `(select auth.jwt()->>'aal') = 'aal2'` i de policyer som ger chef/admin läsrätt över hela organisationen (t.ex. "Organisationens chef läser planer" på `activity_plans`, och motsvarande på deltagare, journal, närvaro). **Läs hela policyuppsättningen per tabell först** — en permissiv dubblettpolicy kan upphäva kravet (lärdomen 2026-08-04). Mät efteråt med en `aal1`-session. · M
+
 Samt de beslut som redan står och som avgör fas 1: **O20 BankID**, **O22 licens till leverantörer** (i praktiken taget — kundbilden 2026-09-12), **MK5 webbläsartillägg**.
 
 ### Avstår vi från — med skäl

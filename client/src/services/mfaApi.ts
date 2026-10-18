@@ -90,6 +90,12 @@ export const mfaApi = {
 /** Roller som måste ha tvåstegsinloggning för att nå konsulentvyn (beslut Mikael 2026-10-18). */
 export const ROLLER_MED_KRAV = ['chef', 'admin'] as const
 
-export function kraverTvaSteg(roller: readonly string[]): boolean {
-  return roller.some((r) => (ROLLER_MED_KRAV as readonly string[]).includes(r))
+/**
+ * Kräver något av medlemskapen tvåsteg? Demoorganisationer (`is_demo`) undantas:
+ * demo@jobin.se och demo-leverantor@jobin.se är chefer med delade, publicerade
+ * lösenord — de kan inte ha en autentiseringsapp, och deras data är påhittad.
+ * (Regression i drift 2026-10-18: säljdemot möttes av "Slå på tvåstegsinloggning".)
+ */
+export function kraverTvaSteg(medlemskap: ReadonlyArray<{ role: string; organization?: { is_demo?: boolean | null } | null }>): boolean {
+  return medlemskap.some((m) => (ROLLER_MED_KRAV as readonly string[]).includes(m.role) && m.organization?.is_demo !== true)
 }
