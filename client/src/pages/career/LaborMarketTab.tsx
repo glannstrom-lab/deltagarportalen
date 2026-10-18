@@ -36,6 +36,7 @@ import {
 } from '@/components/ui/icons'
 import { Card, Button } from '@/components/ui'
 import { trendsApi, type MarketStats, type TrendingSkill, type PopularSearch } from '@/services/afTrendsApi'
+import { hamtaLon, type LonSvar } from '@/services/scbLonApi'
 import { sokPrognos, grupperaPerYrke, lansnamn, formateraPublicerad, type PrognosSvar, type PrognosRad, type YrkesUtsikt } from '@/services/afPrognosApi'
 import { AF_REGIONS } from '@/data/afRegions'
 
@@ -384,11 +385,36 @@ function Bedomning({ rad, rubrik, varde, t }: {
   )
 }
 
+/** MK2: en rad med SCB:s lön för yrkesgruppen. Laddar / fel / saknas visas som sådana — aldrig 0 kr. */
+function LonRad({ ssyk, lon }: { ssyk: string | null; lon: { status: 'laddar' } | { status: 'fel' } | { status: 'klart'; svar: LonSvar } | null }) {
+  const { t } = useTranslation()
+  if (!ssyk || !lon) return null
+  const kr = (n: number) => n.toLocaleString('sv-SE')
+  let text: string
+  if (lon.status === 'laddar') text = t('career.prognos.lon.laddar')
+  else if (lon.status === 'fel') text = t('career.prognos.lon.fel')
+  else {
+    const r = lon.svar.rader.get(ssyk)
+    text = r?.median
+      ? (r.p25 && r.p75
+        ? t('career.prognos.lon.rad', { median: kr(r.median), p25: kr(r.p25), p75: kr(r.p75) })
+        : t('career.prognos.lon.barMedian', { median: kr(r.median) }))
+      : t('career.prognos.lon.saknas')
+  }
+  return (
+    <p className="text-sm text-stone-700 dark:text-stone-300" data-testid={`lon-${ssyk}`}>
+      <span className="font-medium">{t('career.prognos.lon.rubrik')}</span> {text}
+    </p>
+  )
+}
+
 export function UtsikterSektion() {
   const { t, i18n } = useTranslation()
   const [fraga, setFraga] = useState('')
   const [lan, setLan] = useState('00')
   const [lage, setLage] = useState<UtsikterLage>({ status: 'vila' })
+  // MK2 (2026-10-18): SCB:s lön för samma yrkesgrupper (SSYK) som prognosen visar.
+  const [lon, setLon] = useState<{ status: 'laddar' } | { status: 'fel' } | { status: 'klart'; svar: LonSvar } | null>(null)
 
   const sok = async (e?: FormEvent) => {
     e?.preventDefault()
@@ -400,7 +426,11 @@ export function UtsikterSektion() {
     const lanskod = lan === '00' ? null : lan
     try {
       const svar = await sokPrognos(fraga, lanskod)
-      setLage({ status: 'klart', svar, utsikter: grupperaPerYrke(svar.traffar, lanskod), lan })
+      const utsikter = grupperaPerYrke(svar.traffar, lanskod)
+      setLage({ status: 'klart', svar, utsikter, lan })
+      const koder = utsikter.map((u) => u.riket?.ssyk ?? u.lan?.ssyk ?? '').filter(Boolean)
+      setLon(koder.length ? { status: 'laddar' } : null)
+      if (koder.length) hamtaLon(koder).then((ls) => setLon({ status: 'klart', svar: ls })).catch(() => setLon({ status: 'fel' }))
     } catch {
       setLage({ status: 'fel', meddelande: t('career.prognos.fel') })
     }
@@ -474,6 +504,7 @@ export function UtsikterSektion() {
                 )}
                 {u.lan && <Bedomning rad={u.lan} rubrik={t('career.prognos.iLan', { lan: lansnamn(lage.lan) })} varde={varde} t={t} />}
                 {u.riket && <Bedomning rad={u.riket} rubrik={t('career.prognos.riket')} varde={varde} t={t} />}
+                <LonRad ssyk={u.riket?.ssyk ?? u.lan?.ssyk ?? null} lon={lon} />
               </section>
             ))}
             <p className="text-xs text-stone-500 dark:text-stone-400">
@@ -484,6 +515,9 @@ export function UtsikterSektion() {
               {' · '}
               {t('career.prognos.licens')}
             </p>
+            {lon?.status === 'klart' && lon.svar.ar && (
+              <p className="text-xs text-stone-500 dark:text-stone-400">{t('career.prognos.lon.kalla', { ar: lon.svar.ar })}</p>
+            )}
           </div>
         )}
       </div>

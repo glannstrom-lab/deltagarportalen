@@ -2938,6 +2938,15 @@
       "followUpThisWeek": "Follow-up this week"
     },
     "prognos": {
+      "lon": {
+        "rubrik": "Salary:",
+        "rad": "the median salary in this occupational group is {{median}} SEK per month. Half earn between {{p25}} and {{p75}} SEK.",
+        "barMedian": "the median salary in this occupational group is {{median}} SEK per month.",
+        "saknas": "SCB (Statistics Sweden) does not report a salary for this occupational group (too few answers or confidentiality).",
+        "laddar": "getting salary statistics from SCB…",
+        "fel": "the salary statistics could not be loaded right now.",
+        "kalla": "Salary: SCB (Statistics Sweden), wage structure statistics {{ar}}, all sectors, before tax. Source: SCB."
+      },
       "heading": "Outlook for an occupation",
       "intro": "Arbetsförmedlingen’s occupational barometer rates how easy it is to get a job in an occupation today, and how demand is expected to look in five years. Type an occupation and we show their assessment as it is.",
       "sokLabel": "Occupation",

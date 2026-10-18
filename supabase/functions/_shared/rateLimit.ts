@@ -38,6 +38,8 @@ const ENDPOINT_LIMITS: Record<string, { limit: number; windowMs: number }> = {
   // A13 (2026-07-23): per-IP-limits för de publika proxyfunktionerna
   'af-taxonomy': { limit: 60, windowMs: 60 * 1000 },
   'af-trends': { limit: 30, windowMs: 60 * 1000 },
+  // MK2 (2026-10-18): SCB tillåter 30 anrop / 10 s per IP mot oss — vi cachar, och begränsar per klient.
+  'scb-lon': { limit: 30, windowMs: 60 * 1000 },
   'af-enrichments': { limit: 30, windowMs: 60 * 1000 },
   'af-historical': { limit: 30, windowMs: 60 * 1000 },
   'af-jobed': { limit: 30, windowMs: 60 * 1000 },

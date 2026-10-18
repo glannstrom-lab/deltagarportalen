@@ -2938,6 +2938,15 @@
       "followUpThisWeek": "Uppföljning denna vecka"
     },
     "prognos": {
+      "lon": {
+        "rubrik": "Lön:",
+        "rad": "medianlönen i yrkesgruppen är {{median}} kr i månaden. Hälften tjänar mellan {{p25}} och {{p75}} kr.",
+        "barMedian": "medianlönen i yrkesgruppen är {{median}} kr i månaden.",
+        "saknas": "SCB redovisar ingen lön för den här yrkesgruppen (för få svar eller sekretess).",
+        "laddar": "hämtar SCB:s lönestatistik…",
+        "fel": "lönestatistiken gick inte att hämta just nu.",
+        "kalla": "Lön: SCB, lönestrukturstatistik {{ar}}, alla sektorer, före skatt. Källa: SCB."
+      },
       "heading": "Utsikter för ett yrke",
       "intro": "Arbetsförmedlingens yrkesbarometer bedömer hur lätt det är att få jobb i ett yrke i dag, och hur efterfrågan väntas se ut om fem år. Skriv ett yrke så visar vi deras bedömning som den är.",
       "sokLabel": "Yrke",

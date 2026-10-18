@@ -3200,7 +3200,7 @@ linje med hela marknaden.
   2 000 jobbsajter; Manpower och Randstad kör Rusta och matcha med personlig konsulent. Det är den
   tydligaste luckan i deltagarledet — och samtidigt en påminnelse om att Jobin är ett verktyg, inte
   en förmedling. **Beslut innan bygge: ska portalen förmedla, eller uttryckligen inte?** · beslut
-- [ ] **MK2** **Omscopad 2026-09-20 — premissen faller på sista ledet: det är inte "data vi inte har", det är data ingen hämtat.** SCB:s lönestrukturstatistik ligger öppen och gratis, utan nyckel:
+- [x] **MK2** ✅ *2026-10-18 (spår KF fas 2): edge-funktionen `scb-lon` (24 h-cache, IP-gräns 30/min, läser senaste året ur tabellens metadata — aldrig de två döda tabellgenerationerna) och raden "Lön:" per yrke i Karriär → Utsikter för ett yrke, på samma SSYK-kod som AF:s prognos. Median och mittersta hälften (P25–P75), "SCB redovisar ingen lön" vid `..`/okänd kod, aldrig 0. Provad i drift: 5120 → 32 200 kr (2025), 9999 → null. **Licensen är CC0, inte CC BY** (scb.se, läst 2026-10-18) — rättat innan den visades. api.scb.se lades INTE i CSP:n (kräver ja för vercel.json); proxyn gör det onödigt.* **Omscopad 2026-09-20 — premissen faller på sista ledet: det är inte "data vi inte har", det är data ingen hämtat.** SCB:s lönestrukturstatistik ligger öppen och gratis, utan nyckel:
 
   | | |
   |---|---|
