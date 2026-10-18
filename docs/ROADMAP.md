@@ -75,7 +75,7 @@ Av ~45 funktioner som minst en konkurrent har: **15 finns redan**, **16 står re
 | Lönestatistik med verklig data (Vision, Saco, TRR, CraftIT) | **MK2** | Byggbar, SCB-tabellen provkörd; `scbSalaryApi` raderad 2026-10-12 (var en annan, död väg) |
 | Matchning av hela annonsflödet mot CV (Wundermatch, Jobbmatch.ai) | **O5** | Inte byggd (ingen `jobstream`) |
 | Web Push (alla appar) | **O7** | Inte byggd — `SettingsSections.tsx:13` säger själv "noll träffar på pushManager" |
-| CV + brev från en annons (Cowrite, Huntr, Jobbmatch.ai) | **O9** | Omscopad 2026-08-26; ingen "förberedd ansökan" i koden |
+| CV + brev från en annons (Cowrite, Huntr, Jobbmatch.ai) | **O9** | ✅ Bron byggd 2026-10-18 (se O9) |
 | Leveransanalys i intervjuträningen (Big Interview, Yoodli) | **O10** | Inte byggd (inspelningen i `InterviewSimulator.tsx:409` är transkription, ingen tempo-/utfyllnadsanalys) |
 | Övning på rekryteringstester (Jobbcoach.ai, TRR) | **O11** | Inte byggd |
 | Kompetensintyg (Wundermatch, Lingio) | **O12** | Inte byggd |
@@ -3763,7 +3763,7 @@ Ingenting nytt. Fyra saker som användaren redan ser i gränssnittet men inte f�
 - **Klart när:** en användare som väljer ett målyrke ser om det finns jobb där hen bor,
   inte bara vad yrket betalar.
 
-**O9 · Förberedd ansökan i stället för auto-apply** — *omscopad igen 2026-08-26: tre av fyra delar finns redan, luckan är att jobbets identitet inte överlever klicket till CV-sidan. Se rättelse 5*
+**O9 · Förberedd ansökan i stället för auto-apply** — ✅ *Bron byggd 2026-10-18 (spår KF fas 2): premissen från 26 augusti höll — `JobAdaptPanel` startade alltid tom och ingen annons länkade dit. Nu: `buildCvAdaptUrl` (titel, arbetsgivare, annonstext ≤3 000 tecken), "Anpassa CV" bredvid "Skriv brev" på jobbkortet, i jobbdetaljen och på Dagens jobb, och `/cv/adapt` tar emot annonsen förifylld med en rad om vilken annons det gäller. 4 tester. Urvalsfrågorna byggs fortfarande inte (ingen data). Mätpunkten står kvar: andelen sparade jobb med registrerad ansökan inom 14 dagar, baslinje 0 %.* — *omscopad igen 2026-08-26: tre av fyra delar finns redan, luckan är att jobbets identitet inte överlever klicket till CV-sidan. Se rättelse 5*
 - Vi bygger inte massansökan. Vi bygger det steget före: ett paket per jobb med CV
   anpassat mot annonsens kompetenser, brev, svar på de vanligaste urvalsfrågorna, och
   en kopieringsknapp per fält.

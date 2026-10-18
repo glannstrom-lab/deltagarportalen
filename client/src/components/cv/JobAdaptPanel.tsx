@@ -26,6 +26,8 @@ interface JobAdaptPanelProps {
   onUpdateSummary: (summary: string) => void
   className?: string
   defaultExpanded?: boolean
+  /** O9: annonstexten förifylld från en länk på en annons. */
+  initialJobDescription?: string
 }
 
 interface AnalysisResult {
@@ -39,9 +41,9 @@ interface AnalysisResult {
 
 type InputMode = 'paste' | 'saved'
 
-export function JobAdaptPanel({ cvData, onAddSkill, onUpdateSummary, className, defaultExpanded = true }: JobAdaptPanelProps) {
+export function JobAdaptPanel({ cvData, onAddSkill, onUpdateSummary, className, defaultExpanded = true, initialJobDescription }: JobAdaptPanelProps) {
   const { t } = useTranslation()
-  const [jobDescription, setJobDescription] = useState('')
+  const [jobDescription, setJobDescription] = useState(initialJobDescription ?? '')
   const [isAnalyzing, setIsAnalyzing] = useState(false)
   const [analysis, setAnalysis] = useState<AnalysisResult | null>(null)
   const [isExpanded, setIsExpanded] = useState(defaultExpanded)

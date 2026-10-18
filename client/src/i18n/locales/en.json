@@ -1198,7 +1198,8 @@
       "subtitle": "Match your CV to a job ad",
       "suggestions": "Suggestions for your summary",
       "watermarkType": "analysis",
-      "saveRollback": "Could not save the change. We restored the previous version."
+      "saveRollback": "Could not save the change. We restored the previous version.",
+      "franAnnons": "The job ad is filled in: {{title}}, {{company}}. Read it and press Analyze ad."
     },
     "welcome": {
       "title": "Welcome to the CV Builder",
@@ -1789,7 +1790,9 @@
     "removeSavedConfirm": "Remove this saved job?",
     "viewAd": "View ad",
     "interviewPrep": "Interview preparation",
-    "commuteInfo": "Commute info"
+    "commuteInfo": "Commute info",
+    "adaptCv": "Adapt CV",
+    "adaptCvLong": "Adapt your CV to this job ad"
   },
   "jobs": {
     "card": {

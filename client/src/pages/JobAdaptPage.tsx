@@ -9,12 +9,15 @@ import { cvApi } from '@/services/supabaseApi'
 import { JobAdaptPanel } from '@/components/cv/JobAdaptPanel'
 import { showToast } from '@/components/Toast'
 import { Loader2, FileText, ArrowRight } from '@/components/ui/icons'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import type { CVData, Skill } from '@/services/supabaseApi'
 
 export default function JobAdaptPage() {
   const { t } = useTranslation()
   const [cvData, setCvData] = useState<CVData | null>(null)
+  // O9: annonsen som länken på jobbsidan skickade med — titel, arbetsgivare och text.
+  const [sok] = useSearchParams()
+  const annons = { title: sok.get('title') ?? '', company: sok.get('company') ?? '', desc: sok.get('desc') ?? '' }
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -132,8 +135,14 @@ export default function JobAdaptPage() {
         </p>
       </div>
 
+      {annons.desc && (
+        <p className="mb-4 text-sm text-stone-700 dark:text-stone-300" role="status">
+          {t('cv.jobAdapt.franAnnons', { title: annons.title, company: annons.company })}
+        </p>
+      )}
       {/* Job Adapt Panel - Full width version */}
       <JobAdaptPanel
+        initialJobDescription={annons.desc || undefined}
         cvData={cvData}
         onAddSkill={handleAddSkill}
         onUpdateSummary={handleUpdateSummary}

@@ -18,6 +18,21 @@ export function buildCoverLetterUrl(job: PlatsbankenJob, descMaxLength = 500): s
   return `/cover-letter?${params.toString()}`
 }
 
+/**
+ * O9 (2026-10-18): länk till CV-anpassningen (/cv/adapt), förifylld från en annons —
+ * samma bro som brevet har haft, CV:t aldrig. Annonstexten följer med (upp till 3 000
+ * tecken); anpassningen jämför mot fritexten, eftersom AF:s strukturerade kompetenser
+ * är ifyllda i bara 1 av 20 annonser (mätt 2026-08-26).
+ */
+export function buildCvAdaptUrl(job: PlatsbankenJob, descMaxLength = 3000): string {
+  const params = new URLSearchParams({
+    title: job.headline,
+    company: job.employer?.name || '',
+    desc: job.description?.text?.substring(0, descMaxLength) || '',
+  })
+  return `/cv/adapt?${params.toString()}`
+}
+
 /** Länk till Personligt brev-generatorn, förifylld från ett sparat spontanföretag. */
 export function buildSpontaneousCoverLetterUrl(
   company: Pick<SpontaneousCompany, 'company_name' | 'company_data'>,

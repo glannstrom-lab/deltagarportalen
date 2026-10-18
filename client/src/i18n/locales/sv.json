@@ -1198,7 +1198,8 @@
       "subtitle": "Matcha ditt CV med en jobbannons",
       "suggestions": "Förslag till din sammanfattning",
       "watermarkType": "analys",
-      "saveRollback": "Kunde inte spara ändringen. Vi har återställt föregående version."
+      "saveRollback": "Kunde inte spara ändringen. Vi har återställt föregående version.",
+      "franAnnons": "Annonsen är ifylld: {{title}}, {{company}}. Läs igenom den och tryck på Analysera annons."
     },
     "welcome": {
       "title": "Välkommen till CV-byggaren",
@@ -1789,7 +1790,9 @@
     "removeSavedConfirm": "Ta bort detta sparade jobb?",
     "viewAd": "Visa annons",
     "interviewPrep": "Intervjuförberedelse",
-    "commuteInfo": "Pendlingsinfo"
+    "commuteInfo": "Pendlingsinfo",
+    "adaptCv": "Anpassa CV",
+    "adaptCvLong": "Anpassa ditt CV mot annonsen"
   },
   "jobs": {
     "card": {
