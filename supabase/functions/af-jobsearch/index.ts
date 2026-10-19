@@ -37,7 +37,7 @@ function buildCorsHeaders(origin: string | null): Record<string, string> {
   return {
     'Access-Control-Allow-Origin': allowed ? (origin as string) : 'https://jobin.se',
     'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type, Authorization, apikey, x-client-info',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization, apikey, x-client-info, sentry-trace, baggage',
     'Vary': 'Origin',
   };
 }

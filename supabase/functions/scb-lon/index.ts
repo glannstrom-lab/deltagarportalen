@@ -41,7 +41,7 @@ function getCorsHeaders(origin: string | null): Record<string, string> {
   const allowedOrigin = allowedOrigins.find((o) => origin === o) || allowedOrigins[0];
   return {
     'Access-Control-Allow-Origin': allowedOrigin,
-    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, sentry-trace, baggage',
     'Access-Control-Allow-Methods': 'GET, OPTIONS',
     'Vary': 'Origin',
   };
