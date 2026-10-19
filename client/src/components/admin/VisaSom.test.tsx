@@ -43,10 +43,25 @@ describe('VisaSomBanner', () => {
     expect(screen.queryByTestId('visa-som-banner')).toBeNull()
   })
 
-  it('syns inte när ett annat konto är inloggat än det markerade', () => {
-    useAuthStore.setState({ user: { id: 'u2', email: 'glannstrom@gmail.com' } as never })
+  // DL1 (2026-10-19): ett andra Visa som-konto i samma webbläsarprofil tar över
+  // inloggningen (localStorage) medan markeringen (sessionStorage) står kvar.
+  // Förut doldes raden tyst och listorna blev tomma — nu varnar den.
+  it('varnar när ett annat konto tagit över fliken', () => {
+    useAuthStore.setState({ user: { id: 'u2', email: 'anna.exempel@example.com' } as never })
     sessionStorage.setItem(VISA_SOM_NYCKEL, 'demo@jobin.se')
     rendera()
     expect(screen.queryByTestId('visa-som-banner')).toBeNull()
+    const varning = screen.getByRole('alert')
+    expect(varning).toHaveTextContent('Ett annat konto har loggats in i den här webbläsaren')
+    expect(varning).toHaveTextContent('demo@jobin.se')
+    expect(varning).toHaveTextContent('anna.exempel@example.com')
+    expect(screen.getByRole('button', { name: 'Ladda om' })).toBeTruthy()
+  })
+
+  it('varnar inte utan inloggning', () => {
+    useAuthStore.setState({ user: null } as never)
+    sessionStorage.setItem(VISA_SOM_NYCKEL, 'demo@jobin.se')
+    rendera()
+    expect(screen.queryByRole('alert')).toBeNull()
   })
 })

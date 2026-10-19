@@ -25,7 +25,36 @@ export function VisaSomBanner() {
   const navigate = useNavigate()
   const markering = lasMarkering()
 
-  if (!user?.email || !markering || markering.toLowerCase() !== user.email.toLowerCase()) return null
+  if (!user?.email || !markering) return null
+
+  // DL1 (2026-10-19): inloggningen ligger i localStorage och delas av alla flikar
+  // i samma webbläsarprofil — även alla inkognitofönster. Öppnas ett andra Visa
+  // som-konto tar det över den här fliken tyst: listorna blev tomma utan fel och
+  // raden fortsatte visa det gamla kontot. Säg det i stället för att dölja raden.
+  if (markering.toLowerCase() !== user.email.toLowerCase()) {
+    return (
+      <div
+        role="alert"
+        data-testid="visa-som-krock"
+        className="flex flex-wrap items-center gap-x-3 gap-y-1 px-4 py-2 text-sm bg-amber-100 text-amber-950 dark:bg-amber-900/40 dark:text-amber-100 border-b border-amber-300 dark:border-amber-700"
+      >
+        <Eye size={16} aria-hidden="true" className="shrink-0" />
+        <p className="m-0 flex-1 min-w-0">
+          <span className="font-semibold">Ett annat konto har loggats in i den här webbläsaren.</span> Fliken öppnades som{' '}
+          <span className="font-medium break-all">{markering}</span> men är nu inloggad som{' '}
+          <span className="font-medium break-all">{user.email}</span>. Ladda om sidan, och öppna varje konto i en egen
+          webbläsare.
+        </p>
+        <button
+          type="button"
+          onClick={() => window.location.reload()}
+          className="rounded-md border border-amber-500 bg-white px-3 py-1 font-medium text-amber-950 hover:bg-amber-50 dark:bg-amber-950 dark:text-amber-100 dark:border-amber-600"
+        >
+          Ladda om
+        </button>
+      </div>
+    )
+  }
 
   const avsluta = async () => {
     try {

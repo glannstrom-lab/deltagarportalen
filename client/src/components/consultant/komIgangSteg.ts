@@ -128,7 +128,8 @@ export function guideSteg(roll: GuideRoll, rv: Regelverk, lage: GuideLage | null
         // OrganisationSektion.tsx — lägg till kollega på e-post (INSTEAD OF-trigger, orgApi.ts)
         id: 'kollegor',
         rubrik: 'Lägg till dina kollegor',
-        text: 'Under Inställningar → Din organisation lägger du till kollegor med deras e-post. De behöver ha ett konto först.',
+        // RK18: saknar adressen konto erbjuder formuläret "Skicka inbjudan via mejl" (DL5, 2026-10-19)
+        text: 'Under Inställningar → Din organisation lägger du till kollegor med deras e-post. Har de inget konto än kan du skicka en inbjudan via mejl.',
         klar: c ? c.kollegor > 0 : null,
         knapp: { etikett: 'Öppna Din organisation', handling: { typ: 'lank', till: '/consultant/settings' } },
       },

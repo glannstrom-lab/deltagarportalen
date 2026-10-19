@@ -9,6 +9,8 @@ import { getDomainForPath } from '@/lib/domains'
 import { platsForDomain, type HubbPlatsId } from '@/data/varld'
 import { valjNastaSteg } from './nastaStegRegler'
 import { narText } from './oversiktTid'
+import { nastaIKalendern } from './oversiktKalender'
+import { parseLocalDate } from '@/services/aktivitetSchema'
 
 /**
  * Vad panelen vet just nu.
@@ -263,7 +265,7 @@ export function byggKategorier(
   // ── Din vardag ───────────────────────────────────────────────────────────
   const dagbokNar = narText(vardag?.latestDiaryEntry?.created_at, t, sprak)
   const mood = vardag?.recentMoodLogs ?? []
-  const nastaHandelse = vardag?.upcomingEvents?.[0] ?? null
+  const nastaHandelse = nastaIKalendern(vardag, t('minVecka.mote.rubrik', 'Möte med din konsulent'))
   const konsulent = vardag?.consultant ?? null
 
   const vardagKat: Kategori = {
@@ -292,12 +294,12 @@ export function byggKategorier(
       rad({
         titel: t('hubOverview.panel.calendar', 'Kalender'),
         under: nastaHandelse
-          ? nastaHandelse.title
+          ? nastaHandelse.titel
           : t('hubOverview.panel.calendarInvite', 'inget inbokat'),
         varde: nastaHandelse
-          ? new Date(nastaHandelse.date).toLocaleDateString(sprak, { weekday: 'short', day: 'numeric', month: 'short' })
+          ? parseLocalDate(nastaHandelse.datum).toLocaleDateString(sprak, { weekday: 'short', day: 'numeric', month: 'short' })
           : null,
-        till: '/calendar',
+        till: nastaHandelse?.till ?? '/calendar',
         harData: !!nastaHandelse,
       }),
       rad({

@@ -121,8 +121,11 @@ describe('useMinVardagHubSummary', () => {
     expect(fromMock).toHaveBeenCalledWith('diary_entries')
     expect(fromMock).toHaveBeenCalledWith('calendar_events')
     expect(fromMock).toHaveBeenCalledWith('network_contacts')
-    // diary_entries anropas två gånger (count + latest) → 5 tabellanrop
-    expect(fromMock).toHaveBeenCalledTimes(5)
+    // DL4: nästa möte och nästa pass till kalenderraden på Översikt
+    expect(fromMock).toHaveBeenCalledWith('consultant_meetings')
+    expect(fromMock).toHaveBeenCalledWith('activity_sessions')
+    // diary_entries anropas två gånger (count + latest) → 7 tabellanrop
+    expect(fromMock).toHaveBeenCalledTimes(7)
     expect(builders.diary_entries).toHaveLength(2)
     // …och konsulenten hämtas med RPC:n, inte som ett sjätte tabellanrop
     expect(rpcMock).toHaveBeenCalledWith('get_my_consultant')

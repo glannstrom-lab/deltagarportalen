@@ -74,6 +74,13 @@ export interface MinVardagSummary {
   }>
   networkContactsCount: number
   consultant: { id: string; full_name: string | null; avatar_url: string | null } | null
+  /**
+   * DL4 (2026-10-19): nästa bokade möte med konsulenten och nästa pass i
+   * aktivitetsplanen. Kalenderraden på Översikt läste bara `calendar_events`
+   * och sa "inget inbokat" till en deltagare med möte i morgon och pass hela veckan.
+   */
+  nastaMote?: { id: string; scheduled_at: string } | null
+  nastaPass?: { id: string; title: string; date: string; start_time: string | null } | null
 }
 
 /** Resurser-hubbens datasnitt */

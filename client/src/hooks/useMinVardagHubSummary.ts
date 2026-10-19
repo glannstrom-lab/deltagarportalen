@@ -22,7 +22,7 @@ export function useMinVardagHubSummary() {
       const today = formatLocalDate(new Date())
 
       // Promise.all of 6 supabase calls (mood/diary-count/diary-latest/calendar/network-count/consultant-join):
-      const [moodR, diaryCountR, diaryLatestR, calR, contactsR, consultantR] = await Promise.all([
+      const [moodR, diaryCountR, diaryLatestR, calR, contactsR, consultantR, moteR, passR] = await Promise.all([
         // Hälsa — 7 days
         supabase
           .from('mood_logs')
@@ -65,6 +65,27 @@ export function useMinVardagHubSummary() {
         // `get_my_consultant()` är SECURITY DEFINER, utgår från auth.uid() och
         // lämnar ut exakt sex kontaktfält. Samma väg som /my-consultant.
         supabase.rpc('get_my_consultant'),
+        // DL4: nästa bokade möte och nästa pass — kalenderraden på Översikt
+        // sa annars "inget inbokat" till den som har möte i morgon. Deltagaren
+        // har SELECT på sina egna rader i båda tabellerna (se konsulentMoten.ts).
+        supabase
+          .from('consultant_meetings')
+          .select('id, scheduled_at')
+          .eq('participant_id', userId)
+          .eq('status', 'scheduled')
+          .gte('scheduled_at', new Date().toISOString())
+          .order('scheduled_at', { ascending: true })
+          .limit(1)
+          .maybeSingle(),
+        supabase
+          .from('activity_sessions')
+          .select('id, title, date, start_time')
+          .eq('participant_id', userId)
+          .gte('date', today)
+          .order('date', { ascending: true })
+          .order('start_time', { ascending: true })
+          .limit(1)
+          .maybeSingle(),
       ])
 
       const rpcRow = consultantR.data as
@@ -94,6 +115,8 @@ export function useMinVardagHubSummary() {
         upcomingEvents: calR.data ?? [],
         networkContactsCount: contactsR.count ?? 0,
         consultant,
+        nastaMote: (moteR.data as MinVardagSummary['nastaMote']) ?? null,
+        nastaPass: (passR.data as MinVardagSummary['nastaPass']) ?? null,
       }
 
       return summary
