@@ -6,10 +6,75 @@
  * Svenska literaler med flit: bannern ses bara av superadmin (Mikael).
  */
 
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Eye } from '@/components/ui/icons'
 import { useAuthStore } from '@/stores/authStore'
-import { VISA_SOM_NYCKEL } from '@/services/visaSomApi'
+import { demoLage, lasDemoLage, VISA_SOM_NYCKEL, type DemoRoll } from '@/services/visaSomApi'
+
+/**
+ * Demoläget (2026-10-19): rollerna som knappar och vägen tillbaka till
+ * superadmins eget konto — allt i samma fönster. Se demoLage i visaSomApi.
+ */
+function DemoRad({ aktuell, ursprung, roller }: { aktuell: string; ursprung: string; roller: DemoRoll[] }) {
+  const [arbetar, setArbetar] = useState<string | null>(null)
+  const [fel, setFel] = useState<string | null>(null)
+
+  const kor = async (nyckel: string, gor: () => Promise<void>) => {
+    setFel(null)
+    setArbetar(nyckel)
+    try {
+      await gor()
+    } catch (e) {
+      setFel(e instanceof Error ? e.message : 'Något gick fel')
+      setArbetar(null)
+    }
+  }
+
+  return (
+    <div
+      role="region"
+      aria-label="Demoläge"
+      data-testid="demo-rad"
+      className="flex flex-wrap items-center gap-2 px-4 py-2 text-sm bg-sky-100 text-sky-950 dark:bg-sky-900/40 dark:text-sky-100 border-b border-sky-300 dark:border-sky-700"
+    >
+      <Eye size={16} aria-hidden="true" className="shrink-0" />
+      <span className="font-semibold">Demo:</span>
+      {roller.map((r) => {
+        const vald = r.email.toLowerCase() === aktuell.toLowerCase()
+        return (
+          <button
+            key={r.id}
+            type="button"
+            aria-pressed={vald}
+            disabled={arbetar !== null || vald}
+            onClick={() => kor(r.id, () => demoLage.byt(r))}
+            className={
+              vald
+                ? 'rounded-md border border-sky-700 bg-sky-700 px-3 py-1 font-medium text-white dark:bg-sky-300 dark:text-sky-950'
+                : 'rounded-md border border-sky-400 bg-white px-3 py-1 font-medium text-sky-900 hover:bg-sky-50 disabled:opacity-60 dark:bg-sky-950 dark:text-sky-100 dark:border-sky-600'
+            }
+          >
+            {arbetar === r.id ? 'Byter …' : r.etikett}
+          </button>
+        )
+      })}
+      <button
+        type="button"
+        disabled={arbetar !== null}
+        onClick={() => kor('tillbaka', () => demoLage.avsluta())}
+        className="ml-auto rounded-md border border-sky-700 px-3 py-1 font-medium text-sky-900 hover:bg-sky-50 disabled:opacity-60 dark:text-sky-100 dark:border-sky-400 dark:hover:bg-sky-950"
+      >
+        {arbetar === 'tillbaka' ? 'Byter …' : `Tillbaka till mitt konto (${ursprung})`}
+      </button>
+      {fel && (
+        <p role="alert" className="basis-full m-0 text-red-800 dark:text-red-200">
+          {fel}
+        </p>
+      )}
+    </div>
+  )
+}
 
 function lasMarkering(): string | null {
   try {
@@ -65,6 +130,9 @@ export function VisaSomBanner() {
     await signOut()
     navigate('/login', { replace: true })
   }
+
+  const demo = lasDemoLage()
+  if (demo) return <DemoRad aktuell={user.email} ursprung={demo.ursprungEmail} roller={demo.roller} />
 
   return (
     <div

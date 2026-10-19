@@ -1,8 +1,19 @@
-import { describe, it, expect, beforeEach } from 'vitest'
+import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { VisaSomBanner } from './VisaSomBanner'
-import { beskrivRoll, sakerLandning, VISA_SOM_NYCKEL, type VisaSomKonto } from '@/services/visaSomApi'
+import {
+  beskrivRoll,
+  demoLage,
+  demoRoller,
+  DEMO_KONTON,
+  DEMO_URSPRUNG,
+  sakerLandning,
+  visaSomApi,
+  VISA_SOM_NYCKEL,
+  type VisaSomKonto,
+} from '@/services/visaSomApi'
+import { supabase } from '@/lib/supabase'
 import { useAuthStore } from '@/stores/authStore'
 
 describe('sakerLandning', () => {
@@ -63,5 +74,65 @@ describe('VisaSomBanner', () => {
     sessionStorage.setItem(VISA_SOM_NYCKEL, 'demo@jobin.se')
     rendera()
     expect(screen.queryByRole('alert')).toBeNull()
+  })
+})
+
+// Demoläget (2026-10-19): superadmin byter roll i samma fönster.
+describe('demoläget', () => {
+  const roller = [
+    { id: 'c', email: 'demo@jobin.se', etikett: 'Kommunchef' },
+    { id: 'a', email: 'anna.exempel@example.com', etikett: 'Anna (deltagare)' },
+  ]
+  beforeEach(() => {
+    sessionStorage.clear()
+    vi.restoreAllMocks()
+  })
+
+  it('demoRoller plockar demots roller ur serverns lista, i fast ordning', () => {
+    const bas = { namn: null, roll: null, organisation: null, orgTyp: null, orgRoll: null, grupp: 'demo' as const }
+    const ut = demoRoller([
+      { ...bas, id: '2', email: 'anna.exempel@example.com' },
+      { ...bas, id: '9', email: 'nagon@example.com' },
+      { ...bas, id: '1', email: 'demo@jobin.se' },
+    ])
+    expect(ut.map((r) => r.etikett)).toEqual(['Kommunchef', 'Anna (deltagare)'])
+  })
+
+  it('raden visar rollerna, markerar den aktuella och erbjuder vägen tillbaka', () => {
+    useAuthStore.setState({ user: { id: 'a', email: 'anna.exempel@example.com' } as never })
+    sessionStorage.setItem(VISA_SOM_NYCKEL, 'anna.exempel@example.com')
+    sessionStorage.setItem(DEMO_URSPRUNG, JSON.stringify({ refreshToken: 'r', email: 'mikael@x.se' }))
+    sessionStorage.setItem(DEMO_KONTON, JSON.stringify(roller))
+    render(<MemoryRouter><VisaSomBanner /></MemoryRouter>)
+    expect(screen.getByTestId('demo-rad')).toBeTruthy()
+    expect(screen.getByRole('button', { name: 'Anna (deltagare)' }).getAttribute('aria-pressed')).toBe('true')
+    expect(screen.getByRole('button', { name: 'Kommunchef' }).getAttribute('aria-pressed')).toBe('false')
+    expect(screen.getByRole('button', { name: /Tillbaka till mitt konto/ })).toHaveTextContent('mikael@x.se')
+    expect(screen.queryByRole('button', { name: 'Avsluta och logga ut' })).toBeNull()
+  })
+
+  it('ett byte tar tillbaka superadmins session INNAN servern anropas — annars nekas det', async () => {
+    sessionStorage.setItem(DEMO_URSPRUNG, JSON.stringify({ refreshToken: 'gammal', email: 'mikael@x.se' }))
+    const ordning: string[] = []
+    vi.spyOn(supabase.auth, 'refreshSession').mockImplementation(async () => {
+      ordning.push('refresh')
+      return { data: { session: { refresh_token: 'ny' }, user: null }, error: null } as never
+    })
+    vi.spyOn(visaSomApi, 'oppna').mockImplementation(async () => {
+      ordning.push('oppna')
+      throw new Error('stopp')
+    })
+    await expect(demoLage.byt(roller[0])).rejects.toThrow('stopp')
+    expect(ordning).toEqual(['refresh', 'oppna'])
+    // refresh-token roteras — den nya måste sparas, annars fungerar bara första bytet
+    expect(JSON.parse(sessionStorage.getItem(DEMO_URSPRUNG)!).refreshToken).toBe('ny')
+  })
+
+  it('utgången egen inloggning ger ett begripligt fel och inget anrop till servern', async () => {
+    sessionStorage.setItem(DEMO_URSPRUNG, JSON.stringify({ refreshToken: 'gammal', email: 'mikael@x.se' }))
+    vi.spyOn(supabase.auth, 'refreshSession').mockResolvedValue({ data: { session: null, user: null }, error: new Error('x') } as never)
+    const oppna = vi.spyOn(visaSomApi, 'oppna')
+    await expect(demoLage.byt(roller[0])).rejects.toThrow('Din egen inloggning har gått ut')
+    expect(oppna).not.toHaveBeenCalled()
   })
 })

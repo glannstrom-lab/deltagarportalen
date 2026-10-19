@@ -10,7 +10,15 @@
 import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { Copy, ExternalLink, Eye } from '@/components/ui/icons'
-import { beskrivRoll, visaSomApi, visaSomUrl, type VisaSomKonto } from '@/services/visaSomApi'
+import {
+  beskrivRoll,
+  demoLage,
+  demoRoller,
+  visaSomApi,
+  visaSomUrl,
+  type DemoRoll,
+  type VisaSomKonto,
+} from '@/services/visaSomApi'
 
 const GRUPPER: { id: VisaSomKonto['grupp']; rubrik: string; text: string }[] = [
   { id: 'demo', rubrik: 'Demokonton', text: 'Det kunderna ser i en demo: Demokommunens chef och deltagare, och demoföretaget.' },
@@ -58,8 +66,45 @@ export function VisaSomTab() {
 
   const konton = q.data ?? []
 
+  const roller = demoRoller(konton)
+  const startaDemo = async (r: DemoRoll) => {
+    setFel(null)
+    setArbetar(r.id)
+    try {
+      await demoLage.starta(r, roller)
+    } catch (e) {
+      setFel(e instanceof Error ? e.message : 'Kunde inte starta demot')
+      setArbetar(null)
+    }
+  }
+
   return (
     <div className="space-y-6">
+      {roller.length > 0 && (
+        <section className="rounded-lg border border-sky-300 bg-sky-50 p-4 space-y-3" aria-labelledby="demolage-rubrik">
+          <div>
+            <h2 id="demolage-rubrik" className="text-base font-semibold text-gray-900">Visa demot här</h2>
+            <p className="text-sm text-gray-700">
+              Välj en roll. Du byter roll och kommer tillbaka till ditt eget konto med knapparna i den blå raden överst — allt i det
+              här fönstret. Stäng andra flikar med Jobin först: de följer med till demokontot.
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {roller.map((r) => (
+              <button
+                key={r.id}
+                type="button"
+                onClick={() => startaDemo(r)}
+                disabled={arbetar !== null}
+                className="rounded-lg bg-sky-700 px-4 py-2 text-sm font-medium text-white hover:bg-sky-800 disabled:opacity-60"
+              >
+                {arbetar === r.id ? 'Startar …' : r.etikett}
+              </button>
+            ))}
+          </div>
+        </section>
+      )}
+
       <div className="rounded-lg border border-gray-200 bg-white p-4 text-sm text-gray-700 space-y-1">
         <p className="font-medium text-gray-900">Så fungerar det</p>
         <p>
