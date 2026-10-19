@@ -33,6 +33,22 @@
 
 ---
 
+## Demogenomgång 2026-10-19 — de fyra demokontona i prod inför ny lathund (DL)
+
+Alla fyra kontona genomklickade via Visa som i drift. Lathunden: https://claude.ai/code/artifact/5af737c5-5453-45bd-9735-c228463da562 (ersätter demomanuset 2026-09-27). Inga nätverksfel ≥400, tvåstegsrutan visas inte för demoorganisationerna.
+
+| ID | Fynd | Förslag |
+|---|---|---|
+| DL1 | **Visa som-raden ljuger när två sessioner delar lagring.** Raden läser `sessionStorage` per flik, inloggningen `localStorage` (`supabase.auth.token`). Öppnas ett andra Visa som-konto i samma inkognitoprofil byter första fliken användare tyst: deltagarlistan blir tom utan fel, raden säger fortfarande det gamla kontot tills F5. | Jämför radens e-post med `user.email` och visa en varning ("Ett annat konto har loggats in i den här webbläsaren — ladda om") när de skiljer sig. |
+| DL2 | **Grundersättningen visar 0 kr** hos Demoleverantören — planerna i sådden saknar nivå och deltagandegrad. | Fyll i nivå/deltagandegrad i `seed_demo_leverantor`. |
+| DL3 | **Annas plats och plan hänger inte ihop** i sådden: placeringen är Nordfrakt 20 h/vecka (tis–tor 09–15:30), passen är "Praktikbesök" hos "Fiktiva Logistik AB" 3 h. Aktivitetsfliken visar två varningar; Din plan säger 20 h, veckan 8 h. | Rätta Demokommunens sådd så passen speglar arbetsträningen. |
+| DL4 | **Annas Översikt säger "Kalender: inget inbokat"** trots möte tis 20 okt och pass samma vecka. | Premissgranska — kan vara verklig bugg, inte bara sådd. |
+| DL5 | **Leverantörens igångsättning säger "De behöver ha ett konto först"** om kollegor — inaktuellt sedan RK18 (inbjudan via mejl). | Byt texten. |
+| DL6 | **/for-rusta-och-matcha/ säger "Demot är uppsatt som en kommun, inte som en leverantör"** — inaktuellt, Demoleverantören finns. /demo/ listar inte demo-leverantor@jobin.se eller företagskontot (ej fullständigt kontrollerat). | Rätta texten, lägg till kontona. |
+| DL7 | **Startsidans FAQ säger att AI-texter "behandlas då i USA"**, B2B-sidorna säger Bedrock i Irland först. | En formulering, samma som B2B-sidorna. |
+
+---
+
 ## Projektgenomgång 2026-10-18 — 30 AI-förslag (AIX) och 20 funktioner (FN)
 
 **Översikt:** https://claude.ai/artifact/9Yk5LsRPradqmxEpLupC8R · sex linser (AI för deltagaren, AI för konsulent/organisation, AI för språk och tillgänglighet, deltagarens resa och återkomst, kundvärde, blindfläck). Bortvalt: buggar/skuld, SEO, säkerhet som egen lins. Inget här dubblerar spår KF, O, MK eller det som byggdes 2026-10-18; agenternas påståenden stickprovade mot koden 8/8.

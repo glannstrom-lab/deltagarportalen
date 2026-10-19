@@ -543,6 +543,7 @@ innehåller data utom där annat anges.
 | Supabase Inc. | DB, Auth, Storage | DPA på supabase.com | EU/Irland | OK |
 | Vercel Inc. | Hosting, serverless functions | DPA på vercel.com | EU/Frankfurt (efter 2026-05-15) | OK |
 | Vercel Blob | Filhosting | Del av Vercel-DPA | **Verifieras** | Manuell check |
+| Vercel Web Analytics | Besöksstatistik (sidvisningar), sedan 2026-10-19 | Del av Vercel-DPA | Cookiefri; besökar-hash kastas efter 24 h, ingen IP sparas. Appen skickar bara tvättad sidväg (`lib/besoksstatistik.ts`) | OK |
 | OpenRouter Inc. | AI inferens | **Verifieras** | USA | SCC + TIA krävs |
 | Perplexity AI Inc. (via OpenRouter, modell `perplexity/sonar`) | Sökmodell i `ai-career-assistant`, `ai-company-search`, `ai-company-analysis`, `ai-commute-planner` (+ `ai-industry-radar` utan aktiv anropare) — gör en **webbsökning** på inmatad text; commute-planner skickar användarens adress | **Saknas** — omfattas inte av OpenRouters DPA per automatik, verifieras | USA | Tillagd 2026-09-12 (BL7). Står i integritetspolicyn sedan samma dag. Beslut Mikael: behåll med DPA/SCC, eller stäng av för organisationskonton |
 | Functional Software (Sentry) | Error tracking | DPA på sentry.io | Multi-region | EU-instans rekommenderad |

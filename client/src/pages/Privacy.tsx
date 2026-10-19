@@ -261,6 +261,7 @@ export default function Privacy() {
               <ListItem title={t('privacy.cookies.necessary')} desc={t('privacy.cookies.necessaryDesc')} />
               <ListItem title={t('privacy.cookies.functional')} desc={t('privacy.cookies.functionalDesc')} />
               <ListItem title={t('privacy.cookies.analytics')} desc={t('privacy.cookies.analyticsDesc')} />
+              <ListItem title={t('privacy.cookies.statistics')} desc={t('privacy.cookies.statisticsDesc')} />
             </ul>
             <p className="mt-4 text-gray-600 dark:text-gray-400 text-sm">{t('privacy.cookies.manage')}</p>
           </Section>

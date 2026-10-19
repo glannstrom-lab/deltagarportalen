@@ -6594,6 +6594,8 @@
       "functionalDesc": "Saves your settings like language and theme",
       "analytics": "Analytics cookies:",
       "analyticsDesc": "Sentry for error tracking - only with your consent",
+      "statistics": "Visitor statistics (no cookies):",
+      "statisticsDesc": "Vercel Web Analytics counts how many people visit each page. No cookies are used and no IP address is saved. We only send the name of the page – never searches, ID numbers or anything you have written.",
       "manage": "You can manage cookies under Settings > Privacy"
     },
     "complaint": {

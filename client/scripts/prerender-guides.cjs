@@ -39,6 +39,22 @@ const {
 } = require('./lib/guide-template.cjs')
 const { byggRelaterade, validateRelaterade } = require('./lib/related.cjs')
 
+// Besöksstatistik (2026-10-19): Vercel Web Analytics, cookiefri. Läggs in här
+// där sidorna skrivs, inte i var och en av mallarnas elva <head> — då får en ny
+// sidtyp den utan att någon behöver komma ihåg det. Appen räknar via
+// components/Besoksstatistik.tsx.
+const STATISTIK =
+  '<script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments)};</script>\n' +
+  '<script defer src="/_vercel/insights/script.js"></script>\n'
+
+function skrivSida(fil, html) {
+  if (!html.includes('</head>')) {
+    console.error(`prerender-guides: ${fil} saknar </head> — besöksstatistiken kan inte läggas in`)
+    process.exit(1)
+  }
+  fs.writeFileSync(fil, html.replace('</head>', `${STATISTIK}</head>`), 'utf8')
+}
+
 const CLIENT = path.join(__dirname, '..')
 const DIST = path.join(CLIENT, 'dist')
 const APP_TSX = path.join(CLIENT, 'src', 'App.tsx')
@@ -170,7 +186,7 @@ for (const artikel of publicerade) {
   for (const m of html.matchAll(/href="(\/knowledge-base\/[^"]*)"/g)) {
     portallankar.push(`/guider/${artikel.slug}/ → ${m[1]}`)
   }
-  fs.writeFileSync(path.join(dir, 'index.html'), html, 'utf8')
+  skrivSida(path.join(dir, 'index.html'), html, 'utf8')
   skrivna++
 }
 
@@ -184,7 +200,7 @@ if (portallankar.length) {
   process.exit(1)
 }
 
-fs.writeFileSync(path.join(DIST, 'guider', 'index.html'), renderIndex(publicerade), 'utf8')
+skrivSida(path.join(DIST, 'guider', 'index.html'), renderIndex(publicerade), 'utf8')
 
 // K17: uppläsningsskriptet som egen fil. Identiskt på 161 sidor — inline
 // kostade ~490 kB över bygget och krävde CSP:ns unsafe-inline. Som fil hämtas
@@ -209,7 +225,7 @@ for (const kat of KATEGORIER) {
   }
   const dir = path.join(DIST, 'guider', 'kategori', kat.slug)
   fs.mkdirSync(dir, { recursive: true })
-  fs.writeFileSync(path.join(dir, 'index.html'), renderKategori(kat, iKat, KATEGORIER), 'utf8')
+  skrivSida(path.join(dir, 'index.html'), renderKategori(kat, iKat, KATEGORIER), 'utf8')
   antalKategorier++
 }
 if (tommaKategorier.length) {
@@ -242,7 +258,7 @@ const lattlast = publicerade.filter(arLattlast)
 if (lattlast.length) {
   const dir = path.join(DIST, 'guider', 'lattlast')
   fs.mkdirSync(dir, { recursive: true })
-  fs.writeFileSync(path.join(dir, 'index.html'), renderLattlast(lattlast), 'utf8')
+  skrivSida(path.join(dir, 'index.html'), renderLattlast(lattlast), 'utf8')
 }
 
 // K6: publika landningssidor för verktygen.
@@ -275,11 +291,11 @@ if (fs.existsSync(TOOLS_FILE)) {
     const dir = path.join(DIST, 'verktyg', t.slug)
     fs.mkdirSync(dir, { recursive: true })
     const guider = (t.guider || []).map((s) => bySlug.get(s))
-    fs.writeFileSync(path.join(dir, 'index.html'), renderTool(t, guider), 'utf8')
+    skrivSida(path.join(dir, 'index.html'), renderTool(t, guider), 'utf8')
     antalVerktyg++
   }
 
-  fs.writeFileSync(path.join(DIST, 'verktyg', 'index.html'), renderToolIndex(verktyg), 'utf8')
+  skrivSida(path.join(DIST, 'verktyg', 'index.html'), renderToolIndex(verktyg), 'utf8')
 }
 
 // K7/K16: B2B-landningssidorna för kommunala arbetsmarknadsenheter och
@@ -298,7 +314,7 @@ if (fs.existsSync(B2B_FILE)) {
   if (demoSida) {
     const demoDir = path.join(DIST, demoSida.slug)
     fs.mkdirSync(demoDir, { recursive: true })
-    fs.writeFileSync(path.join(demoDir, 'index.html'), renderDemo(demoSida), 'utf8')
+    skrivSida(path.join(demoDir, 'index.html'), renderDemo(demoSida), 'utf8')
   }
 
   for (const b of sidor) {
@@ -313,7 +329,7 @@ if (fs.existsSync(B2B_FILE)) {
     const dir = path.join(DIST, b.slug)
     fs.mkdirSync(dir, { recursive: true })
     const guider = (b.guider || []).map((s) => bySlug.get(s))
-    fs.writeFileSync(path.join(dir, 'index.html'), renderB2B(b, guider), 'utf8')
+    skrivSida(path.join(dir, 'index.html'), renderB2B(b, guider), 'utf8')
     b2bSlugs.push(b.slug)
     antalB2B++
   }
@@ -369,7 +385,7 @@ if (fs.existsSync(SITUATIONER_FILE)) {
 
     const dir = path.join(DIST, 'for-dig-som', s.slug)
     fs.mkdirSync(dir, { recursive: true })
-    fs.writeFileSync(
+    skrivSida(
       path.join(dir, 'index.html'),
       renderSituation(
         s,
@@ -383,7 +399,7 @@ if (fs.existsSync(SITUATIONER_FILE)) {
   }
 
   if (antalSituationer) {
-    fs.writeFileSync(
+    skrivSida(
       path.join(DIST, 'for-dig-som', 'index.html'),
       renderSituationIndex(sidor),
       'utf8'
@@ -399,7 +415,7 @@ if (fs.existsSync(OM_OSS_FILE)) {
   const o = JSON.parse(fs.readFileSync(OM_OSS_FILE, 'utf8'))
   const dir = path.join(DIST, o.slug)
   fs.mkdirSync(dir, { recursive: true })
-  fs.writeFileSync(path.join(dir, 'index.html'), renderOmOss(o), 'utf8')
+  skrivSida(path.join(dir, 'index.html'), renderOmOss(o), 'utf8')
   antalOmOss = 1
 }
 

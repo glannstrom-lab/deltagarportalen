@@ -6594,6 +6594,8 @@
       "functionalDesc": "Sparar dina inställningar som språk och tema",
       "analytics": "Analys-cookies:",
       "analyticsDesc": "Sentry för felspårning - endast med ditt samtycke",
+      "statistics": "Besöksstatistik (utan cookies):",
+      "statisticsDesc": "Vercel Web Analytics räknar hur många som besöker varje sida. Inga cookies används och ingen IP-adress sparas. Vi skickar bara sidans namn – aldrig sökningar, id-nummer eller annat du skrivit.",
       "manage": "Du kan hantera cookies under Inställningar > Integritet"
     },
     "complaint": {

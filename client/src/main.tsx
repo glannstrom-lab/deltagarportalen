@@ -8,6 +8,7 @@ import ErrorBoundary from './components/ErrorBoundary'
 import { MobileOptimizer } from './components/MobileOptimizer'
 import { FontProvider } from './components/FontProvider'
 import { UpdateNotification } from './components/UpdateNotification'
+import { Besoksstatistik } from './components/Besoksstatistik'
 import { ThemeProvider } from './contexts/ThemeContext'
 import { ConfirmDialogProvider } from './components/ui/ConfirmDialog'
 import { MotionConfig } from 'framer-motion'
@@ -103,6 +104,7 @@ if (rootElement) {
                     <MobileOptimizer />
                     <App />
                     <UpdateNotification />
+                    <Besoksstatistik />
                   </ConfirmDialogProvider>
                 </FontProvider>
               </ThemeProvider>
