@@ -64,3 +64,34 @@
 .calm-mode .varld-markor,
 .calm-mode .varld-lykta-tand { animation: none; }
 .calm-mode .varld-markor { transform: translate(-50%, -100%); }
+
+/* ── Nästa steg i alla vyer (2026-10-19) ──────────────────────────────────
+   Pricken i menyn och pulsen på knappen som ÄR steget. Samma färg och samma
+   rytm som uppdragsmarkören "!" i staden (varld-puls). Pulsen ritas med
+   `outline`, inte `box-shadow`: fokusringen i hela appen är en box-shadow
+   (Tailwind ring-*), och den får aldrig skrivas över av en animation (WCAG
+   2.4.7). Har knappen fokus vinner fokusstilen, eftersom focus-visible-klassen
+   är mer specifik. Vid reducerad rörelse och i lugnt läge står markeringen
+   still men syns. */
+.nasta-steg-prick {
+  width: 9px;
+  height: 9px;
+  border-radius: 9999px;
+  background: var(--c-solid, var(--j-glod));
+  animation: varld-puls 2.4s ease-out infinite;
+}
+.nasta-steg-puls {
+  outline: 3px solid var(--c-solid, var(--j-glod));
+  outline-offset: 3px;
+  animation: nasta-steg-puls 2.4s ease-out infinite;
+}
+@keyframes nasta-steg-puls {
+  0% { outline-offset: 2px; outline-color: color-mix(in srgb, var(--c-solid, var(--j-glod)) 90%, transparent); }
+  70% { outline-offset: 9px; outline-color: color-mix(in srgb, var(--c-solid, var(--j-glod)) 0%, transparent); }
+  100% { outline-offset: 2px; outline-color: color-mix(in srgb, var(--c-solid, var(--j-glod)) 0%, transparent); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .nasta-steg-prick, .nasta-steg-puls { animation: none; }
+}
+.calm-mode .nasta-steg-prick,
+.calm-mode .nasta-steg-puls { animation: none; }

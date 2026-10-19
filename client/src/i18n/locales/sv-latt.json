@@ -1,5 +1,8 @@
 {
   "_kommentar": "Lätt svenska (KM11). Bara nycklar som finns i sv.json — samma {{variabler}}. Läggs ovanpå svenskan när användaren valt Lätt svenska; övriga nycklar faller tillbaka på sv.json. Korta meningar, vanliga ord, en tanke per mening. Myndighetsnamn ändras aldrig. Vaktas av i18n/lattSvenska.test.ts.",
+  "nastaSteg": {
+    "finnsHar": "Här är ditt nästa steg"
+  },
   "minVecka": {
     "title": "Min vecka",
     "description": "Här ser du vad du ska göra varje vecka.",
@@ -865,6 +868,12 @@
     "nasta": {
       "label": "Det här kan du göra nu",
       "otherwise": "Eller gör så här:",
+      "todaysPass": {
+        "title": "Du har ett pass i dag: {{titel}}",
+        "body": "Tryck Jag är här när du kommer. Kan du inte komma? Säg till i Min vecka.",
+        "cta": "Öppna Min vecka",
+        "short": "Säg att du är här"
+      },
       "followUp": {
         "title": "Du har inte fått svar på en ansökan än",
         "body_other": "Det har gått {{count}} dagar. Skicka ett kort mejl. Fråga hur det går. Då ser de att du vill ha jobbet.",

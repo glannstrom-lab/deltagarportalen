@@ -592,6 +592,7 @@ function SearchTab() {
               <Search className="absolute left-3 top-1/2 mt-2 -translate-y-1/2 text-stone-600 dark:text-stone-400" size={20} aria-hidden="true" />
               <input
                 id="job-search-input"
+                data-nasta-steg="jobbsok-sok"
                 type="text"
                 placeholder={t('jobSearch.whatDoYouWantToWork')}
                 value={filters.query}

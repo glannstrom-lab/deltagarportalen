@@ -18,7 +18,7 @@
  */
 
 import { useEffect, useMemo, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { ArrowRight, X } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
@@ -41,6 +41,9 @@ import { useEgenHalsning } from '@/components/varld/halsningPlats'
 import RadgivarHalsning from '@/components/radgivare/RadgivarHalsning'
 import type { OversiktSummary } from '@/hooks/useOversiktHubSummary'
 import { valjNastaSteg } from './nastaStegRegler'
+import { nastaStegTexter } from './nastaStegTexter'
+import { NastaSteg } from '@/components/ui/NastaSteg'
+import { DELTAGAR_FOKUS } from '@/lib/nastaStegMal'
 import { byggKategorier, type PanelTillstand } from './oversiktKategorier'
 
 function halsningFor(now: Date, t: (k: string, d: string) => string) {
@@ -72,7 +75,12 @@ export default function Stad({
   // Rådgivaren står i staden — Layout ska inte rita en hälsning till.
   useEgenHalsning()
 
-  const forsta = useMemo(() => (klart ? valjNastaSteg(summary)?.primar.till ?? null : null), [klart, summary])
+  const navigate = useNavigate()
+  const val = useMemo(() => (klart ? valjNastaSteg(summary) : null), [klart, summary])
+  const forsta = val?.primar.till ?? null
+  // Nästa steg ska synas även när rådgivarna är dolda (2026-10-19: "Dölj" på
+  // dialogrutan tog med sig hela nästa steget — kvar fanns bara "!" i bilden).
+  const stegTexter = val ? nastaStegTexter(val.primar, t, sprak) : null
   const [uppdragTill, setUppdragTill] = useState<string | null>(null)
   const aktivtTill = uppdragTill ?? forsta
   const uppdrag: HubbPlatsId | null = useMemo(() => {
@@ -242,6 +250,19 @@ export default function Stad({
                 <X className="w-4 h-4" aria-hidden="true" />
               </button>
             </div>
+            {/* Platsen med "!" börjar med själva steget — det var därför rutan öppnades. */}
+            {val && stegTexter && platsForDomain(getDomainForPath(val.primar.till)).id === vald && (
+              <Link
+                to={val.primar.till}
+                data-testid="platsruta-nasta-steg"
+                className="block rounded-xl bg-[var(--c-bg)] px-3.5 py-3 no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--c-solid)]"
+              >
+                <span className="block text-[0.75rem] font-bold uppercase tracking-[0.08em] text-[var(--c-text)]">
+                  {t('kvarter.nastaSteg', 'Nästa steg')}
+                </span>
+                <span className="block text-[0.9375rem] font-semibold text-stone-900 dark:text-stone-100">{stegTexter.rubrik}</span>
+              </Link>
+            )}
             {valdKat && (
               <ul className="m-0 p-0 list-none divide-y divide-stone-100 dark:divide-stone-800">
                 {valdKat.rader.map((r) => (
@@ -274,6 +295,21 @@ export default function Stad({
       {radgivarePa && !dator && (
         <div className="relative z-10 -mt-10 px-2 sm:px-6 empty:hidden" data-focus-chrome="radgivare">
           <RadgivarHalsning pathname="/oversikt" variant="flytande" vidByte={setUppdragTill} />
+        </div>
+      )}
+
+      {/* Rådgivarna dolda: nästa steg som kort, så att det aldrig försvinner med dem. */}
+      {!radgivarePa && val && stegTexter && (
+        <div className="relative z-10 mt-4" data-testid="stad-nasta-steg">
+          <NastaSteg
+            rubrik={stegTexter.rubrik}
+            text={stegTexter.body}
+            handling={{
+              etikett: stegTexter.knapp,
+              onClick: () => navigate(val.primar.till),
+              fokus: DELTAGAR_FOKUS[val.primar.id],
+            }}
+          />
         </div>
       )}
     </section>

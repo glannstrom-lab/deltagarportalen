@@ -17,7 +17,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { useSettingsStore } from '@/stores/settingsStore'
 import { showToast } from '@/components/Toast'
-import { SIDHALSNINGAR, OVERSIKT_STEG, OVERSIKT_INGET, ljudFor } from '@/data/radgivarHalsningar'
+import { SIDHALSNINGAR, OVERSIKT_STEG, OVERSIKT_INGET, OVERSIKT_KLIPP_SAKNAS, ljudFor } from '@/data/radgivarHalsningar'
 import { SIDBILDER } from '@/data/sidbilder'
 import { HUBBPLATSER, STILAR, TIDER, scenSrc, PLATSER, foremalSrc } from '@/data/varld'
 
@@ -201,7 +201,9 @@ describe('filerna finns', () => {
   it('varje hälsning har ett klipp på svenska och engelska', () => {
     const nycklar = [
       ...Object.keys(SIDHALSNINGAR).filter((k) => k !== 'dashboard'),
-      ...Object.keys(OVERSIKT_STEG).map((k) => `oversikt-${k}`),
+      ...Object.keys(OVERSIKT_STEG)
+        .filter((k) => !OVERSIKT_KLIPP_SAKNAS.has(k as keyof typeof OVERSIKT_STEG))
+        .map((k) => `oversikt-${k}`),
       'oversikt-inget',
     ]
     expect(OVERSIKT_INGET.sv.length).toBeGreaterThan(0)
@@ -211,6 +213,13 @@ describe('filerna finns', () => {
         .filter((f) => !fs.existsSync(path.join(PUBLIC, f)))
     )
     expect(saknas).toEqual([])
+  })
+
+  it('undantaget för ej inspelade klipp krymper: står ett steg kvar fast klippet finns, fäller testet', () => {
+    const inspelade = [...OVERSIKT_KLIPP_SAKNAS].filter((k) =>
+      (['sv', 'en'] as const).some((s) => fs.existsSync(path.join(PUBLIC, ljudFor(`oversikt-${k}`, s))))
+    )
+    expect(inspelade).toEqual([])
   })
 
   it('varje sidbild finns i BÅDA grafikstilarna', () => {

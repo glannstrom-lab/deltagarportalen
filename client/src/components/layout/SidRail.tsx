@@ -28,6 +28,7 @@ import type { Tab } from './PageTabs'
 import { aktivFlikId, etikettForFlik } from './flikMatchning'
 import { StigLista, StigPrick, SkenEtikett } from './Stig'
 import { stigRadKlasser } from './stigKlasser'
+import { NastaStegPrickFor } from '@/components/nastasteg/NastaSteg'
 
 /**
  * Flikar som lever i sidans eget tillstånd i stället för i rutten.
@@ -224,6 +225,7 @@ export default function SidRail({
                   >
                     <StigPrick lage={aktiv ? 'aktiv' : 'kvar'} />
                     <span className="min-w-0 truncate">{tab.label}</span>
+                    <NastaStegPrickFor vag={tab.path} className="ml-auto" />
                   </Link>
                 </li>
               )
@@ -371,6 +373,7 @@ export function FlikRad({ tabs }: { tabs?: Tab[] }) {
                 )}
               >
                 {tab.label}
+                <NastaStegPrickFor vag={tab.path} className="ml-1.5" />
               </Link>
             </li>
           )

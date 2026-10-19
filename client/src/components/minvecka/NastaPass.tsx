@@ -69,7 +69,7 @@ export function NastaPass({ steg, konsulentNamn, dagText, pagar, onCheckin, onKa
         tid={`${visaTid(p.start_time)}–${visaTid(p.end_time)}`}
         rubrik={p.title}
         text={t('minVecka.nasta.idagText', 'Tryck på Jag är här när du är på plats.')}
-        handling={{ etikett: t('minVecka.jagArHar', 'Jag är här'), onClick: () => onCheckin(p), disabled: pagar === p.id }}
+        handling={{ etikett: t('minVecka.jagArHar', 'Jag är här'), onClick: () => onCheckin(p), disabled: pagar === p.id, fokus: 'jag-ar-har' }}
         sekundar={kanAnmalaFranvaro(p) ? { etikett: t('minVecka.franvaro.knapp', 'Jag kan inte komma'), onClick: () => onKanInte(p) } : undefined}
         className="[&_h2]:text-[1.6rem]"
       >

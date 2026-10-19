@@ -4,7 +4,7 @@
  * <EmptyState>, aldrig "0" (CLAUDE.md, DESIGN.md §7). Tre lägen per kort.
  */
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Card } from '@/components/ui/Card'
@@ -15,6 +15,8 @@ import type { Organization } from '@/services/orgApi'
 import { foretagApi, dagarSedan, formateraDatum, fulltNamn, veckotext, type Forslag } from '@/services/foretagApi'
 import { FelRuta, Laddar } from '@/components/foretag/Tillstand'
 import { SvarDialog } from '@/components/foretag/SvarDialog'
+import { FORETAG_FOKUS } from '@/lib/nastaStegMal'
+import { useNastaStegStore } from '@/stores/nastaStegStore'
 import { CHIP_KLASS, PLACERING_TYP_LABEL, PLATS_STATUS_KLASS, PLATS_STATUS_LABEL, foretagNycklar, kravSammanfattning } from '@/components/foretag/foretagEtiketter'
 
 interface Props {
@@ -45,6 +47,15 @@ export function OversiktFlik({ org }: Props) {
     const d = dagarSedan(f.decided_at ?? f.created_at)
     return d === null ? acc : acc === null ? d : Math.max(acc, d)
   }, null)
+
+  // Nästa steg för menyn och pulsen: ett obesvarat förslag. Bara när svaret är inne —
+  // medan listan laddar vet vi inget, och ett hämtfel är inget nästa steg.
+  const satt = useNastaStegStore((s) => s.satt)
+  const harObesvarat = forslagQ.data ? obesvarade.length > 0 : null
+  useEffect(() => {
+    if (harObesvarat === null) return
+    satt('foretag', harObesvarat ? { vag: '/foretag', fokus: FORETAG_FOKUS } : null)
+  }, [satt, harObesvarat])
 
   const vantar = !forslagQ.data
     ? null
@@ -77,7 +88,7 @@ export function OversiktFlik({ org }: Props) {
             />
           ) : (
             <ul className="divide-y divide-stone-200 dark:divide-stone-700">
-              {obesvarade.map((f) => (
+              {obesvarade.map((f, i) => (
                 <li key={f.id} className="py-3 space-y-1">
                   <p className="font-medium text-stone-900 dark:text-stone-100">{f.place_title || f.occupation || 'Plats hos er'}</p>
                   <p className="text-sm text-stone-700 dark:text-stone-200">
@@ -88,7 +99,13 @@ export function OversiktFlik({ org }: Props) {
                     {f.expires_at ? ` · visas till ${formateraDatum(f.expires_at)}` : ''}
                   </p>
                   <div className="flex flex-wrap gap-2 pt-1">
-                    <Button size="sm" onClick={() => navigate(`/foretag/forslag?id=${f.id}`)}>Läs presentationen</Button>
+                    <Button
+                      size="sm"
+                      data-nasta-steg={i === 0 ? FORETAG_FOKUS : undefined}
+                      onClick={() => navigate(`/foretag/forslag?id=${f.id}`)}
+                    >
+                      Läs presentationen
+                    </Button>
                     <Button size="sm" variant="outline" onClick={() => setAvboj(f)}>Tacka nej</Button>
                   </div>
                 </li>

@@ -14,6 +14,10 @@
  * 2026-08-09: ett påhittat värde har alltid föredragits framför ett tomt
  * fält). Varje kandidat har ett villkor som läser ETT faktum ur sammanfattningen:
  *
+ *   dagens pass          konsulent finns och dagens pass är varken incheckat,
+ *                        markerat eller frånvaroanmält (2026-10-19: deltagarens
+ *                        styrning ledde aldrig till Min vecka, fast passet är
+ *                        det viktigaste för den som har aktivitetskrav)
  *   följ upp ansökan     `awaitingSince` ≥ 7 dagar gammalt. Utan datum: inget
  *                        förslag, för då vet vi inte hur länge.
  *   spontanansökan       en uppföljning förfaller inom tre dagar
@@ -38,6 +42,7 @@
 import type { OversiktSummary } from '@/hooks/useOversiktHubSummary'
 
 export type StegId =
+  | 'todaysPass'
   | 'followUp'
   | 'spontaneous'
   | 'event'
@@ -100,6 +105,26 @@ export function kandidater(s: OversiktSummary, nu: Date = new Date()): Steg[] {
   const jobsok = s.jobsok
   const karriar = s.karriar
   const vardag = s.minVardag
+
+  // 0. Dagens pass, för den som har en konsulent. Går före allt annat: ett
+  // pass har en tid som rinner ut i dag, och närvaron är det aktivitetskravet
+  // bygger på. Bara när passet varken är incheckat, markerat eller anmält —
+  // annars finns inget för deltagaren att göra.
+  const pass = vardag?.nastaPass
+  if (
+    vardag?.consultant &&
+    pass &&
+    pass.date === lokaltDatum(nu) &&
+    !pass.self_checkin_at &&
+    !pass.attendance &&
+    !pass.absence_reported_at
+  ) {
+    ut.push({
+      id: 'todaysPass',
+      till: '/min-vecka',
+      varden: { titel: pass.title, datum: pass.date },
+    })
+  }
 
   // 1. En ansökan har väntat på svar länge nog för att en fråga är rimlig.
   const vantatDagar = dagarSedan(jobsok?.applicationStats?.awaitingSince, nu)

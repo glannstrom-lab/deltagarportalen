@@ -80,7 +80,18 @@ export interface MinVardagSummary {
    * och sa "inget inbokat" till en deltagare med möte i morgon och pass hela veckan.
    */
   nastaMote?: { id: string; scheduled_at: string } | null
-  nastaPass?: { id: string; title: string; date: string; start_time: string | null } | null
+  nastaPass?: {
+    id: string
+    title: string
+    date: string
+    start_time: string | null
+    /** Deltagarens egen incheckning ("Jag är här"). Nästa steg-regeln läser den. */
+    self_checkin_at?: string | null
+    /** Konsulentens markering. Satt = passet är redan hanterat. */
+    attendance?: string | null
+    /** Deltagaren har anmält frånvaro. */
+    absence_reported_at?: string | null
+  } | null
 }
 
 /** Resurser-hubbens datasnitt */

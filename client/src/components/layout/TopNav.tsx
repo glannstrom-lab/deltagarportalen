@@ -48,6 +48,9 @@ import { aktivKonsulentFlik, arKonsulentvy, konsulentBottenNavFor } from './kons
 import { useEnbartHandlaggareICache } from '@/pages/useKonsulentFlikar'
 import { HUB_ICON_SRC, TOOL_ICON_SRC } from './hubIcons'
 import { cn } from '@/lib/utils'
+import { NastaStegPrick } from '@/components/nastasteg/NastaSteg'
+import { useNastaStegMal } from '@/hooks/useNastaStegMal'
+import { hubbInnehaller, menyvalLederTill } from '@/lib/nastaStegMal'
 import { avkodaSokvag } from '@/lib/sokvag'
 
 /** Rasterikon i navigationen: avfärgad och dämpad tills raden är aktiv eller hovras. */
@@ -139,6 +142,7 @@ function oversiktRad2(t: TFunction): {
  */
 export function SubNav() {
   const { t } = useTranslation()
+  const nastaMal = useNastaStegMal()
   const location = useLocation()
   const aktivHub = getActiveHub(location.pathname)
 
@@ -197,6 +201,7 @@ export function SubNav() {
               />
             )}
             {p.label}
+            <NastaStegPrick aktiv={menyvalLederTill(p.path, nastaMal)} />
           </Link>
         )
       })}
@@ -213,6 +218,7 @@ export function SubNav() {
  */
 export function HubNav({ variant = 'bar' }: { variant?: 'bar' | 'inline' } = {}) {
   const { t } = useTranslation()
+  const nastaMal = useNastaStegMal()
   const location = useLocation()
   const aktivHub = getActiveHub(location.pathname)
 
@@ -309,6 +315,7 @@ export function HubNav({ variant = 'bar' }: { variant?: 'bar' | 'inline' } = {})
               <NavIkon src={HUB_ICON_SRC[hub.domain]} storlek={24} aktiv={aktiv} rund />
             )}
             {t(hub.labelKey, hub.fallbackLabel)}
+            <NastaStegPrick aktiv={hubbInnehaller(hub.id, nastaMal)} />
           </Link>
         )
       })}

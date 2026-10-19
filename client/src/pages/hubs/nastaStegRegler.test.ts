@@ -218,3 +218,40 @@ describe('ordning och urval', () => {
     expect(val.alternativ.map((a) => a.id)).not.toContain(val.primar.id)
   })
 })
+
+// 2026-10-19: deltagarens styrning ledde aldrig till Min vecka, fast dagens
+// pass är det viktigaste för den som har aktivitetskrav.
+describe('dagens pass', () => {
+  const idag = datum(0)
+  const konsulent = { id: 'k', full_name: 'Kim', avatar_url: null }
+  const pass = (over: Partial<NonNullable<MinVardagSummary['nastaPass']>> = {}) => ({
+    id: 'p1', title: 'Jobbsökarverkstad', date: idag, start_time: '09:00:00',
+    self_checkin_at: null, attendance: null, absence_reported_at: null, ...over,
+  })
+  const med = (vardag: Partial<MinVardagSummary>, over: Partial<OversiktSummary> = {}) =>
+    lugn({ minVardag: { ...VARDAG_TOMT, recentMoodLogs: [{ mood_level: 3, energy_level: 3, log_date: datum(-1) }], ...vardag }, ...over })
+
+  it('går före allt annat, även en ansökan som väntat länge', () => {
+    const s = med({ consultant: konsulent, nastaPass: pass() }, {
+      jobsok: { ...JOBSOK_TOMT, cv: null, applicationStats: { total: 1, byStatus: {}, segments: [], awaitingSince: forDagarSedan(20) } },
+    })
+    const val = valjNastaSteg(s, NU)
+    expect(val?.primar.id).toBe('todaysPass')
+    expect(val?.primar.till).toBe('/min-vecka')
+    expect(val?.alternativ[0].id).toBe('followUp')
+  })
+
+  it('bara med konsulent', () => {
+    expect(kandidater(med({ consultant: null, nastaPass: pass() }), NU).map((k) => k.id)).not.toContain('todaysPass')
+  })
+
+  it('inte när passet är incheckat, markerat eller frånvaroanmält', () => {
+    for (const over of [{ self_checkin_at: '2026-09-10T08:55:00Z' }, { attendance: 'present' }, { absence_reported_at: '2026-09-09T20:00:00Z' }]) {
+      expect(kandidater(med({ consultant: konsulent, nastaPass: pass(over) }), NU).map((k) => k.id)).not.toContain('todaysPass')
+    }
+  })
+
+  it('inte för ett pass en annan dag', () => {
+    expect(kandidater(med({ consultant: konsulent, nastaPass: pass({ date: datum(1) }) }), NU).map((k) => k.id)).not.toContain('todaysPass')
+  })
+})

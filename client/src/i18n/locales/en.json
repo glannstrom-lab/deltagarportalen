@@ -1,4 +1,7 @@
 {
+  "nastaSteg": {
+    "finnsHar": "Your next step is here"
+  },
   "weeklyReflection": {
     "heading": "Your week",
     "prompt": "Would you like a short look back at your week, based on what you've written yourself?",
@@ -9517,6 +9520,12 @@
     "nasta": {
       "label": "A good next step",
       "otherwise": "If you would rather:",
+      "todaysPass": {
+        "title": "Your activity today: {{titel}}",
+        "body": "Press I am here when you arrive. If you cannot come, tell your consultant in My week.",
+        "cta": "Open My week",
+        "short": "Check in for today"
+      },
       "followUp": {
         "title": "An employer has not replied to your application yet",
         "body_other": "It has been {{count}} days. A short email asking how it is going shows interest and usually gets a reply.",

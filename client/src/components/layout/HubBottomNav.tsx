@@ -17,8 +17,12 @@ import { HUB_ICON_SRC } from './hubIcons'
 import { arKonsulentvy, aktivKonsulentFlik, konsulentBottenNavFor } from './konsulentNav'
 import { useEnbartHandlaggareICache } from '@/pages/useKonsulentFlikar'
 import { cn } from '@/lib/utils'
+import { NastaStegPrick } from '@/components/nastasteg/NastaSteg'
+import { useNastaStegMal } from '@/hooks/useNastaStegMal'
+import { hubbInnehaller } from '@/lib/nastaStegMal'
 
 export function HubBottomNav() {
+  const nastaMal = useNastaStegMal()
   const location = useLocation()
   const { t } = useTranslation()
 
@@ -156,8 +160,9 @@ export function HubBottomNav() {
                     aria-hidden="true"
                   />
                 )}
-                <span className="truncate max-w-full">
+                <span className="truncate max-w-full inline-flex items-center gap-1">
                   {t(hub.labelKey, hub.fallbackLabel)}
+                  <NastaStegPrick aktiv={hubbInnehaller(hub.id, nastaMal)} />
                 </span>
               </Link>
             </li>

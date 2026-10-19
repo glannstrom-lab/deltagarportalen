@@ -79,7 +79,7 @@ export function useMinVardagHubSummary() {
           .maybeSingle(),
         supabase
           .from('activity_sessions')
-          .select('id, title, date, start_time')
+          .select('id, title, date, start_time, self_checkin_at, attendance, absence_reported_at')
           .eq('participant_id', userId)
           .gte('date', today)
           .order('date', { ascending: true })

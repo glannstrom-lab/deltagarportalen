@@ -321,6 +321,12 @@ export const SIDHALSNINGAR: Record<string, Halsning> = {
  * och kompetensanalysen Saras, precis som på deras egna sidor.
  */
 export const OVERSIKT_STEG: Record<StegId, Omit<Halsning, 'steg'>> = {
+  todaysPass: {
+    // belägg: pages/MinVecka.tsx (dagens pass med "Jag är här" och "Jag kan inte komma")
+    coachId: 'arbetsterapeut',
+    sv: 'Hej, det är Linnea. Du har ett pass i dag. Tryck Jag är här när du är på plats, eller säg till om du inte kan komma.',
+    en: 'Hi, this is Linnea. You have an activity today. Press I am here when you arrive, or tell us if you cannot come.',
+  },
   followUp: {
     coachId: 'jobbcoach',
     sv: 'Hej, det är Andreas. En arbetsgivare har inte svarat på din ansökan än. Ett kort mejl där du frågar hur det går visar att du är intresserad.',
@@ -374,6 +380,16 @@ export const OVERSIKT_INGET: Omit<Halsning, 'steg'> = {
   sv: 'Hej, det är Andreas. Just nu finns det inget som brådskar. Välj något du har lust med, eller ta det lugnt i dag.',
   en: 'Hi, this is Andreas. Right now nothing is urgent. Choose something you feel like doing, or take it easy today.',
 }
+
+/**
+ * Översiktens steg vars klipp INTE är inspelade än. Dialogrutan klarar ett
+ * saknat klipp (uppspelningsknappen döljs, `useRost` → `saknas`), så texten
+ * syns ändå. Mängden ska bara krympa: testet i radgivarHalsning.test.tsx
+ * fäller när ett klipp har lagts i public men posten står kvar här.
+ * todaysPass (2026-10-19): ny regel, ingen röst-id finns sparad för Linnea —
+ * spelas in av Mikael med samma röst som de andra klippen.
+ */
+export const OVERSIKT_KLIPP_SAKNAS: ReadonlySet<StegId> = new Set<StegId>(['todaysPass'])
 
 /** Ljudfil för en hälsning. Klippen ligger i public/radgivare/ljud/. */
 export function ljudFor(nyckel: string, sprak: 'sv' | 'en'): string { return `/radgivare/ljud/${nyckel}-${sprak}.mp3` }

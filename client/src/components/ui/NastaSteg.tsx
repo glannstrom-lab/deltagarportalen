@@ -26,6 +26,8 @@ export interface NastaStegHandling {
   etikett: string
   onClick: () => void
   disabled?: boolean
+  /** Fokusnyckel för pulsen (`data-nasta-steg`, se components/nastasteg/NastaSteg.tsx). */
+  fokus?: string
 }
 
 export interface NastaStegProps {
@@ -93,6 +95,7 @@ export function NastaSteg({
           variant="primary"
           onClick={handling.onClick}
           disabled={handling.disabled}
+          data-nasta-steg={handling.fokus}
           className="w-full sm:w-auto"
         >
           {handling.etikett}

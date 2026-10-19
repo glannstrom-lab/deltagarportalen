@@ -1,4 +1,7 @@
 {
+  "nastaSteg": {
+    "finnsHar": "Ditt nästa steg finns här"
+  },
   "weeklyReflection": {
     "heading": "Din vecka",
     "prompt": "Vill du se en kort tillbakablick på veckan, utifrån det du själv har skrivit?",
@@ -9517,6 +9520,12 @@
     "nasta": {
       "label": "Ett bra nästa steg",
       "otherwise": "Om du hellre vill:",
+      "todaysPass": {
+        "title": "Ditt pass i dag: {{titel}}",
+        "body": "Tryck Jag är här när du är på plats. Kan du inte komma, säg till i Min vecka.",
+        "cta": "Öppna Min vecka",
+        "short": "Checka in på dagens pass"
+      },
       "followUp": {
         "title": "En arbetsgivare har inte svarat på din ansökan än",
         "body_other": "Det har gått {{count}} dagar. Ett kort mejl där du frågar hur det går visar intresse och brukar ge svar.",

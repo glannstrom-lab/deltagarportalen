@@ -1129,7 +1129,7 @@ export function CoverLetterWrite() {
               )}
 
               {currentStep < 3 ? (
-                <Button onClick={handleNext} className="gap-2">
+                <Button onClick={handleNext} className="gap-2" data-nasta-steg="brev-start">
                   {t('common.next', 'Nästa')}
                   <ChevronRight size={18} aria-hidden="true" />
                 </Button>

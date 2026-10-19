@@ -19,7 +19,7 @@
  * Konsulentvyn översätts inte (DESIGN.md §2).
  */
 
-import { useId, useState } from 'react'
+import { useEffect, useId, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import type { Attendance } from '@/services/aktivitetSchema'
 import type { AttendanceInput } from '@/services/aktivitetApi'
@@ -29,6 +29,8 @@ import { NarvaroVal } from '@/components/ui/NarvaroVal'
 import { Button } from '@/components/ui/Button'
 import { narvaroValFor, type Regelverk } from '@/components/consultant/franvaroFakta'
 import { gruppLank } from '@/lib/gruppnarvaro'
+import { KONSULENT_FOKUS } from '@/lib/nastaStegMal'
+import { useNastaStegStore } from '@/stores/nastaStegStore'
 import {
   passMening,
   radSammanfattning,
@@ -419,7 +421,7 @@ function NastaPunkt({ punkt, props }: { punkt: MinDagPunkt; props: Props }) {
         rubrik={rubrik}
         text={text}
         tid={tid}
-        handling={{ ...atgard.primar, disabled: atgard.primar.disabled || sparar }}
+        handling={{ ...atgard.primar, disabled: atgard.primar.disabled || sparar, fokus: KONSULENT_FOKUS }}
         sekundar={atgard.sekundar ? { ...atgard.sekundar, disabled: sparar } : undefined}
       >
         {atgard.kontroll === 'anteckning' || atgard.kontroll === 'narvaro' ? (
@@ -450,7 +452,7 @@ function NastaPass({ pass }: { pass: PassAttMarkera }) {
         tid={pass.start_time}
         rubrik={`Markera närvaro för ${pass.title}`}
         text={passMening(pass)}
-        handling={{ etikett: 'Markera närvaro', onClick: () => navigate(gruppLank(pass)) }}
+        handling={{ etikett: 'Markera närvaro', onClick: () => navigate(gruppLank(pass)), fokus: KONSULENT_FOKUS }}
       />
     </div>
   )
@@ -463,6 +465,14 @@ export function BradskandeIdag(props: Props) {
   const personer = props.regelverk === 'kommun' ? props.personer : utanLakarintyg(props.personer)
   const val: NastaStegVal | null = visaNastaSteg ? valjNastaSteg(personer, pass, nu) : null
   const lista = utanNastaSteg(personer, val)
+
+  // Menyn (prick på Översikt) och pulsen läser samma val — publicera det.
+  // Ett hämtfel (visaNastaSteg = false) ger inget mål, aldrig ett påhittat.
+  const satt = useNastaStegStore((s) => s.satt)
+  const harVal = !!val
+  useEffect(() => {
+    satt('konsulent', harVal ? { vag: '/consultant', fokus: KONSULENT_FOKUS } : null)
+  }, [satt, harVal])
 
   return (
     <>

@@ -1671,7 +1671,7 @@ export default function CVBuilder() {
                   {t('cvBuilder.actions.preview', 'Förhandsgranska')}
                 </button>
               )}
-              <button onClick={() => setStep(Math.min(STEPS.length, step + 1))} disabled={step === STEPS.length} className="flex items-center gap-2 px-4 py-2.5 bg-[var(--c-solid)] text-white rounded-xl hover:brightness-110 disabled:opacity-50 font-medium">
+              <button data-nasta-steg="cv-start" onClick={() => setStep(Math.min(STEPS.length, step + 1))} disabled={step === STEPS.length} className="flex items-center gap-2 px-4 py-2.5 bg-[var(--c-solid)] text-white rounded-xl hover:brightness-110 disabled:opacity-50 font-medium">
                 {t('cvBuilder.actions.next')}
                 <ChevronRight className="w-5 h-5" />
               </button>
@@ -1882,6 +1882,7 @@ export default function CVBuilder() {
           <Eye className="w-5 h-5" />
         </button>
         <button
+          data-nasta-steg="cv-start"
           onClick={() => setStep(Math.min(STEPS.length, step + 1))}
           disabled={step === STEPS.length}
           className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-[var(--c-solid)] text-white rounded-xl hover:bg-[var(--c-solid)]/90 disabled:opacity-50 font-medium"
