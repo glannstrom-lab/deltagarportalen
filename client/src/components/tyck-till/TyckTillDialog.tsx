@@ -9,7 +9,7 @@
 import { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { Lightbulb, Bug, CheckCircle2, Loader2 } from '@/components/ui/icons'
+import { Lightbulb, Bug, CheckCircle2, Check, Loader2 } from '@/components/ui/icons'
 import { Dialog } from '@/components/ui/Dialog'
 import { useTyckTillStore, type TyckTillTyp } from '@/stores/tyckTillStore'
 import { skickaTyckTill, type TyckTillSvar } from '@/services/tyckTillApi'
@@ -103,7 +103,7 @@ function TyckTillInnehall() {
             void skicka()
           }}
         >
-          <fieldset>
+          <fieldset className="border-0 p-0 m-0 min-w-0">
             <legend className="sr-only">{t('tyckTill.valjTyp')}</legend>
             <div className="grid grid-cols-2 gap-2">
               {typer.map(({ id, Icon }) => (
@@ -113,7 +113,7 @@ function TyckTillInnehall() {
                     'flex items-center gap-2 rounded-xl border px-3 py-3 cursor-pointer text-sm font-medium transition-colors',
                     'has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-[var(--c-solid)]',
                     typ === id
-                      ? 'border-[var(--c-solid)] bg-[var(--c-bg)] text-[var(--c-text)] dark:text-stone-100'
+                      ? 'border-2 border-[var(--c-solid)] bg-[var(--c-bg)] text-[var(--c-text)] dark:text-stone-100 font-semibold'
                       : 'border-stone-200 dark:border-stone-700 text-stone-700 dark:text-stone-200 hover:bg-stone-50 dark:hover:bg-stone-800'
                   )}
                 >
@@ -126,7 +126,9 @@ function TyckTillInnehall() {
                     className="sr-only"
                   />
                   <Icon className="w-4 h-4 shrink-0" aria-hidden="true" />
-                  {t(id === 'ide' ? 'tyckTill.typIde' : 'tyckTill.typFel')}
+                  <span className="flex-1">{t(id === 'ide' ? 'tyckTill.typIde' : 'tyckTill.typFel')}</span>
+                  {/* Valt syns med form, inte bara färg (WCAG 1.4.1). */}
+                  {typ === id && <Check className="w-4 h-4 shrink-0" aria-hidden="true" />}
                 </label>
               ))}
             </div>
