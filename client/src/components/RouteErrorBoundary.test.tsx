@@ -21,7 +21,7 @@ const NYA_EN = {
     home: 'Go to the start page',
     attempt: 'Attempt {{n}} of {{max}}',
     supportLead: 'If the problem continues,',
-    supportLink: 'contact support',
+    berattaVad: 'tell us what you did',
   },
 }
 
@@ -59,8 +59,8 @@ describe('RouteErrorBoundary — språk', () => {
     const vy = visa()
     expect(screen.getByText('Something went wrong')).toBeInTheDocument()
     expect(screen.getByText('Go to the start page')).toBeInTheDocument()
-    expect(screen.getByText('contact support')).toBeInTheDocument()
-    expect(vy.container.textContent).not.toMatch(/Något gick fel|Till startsidan|kontakta support|oväntat fel/)
+    expect(screen.getByText('tell us what you did')).toBeInTheDocument()
+    expect(vy.container.textContent).not.toMatch(/Något gick fel|Till startsidan|berätta vad du gjorde|oväntat fel/)
   })
 
   it('faller tillbaka på svenskan när i18next kastar — felvyn kraschar inte själv', () => {

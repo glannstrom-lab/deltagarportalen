@@ -12,13 +12,15 @@ import {
   CheckCircle,
   XCircle,
   Building2,
-  Eye
+  Eye,
+  MessageSquarePlus
 } from '@/components/ui/icons';
 import { supabase } from '@/lib/supabase';
 import { arTestkonto } from '@/lib/testkonton';
 import { LoadingState, ErrorState } from '@/components/ui/LoadingState';
 import { OrganisationerTab } from './OrganisationerTab';
 import { VisaSomTab } from './VisaSomTab';
+import { TyckTillTab } from './TyckTillTab';
 
 interface User {
   id: string;
@@ -51,7 +53,7 @@ export const SuperAdminPanel: React.FC = () => {
   const [hamtFel, setHamtFel] = useState<string | null>(null);
   const [rollFel, setRollFel] = useState<string | null>(null);
   // 'settings'-fliken borttagen 2026-07-10 (B4): var en tom "Kommer snart..."-yta
-  const [activeTab, setActiveTab] = useState<'users' | 'stats' | 'organisationer' | 'visa-som'>('users');
+  const [activeTab, setActiveTab] = useState<'users' | 'stats' | 'organisationer' | 'visa-som' | 'tyck-till'>('users');
   const [searchQuery, setSearchQuery] = useState('');
   // BL5: testkonton (Playwright, KM-pilot, example.com) är borträknade som
   // default — 91 av 104 AI-anrop och 30 av 31 konsulentrelationer var testtrafik.
@@ -149,10 +151,11 @@ export const SuperAdminPanel: React.FC = () => {
               { id: 'stats', label: 'Statistik', icon: BarChart3 },
               { id: 'organisationer', label: 'Organisationer', icon: Building2 },
               { id: 'visa-som', label: 'Visa som', icon: Eye },
+              { id: 'tyck-till', label: 'Tyck till', icon: MessageSquarePlus },
             ].map((tab) => (
               <button
                 key={tab.id}
-                onClick={() => setActiveTab(tab.id as 'users' | 'stats' | 'organisationer' | 'visa-som')}
+                onClick={() => setActiveTab(tab.id as 'users' | 'stats' | 'organisationer' | 'visa-som' | 'tyck-till')}
                 className={`flex items-center gap-2 py-4 border-b-2 font-medium text-sm transition-colors ${
                   activeTab === tab.id
                     ? 'border-primary-600 text-primary-600'
@@ -307,6 +310,8 @@ export const SuperAdminPanel: React.FC = () => {
         )}
 
         {activeTab === 'visa-som' && <VisaSomTab />}
+
+        {activeTab === 'tyck-till' && <TyckTillTab />}
 
       </div>
     </div>

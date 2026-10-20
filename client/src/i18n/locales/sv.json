@@ -6094,7 +6094,6 @@
     "noAnswer": "Hittade du inte svaret?",
     "contactConsultant": "Kontakta din arbetskonsulent för personlig hjälp och vägledning.",
     "bookMeeting": "Boka möte",
-    "emailSupport": "Mejla support",
     "version": "Deltagarportalen v2.0",
     "categories": {
       "gettingStarted": "Komma igång",
@@ -10460,7 +10459,7 @@
     "home": "Till startsidan",
     "attempt": "Försök {{n}} av {{max}}",
     "supportLead": "Om problemet kvarstår,",
-    "supportLink": "kontakta support"
+    "berattaVad": "berätta vad du gjorde"
   },
   "consentStep": {
     "heading": "Ett steg kvar innan du fortsätter",
@@ -10611,5 +10610,30 @@
     "nekad": "Du sa nej. Ingenting har delats.",
     "fel": "Ditt svar kunde inte sparas just nu. Försök igen om en stund.",
     "laddaFel": "Vi kunde inte hämta en förfrågan från en konsulent just nu. Ladda om sidan om en stund."
+  },
+  "tyckTill": {
+    "menyrad": "Tyck till eller rapportera fel",
+    "hjalpKnapp": "Tyck till eller rapportera fel",
+    "rubrik": "Tyck till",
+    "valjTyp": "Vad vill du skicka?",
+    "typIde": "Jag har en idé",
+    "typFel": "Något fungerar inte",
+    "etikettIde": "Berätta om din idé",
+    "etikettFel": "Vad hände? Vad gjorde du precis innan?",
+    "integritet": "Skriv inte hälsouppgifter, personnummer eller uppgifter om andra personer.",
+    "farKontakta": "Ni får gärna kontakta mig om det här (via min e-post).",
+    "bifogas": "Det här skickas med",
+    "bifogasSida": "Sidan du är på: {{sida}}",
+    "bifogasSprak": "Språk: {{sprak}}",
+    "bifogasRoll": "Din roll i portalen och vilken webbläsare du använder",
+    "bifogasFel": "De senaste felen i webbläsaren:",
+    "skicka": "Skicka",
+    "avbryt": "Avbryt",
+    "stang": "Stäng",
+    "tack": "Tack. Vi läser allt som kommer in.",
+    "tackKontakt": "Tack. Vi läser allt som kommer in och hör av oss till dig.",
+    "loggaIn": "Du behöver vara inloggad för att skicka. Logga in och försök igen.",
+    "felForManga": "Du har skickat flera på kort tid. Vänta en stund och försök igen.",
+    "felOkant": "Det gick inte att skicka just nu. Försök igen om en stund."
   }
 }

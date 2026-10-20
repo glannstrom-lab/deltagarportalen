@@ -9,10 +9,12 @@
  */
 
 import { Link } from 'react-router-dom'
-import { ChevronRight, Mail } from '@/components/ui/icons'
+import { ChevronRight, MessageSquarePlus } from '@/components/ui/icons'
+import { useTyckTillStore } from '@/stores/tyckTillStore'
 import { KONSULENT_HJALP } from './konsulentHjalpData'
 
 export function KonsulentHjalp() {
+  const oppnaTyckTill = useTyckTillStore((st) => st.oppna)
   return (
     <div className="max-w-4xl mx-auto space-y-6" data-testid="konsulent-hjalp">
       {KONSULENT_HJALP.map((kat) => (
@@ -43,14 +45,15 @@ export function KonsulentHjalp() {
 
       <section className="bg-[var(--c-bg)] rounded-xl border border-[var(--c-accent)] p-6">
         <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-2">Hittar du inte svaret?</h2>
-        <p className="text-gray-600 dark:text-gray-300 mb-4">Skriv till oss så hjälper vi dig vidare.</p>
-        <a
-          href="mailto:support@jobin.se"
+        <p className="text-gray-600 dark:text-gray-300 mb-4">Skriv till oss om något inte fungerar, eller om du har en idé om hur Jobin kan bli bättre för ert arbete.</p>
+        <button
+          type="button"
+          onClick={() => oppnaTyckTill('fel')}
           className="inline-flex items-center gap-2 px-4 py-2 bg-white dark:bg-stone-700 text-gray-700 dark:text-gray-200 border border-stone-200 dark:border-stone-600 rounded-lg font-medium hover:bg-stone-50 dark:hover:bg-stone-600 transition-colors"
         >
-          <Mail className="w-4 h-4" aria-hidden="true" />
-          Mejla support
-        </a>
+          <MessageSquarePlus className="w-4 h-4" aria-hidden="true" />
+          Tyck till eller rapportera fel
+        </button>
       </section>
     </div>
   )

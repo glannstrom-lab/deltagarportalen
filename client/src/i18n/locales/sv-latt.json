@@ -959,7 +959,6 @@
     "noAnswer": "Hittade du inte svaret?",
     "contactConsultant": "Fråga din konsulent. Hen hjälper dig.",
     "bookMeeting": "Boka möte",
-    "emailSupport": "Mejla oss",
     "version": "Deltagarportalen v2.0",
     "categories": {
       "gettingStarted": "Börja här",
@@ -1606,5 +1605,30 @@
     "nekad": "Du sa nej. Ingenting har delats.",
     "fel": "Det gick inte att spara. Försök igen sen.",
     "laddaFel": "Det gick inte att visa frågan. Försök igen sen."
+  },
+  "tyckTill": {
+    "menyrad": "Tyck till eller berätta om fel",
+    "hjalpKnapp": "Tyck till eller berätta om fel",
+    "rubrik": "Tyck till",
+    "valjTyp": "Vad vill du skicka?",
+    "typIde": "Jag har en idé",
+    "typFel": "Något fungerar inte",
+    "etikettIde": "Skriv din idé",
+    "etikettFel": "Vad hände? Vad gjorde du innan?",
+    "integritet": "Skriv inte om din hälsa. Skriv inte personnummer. Skriv inte om andra personer.",
+    "farKontakta": "Ni får skicka mejl till mig om det här.",
+    "bifogas": "Det här skickas också",
+    "bifogasSida": "Sidan du är på: {{sida}}",
+    "bifogasSprak": "Språk: {{sprak}}",
+    "bifogasRoll": "Din roll och vilken webbläsare du har",
+    "bifogasFel": "De senaste felen:",
+    "skicka": "Skicka",
+    "avbryt": "Avbryt",
+    "stang": "Stäng",
+    "tack": "Tack. Vi läser allt.",
+    "tackKontakt": "Tack. Vi läser allt. Vi skickar mejl till dig.",
+    "loggaIn": "Du måste logga in för att skicka.",
+    "felForManga": "Du har skickat många. Vänta lite. Försök sedan igen.",
+    "felOkant": "Det gick inte att skicka. Försök igen senare."
   }
 }

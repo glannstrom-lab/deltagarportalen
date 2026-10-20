@@ -17,6 +17,7 @@ import './index.css'
 import './styles/mobile.css'
 import { swLogger } from './lib/logger'
 import { startaSparadOversattning } from './services/sidoversattning'
+import { installeraKlientfelBuffert } from './lib/senasteKlientfel'
 
 // NY1 (2026-09-28): översättningen startas här, inte i toppnavens komponent — den finns inte på mobil.
 startaSparadOversattning()
@@ -80,6 +81,9 @@ window.addEventListener('unhandledrejection', (event) => {
 
 // SW-avregistrering sker i index.html (en gång, före app-laddning) —
 // dubbletten här borttagen 2026-07-10 (C2)
+
+// FN15: de senaste webbläsarfelen, som användaren kan bifoga en felrapport.
+installeraKlientfelBuffert()
 
 // Initialize app
 const rootElement = document.getElementById('root')

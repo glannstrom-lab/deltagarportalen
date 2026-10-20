@@ -6094,7 +6094,6 @@
     "noAnswer": "Didn't find the answer?",
     "contactConsultant": "Contact your employment consultant for personal help and guidance.",
     "bookMeeting": "Book meeting",
-    "emailSupport": "Email support",
     "version": "Jobin v2.0",
     "categories": {
       "gettingStarted": "Getting Started",
@@ -10460,7 +10459,7 @@
     "home": "Go to the start page",
     "attempt": "Attempt {{n}} of {{max}}",
     "supportLead": "If the problem continues,",
-    "supportLink": "contact support"
+    "berattaVad": "tell us what you did"
   },
   "consentStep": {
     "heading": "One step before you continue",
@@ -10611,5 +10610,30 @@
     "nekad": "You said no. Nothing has been shared.",
     "fel": "We could not save your answer right now. Please try again later.",
     "laddaFel": "We could not load a request from a consultant right now. Please reload the page later."
+  },
+  "tyckTill": {
+    "menyrad": "Give feedback or report a problem",
+    "hjalpKnapp": "Give feedback or report a problem",
+    "rubrik": "Give feedback",
+    "valjTyp": "What do you want to send?",
+    "typIde": "I have an idea",
+    "typFel": "Something does not work",
+    "etikettIde": "Tell us about your idea",
+    "etikettFel": "What happened? What did you do just before?",
+    "integritet": "Do not write health information, personal identity numbers (personnummer) or information about other people.",
+    "farKontakta": "You may contact me about this (by my email).",
+    "bifogas": "This is sent with your message",
+    "bifogasSida": "The page you are on: {{sida}}",
+    "bifogasSprak": "Language: {{sprak}}",
+    "bifogasRoll": "Your role in the portal and which web browser you use",
+    "bifogasFel": "The latest errors in the web browser:",
+    "skicka": "Send",
+    "avbryt": "Cancel",
+    "stang": "Close",
+    "tack": "Thank you. We read everything we get.",
+    "tackKontakt": "Thank you. We read everything we get, and we will contact you.",
+    "loggaIn": "You need to be logged in to send. Log in and try again.",
+    "felForManga": "You have sent several messages in a short time. Wait a little and try again.",
+    "felOkant": "We could not send it right now. Try again in a little while."
   }
 }

@@ -21,6 +21,7 @@ const VERCEL: Array<[string, RegExp]> = [
   ['client/api/ai.js', /checkRateLimit\(\s*getRateLimitClient\(\)/],
   ['client/api/cv-pdf.js', /checkRateLimit\(\s*getRateLimitClient\(\)/],
   ['client/api/upload-image.js', /checkRateLimit\(\s*getRateLimitClient\(\)/],
+  ['client/api/tyck-till.js', /checkRateLimit\(\s*getRateLimitClient\(\)/],
   ['client/api/job-alerts.js', /\(getRateLimitClient\(\)[^)]*\)\.rpc\('check_rate_limit'/],
 ]
 

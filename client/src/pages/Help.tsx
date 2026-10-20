@@ -4,7 +4,7 @@ import { PageLayout } from '@/components/layout/index'
 import {
   HelpCircle,
   BookOpen,
-  Mail,
+  MessageSquarePlus,
   MessageCircle,
   ChevronRight,
   FileText,
@@ -14,6 +14,7 @@ import {
 } from '@/components/ui/icons'
 import type { LucideIcon } from '@/components/ui/icons'
 import { useFocusMode } from '@/components/FocusModeProvider'
+import { useTyckTillStore } from '@/stores/tyckTillStore'
 import { PageFocusShell } from '@/components/focus/shell/PageFocusShell'
 import { FocusHelpWizard } from '@/components/focus/pages/FocusHelpWizard'
 import { KonsulentHjalp } from '@/components/consultant/KonsulentHjalp'
@@ -92,6 +93,7 @@ const quickLinkDefs: QuickLink[] = [
 
 export default function Help() {
   const { t } = useTranslation()
+  const oppnaTyckTill = useTyckTillStore((st) => st.oppna)
   const { isFocusMode, leaveWizard } = useFocusMode()
   const aktivRoll = useAuthStore((state) => state.profile?.activeRole)
   const arPersonal = !!aktivRoll && PERSONALROLLER.includes(aktivRoll)
@@ -194,13 +196,14 @@ export default function Help() {
                 <MessageCircle className="w-4 h-4" />
                 {t('helpPage.bookMeeting')}
               </Link>
-              <a
-                href="mailto:support@jobin.se"
+              <button
+                type="button"
+                onClick={() => oppnaTyckTill('fel')}
                 className="inline-flex items-center gap-2 px-4 py-2 bg-white dark:bg-stone-700 text-gray-700 dark:text-gray-200 border border-stone-200 dark:border-stone-600 rounded-lg font-medium hover:bg-stone-50 dark:hover:bg-stone-600 transition-colors"
               >
-                <Mail className="w-4 h-4" />
-                {t('helpPage.emailSupport')}
-              </a>
+                <MessageSquarePlus className="w-4 h-4" aria-hidden="true" />
+                {t('tyckTill.hjalpKnapp')}
+              </button>
             </div>
           </div>
           <div className="w-16 h-16 bg-white dark:bg-stone-700 rounded-2xl flex items-center justify-center shadow-sm">

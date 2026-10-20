@@ -4,8 +4,9 @@ import { useState, useCallback, useMemo, useEffect, lazy, Suspense, createContex
 import { useTranslation } from 'react-i18next'
 import {
   Menu, X, User, Settings, LogOut, ChevronDown, HelpCircle, Search,
-  Home, Briefcase, Inbox, UserCheck, MessageSquare, ShieldCheck, Building2, Loader2
+  Home, Briefcase, Inbox, UserCheck, MessageSquare, ShieldCheck, Building2, Loader2, MessageSquarePlus
 } from '@/components/ui/icons'
+import { useTyckTillStore } from '@/stores/tyckTillStore'
 // AG6 (2026-09-13): företagskontot. Personen är USER på profilnivå; det som
 // skiljer henne är medlemsraden i organization_members — därför hooken, inte
 // profile.role. Se ForetagskontoProvider nedan för varför Layout inte anropar
@@ -912,6 +913,7 @@ export function MobileMainMenu({ isOpen, onClose }: { isOpen: boolean; onClose: 
   const { t } = useTranslation()
   const location = useLocation()
   const { profile, signOut } = useAuthStore()
+  const oppnaTyckTill = useTyckTillStore((st) => st.oppna)
   // Alla hubbar utfällda som default. (Före N3 låg här tre gamla grupp-id:n;
   // en tidigare default matchade inga id:n alls så menyn startade hopfälld —
   // upptäckt av spar-c-verify 2026-07-10. Därför härleds listan ur navHubs.)
@@ -1167,6 +1169,17 @@ export function MobileMainMenu({ isOpen, onClose }: { isOpen: boolean; onClose: 
           <span>{t('nav.help', 'Hjälp')}</span>
         </Link>
         )}
+        <button
+          type="button"
+          onClick={() => {
+            onClose()
+            oppnaTyckTill()
+          }}
+          className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg transition-colors min-h-[44px] text-sm text-stone-600 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-800"
+        >
+          <MessageSquarePlus className="w-4 h-4" aria-hidden="true" />
+          <span>{t('tyckTill.menyrad')}</span>
+        </button>
         <button
           onClick={() => {
             onClose()

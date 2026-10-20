@@ -11,6 +11,8 @@ import type { ErrorInfo, ReactNode } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import i18n from 'i18next'
 import { AlertTriangle, RefreshCw, Home, WifiOff, Loader2 } from '@/components/ui/icons'
+import { useTyckTillStore } from '@/stores/tyckTillStore'
+import { registreraKlientfel } from '@/lib/senasteKlientfel'
 
 /**
  * Översätter utan att kunna krascha. Felgränsen är det som ska visas NÄR
@@ -121,6 +123,7 @@ class RouteErrorBoundaryInner extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+    registreraKlientfel(`${error.name}: ${error.message}`)
     console.error('[RouteErrorBoundary] Error caught:', {
       error: error.message,
       type: this.state.errorType,
@@ -180,7 +183,7 @@ class RouteErrorBoundaryInner extends Component<Props, State> {
 
   render() {
     if (this.state.hasError) {
-      const { errorType, retryCount } = this.state
+      const { errorType, retryCount, error } = this.state
 
       return (
         <div
@@ -256,12 +259,16 @@ class RouteErrorBoundaryInner extends Component<Props, State> {
               </p>
             )}
 
-            {/* Support link */}
+            {/* Tyck till (FN15): felet bifogas, användaren berättar vad hen gjorde. */}
             <p className="text-xs text-stone-500 dark:text-stone-400 mt-4">
               {tFel('routeError.supportLead', 'Om problemet kvarstår,')}{' '}
-              <Link to="/help" className="text-[var(--c-text)] dark:text-[var(--c-solid)] hover:underline">
-                {tFel('routeError.supportLink', 'kontakta support')}
-              </Link>
+              <button
+                type="button"
+                onClick={() => useTyckTillStore.getState().oppna('fel', error ? `${error.name}: ${error.message}`.slice(0, 300) : null)}
+                className="text-[var(--c-text)] dark:text-[var(--c-solid)] hover:underline"
+              >
+                {tFel('routeError.berattaVad', 'berätta vad du gjorde')}
+              </button>
               .
             </p>
           </div>

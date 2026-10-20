@@ -33,6 +33,7 @@ import { RouteAnnouncer } from './components/layout/RouteAnnouncer'
 import { ScrollTillToppen } from './components/layout/ScrollTillToppen'
 import { KonsulentSamtyckeFraga } from '@/components/consultant/KonsulentSamtyckeFraga'
 import { saknadeGrundsamtycken } from '@/services/consentApi'
+import { TyckTillDialog } from '@/components/tyck-till/TyckTillDialog'
 
 // Lazy-loaded sidor
 const CVPage = lazy(() => import('./pages/CVPage'))
@@ -353,6 +354,8 @@ function App() {
     <>
       <RouteAnnouncer />
       <ScrollTillToppen />
+      {/* FN15: Tyck till — en dialog för hela portalen, öppnas via useTyckTillStore. */}
+      <TyckTillDialog />
       {/* KS3: efterhandsfrågan om konsulentkopplingen. Ligger utanför <Routes> för
           att de 13 deltagare som kopplades utan samtycke ska mötas av den oavsett
           vilken sida de landar på — den renderar null för alla andra. */}

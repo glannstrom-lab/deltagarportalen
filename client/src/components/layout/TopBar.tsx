@@ -13,7 +13,9 @@ import {
   ChevronDown,
   Globe,
   Focus,
+  MessageSquarePlus,
 } from '@/components/ui/icons'
+import { useTyckTillStore } from '@/stores/tyckTillStore'
 import { useState, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { arLattSvenska, sattLattSvenska } from '@/i18n/lattSvenska'
@@ -50,6 +52,7 @@ export function TopBar() {
   const navigate = useNavigate()
   const location = useLocation()
   const { signOut, user } = useAuthStore()
+  const oppnaTyckTill = useTyckTillStore((s) => s.oppna)
   const menuRef = useRef<HTMLDivElement>(null)
   // N1 (2026-09-10): en 3 px linje under raden i den aktiva hubbens färg —
   // billigaste möjliga "du är här". Byter färg när man byter hubb. Översikt
@@ -355,6 +358,18 @@ export function TopBar() {
                       <HelpCircle size={16} className="sm:w-[18px] sm:h-[18px] text-stone-400" />
                       <span className="text-xs sm:text-sm">{t('topbar.help')}</span>
                     </Link>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setShowUserMenu(false)
+                        oppnaTyckTill()
+                      }}
+                      className="w-full flex items-center gap-2.5 sm:gap-3 px-3 py-2 sm:py-2.5 rounded-lg text-stone-600 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-800 transition-colors"
+                    >
+                      <MessageSquarePlus size={16} className="sm:w-[18px] sm:h-[18px] text-stone-400" aria-hidden="true" />
+                      <span className="text-xs sm:text-sm">{t('tyckTill.menyrad')}</span>
+                    </button>
 
                     <div className="my-1 mx-3 border-t border-stone-100 dark:border-stone-800" />
 

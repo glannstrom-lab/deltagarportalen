@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-18T18:24:17.351Z",
+  "generatedAt": "2026-10-20T12:31:09.825Z",
   "functions": [
     {
       "name": "activity_plan_handovers_guard",
@@ -1441,6 +1441,10 @@
     },
     {
       "name": "storage_gallring_ko",
+      "rls": true
+    },
+    {
+      "name": "tyck_till",
       "rls": true
     },
     {
