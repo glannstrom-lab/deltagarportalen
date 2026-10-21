@@ -10636,5 +10636,22 @@
     "loggaIn": "Du behöver vara inloggad för att skicka. Logga in och försök igen.",
     "felForManga": "Du har skickat flera på kort tid. Vänta en stund och försök igen.",
     "felOkant": "Det gick inte att skicka just nu. Försök igen om en stund."
+  },
+  "engangskod": {
+    "lank": "Logga in med en kod till e-posten i stället",
+    "rubrik": "Logga in med en kod",
+    "ingress": "Skriv den e-postadress du loggar in med. Vi skickar en kod med sex siffror. Du behöver inget lösenord.",
+    "skicka": "Skicka kod",
+    "skickat": "Om det finns ett konto för {{epost}} har vi skickat en kod dit nu.",
+    "kodEtikett": "Koden från mejlet",
+    "tips": "Sex siffror. Titta i skräpposten om mejlet inte kommer inom några minuter. Du kan också trycka på knappen i mejlet.",
+    "kodFormat": "Koden har sex siffror.",
+    "kodFel": "Koden stämmer inte, eller har redan använts eller gått ut. Försök igen eller skicka en ny kod.",
+    "skickaIgen": "Skicka en ny kod",
+    "gickInte": "Det gick inte att skicka koden just nu. Försök igen om en stund, eller logga in med lösenord.",
+    "loggarIn": "Loggar in …",
+    "lankOgiltig": "Länken fungerar inte längre. Den kan ha använts redan eller vara för gammal.",
+    "nyKod": "Skicka en ny kod",
+    "medLosenord": "Logga in med lösenord i stället"
   }
 }

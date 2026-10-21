@@ -10636,5 +10636,22 @@
     "loggaIn": "You need to be logged in to send. Log in and try again.",
     "felForManga": "You have sent several messages in a short time. Wait a little and try again.",
     "felOkant": "We could not send it right now. Try again in a little while."
+  },
+  "engangskod": {
+    "lank": "Log in with a code sent to your email instead",
+    "rubrik": "Log in with a code",
+    "ingress": "Write the email address you log in with. We send you a code with six numbers. You do not need a password.",
+    "skicka": "Send code",
+    "skickat": "If there is an account for {{epost}}, we have sent a code there now.",
+    "kodEtikett": "The code from the email",
+    "tips": "Six numbers. Look in your spam folder if the email does not come within a few minutes. You can also press the button in the email.",
+    "kodFormat": "The code has six numbers.",
+    "kodFel": "The code is wrong, or it has already been used or is too old. Try again or send a new code.",
+    "skickaIgen": "Send a new code",
+    "gickInte": "We could not send the code right now. Try again in a while, or log in with your password.",
+    "loggarIn": "Logging in …",
+    "lankOgiltig": "The link does not work any more. It may already have been used, or it is too old.",
+    "nyKod": "Send a new code",
+    "medLosenord": "Log in with a password instead"
   }
 }

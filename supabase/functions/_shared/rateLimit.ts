@@ -31,6 +31,8 @@ const ENDPOINT_LIMITS: Record<string, { limit: number; windowMs: number }> = {
   // PUB-1 (2026-09-28): återställning av lösenord — per IP och per adress, en timme.
   'losenord-aterstall-ip': { limit: 10, windowMs: 60 * 60 * 1000 },
   'losenord-aterstall-epost': { limit: 3, windowMs: 60 * 60 * 1000 },
+  'engangskod-ip': { limit: 10, windowMs: 60 * 60 * 1000 },
+  'engangskod-epost': { limit: 3, windowMs: 60 * 60 * 1000 },
   'learning-recommend': { limit: 30, windowMs: 60 * 1000 },
   'learning-progress': { limit: 50, windowMs: 60 * 1000 },
   'learning-analyze-gap': { limit: 5, windowMs: 60 * 1000 },

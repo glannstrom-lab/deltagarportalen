@@ -319,6 +319,10 @@ export default function Login() {
                 </>
               )}
             </button>
+            {/* KC6: utan lösenord — en kod till e-posten. */}
+            <p className="text-center">
+              <Link to="/logga-in-med-kod" className="text-sm text-[var(--c-text)] underline underline-offset-2 inline-flex items-center min-h-[44px]">{t('engangskod.lank')}</Link>
+            </p>
           </form>
 
           {/* Divider */}

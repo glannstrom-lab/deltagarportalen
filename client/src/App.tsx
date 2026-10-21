@@ -63,6 +63,7 @@ const InviteHandler = lazy(() => import('./components/auth/InviteHandler'))
 // PUB-1 (skarpt test 2026-09-28): glömt lösenord — fanns inte alls.
 const GlomtLosenord = lazy(() => import('./pages/GlomtLosenord'))
 const NyttLosenord = lazy(() => import('./pages/NyttLosenord'))
+const LoggaInMedKod = lazy(() => import('./pages/LoggaInMedKod'))
 // New feature pages
 const Salary = lazy(() => import('./pages/Salary'))
 const International = lazy(() => import('./pages/International'))
@@ -377,6 +378,12 @@ function App() {
         <Route path="/glomt-losenord" element={
           <PublicRoute redirectTo="/">
             <LazyRoute><GlomtLosenord /></LazyRoute>
+          </PublicRoute>
+        } />
+        {/* KC6: inloggning med engångskod via e-post. */}
+        <Route path="/logga-in-med-kod" element={
+          <PublicRoute redirectTo="/">
+            <LazyRoute><LoggaInMedKod /></LazyRoute>
           </PublicRoute>
         } />
         {/* Inte PublicRoute: länken loggar in (verifyOtp) och sidan ska stå kvar tills lösenordet är valt. */}
