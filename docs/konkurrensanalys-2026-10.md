@@ -160,6 +160,13 @@ Extra funktioner hos Workbuster som Jobin saknar: AF-beslutsimport (Excel/Webbst
 - **Mot Jobin:** (+) Samma modell och samma segment, AI-först, AI-Apply, fackförbundskanal; (+) Hävdar redan ROM-kunder. (-) Mycket litet bolag; ingen publicerad info om BankID/GDPR/EU-lagring/tillgänglighet; (-) Saknar enligt sajten intervjuträning med tal, kompetensgap, intresseguide, energianpassning (ej uttryckligen nämnt). Närmast att bevaka.
 - **Källor:** https://www.wundermatch.ai/ , /kommuner , /arbetsmarknadssystem , /om-oss (alla sedda 2026-10-18); https://www.allabolag.se/bransch-s%C3%B6k?q=wundermatch
 
+### Carriera (Sverige) — Wundermatch under kommunvarumärke (tillagt 2026-10-21)
+- **URL:** https://carriera.se . **Bolag:** Wundermatch AB (559486-9785) + **Edvent AB** (559218-8543), biträden när kommunen är PUA. Inloggning `fly.carriera.se` (coach) och `app.carriera.se` (deltagare) — samma struktur som `fly.wundermatch.ai`. Edvent nämns i en Botkyrka-annons som ärendesystem ("meriterande").
+- **Kunder enligt sajten:** Lindesberg, Tranemo, Älvkarleby, Solna, Huddinge, Svenljunga. **Pris:** ej publicerat; uppgift via Mikael 2026-10-21: ca 3 500 kr/mån (Lindesberg, ej belagt i diarium).
+- **Funktioner (sajten):** deltagarapp med jobbmatchning (Platsbanken + 20 källor), digitala kurser (språk, samhälle, arbetsförberedelse), automatisk journalföring; coachvy med aktivitetsplan, **automatisk mötestranskribering**, delning med ekonomiskt bistånd och externa arbetsplatser, statuskort (aktivitetskrav godkänt / andel aktiverade / dokumentation klar), progressionsmätning. Integritetspolicyn: **BankID**, engångskod via e-post/SMS, **AWS Stockholm**, all AI inom EU/EES, namn/ålder/kön tas bort före AI, egen matchningsmodell tränad på anonymiserad data, AI-ifyllnad av formulär.
+- **Mot Jobin:** var samma prisnivå (Jobin 2 990 + 290/konsulent = 3 570 kr vid två konsulenter); **Jobin sänkt 2026-10-21 till 1 990 kr/mån, konsulenter ingår**. Carriera vinner på BankID, EU-only AI, referenskunder, transkribering, SMS och bolag (två AB). Jobin vinner på deltagarsidan (röstintervju, kompetensgap, intresseguide, mående/energi/dagbok, lätt svenska + engelska, kunskapsbank), IVO-kvartalsunderlag per försörjningshinder, öppet demo och publicerat pris.
+- **Källor:** https://carriera.se , https://carriera.se/legal-privacy-policy (sedda 2026-10-21).
+
 ### Lingio (Sverige)
 - **URL:** https://www.lingio.com . **Bolag:** Lingio AB, 559004-1538, Stockholm; 16 anställda, omsättning 38 754 (tkr?) 2025.
 - **Vad:** Utbildningsplattform (yrkessvenska, kompetenskurser, AI-kollega via SMS, AI-kursskapare) omstöpt som "aktivitetsplattform" för det kommunala aktivitetskravet (upp till 40 tim/vecka), med handledarportal. Betalare: kommun.

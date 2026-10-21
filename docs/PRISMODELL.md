@@ -1,5 +1,12 @@
 # Prismodellen — vad som faktiskt står i drift
 
+> **Beslut Mikael 2026-10-21: 1 990 kr/mån exkl. moms per organisation, ingen avgift per
+> konsulent.** Skälet är Carriera (Wundermatch), som Lindesberg köpt för uppgivna ca 3 500 kr/mån.
+> Ändrat i `sv.json`/`en.json` (`landing.pricing`, `landing.faq.a1`) och i
+> `content/b2b.json` (kommunsidans FAQ). Rusta och matcha-sidan har fortfarande ingen offentlig
+> prislista. Allt nedan beskriver den **tidigare** modellen (2 990 + 290/konsulent) och
+> räkneexemplen i tabellen gäller inte längre.
+
 **Status:** Underlag för beslut, inte ett beslut. Skrivet 2026-09-06 som svar på **DOK5** i
 `docs/ROADMAP.md`.
 

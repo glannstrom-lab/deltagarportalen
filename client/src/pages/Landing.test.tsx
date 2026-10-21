@@ -75,8 +75,9 @@ describe('Landing — sidan börjar hos den arbetssökande (KO4)', () => {
     const priser = document.getElementById('priser')!
     expect(priser).not.toBeNull()
     expect(fore(org, priser)).toBe(true)
-    expect(within(priser).getByText('2 990')).toBeTruthy()
-    expect(within(priser).getByText('290')).toBeTruthy()
+    expect(within(priser).getByText('1 990')).toBeTruthy()
+    expect(within(priser).getByText('Ingår')).toBeTruthy()
+    expect(within(priser).queryByText('290')).toBeNull()
     const gratis = within(priser).getByText('Gratis')
     const orgLicens = within(priser).getByText('Organisationslicens')
     expect(fore(gratis, orgLicens)).toBe(true)
