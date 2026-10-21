@@ -3,6 +3,7 @@ const { getRateLimitClient } = require('./_utils/rate-limit-client.js');
 const { logAiUsage } = require('./_utils/ai-usage-log');
 // BL6 (2026-09-12): felrapport till Sentry, sanerad — se _utils/sentry.js
 const { medFelrapport } = require('./_utils/sentry.js');
+const { skapaPseudonymiserare, hamtaNamn } = require('./_utils/pseudonym.js');
 
 // ============================================
 // Modell-låsning (B18, 2026-08-05)
@@ -1172,7 +1173,26 @@ const hanterare = async (req, res) => {
         durationMs: Date.now() - startTid,
       });
 
-    const prompt = PROMPTS[fn](data);
+    // KC3: för organisationskonton lämnar namn, ålder och födelseuppgifter
+    // inte servern. De byts mot platshållare här och sätts tillbaka i svaret
+    // (se _utils/pseudonym.js). Fail closed: kan namnet inte slås upp kan
+    // löftet inte hållas, och då skickas ingenting.
+    /** @type {ReturnType<typeof skapaPseudonymiserare> | null} */
+    let pseudo = null;
+    if (orgKopplad) {
+      try {
+        pseudo = skapaPseudonymiserare(await hamtaNamn(supabaseAsUser, user.id));
+      } catch (err) {
+        console.warn('[AI] KC3 namnuppslag misslyckades (blockerar):', err?.message || err);
+        return res.status(503).json({
+          error: 'Vi kunde inte förbereda din text för AI just nu, och skickar därför inte dina uppgifter vidare. Försök igen om en stund.',
+          code: 'AI_PSEUDONYM_FAILED',
+        });
+      }
+    }
+    const promptData = pseudo ? pseudo.in(data) : data;
+    const prompt = PROMPTS[fn](promptData);
+    if (pseudo) prompt.system = `${prompt.system}\n\n${pseudo.instruktion}`;
 
     // Streaming mode for ai-team-chat
     if (stream && fn === 'ai-team-chat') {
@@ -1262,6 +1282,7 @@ const hanterare = async (req, res) => {
       /** Exakt tokenåtgång om OpenRouter skickar den i strömmen, annars null. */
       /** @type {number | null} */
       let stromUsage = null;
+      const aterstall = pseudo ? pseudo.strom() : null;
 
       try {
         while (true) {
@@ -1298,11 +1319,14 @@ const hanterare = async (req, res) => {
               if (typeof total === 'number' && Number.isFinite(total)) stromUsage = total;
               const token = parsed?.choices?.[0]?.delta?.content;
               if (token) {
+                // fullResponse behåller platshållarna: den går vidare till
+                // följdfrågeanropet nedan.
                 fullResponse += token;
+                const ut = aterstall ? aterstall.push(token) : token;
                 // Skickar BÅDE { token } och { content }. Läsaren är
                 // callAIStream() i services/aiApi.ts. Ta bort ett av fälten
                 // först när du kontrollerat vilket den läser.
-                res.write(`data: ${JSON.stringify({ token, content: token })}\n\n`);
+                if (ut) res.write(`data: ${JSON.stringify({ token: ut, content: ut })}\n\n`);
               }
             }
           }
@@ -1313,6 +1337,11 @@ const hanterare = async (req, res) => {
           stromFel = String(streamError?.message || streamError);
         }
         try { await reader.cancel(); } catch { /* redan avbruten */ }
+      }
+      // Det som hölls kvar i väntan på en stängande hakparentes.
+      if (aterstall && !klientenBorta) {
+        const rest = aterstall.flush();
+        if (rest) res.write(`data: ${JSON.stringify({ token: rest, content: rest })}\n\n`);
       }
 
       // Tokenåtgången till taket (checkDailyTokenCap). Exakt när OpenRouter
@@ -1377,7 +1406,7 @@ const hanterare = async (req, res) => {
             provider: orgKopplad ? OPENROUTER_PROVIDER_EU_STRIKT : OPENROUTER_PROVIDER,
             messages: [
               { role: 'system', content: 'Du genererar korta, relevanta följdfrågor baserat på en konversation. Svara ENDAST med en JSON-array med exakt 3 korta frågor (max 8 ord var). Exempel: ["Hur skriver jag ett bra CV?", "Vilka jobb passar mig?", "Tips för intervjuer?"]' },
-              { role: 'user', content: `Användaren frågade: "${data?.meddelande}"\n\nAssistenten svarade: "${fullResponse.substring(0, 500)}"\n\nGenerera 3 naturliga följdfrågor på svenska:` }
+              { role: 'user', content: `Användaren frågade: "${promptData?.meddelande}"\n\nAssistenten svarade: "${fullResponse.substring(0, 500)}"\n\nGenerera 3 naturliga följdfrågor på svenska:` }
             ],
             max_tokens: 150,
             temperature: 0.8
@@ -1391,12 +1420,13 @@ const hanterare = async (req, res) => {
           // Utan `usage` i svaret: uppskatta (~4 tecken/token) i stället för
           // att räkna noll — annars är följdfrågorna ur taket.
           foljdfragorTokens = suggestionsData.usage?.total_tokens
-            || Math.ceil((600 + String(data?.meddelande || '').length + Math.min(fullResponse.length, 500) + String(suggestionsData.choices?.[0]?.message?.content || '').length) / 4);
+            || Math.ceil((600 + String(promptData?.meddelande || '').length + Math.min(fullResponse.length, 500) + String(suggestionsData.choices?.[0]?.message?.content || '').length) / 4);
           const suggestionsText = suggestionsData.choices?.[0]?.message?.content || '[]';
           try {
             const suggestions = JSON.parse(suggestionsText);
             if (Array.isArray(suggestions) && suggestions.length > 0) {
-              res.write(`data: ${JSON.stringify({ suggestions: suggestions.slice(0, 3) })}\n\n`);
+              const forslag = suggestions.slice(0, 3);
+              res.write(`data: ${JSON.stringify({ suggestions: pseudo ? pseudo.ut(forslag) : forslag })}\n\n`);
             }
           } catch {
             // Couldn't parse suggestions, skip
@@ -1535,7 +1565,7 @@ const hanterare = async (req, res) => {
     // Awaitas: se _utils/ai-usage-log.js.
     await logga(aiData.usage?.total_tokens || 0);
 
-    return res.status(200).json({ success: true, [prompt.responseKey]: content });
+    return res.status(200).json({ success: true, [prompt.responseKey]: pseudo ? pseudo.ut(content) : content });
   } catch (error) {
     console.error('Error:', error);
     return res.status(500).json({ error: 'Internal server error' });

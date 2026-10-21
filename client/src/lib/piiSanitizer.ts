@@ -12,6 +12,9 @@
  *   SOFT WARN:    Email, telefon, fullständiga gatuadresser, IBAN, BIC.
  *                 Behålls (krävs ofta för output) men registreras för audit.
  *   NEVER STRIP:  Namn, yrkesord, intressen, ort på kommunnivå.
+ *                 (Här i webbläsaren. För organisationskonton byter servern
+ *                 namn, ålder och födelseuppgifter mot platshållare — KC3,
+ *                 client/api/_utils/pseudonym.js.)
  */
 
 export interface SanitizeResult {

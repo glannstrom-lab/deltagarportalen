@@ -55,7 +55,8 @@
           "Databas, inloggning och lagrade filer ligger hos Supabase i Irland (EU).",
           "Serverfunktionerna körs hos Vercel i Frankfurt (EU).",
           "AI-funktionerna kräver ett eget samtycke, funktion för funktion, innan något skickas — och går att stänga av helt. För en ny organisation är de avstängda tills ni själva slår på dem.",
-          "När någon i er organisation, eller en deltagare ni handleder, använder en AI-funktion bearbetas texten bara hos Amazon Bedrock i Irland (EU), utan reserv utanför EU — är Irland otillgängligt blir svaret ett felmeddelande. Anropet förmedlas av OpenRouter (USA), och leverantören får inte spara eller träna på texten."
+          "När någon i er organisation, eller en deltagare ni handleder, använder en AI-funktion bearbetas texten bara hos Amazon Bedrock i Irland (EU), utan reserv utanför EU — är Irland otillgängligt blir svaret ett felmeddelande. Anropet förmedlas av OpenRouter (USA), och leverantören får inte spara eller träna på texten.",
+          "Innan texten lämnar vår server byts personens namn, ålder, födelsedatum och angivet kön ut mot platshållare, och de riktiga uppgifterna sätts tillbaka först i svaret. Det gäller personens eget namn. Andra namn i fritexten och pronomen som \"hon\" och \"han\" tas inte bort, och personnummer, kontonummer, e-post och telefonnummer maskeras för alla konton."
         ],
         "pagar": [
           "För organisationskonton (kommuner och leverantörer) är webbsökningen via Perplexity avstängd sedan 2026-09-12 — era deltagares frågor går bara till OpenRouters basmodell utan sökning. Fria konton kan fortfarande använda sökmodellen, vilket står i integritetspolicyn.",
@@ -220,7 +221,8 @@
           "Databas, inloggning och lagrade filer ligger hos Supabase i Irland (EU).",
           "Serverfunktionerna körs hos Vercel i Frankfurt (EU).",
           "AI-funktionerna kräver ett eget samtycke, funktion för funktion, innan något skickas — och går att stänga av helt. För en ny organisation är de avstängda tills ni själva slår på dem.",
-          "När någon i er organisation, eller en deltagare ni handleder, använder en AI-funktion bearbetas texten bara hos Amazon Bedrock i Irland (EU), utan reserv utanför EU — är Irland otillgängligt blir svaret ett felmeddelande. Anropet förmedlas av OpenRouter (USA), och leverantören får inte spara eller träna på texten."
+          "När någon i er organisation, eller en deltagare ni handleder, använder en AI-funktion bearbetas texten bara hos Amazon Bedrock i Irland (EU), utan reserv utanför EU — är Irland otillgängligt blir svaret ett felmeddelande. Anropet förmedlas av OpenRouter (USA), och leverantören får inte spara eller träna på texten.",
+          "Innan texten lämnar vår server byts personens namn, ålder, födelsedatum och angivet kön ut mot platshållare, och de riktiga uppgifterna sätts tillbaka först i svaret. Det gäller personens eget namn. Andra namn i fritexten och pronomen som \"hon\" och \"han\" tas inte bort, och personnummer, kontonummer, e-post och telefonnummer maskeras för alla konton."
         ],
         "pagar": [
           "För organisationskonton (kommuner och leverantörer) är webbsökningen via Perplexity avstängd sedan 2026-09-12 — era deltagares frågor går bara till OpenRouters basmodell utan sökning. Fria konton kan fortfarande använda sökmodellen, vilket står i integritetspolicyn.",
