@@ -607,6 +607,17 @@ async function checkPersonalOrgAiEnabled(serviceClient, userId) {
   }
 }
 
+/** checkPersonalOrgAiEnabled med service-klienten; saknas nyckeln: fail closed. */
+async function personalOrgGrind(userId) {
+  const SERVICE_KEY_ORG = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_KEY;
+  const SUPABASE_URL_ORG = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL;
+  if (!SUPABASE_URL_ORG || !SERVICE_KEY_ORG) return { allowed: false, reason: 'lookup_failed' };
+  return checkPersonalOrgAiEnabled(
+    createClient(SUPABASE_URL_ORG, SERVICE_KEY_ORG, { auth: { persistSession: false, autoRefreshToken: false } }),
+    userId,
+  );
+}
+
 // ============================================
 // Retry-helper för OpenRouter (C6)
 // ============================================
@@ -1069,6 +1080,33 @@ const hanterare = async (req, res) => {
         });
       }
       orgKopplad = orgGate.orgKopplad === true;
+      // KC3/KF8 (2026-10-21): `my_ai_policy` svarar bara för DELTAGARE. Personal
+      // som kör en deltagarfunktion för egen del (profilsammanfattning, brev …)
+      // räknades därför som fristående konto: ingen Irland-väg, ingen
+      // pseudonymisering och ingen organisationsbrytare — mätt i prod med
+      // testkommunens chef. Edge-funktionernas valjModell() räknade redan
+      // medlemmar som organisationskonto; nu gör /api/ai det också.
+      if (!orgKopplad) {
+        const egen = await supabaseAsUser.from('organization_members').select('org_id').eq('user_id', user.id).limit(1);
+        if (egen.error) {
+          // Fail closed åt det strikta hållet: vet vi inte, behandla som organisation.
+          console.warn('[AI] medlemsuppslag misslyckades (strikt väg):', egen.error.message);
+          orgKopplad = true;
+        } else if ((egen.data || []).length > 0) {
+          const personalOrgGate = await personalOrgGrind(user.id);
+          if (!personalOrgGate.allowed) {
+            return res.status(403).json({
+              error:
+                personalOrgGate.reason === 'org_disabled'
+                  ? `AI-funktionerna är avstängda för ${personalOrgGate.orgName || 'din organisation'}.`
+                  : 'Vi kunde inte kontrollera organisationens AI-inställning just nu, och skickar därför inga uppgifter vidare. Försök igen om en stund.',
+              code: 'AI_CONSENT_REQUIRED',
+              reason: personalOrgGate.reason,
+            });
+          }
+          orgKopplad = true;
+        }
+      }
     } else {
       // BL2: de undantagna funktionerna är personalens egna. De slipper
       // deltagarens brytare (fel kontroll för en annan persons data), men
@@ -1088,18 +1126,7 @@ const hanterare = async (req, res) => {
           reason: personal.reason,
         });
       }
-      const SERVICE_KEY_ORG =
-        process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_KEY;
-      const SUPABASE_URL_ORG = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL;
-      const personalOrgGate =
-        SUPABASE_URL_ORG && SERVICE_KEY_ORG
-          ? await checkPersonalOrgAiEnabled(
-              createClient(SUPABASE_URL_ORG, SERVICE_KEY_ORG, {
-                auth: { persistSession: false, autoRefreshToken: false },
-              }),
-              user.id,
-            )
-          : { allowed: false, reason: 'lookup_failed' };
+      const personalOrgGate = await personalOrgGrind(user.id);
       if (!personalOrgGate.allowed) {
         return res.status(403).json({
           error:

@@ -365,6 +365,11 @@ describe('checkPersonalOrgAiEnabled', () => {
     expect(kalla).toContain('checkPersonalOrgAiEnabled(')
     const elseGren = kalla.indexOf('} else {', kalla.indexOf('const orgGate = await checkOrgAiEnabled('))
     expect(elseGren).toBeGreaterThan(-1)
-    expect(kalla.slice(elseGren, elseGren + 2000)).toContain('checkPersonalOrgAiEnabled')
+    // 2026-10-21: anropet går via hjälparen personalOrgGrind(), som också
+    // deltagargrenen använder för personal med medlemskap (KC3/KF8).
+    expect(kalla.slice(elseGren, elseGren + 2000)).toContain('personalOrgGrind(user.id)')
+    const hjalpare = kalla.slice(kalla.indexOf('async function personalOrgGrind('), kalla.indexOf('async function personalOrgGrind(') + 600)
+    expect(hjalpare).toContain('return checkPersonalOrgAiEnabled(')
+    expect(hjalpare).toContain("return { allowed: false, reason: 'lookup_failed' }")
   })
 })

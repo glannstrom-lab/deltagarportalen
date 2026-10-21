@@ -147,7 +147,7 @@ function makeRes() {
 
 const kodare = new TextEncoder()
 
-function stubNetwork(opts: { org: boolean; namnFel?: boolean; svar: string; strom?: string[] }) {
+function stubNetwork(opts: { org: boolean; medlem?: boolean; orgAv?: boolean; namnFel?: boolean; svar: string; strom?: string[] }) {
   const openrouter: Array<{ messages: Array<{ content: string }> }> = []
   global.fetch = vi.fn(async (input: unknown, init?: { method?: string; body?: string }) => {
     const url = String(typeof input === 'string' ? input : (input as { url: string }).url)
@@ -175,6 +175,11 @@ function stubNetwork(opts: { org: boolean; namnFel?: boolean; svar: string; stro
       return json(PROFIL)
     }
     if (url.includes('/rest/v1/profiles')) return json({ ai_consent_at: '2026-08-01T10:00:00Z', ai_enabled: true })
+    // Personalens eget medlemskap (KC3/KF8): både användarklientens uppslag och
+    // service-klientens organisationsgrind går hit.
+    if (url.includes('/rest/v1/organization_members')) {
+      return json(opts.medlem ? [{ org_id: 'o1', organizations: { name: 'Testkommun', ai_enabled: !opts.orgAv } }] : [])
+    }
     if (url.includes('/rest/v1/my_ai_policy')) return json(opts.org ? [{ org_name: 'Demokommunen', ai_enabled: true }] : [])
     if (url.includes('/rest/v1/ai_usage_logs') && method === 'POST') return new Response(null, { status: 201 })
     if (url.includes('/rest/v1/ai_usage_logs')) return json([])
@@ -257,6 +262,26 @@ describe('KC3: /api/ai pseudonymiserar för organisationskonton', () => {
     const { res } = makeRes()
     await laddaAi()(req('personligt-brev', BREV), res)
     expect(openrouter[0].messages.map((m) => m.content).join('\n')).not.toContain('pseudonymiserat')
+  })
+
+  it('personal i en organisation, deltagarfunktion för egen del: pseudonymiseras och går strikt till Irland', async () => {
+    const { openrouter } = stubNetwork({ org: false, medlem: true, svar: '[FÖRNAMN] [EFTERNAMN] är lagerarbetare.' })
+    const { res, skrivet } = makeRes()
+    await laddaAi()(req('personligt-brev', BREV), res)
+    expect(res.statusCode).toBe(200)
+    const skickat = openrouter[0] as unknown as { provider: { order: string[]; allow_fallbacks: boolean }; messages: Array<{ content: string }> }
+    expect(skickat.messages.map((m) => m.content).join(' ')).not.toMatch(NAMN)
+    expect(skickat.provider.order).toEqual(['amazon-bedrock/eu-west-1'])
+    expect(skickat.provider.allow_fallbacks).toBe(false)
+    expect(skrivet.join('')).toContain('Annika Lindqvist är lagerarbetare.')
+  })
+
+  it('personal i en organisation som stängt av AI: 403, inget anrop', async () => {
+    const { openrouter } = stubNetwork({ org: false, medlem: true, orgAv: true, svar: 'x' })
+    const { res } = makeRes()
+    await laddaAi()(req('personligt-brev', BREV), res)
+    expect(res.statusCode).toBe(403)
+    expect(openrouter).toHaveLength(0)
   })
 
   it('namnuppslaget fallerar: 503 och inget anrop till OpenRouter (fail closed)', async () => {
