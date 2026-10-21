@@ -55,7 +55,7 @@
           "Databas, inloggning och lagrade filer ligger hos Supabase i Irland (EU).",
           "Serverfunktionerna körs hos Vercel i Frankfurt (EU).",
           "AI-funktionerna kräver ett eget samtycke, funktion för funktion, innan något skickas — och går att stänga av helt. För en ny organisation är de avstängda tills ni själva slår på dem.",
-          "Använder en deltagare en AI-funktion skickas texten via OpenRouter (USA) till i första hand Amazon Bedrock i Irland (EU). Är den inte tillgänglig går anropet till en annan leverantör som inte får spara eller träna på texten."
+          "När någon i er organisation, eller en deltagare ni handleder, använder en AI-funktion bearbetas texten bara hos Amazon Bedrock i Irland (EU), utan reserv utanför EU — är Irland otillgängligt blir svaret ett felmeddelande. Anropet förmedlas av OpenRouter (USA), och leverantören får inte spara eller träna på texten."
         ],
         "pagar": [
           "För organisationskonton (kommuner och leverantörer) är webbsökningen via Perplexity avstängd sedan 2026-09-12 — era deltagares frågor går bara till OpenRouters basmodell utan sökning. Fria konton kan fortfarande använda sökmodellen, vilket står i integritetspolicyn.",
@@ -79,7 +79,7 @@
         ],
         [
           "Vad kostar det?",
-          "Organisationslicens 2 990 kr per månad plus 290 kr per aktiv konsulent, exklusive moms. Deltagaren betalar ingenting. Inför aktivitetskravet erbjuder vi kommuner en kostnadsfri pilot hösten 2026 — hör av dig så går vi igenom vad er verksamhet behöver. Beloppen ligger under gränsen för direktupphandling."
+          "Organisationslicens 1 990 kr per månad, exklusive moms, med alla konsulenter inkluderade — ingen kostnad per konsulent. Deltagaren betalar ingenting. Inför aktivitetskravet erbjuder vi kommuner en kostnadsfri pilot hösten 2026 — hör av dig så går vi igenom vad er verksamhet behöver. Beloppen ligger under gränsen för direktupphandling."
         ],
         [
           "Hur hjälper portalen oss med aktivitetskravet från oktober 2026?",
@@ -99,7 +99,7 @@
         ],
         [
           "Vem är personuppgiftsansvarig när en kommun använder portalen?",
-          "Kommunen. Jobin är personuppgiftsbiträde enligt ett biträdesavtal som tecknas innan första deltagaren läggs in, med underbiträdena listade (Supabase i Irland, Vercel i Frankfurt, OpenRouter i USA som förmedlar AI-anropen, i första hand till Amazon Bedrock i Irland, Sentry, Resend). AI-funktionerna kan stängas av för hela organisationen."
+          "Kommunen. Jobin är personuppgiftsbiträde enligt ett biträdesavtal som tecknas innan första deltagaren läggs in, med underbiträdena listade (Supabase i Irland, Vercel i Frankfurt, OpenRouter i USA som förmedlar AI-anropen, för er organisation bara till Amazon Bedrock i Irland, Sentry, Resend). AI-funktionerna kan stängas av för hela organisationen."
         ],
         [
           "Vem driver Jobin?",
@@ -220,7 +220,7 @@
           "Databas, inloggning och lagrade filer ligger hos Supabase i Irland (EU).",
           "Serverfunktionerna körs hos Vercel i Frankfurt (EU).",
           "AI-funktionerna kräver ett eget samtycke, funktion för funktion, innan något skickas — och går att stänga av helt. För en ny organisation är de avstängda tills ni själva slår på dem.",
-          "Använder en deltagare en AI-funktion skickas texten via OpenRouter (USA) till i första hand Amazon Bedrock i Irland (EU). Är den inte tillgänglig går anropet till en annan leverantör som inte får spara eller träna på texten."
+          "När någon i er organisation, eller en deltagare ni handleder, använder en AI-funktion bearbetas texten bara hos Amazon Bedrock i Irland (EU), utan reserv utanför EU — är Irland otillgängligt blir svaret ett felmeddelande. Anropet förmedlas av OpenRouter (USA), och leverantören får inte spara eller träna på texten."
         ],
         "pagar": [
           "För organisationskonton (kommuner och leverantörer) är webbsökningen via Perplexity avstängd sedan 2026-09-12 — era deltagares frågor går bara till OpenRouters basmodell utan sökning. Fria konton kan fortfarande använda sökmodellen, vilket står i integritetspolicyn.",

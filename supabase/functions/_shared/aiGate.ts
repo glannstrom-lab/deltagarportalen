@@ -252,6 +252,25 @@ export async function checkOrgAiEnabled(client: SupabaseClient, userId: string):
 export const BASMODELL = 'openai/gpt-oss-120b'
 export const SOKMODELL = 'perplexity/sonar'
 
+/**
+ * KF8/KC1 (2026-10-21): organisationers anrop får BARA gå till Bedrock i Irland,
+ * utan reserv — samma regel som OPENROUTER_PROVIDER_EU_STRIKT i client/api/ai.js.
+ * Utan den här raden valde OpenRouter fritt bland gpt-oss-120b:s leverantörer, även
+ * utanför EU, och kommunsidans löfte "AI-data stannar i EU" gällde bara /api/ai.
+ * Fria konton (sonar) lämnas orörda. orgKonto är true även när modellvalet felar,
+ * så ett uppslagsfel ger den strikta vägen (fail closed).
+ */
+export const OPENROUTER_PROVIDER_EU_STRIKT = {
+  order: ['amazon-bedrock/eu-west-1'],
+  allow_fallbacks: false,
+  data_collection: 'deny',
+} as const
+
+/** Sprids in i OpenRouter-anropets body: `...openRouterRouting(modell)`. */
+export function openRouterRouting(modell: ModellVal): { provider?: typeof OPENROUTER_PROVIDER_EU_STRIKT } {
+  return modell.orgKonto ? { provider: OPENROUTER_PROVIDER_EU_STRIKT } : {}
+}
+
 export interface ModellVal {
   /** Modellsträngen som ska skickas till OpenRouter och loggas i ai_usage_logs. */
   model: string

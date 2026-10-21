@@ -10,7 +10,7 @@ import { checkRateLimit } from '../_shared/rateLimit.ts'
 import {
   AI_GATE_CODES,
   checkAiEnabled,
-  valjModell,
+  valjModell, openRouterRouting,
   UTAN_SOKNING_TILLAGG,
   checkDailyTokenCap,
   clampInt,
@@ -314,6 +314,7 @@ För varje företag du hittar, gå till allabolag.se och hämta organisationsnum
       },
       body: JSON.stringify({
         model: modell.model,
+        ...openRouterRouting(modell),
         messages: [
           { role: 'system', content: systemPrompt },
           { role: 'user', content: modell.webbsokning ? userPrompt : userPrompt + UTAN_SOKNING_TILLAGG },
@@ -388,6 +389,7 @@ Om du inte hittar org.nr för ett företag, inkludera det inte i svaret.`
           },
           body: JSON.stringify({
             model: modell.model,
+            ...openRouterRouting(modell),
             messages: [
               { role: 'user', content: orgNrSearchPrompt },
             ],

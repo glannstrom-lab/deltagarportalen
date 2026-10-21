@@ -8,7 +8,7 @@ import { handleCorsPreflightOrNull, createCorsResponse } from '../_shared/cors.t
 import { checkRateLimit, createRateLimitResponse } from '../_shared/rateLimit.ts'
 import {
   checkAiEnabled,
-  valjModell,
+  valjModell, openRouterRouting,
   UTAN_SOKNING_TILLAGG,
   createGateDenialResponse,
   checkDailyTokenCap,
@@ -224,6 +224,7 @@ Deno.serve(medFelrapport('ai-industry-radar', async (req) => {
       },
       body: JSON.stringify({
         model: modell.model,
+        ...openRouterRouting(modell),
         messages: [{ role: 'user', content: modell.webbsokning ? prompt : prompt + UTAN_SOKNING_TILLAGG }],
         max_tokens: 2500,
         temperature: 0.3,

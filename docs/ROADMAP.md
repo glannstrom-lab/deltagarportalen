@@ -33,6 +33,74 @@
 
 ---
 
+## Spår KC — Carriera (Wundermatch) 2026-10-21: paritet punkt för punkt
+
+**Varför:** Lindesberg har köpt Carriera (carriera.se), uppgiven kostnad ca 3 500 kr/mån (inte belagd). Det var samma prisnivå som Jobin (2 990 + 290/konsulent = 3 570 kr vid två konsulenter). **Beslut Mikael 2026-10-21: priset sänks till 1 990 kr/mån utan avgift per konsulent**, alltså ca 43 % under Carrieras uppgivna pris och oberoende av antal konsulenter (startsidan, FAQ:n och kommunsidan ändrade samma dag; Rusta och matcha-sidan har fortfarande ingen offentlig prislista). Funktioner och förtroende avgör resten. Carriera är **Wundermatch AB + Edvent AB** under ett kommunvarumärke (`fly.carriera.se`/`app.carriera.se`, samma upplägg som `fly.wundermatch.ai`), med sex kommuner som kunder enligt sajten. Profil: `docs/konkurrensanalys-2026-10.md` → "Carriera". **Beslut Mikael 2026-10-21: "vi behöver kunna konkurrera på varje punkt".**
+
+**Premissgranskning, mätt 2026-10-21.** Varje punkt där Carriera har något som Jobin saknar eller har sämre, mot koden:
+
+| Carriera har | Jobin i dag | Post |
+|---|---|---|
+| BankID | Nej | **KC4** (lyfter O20) |
+| Engångskod via e-post/SMS, inga lösenord | E-post + lösenord, Google | **KC6** |
+| "All AI-bearbetning inom EU/EES" | Organisationer: bara Bedrock eu-west-1 sedan **KF8** (`api/ai.js:48`), men via OpenRouter (amerikanskt bolag) som mellanhand. **Kommun- och R&M-sidorna säger fortfarande "i första hand Bedrock… annars en annan leverantör"** (`content/b2b.json:58, 223`), alltså sämre än vad koden gör | **KC1**, **KC2** |
+| Namn, ålder, kön tas bort före AI | `piiSanitizer.ts`: namn är "NEVER STRIP" | **KC3** |
+| AWS Stockholm | Supabase Irland, Vercel Frankfurt | Avstår (se nedan) |
+| Sex referenskunder, två AB | Noll kunder, enskild firma, inget SLA | **KC7**, **KC8** |
+| Automatisk mötestranskribering | Nej (bara tal-till-text i intervjuträningen/AI-teamet, `useVoiceInput.ts`) | **KC9** |
+| Delning med ekonomiskt bistånd | Månadsunderlag som PDF/CSV till handläggaren (KF3, `UnderlagDialog.tsx`), handläggaren har inget eget konto | **KC10** |
+| Delning med externa arbetsplatser | Företagskontot (AG6) ser förslag och placeringar, men inte närvaron | **KC11** |
+| Automatisk journalföring av deltagarens aktiviteter | KM9 räknar jobbsökstid (sparade jobb, ansökningar, CV, intervjuträning) in i planen, men det finns ingen tidslinje i journalen | **KC12** |
+| Statuskort: krav godkänt, andel aktiverade, dokumentation klar | Delvis: veckosaldo per deltagare, caseload i `ChefsVy.tsx` | **KC13** |
+| Progressionsmätning (stegförflyttning per målgrupp) | Nej (`analytics.ts` mäter placeringar, inte stegförflyttning) | **KC14** |
+| Digitala kurser (språk, samhälle, arbetsförberedelse) | Övningar + 292 artiklar, men inget som räknas som en genomförd aktivitet | **KC15**, språk = **KF10** |
+| AI-matchning jobb↔deltagare | Matchning med valbara faktorer (KF12), inte mot hela annonsflödet | **O5** (ingen ny post, lyfts i ordningen) |
+| "Platsbanken + 20 andra källor" | Platsbanken | Inget bygge: **O6** mätte att JobAd Links partnerlänkar är *samma annonser* (1 376 mot 1 393 träffar). Kontrolleras i KC19 |
+| AI fyller i formulär, egen matchningsmodell tränad på användardata | Nej | Avstår (se nedan) |
+
+**Där Jobin redan leder och ska hålla det:** röstintervju, kompetensgap, intresseguide, mående/energi/privat dagbok, lätt svenska + engelska, kunskapsbanken, IVO-kvartalsunderlag per försörjningshinder (`IvoUnderlagSektion.tsx`), öppet demo, publicerat pris. Carrieras sajt visar inget av detta. **KC18** gör tillgängligheten granskad av någon utomstående i stället för en ambition.
+
+**Ordning:** KC1 → SSO1 → KC4 → KC2 → KC3 → KC13 → KC10 → KC12 → KC9 → KC6 + KF4 → KC11 → KC14 → KC15 → O5 → KC18. Parallellt, utan kod: KC7, KC8, KC19.
+
+### Fas 1: förtroende (det kommunjuristen frågar först)
+
+- [x] **KC1** ✅ *2026-10-21. **Premissen föll åt andra hållet:** KF8:s regel satt bara i `client/api/ai.js`. De fem edge-funktionerna (`ai-career-assistant`, `ai-commute-planner`, `ai-company-analysis`, `ai-company-search` ×2 anrop, `ai-industry-radar`) skickade organisationers anrop utan `provider`, så OpenRouter kunde välja leverantör utanför EU. Sidorna överdrev alltså inte bara, de underdrev också på fel ställe. Rättat: `OPENROUTER_PROVIDER_EU_STRIKT` + `openRouterRouting(modell)` i `_shared/aiGate.ts`, spritt i alla sex anrop (fail closed: uppslagsfel ger `orgKonto: true`). Grind `src/test/edge-ai-eu-strikt.test.ts` (8 tester; mutation — en rad borttagen i ai-commute-planner — fällde). `deno check` grönt. Texterna på kommun- och R&M-sidan (`b2b.json`) skrivna om: bara Bedrock i Irland, felmeddelande i stället för reserv, OpenRouter förmedlar. Integritetspolicyn säger "AI-leverantör (USA, SCC + TIA)" och är fortfarande sann.* **Säljsidorna undersäljer KF8.** `content/b2b.json:58` och `:223` säger att AI-anropet går "i första hand" till Bedrock i Irland och annars till "en annan leverantör". För organisationskonton gäller sedan KF8 `allow_fallbacks: false` mot bara `amazon-bedrock/eu-west-1`. Skriv det som det är: organisationers AI-anrop lämnar aldrig EU för bearbetning, och OpenRouter (USA) förmedlar anropet. Kontrollera integritetspolicyn (`Privacy.tsx`), Art. 30 och PUB-bilagan i samma pass. · S, inget beslut
+- [ ] **KC2** **AI utan amerikansk mellanhand för organisationer.** Direktanrop till Amazon Bedrock (eu-west-1 eller eu-north-1) med eget AWS-konto för organisationskonton. OpenRouter blir då bara kvar för fristående konton. Då kan vi skriva samma mening som Carriera: "all AI-bearbetning inom EU/EES, inget tredjelandsbolag". **Premisser att pröva:** att `gpt-oss-120b` finns i Bedrock i den regionen (OpenRouter routar dit, men verifiera på AWS konto), kostnad mot OpenRouter, och att streaminggrenen (`ai-team-chat`) fungerar mot Bedrock. Modellen byts inte (AI_MODEL_LOCKING), bara vägen dit. Ny underbiträde AWS EMEA SARL → PUB-bilaga, Art. 30, DPIA. · beslut (AWS-konto) + M
+- [ ] **KC3** **Pseudonymisering före AI för organisationskonton.** Namn, personnummer (redan), ålder/födelseår och kön ersätts med platshållare (`[NAMN]`) innan prompten lämnar servern och sätts tillbaka i svaret. Där namnet behövs i utdata (CV, brev) sker återinsättningen efter svaret. `piiSanitizer.ts` säger i dag uttryckligen "NEVER STRIP: Namn", och det beslutet ändras här bara för organisationskonton. Grind: utöka `aiServerPii.test.ts` med ett fall per funktion i `PROMPTS` och ett mutationsprov (ta bort ersättningen → testet ska falla). · M
+- [ ] **KC4** **BankID för deltagare. O20 lyfts från "väntar på att en kommun kräver det" till fas 1**, eftersom konkurrenten i samma län säljer på det. Via en OIDC-mäklare (Criipto, Signicat eller Svensk e-identitet/GrandID, alla i EU). **Premiss att pröva först:** Supabase Auth har ingen generisk OIDC-provider för vanlig inloggning, och `signInWithIdToken` stöder bara vissa leverantörer. Troligen behövs en edge-funktion som verifierar mäklarens id_token och utfärdar en session, eller Supabase "third-party auth". Kostnad per inloggning (ca 1–3 kr) → vem betalar, licensen eller kunden. Personnummer från BankID sparas inte i klartext (B29-vakten). · beslut (leverantör, kostnad) + L
+- [ ] **KC6** **Inloggning med engångskod (e-post och SMS), utan lösenord.** Magisk länk/OTP via e-post går redan med Supabase och Resend, så den delen är S. SMS-OTP kräver en SMS-leverantör som Supabase stöder (Twilio, MessageBird, Vonage, Textlocal). **Premiss:** vilken av dem som kan skicka från EU med PUB, annars en egen SMS-krok. Samma leverantör som **KF4** (påminnelser), så de beslutas ihop. · S (e-post) + beslut + M (SMS)
+- [ ] **KC7** **Bolag, SLA och driftstatus.** Carriera har två AB bakom sig, och Jobin har en enskild firma utan SLA (står ärligt på sajten). (1) Beslut om aktiebolag (fråga Bengt: kostnad, tidpunkt, avtal och PUB som behöver överlåtas). (2) En SLA-nivå vi kan hålla, mätt i stället för lovad: svar nästa arbetsdag, tillgänglighet mätt med `health`-röktestet, och en incidentrutin med mejl till kundens kontakt inom en arbetsdag. (3) En publik statussida som läser `health`. Skriv först in nivån på kommunsidan när den är mätt i 30 dagar. · beslut + S–M
+- [ ] **KC8** **Första referenskunden.** Kommunpiloten hösten 2026 (står på kommunsidan) får en överenskommen utvärdering (tre mätpunkter: konsulentens tid per deltagare och vecka, andel planer med bekräftad närvaro, deltagarnas omdöme) och ett skriftligt ja till att nämnas. Ingen kundlogga eller ingen siffra på sajten innan det finns underlag (ärlighetsregeln). Kommuner där Carriera inte redan sitter först: kör mot utskicken i Örebro och Värmlands län, stryk Lindesberg. · affär, ingen kod
+
+### Fas 2: konsulentens tid (det handläggaren köper för)
+
+- [ ] **KC9** **Mötestranskribering → journalutkast.** Konsulenten startar inspelning i möte med deltagaren, ljudet transkriberas i EU, och ett AI-utkast till journalanteckning (samtalspunkter, överenskommelser, nästa steg) läggs fram för konsulenten att redigera och godkänna. Aldrig sparat utan godkännande. **Krav:** deltagarens uttryckliga samtycke per möte, synligt under hela inspelningen, och ljudet sparas aldrig. Samtal om hälsa är art. 9-data, så DPIA-tillägg och att funktionen är av som standard per organisation. **Premiss att pröva:** transkribering av svenska i EU, t.ex. AWS Transcribe (eu-north-1 stöder sv-SE), Azure Speech (Sweden Central) eller KB-Whisper i egen drift. Kostnad per mötestimme. Jämför mot `useVoiceInput.ts` (webbläsarens taligenkänning, som skickar ljud till Google i Chrome och därför inte duger här). · beslut (leverantör, DPIA) + L
+- [ ] **KC10** **Handläggarroll för ekonomiskt bistånd.** Ett läsande konto i kommunens organisation (`handlaggare`) som ser plan, närvaro, veckosaldo och månadsunderlag för de deltagare som är kopplade till hen. Aldrig journal, mående eller dagbok. Ersätter PDF/CSV-utskicket i KF3 och ger det Carriera kallar "gemensam bild för AME och ekonomiskt bistånd". **Premiss att pröva:** sekretessen mellan arbetsmarknadsenhet och socialtjänst (OSL 26 kap.). Ligger båda under samma nämnd är det en sak, annars krävs deltagarens samtycke. Fråga Majken och pilotkommunen innan en rad skrivs. RLS-migration → Mikaels ja, `lint:grants` + `grants:refresh`. · beslut + L
+- [ ] **KC11** **Praktikplatsens handledare rapporterar närvaro.** Företagskontot (AG6, vyerna `employer_placements`) får se schemat för sin placerade deltagare och markera närvarande/frånvarande per dag. Det går in som "extern aktivitet" i veckovyn och konsulenten bekräftar det. Bara schematid, aldrig planens fritext eller försörjningshinder. Skriver via INSTEAD OF som övriga företagsvyer. Migration → Mikaels ja. · M
+- [ ] **KC12** **Aktivitetstidslinje i journalen.** KM9 räknar redan deltagarens jobbsökstid. Utöka till en händelselogg (CV uppdaterat, ansökan skickad, intervjuövning klar, kurs genomförd, plan bekräftad) som konsulenten ser som tidslinje på deltagarsidan. Bara typ och tid, aldrig innehåll. Deltagaren ser exakt samma lista under Min konsulent (DESIGN.md: redovisning, inte kontroll). Följer samtycket för konsulentkopplingen; återkallas kopplingen slutar loggen synas. · M
+- [ ] **KC13** **Statuskort i chefsvyn.** Tre tal per organisation, ur data som redan finns: andel deltagare med en gällande plan, andel som nådde veckomålet förra veckan (veckosaldot), och andel vars dokumentation är klar (plan bekräftad enligt KF5 och månadsunderlag exporterat). Per konsulent i caseload-tabellen. Vid för litet underlag visas "—" och en rad om varför, aldrig 0 % (ärlighetsregeln). Inga hälsodata. · S–M
+- [ ] **KC14** **Stegförflyttning per målgrupp.** Konsulenten skattar deltagarens avstånd till arbetsmarknaden vid start och sedan kvartalsvis, och analysvyn visar förflyttningen per försörjningshinder. **Premiss att pröva först:** använd ett instrument som kommunerna redan använder (fråga pilotkommunen; ESF-projektens stegförflyttningsmodeller är troligen referensen). Hitta inte på en egen skala. Visas aldrig för deltagaren som poäng. · beslut (instrument) + M
+
+### Fas 3: deltagaren
+
+- [ ] **KC15** **Kurser som räknas som aktivitet.** Paketera befintliga artiklar och övningar till korta kurser: förbered dig för arbetslivet, den svenska arbetsplatsen, samhället och myndigheterna (urval ur kunskapsbanken, 292 artiklar). Varje kurs får genomförd-markering och en uppskattad tid som konsulenten kan lägga in som pass i aktivitetsplanen, så att timmarna räknas mot veckomålet. Språkkurser byggs inte, det är partnerskap (KF10, Lingio). Tre lägen, i18n på alla tre ställen, lätt svenska. · M
+- **O5** (matchning av hela annonsflödet mot CV) flyttas in i KC-ordningen efter KC15, utan nytt ID.
+
+### Försvara försprånget
+
+- [ ] **KC18** **Tillgänglighet granskad av någon utanför projektet.** Kommunsidan säger ärligt att WCAG 2.1 AA är ett mål och att ingen test med skärmläsare är gjord. Gör den: NVDA och VoiceOver genom deltagarens huvudväg, plus en oberoende granskning (t.ex. Funka) eller tre deltagare ur målgruppen. Publicera tillgänglighetsredogörelsen med datum. Då blir tillgängligheten något vi kan visa upp. Carriera har ingen tillgänglighetsredogörelse alls. · beslut (kostnad) + M
+- [ ] **KC19** **Prova Carriera som deltagare.** Skapa ett konto i `app.carriera.se`, som är gratis för arbetssökande, och mät tre saker: vad "20 andra källor" är (dubbletter av Platsbanken enligt O6?), vilka kurserna är och hur långa, och vad AI:n svarar på en regelfråga om a-kassa (sanningsregeln). Notera i konkurrensanalysen med datum. Ingen inloggning i coachvyn. · S
+
+### Avstår vi från, med skäl
+
+| Carriera har | Varför inte |
+|---|---|
+| AI som fyller i ansökningsformulär | Samma beslut som autoapply och MK5: belagda kvalitetsproblem, och fel i en ansökan drabbar deltagaren. O9 (förberedd ansökan som människan skickar) är vårt svar. **Säg till om du vill häva det.** |
+| Egen matchningsmodell tränad på användardata | Två aktiva användare i veckan (2026-09-24) ger inget att träna på, och träning på deltagardata kräver en ny rättslig grund. Kan tas upp vid mer än hundra aktiva kommundeltagare. |
+| Drift i Stockholm (AWS) | EU räcker juridiskt, och Supabase Irland och Vercel Frankfurt står redan på kommunsidan. Supabase har eu-north-1 (Stockholm), men flytten är en ny instans med dump och återställning (se databasbackupen). Tas upp först om en upphandling kräver drift i Sverige. |
+
+---
+
 ## Demogenomgång 2026-10-19 — de fyra demokontona i prod inför ny lathund (DL)
 
 Alla fyra kontona genomklickade via Visa som i drift. Lathunden: https://claude.ai/code/artifact/5af737c5-5453-45bd-9735-c228463da562 (ersätter demomanuset 2026-09-27). Inga nätverksfel ≥400, tvåstegsrutan visas inte för demoorganisationerna.
@@ -139,7 +207,7 @@ Alla fyra kontona genomklickade via Visa som i drift. Lathunden: https://claude.
 
 **Underlag:** `docs/konkurrensanalys-2026-10.md` (sju agenter, ~50 aktörer i fem segment) · översikt https://claude.ai/artifact/3o4LALAy3jYqCjMVDzMzqq. Bygger på spår O (2026-08-25) och MK1–MK5 (2026-08-31) — **ingen funktion som redan står där har fått ett nytt ID**, den står i tabellen med sin gamla post och status mätt i dag.
 
-**Princip för ordningen:** pengarna kommer från organisationer (2 990 kr/mån + 290 kr/konsulent), och Workbuster sitter redan hos dem (HelloLilly, Täby, Academedia, Arcus). Fas 1 är därför det en kommun eller Rusta och matcha-leverantör kräver *innan avtal*, fas 2 det som gör Jobin till den deltagarsida Workbuster köper in från Cowrite. Bredd för deltagaren kommer efter.
+**Princip för ordningen:** pengarna kommer från organisationer (2 990 kr/mån + 290 kr/konsulent; **sänkt 2026-10-21 till 1 990 kr/mån utan konsulentavgift**, se spår KC), och Workbuster sitter redan hos dem (HelloLilly, Täby, Academedia, Arcus). Fas 1 är därför det en kommun eller Rusta och matcha-leverantör kräver *innan avtal*, fas 2 det som gör Jobin till den deltagarsida Workbuster köper in från Cowrite. Bredd för deltagaren kommer efter.
 
 ### Premissgranskning — mätt i koden 2026-10-18
 

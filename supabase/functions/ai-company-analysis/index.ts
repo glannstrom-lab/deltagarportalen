@@ -9,7 +9,7 @@ import { checkRateLimit } from '../_shared/rateLimit.ts'
 import {
   AI_GATE_CODES,
   checkAiEnabled,
-  valjModell,
+  valjModell, openRouterRouting,
   UTAN_SOKNING_TILLAGG,
   checkDailyTokenCap,
   createAiErrorResponse,
@@ -262,6 +262,7 @@ Deno.serve(medFelrapport('ai-company-analysis', async (req) => {
       },
       body: JSON.stringify({
         model: modell.model,
+        ...openRouterRouting(modell),
         messages: [{ role: 'user', content: modell.webbsokning ? prompt : prompt + UTAN_SOKNING_TILLAGG }],
         max_tokens: 3000,
         temperature: 0.3,
