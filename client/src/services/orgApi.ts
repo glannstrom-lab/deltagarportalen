@@ -80,6 +80,14 @@ export interface CaseloadRow {
   antal_uppfoljning?: number | null
   antal_aktiva_planer: number
   ogiltig_franvaro_30d: number
+  /**
+   * KC13 (statuskort). Finns först efter 20261021_kc13_statuskort_caseload.sql
+   * — saknas fälten visar chefsvyn "—" med en rad om varför, aldrig 0.
+   * Definitionerna står i migrationen och speglar veckoampel()/KF5.
+   */
+  antal_veckomal_underlag?: number | null
+  antal_veckomal_nadda?: number | null
+  antal_dokumentation_klar?: number | null
 }
 
 /**

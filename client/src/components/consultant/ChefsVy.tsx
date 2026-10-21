@@ -19,6 +19,7 @@ import { useQuery } from '@tanstack/react-query'
 import { Link } from 'react-router-dom'
 import { orgApi, type CaseloadRow, type OrgKind } from '@/services/orgApi'
 import { chefOversikt, KAPACITET_REGEL } from './caseloadKapacitet'
+import { statuskort, STATUSKORT_RUBRIK, type Statuskort } from './statuskort'
 import { cn } from '@/lib/utils'
 
 const arLedning = (role: string) => role === 'chef' || role === 'admin'
@@ -30,6 +31,31 @@ function Ram({ children }: { children: ReactNode }) {
       {children}
     </section>
   )
+}
+
+const NYCKLAR = ['plan', 'veckomal', 'dokumentation'] as const
+
+/** KC13: tre statuskort för organisationen. "—" bär alltid sitt varför. */
+function Statuskorten({ kort, orgNamn }: { kort: Statuskort; orgNamn: string }) {
+  return (
+    <dl className="grid gap-3 sm:grid-cols-3" aria-label={`Status, ${orgNamn}`} data-testid="chefsvy-statuskort">
+      {NYCKLAR.map((k) => {
+        const t = kort[k]
+        return (
+          <div key={k} className="grid content-start gap-1 rounded-j-s border border-j-linje p-3">
+            <dt className="text-[0.875rem] font-medium">{STATUSKORT_RUBRIK[k].rubrik}</dt>
+            <dd className="font-rubrik text-[1.25rem] font-bold tabular-nums" data-testid={`statuskort-${k}`}>{t.text}</dd>
+            <dd className="text-xs text-j-blak-2">{t.visas ? STATUSKORT_RUBRIK[k].forklaring : t.varfor}</dd>
+          </div>
+        )
+      })}
+    </dl>
+  )
+}
+
+/** Samma tre tal per konsulent, på en rad. */
+function kortRad(kort: Statuskort): string {
+  return NYCKLAR.map((k) => `${k === 'plan' ? 'plan' : k === 'veckomal' ? 'veckomål' : 'dokumentation'} ${kort[k].text}`).join(' · ')
 }
 
 export function ChefsVy() {
@@ -89,6 +115,7 @@ export function ChefsVy() {
           return (
             <div key={orgId} className="grid gap-3">
               {perOrg.size > 1 && <h3 className="font-semibold">{o.namn}</h3>}
+              <Statuskorten kort={statuskort(o.rader)} orgNamn={o.namn} />
               <div data-testid="chefsvy-uppmarksamhet">
                 {behover.length === 0 ? (
                   <p className="text-[0.9375rem] text-j-blak-2">Inget kräver din uppmärksamhet just nu.</p>
@@ -111,11 +138,17 @@ export function ChefsVy() {
               </div>
               <ul className="grid gap-1 text-[0.9375rem]" aria-label={`Deltagare per konsulent, ${o.namn}`}>
                 {lista.map((c) => (
-                  <li key={c.id} className="flex justify-between gap-3 border-t border-j-linje pt-1.5 first:border-t-0 first:pt-0">
-                    <span>{c.namn}</span>
-                    <span className="tabular-nums text-j-blak-2" data-testid="chefsvy-antal">
-                      {c.kapacitet.visas ? c.kapacitet.text : `${c.antal} deltagare`}
-                    </span>
+                  <li key={c.id} className="grid gap-0.5 border-t border-j-linje pt-1.5 first:border-t-0 first:pt-0">
+                    <div className="flex justify-between gap-3">
+                      <span>{c.namn}</span>
+                      <span className="tabular-nums text-j-blak-2" data-testid="chefsvy-antal">
+                        {c.kapacitet.visas ? c.kapacitet.text : `${c.antal} deltagare`}
+                      </span>
+                    </div>
+                    {(() => {
+                      const r = o.rader.find((x) => x.consultant_id === c.id)
+                      return r ? <span className="text-xs tabular-nums text-j-blak-2" data-testid="chefsvy-konsulentstatus">{kortRad(statuskort([r]))}</span> : null
+                    })()}
                   </li>
                 ))}
               </ul>

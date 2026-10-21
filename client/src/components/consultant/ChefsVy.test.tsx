@@ -114,3 +114,26 @@ describe('chefOversikt delar siffran med Inställningar', () => {
     expect(b.uppmarksamhet[0].slag).toBe('nara')
   })
 })
+
+describe('KC13: statuskorten i chefsvyn', () => {
+  it('visar organisationens tre tal och raden per konsulent', async () => {
+    medlem('chef', 'kommun')
+    vi.mocked(orgApi.caseload).mockResolvedValue([
+      rad({ consultant_id: 'a', antal_deltagare: 5, antal_aktiva_planer: 4, antal_veckomal_underlag: 3, antal_veckomal_nadda: 2, antal_dokumentation_klar: 1 }),
+    ] as never)
+    visa()
+    expect((await screen.findByTestId('statuskort-plan')).textContent).toBe('4 av 5')
+    expect(screen.getByTestId('statuskort-veckomal').textContent).toBe('2 av 3')
+    expect(screen.getByTestId('statuskort-dokumentation').textContent).toBe('1 av 4')
+    expect(screen.getByTestId('chefsvy-konsulentstatus').textContent).toBe('plan 4 av 5 · veckomål 2 av 3 · dokumentation 1 av 4')
+  })
+
+  it('före migrationen: "—" med ett varför, aldrig 0', async () => {
+    medlem('chef', 'kommun')
+    vi.mocked(orgApi.caseload).mockResolvedValue([rad({ antal_deltagare: 5, antal_aktiva_planer: 4 })] as never)
+    visa()
+    expect((await screen.findByTestId('statuskort-veckomal')).textContent).toBe('—')
+    expect(screen.getByTestId('chefsvy-statuskort').textContent).toMatch(/databasen saknar/)
+    expect(screen.getByTestId('chefsvy-statuskort').textContent).not.toMatch(/\b0 av\b|0 %/)
+  })
+})
