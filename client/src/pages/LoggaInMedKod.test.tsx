@@ -38,7 +38,7 @@ const visa = (path = '/logga-in-med-kod') =>
   render(<MemoryRouter initialEntries={[path]}><LoggaInMedKod /></MemoryRouter>)
 
 describe('KC6: logga in med engångskod', () => {
-  it('skickar adressen, tar emot koden och loggar in med type email', async () => {
+  it('skickar adressen, tar emot koden (åtta siffror som i prod) och loggar in med type email', async () => {
     invoke.mockResolvedValue({ data: { ok: true }, error: null })
     verifyOtp.mockResolvedValue({ error: null })
     visa()
@@ -47,9 +47,9 @@ describe('KC6: logga in med engångskod', () => {
     await waitFor(() => expect(invoke).toHaveBeenCalledWith('engangskod', { body: { email: 'Anna@Exempel.se' } }))
 
     const falt = await screen.findByLabelText('Koden från mejlet')
-    fireEvent.change(falt, { target: { value: '123 456' } })
+    fireEvent.change(falt, { target: { value: '9850 0776' } })
     fireEvent.click(screen.getByRole('button', { name: /logga in/i }))
-    await waitFor(() => expect(verifyOtp).toHaveBeenCalledWith({ email: 'anna@exempel.se', token: '123456', type: 'email' }))
+    await waitFor(() => expect(verifyOtp).toHaveBeenCalledWith({ email: 'anna@exempel.se', token: '98500776', type: 'email' }))
     expect(reload).toHaveBeenCalled()
   })
 
@@ -65,14 +65,14 @@ describe('KC6: logga in med engångskod', () => {
     expect(reload).not.toHaveBeenCalled()
   })
 
-  it('en kod som inte är sex siffror skickas aldrig', async () => {
+  it('en kod som inte bara är siffror skickas aldrig', async () => {
     invoke.mockResolvedValue({ data: { ok: true }, error: null })
     visa()
     fireEvent.change(screen.getByLabelText(/e-post/i), { target: { value: 'a@b.se' } })
     fireEvent.click(screen.getByRole('button', { name: 'Skicka kod' }))
     fireEvent.change(await screen.findByLabelText('Koden från mejlet'), { target: { value: '12a' } })
     fireEvent.click(screen.getByRole('button', { name: /logga in/i }))
-    expect(await screen.findByRole('alert')).toHaveTextContent(/sex siffror/)
+    expect(await screen.findByRole('alert')).toHaveTextContent(/bara av siffror/)
     expect(verifyOtp).not.toHaveBeenCalled()
   })
 

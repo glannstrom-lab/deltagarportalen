@@ -1,6 +1,6 @@
 /**
  * Logga in med engångskod (KC6, 2026-10-21) — utan lösenord. Adressen skickas
- * till edge-funktionen `engangskod`, som mejlar en sexsiffrig kod och en länk.
+ * till edge-funktionen `engangskod`, som mejlar en sifferkod och en länk.
  * Koden skrivs in här (verifyOtp type 'email'); länken leder hit med ?th= och
  * löses in direkt (verifyOtp type 'magiclink'). Båda fungerar på vilken enhet
  * som helst. Svaret är alltid detsamma, oavsett om adressen har ett konto.
@@ -20,7 +20,10 @@ import { PUBLIC_PAGE_BOTTOM_PADDING } from '@/components/CookieConsent'
 type Steg = 'epost' | 'kod' | 'loser' | 'ogiltig'
 
 const EPOST = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-const KOD = /^\d{6}$/
+// Längden styrs av Supabase-inställningen "Email OTP Length" (6–10). I prod är
+// den 8 (mätt 2026-10-21 i ett riktigt mejl), inte standardvärdet 6 — en sida
+// som krävde sex siffror vägrade alltså varje riktig kod. Ta emot hela spannet.
+const KOD = /^\d{6,10}$/
 
 function laddaOmInloggad() {
   window.location.replace(`${window.location.pathname}#/`)
@@ -163,7 +166,7 @@ export default function LoggaInMedKod() {
                   ref={kodRef}
                   inputMode="numeric"
                   autoComplete="one-time-code"
-                  maxLength={7}
+                  maxLength={14}
                   value={kod}
                   onChange={(e) => setKod(e.target.value)}
                   aria-invalid={!!fel}

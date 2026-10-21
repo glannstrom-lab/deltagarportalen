@@ -3,7 +3,7 @@
 import { escapeHtml, SHARED_STYLES } from '../send-invite-email/mallar.ts'
 
 export interface EngangskodMallData {
-  /** Sexsiffrig kod att skriva in på inloggningssidan. */
+  /** Sifferkoden (8 siffror i prod) att skriva in på inloggningssidan. */
   kod: string
   /** Länk som loggar in direkt (token_hash), för den som öppnar mejlet på samma enhet. */
   actionUrl: string

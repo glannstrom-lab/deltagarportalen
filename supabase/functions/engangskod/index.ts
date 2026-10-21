@@ -3,7 +3,7 @@
 // Carriera loggar in med engångskod i stället för lösenord. Många i målgruppen
 // tappar bort lösenord; en kod i mejlet är en tröskel mindre. Samma mönster som
 // losenord-aterstall: generateLink med service role → mejl via Resend med en
-// sexsiffrig kod (email_otp) och en länk med token_hash. Klienten loggar in med
+// sifferkod (email_otp, 8 siffror i prod) och en länk med token_hash. Klienten loggar in med
 // verifyOtp({ email, token, type: 'email' }) eller verifyOtp({ token_hash,
 // type: 'magiclink' }). Fungerar på vilken enhet som helst, till skillnad från
 // signInWithOtp, som med PKCE bara löser in länken i samma webbläsare.
