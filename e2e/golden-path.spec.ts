@@ -64,7 +64,11 @@ test.describe('Golden path — deltagare', () => {
     // Omläggningen 2026-08-17: hubbarna ligger i toppnavens <nav aria-label="Huvudkategorier">,
     // inte i en <aside>. Etiketterna kommer ur nav.hubs.* i sv.json.
     const hubnav = page.getByRole('navigation', { name: /huvudkategorier/i })
-    for (const hub of [/^översikt$/i, /^söka jobb$/i, /^karriär$/i, /^resurser$/i, /^din vardag$/i]) {
+    // Etiketten först, men inte exakt: hubben med användarens nästa steg får
+    // skärmläsartexten "Ditt nästa steg finns här" efter namnet (NastaStegPrick),
+    // så exakt matchning föll så fort testkontots nästa steg låg i en hubb (CI 2026-10-23).
+    // (?:\s|$) i stället för \b — \b ser inte "ä" som bokstav och fäller "Karriär".
+    for (const hub of [/^översikt(?:\s|$)/i, /^söka jobb(?:\s|$)/i, /^karriär(?:\s|$)/i, /^resurser(?:\s|$)/i, /^din vardag(?:\s|$)/i]) {
       await expect(hubnav.getByRole('link', { name: hub }).first()).toBeVisible({ timeout: 10000 })
     }
   })

@@ -214,7 +214,10 @@ async function prepareAiRequest(
   const { sanitized, stripped, warnings } = sanitizeAiPayload(data)
   const strippedCount = Object.values(stripped).reduce((a, b) => a + b, 0)
   if (strippedCount > 0) {
-    apiLogger.warn('[callAI] PII strippad innan AI-anrop:', { functionName, stripped })
+    // info, inte warn (2026-10-24): att saneringen tar bort personnummer o.d.
+    // är skyddet som fungerar, inte ett fel. Som warn blev varje träff ett
+    // Sentry-ärende (JOBIN-WEB-2) och larmade som om något gått sönder.
+    apiLogger.info('[callAI] PII strippad innan AI-anrop:', { functionName, stripped })
   }
   if (warnings.length > 0) {
     apiLogger.debug('[callAI] PII-warning (behållen, krävs för AI-output):', { functionName, warnings })

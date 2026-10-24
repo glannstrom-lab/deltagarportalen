@@ -199,8 +199,11 @@ export function captureError(
   }
 
   if (typeof error === 'string') {
+    // 2026-10-24: loggarens `warn` kom tidigare fram som `error` i Sentry,
+    // eftersom nivån var hårdkodad här trots att logger.ts skickar med den
+    // i `context.level`. En varning ska synas som varning.
     Sentry.captureMessage(error, {
-      level: 'error',
+      level: context?.level === 'warn' ? 'warning' : 'error',
       extra: context,
     });
   } else {
