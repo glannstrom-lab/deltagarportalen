@@ -255,6 +255,12 @@ export interface OnboardingProgress {
    * varje läsare som räknar färdiga steg utifrån typen har missat det här.
    */
   spontaneous?: boolean
+  /**
+   * FN5: användaren hoppade över (eller tryckte Escape på) välkomstturen i stället för att
+   * gå den. `profiles.onboarding_completed` är true i båda fallen; den här skiljer dem åt.
+   * Läses av Översiktens nästa steg för att erbjuda ett mjukt första steg senare.
+   */
+  valkomstHoppad?: boolean
 }
 
 /**

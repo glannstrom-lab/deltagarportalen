@@ -1528,7 +1528,15 @@
       "downloadAsPdf": "Download as PDF",
       "restoreDraft": "Go back to the draft",
       "copiedAria": "The letter has been copied.",
-      "draftUtanText": "The job is filled in, but the letter is not written yet."
+      "draftUtanText": "The job is filled in, but the letter is not written yet.",
+      "kort": {
+        "rubrik": "Need something shorter?",
+        "beskrivning": "Many job ads only want a short message. Here you get the same thing in a shorter form, based on the same details as your letter.",
+        "mejl": "Short email (three sentences)",
+        "chatt": "Chat message",
+        "laddar": "Writing the short version …",
+        "fel": "We could not write the short version right now. Please try again in a moment."
+      }
     },
     "templates": {
       "selectAria": "Choose letter template",
@@ -5688,7 +5696,7 @@
         "withdrawalWarning": "If you withdraw consent, some features may stop working. You can always grant consent again later.",
         "saveFailed": "We could not save your choice right now, so nothing has changed. Please try again in a moment.",
         "aiLasMer": "Read more about the AI service",
-        "aiDetaljer": "The AI service is the language model gpt-oss-120b. We reach it through the company OpenRouter, and the texts are processed on servers in the USA. Your right to say no to AI comes from GDPR article 21 (the right to object to profiling)."
+        "aiDetaljer": "The AI service is the language model gpt-oss-120b. We reach it through the company OpenRouter (USA), which sends the text first to Amazon Bedrock in Ireland (EU). If that is not available, another provider, also in the USA, can process it. Your right to say no to AI comes from GDPR article 21 (the right to object to profiling)."
       },
       "orgAiLock": {
         "text": "AI features are turned off by {{orgName}}. This applies no matter what you choose here.",
@@ -5862,7 +5870,7 @@
       "acceptPrivacy": "I have read and accept the",
       "privacyLink": "privacy policy",
       "acceptAi": "I consent to AI processing of my data",
-      "aiDescription": "We use AI to help you write CVs and cover letters. Your data is then processed by our AI provider OpenRouter, whose servers are in the USA. This consent is optional but required for AI features.",
+      "aiDescription": "We use AI to help you write CVs and cover letters. Your text goes through our AI broker OpenRouter (USA), first of all to Amazon Bedrock in Ireland (EU). If that is not available, another provider, also in the USA, can process it. This consent is optional but required for AI features.",
       "optionalLabel": "Optional"
     },
     "invite": {
@@ -6283,7 +6291,7 @@
       "gdpr": "GDPR-compliant",
       "gdprDesc": "All data handled per EU's data-protection regulation",
       "eu": "EU data",
-      "euDesc": "Your database, account and files are stored in the EU. If you use the AI features, that text is processed in the USA.",
+      "euDesc": "Your database, account and files are stored in the EU. If you use the AI features, the text goes first to Amazon Bedrock in Ireland (EU). If that is not available, another provider, also in the USA, can process it.",
       "af": "Jobs from Arbetsförmedlingen",
       "afDesc": "Job search shows open jobs from the open data of Arbetsförmedlingen (the Swedish Public Employment Service)"
     },
@@ -6709,7 +6717,7 @@
       "title": "AI Models We Use",
       "intro": "Jobin uses the following AI services:",
       "openai": "OpenRouter (model: gpt-oss-120b)",
-      "openaiDesc": "Used to generate CV texts, cover letters, and provide writing suggestions. We use OpenRouter, which in turn runs the gpt-oss-120b language model. Processing takes place in the USA.",
+      "openaiDesc": "Used to generate CV texts, cover letters, and provide writing suggestions. We use OpenRouter, which in turn runs the gpt-oss-120b language model. Processing takes place first at Amazon Bedrock in Ireland (EU); if that is not available, it can take place in the USA.",
       "provider": "Provider:",
       "purpose": "Purpose:",
       "location": "Data processing:"
@@ -9581,6 +9589,26 @@
         "body": "Logging how you feel takes half a minute, and after a few weeks you can see what gives you energy.",
         "cta": "Log how you feel",
         "short": "Log how today feels"
+      },
+      "interview": {
+        "title": "You have an interview: {{titel}}",
+        "bodyToday": "It is today. You can practise a few questions first, at your own pace.",
+        "bodyTomorrow": "It is tomorrow. You can practise a few questions first, at your own pace.",
+        "cta": "Practise for the interview",
+        "short": "Practise for the interview"
+      },
+      "interviewDone": {
+        "title": "How did the interview go?",
+        "body": "However it went: you got there. Write it down while you remember, and add what you know to the application.",
+        "cta": "Update the application",
+        "ctaSecondary": "Write a line in your diary",
+        "short": "Tell how the interview went"
+      },
+      "firstStep": {
+        "title": "When you want to: start with your CV",
+        "body": "This is a calm first step. You can stop when you like, and everything is saved.",
+        "cta": "Open the CV builder",
+        "short": "Start with your CV"
       }
     },
     "pagar": {

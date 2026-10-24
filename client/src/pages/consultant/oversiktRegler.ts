@@ -582,6 +582,7 @@ export type MinDagTyp =
   | 'under_timkravet'
   | 'uppfoljning'
   | 'mote_idag'
+  | 'mote_forslag'
   | 'deadline'
   | 'kontakt'
 
@@ -599,6 +600,8 @@ export const MIN_DAG_PRIO: Record<MinDagTyp, number> = {
   utan_fysiskt: 52,
   under_timkravet: 55,
   uppfoljning: 58,
+  // FN20: deltagaren väntar på svar — före dagens möten, efter underlagen.
+  mote_forslag: 60,
   mote_idag: 65,
   deadline: 75,
   kontakt: 85,
@@ -621,6 +624,8 @@ export interface MinDagPunkt {
   pass?: AttGoraPass
   /** Dagens möte (mote_idag). */
   mote?: { id: string; scheduledAt: string; meetingLink: string | null }
+  /** Deltagarens förslag på mötestid (mote_forslag). */
+  forslag?: { id: string; scheduledAt: string }
 }
 
 export interface MinDagPerson {
@@ -726,6 +731,15 @@ export interface KontaktPunkt {
   text: string
 }
 
+/** FN20: ett förslag från en deltagare, som Min dag läser det. */
+export interface MoteForslagRad {
+  id: string
+  participantId: string
+  scheduledAt: string
+  meetingType: string | null
+  note: string | null
+}
+
 const MOTESFORM: Record<string, string> = { physical: 'på kontoret', video: 'digitalt', phone: 'per telefon' }
 
 function klockslag(iso: string): string {
@@ -746,6 +760,8 @@ export function minDagPersoner(args: {
   bradskande: readonly Bradskande[]
   leverantor: LeverantorLage | null
   moten: readonly MoteIdag[]
+  /** FN20: deltagarnas förslag på mötestid som väntar på svar. Utelämnad = inga. */
+  forslag?: readonly MoteForslagRad[]
   deadlines: readonly MalDeadline[]
   kontakter: readonly KontaktPunkt[]
   idag: Date
@@ -800,6 +816,22 @@ export function minDagPersoner(args: {
       status: 'planerat',
       statusText: 'Möte i dag',
       mote: { id: m.id, scheduledAt: m.scheduledAt, meetingLink: m.meetingLink },
+    })
+  }
+  for (const f of args.forslag ?? []) {
+    // Samma regel som möteskortet: ett förslag vars tid passerat är inaktuellt.
+    const tid = new Date(f.scheduledAt)
+    if (tid.getTime() <= args.idag.getTime()) continue
+    const form = f.meetingType ? MOTESFORM[f.meetingType] : null
+    const not = f.note?.trim()
+    punkter.push({
+      typ: 'mote_forslag',
+      participantId: f.participantId,
+      lage: `Föreslår ett möte ${dagOrd(formatLocalDate(tid), idag)} ${klockslag(f.scheduledAt)}${form ? `, ${form}` : ''}`,
+      detalj: not ? `”${not.length > 90 ? `${not.slice(0, 87)}…` : not}”` : 'Bekräfta tiden eller svara att den inte passar',
+      status: 'vantar',
+      statusText: 'Förslag på tid',
+      forslag: { id: f.id, scheduledAt: f.scheduledAt },
     })
   }
   for (const d of args.deadlines) {
@@ -861,6 +893,8 @@ export function radSammanfattning(person: MinDagPerson, franvaroSomFakta = false
       return { lage: `Sjuk på ${tal} pass, intyget har inte kommit`, detalj: forsta.detalj, fler }
     case 'forklaring':
       return { lage: `Har förklarat frånvaron för ${tal} pass`, detalj: forsta.detalj, fler }
+    case 'mote_forslag':
+      return { lage: `${talOrd(n)} förslag på mötestid väntar på svar`, detalj: forsta.lage, fler }
     case 'deadline':
       return { lage: `${talOrd(n)} mål ska vara klara snart eller är försenade`, detalj: forsta.lage, fler }
     default:

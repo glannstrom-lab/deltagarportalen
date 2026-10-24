@@ -72,6 +72,11 @@ export interface MinVardagSummary {
     time: string | null
     type: string | null
   }>
+  /**
+   * FN3: senaste intervjun (kalenderhändelse av typen intervju) de senaste
+   * dagarna, för frågan "Hur gick intervjun?". `null` = ingen, `undefined` = ej hämtad.
+   */
+  senasteIntervju?: { id: string; title: string; date: string; job_application_id: string | null } | null
   networkContactsCount: number
   consultant: { id: string; full_name: string | null; avatar_url: string | null } | null
   /**

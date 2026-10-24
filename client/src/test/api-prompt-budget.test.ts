@@ -30,6 +30,9 @@ const UNDERLAG: unknown[] = [
   { responsLage: 'short', meddelande: 'hej' },
   { responsLage: 'detailed', meddelande: 'hej' },
   { language: 'en' },
+  // AIX10 (2026-10-24): personligt-brev har längdgrenar som bara nås med `langd`.
+  { langd: 'mejl' },
+  { langd: 'chatt' },
 ]
 
 describe('promptbudgetar rymmer resonemang + svar', () => {

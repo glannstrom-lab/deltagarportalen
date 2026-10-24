@@ -3,6 +3,7 @@
  *
  * Renders bara om profile.onboarding_completed === false. Vid "Klar" eller
  * "Hoppa över" sätts flaggan till true i Supabase (cross-device-persistens).
+ * Hoppa över/Escape sparar dessutom onboarding_progress.valkomstHoppad (FN5).
  * Mounted i Layout.tsx ovanför sidan så den syns första inloggade renderingen.
  *
  * Använder designsystem-tokens (--c-* per aktiv domän, stone-skala).
@@ -24,6 +25,7 @@ import { useAuthStore } from '@/stores/authStore'
 import { Button } from '@/components/ui/Button'
 import { cn } from '@/lib/utils'
 import { useFocusTrap } from '@/hooks/useFocusTrap'
+import { userApi } from '@/services/userApi'
 import { claimOnboardingSession, releaseOnboardingSession } from '@/lib/onboardingCoordinator'
 
 const ONBOARDING_OWNER_ID = 'global-flow' as const
@@ -195,7 +197,8 @@ export function OnboardingFlow() {
   // — samma effekt som "Hoppa över" så användaren inte kan fastna.
   const focusTrapRef = useFocusTrap<HTMLDivElement>(shouldShow, {
     // Escape = "Hoppa över", även i databasen — tidigare stängdes turen bara för stunden.
-    onEscape: () => { void markCompleted() },
+    // FN5: Escape är ett avfärdande, inte ett slutförande — det sparas som "hoppad".
+    onEscape: () => { void markCompleted('hoppad') },
     restoreFocus: true,
     autoFocus: true,
   })
@@ -207,12 +210,28 @@ export function OnboardingFlow() {
   const progress = ((currentStep + 1) / STEPS.length) * 100
   const isLast = currentStep === STEPS.length - 1
 
-  const markCompleted = async () => {
+  /**
+   * FN5: `onboarding_completed` betyder "turen ska inte visas igen" och sätts i båda fallen.
+   * Vad som skilde dem åt fanns inte — den som hoppade över såg likadan ut i databasen som
+   * den som gick hela vägen, och Översikten kunde därför aldrig erbjuda ett första steg.
+   * Ett avfärdande sparas nu också som `onboarding_progress.valkomstHoppad` (jsonb, ingen
+   * migration). `updateOnboardingStep` läser först och slår ihop, och kastar vid läsfel —
+   * ett läsfel tolkas aldrig som tom progress. Misslyckas flaggan stängs turen ändå:
+   * användaren ska inte hållas kvar i en modal för att ett sidoanrop föll.
+   */
+  const markCompleted = async (utfall: 'klar' | 'hoppad' = 'klar') => {
     if (!profile?.id) return
     setSaving(true)
     try {
       const { error } = await updateProfile({ onboarding_completed: true })
       if (error) console.warn('[Onboarding] kunde inte spara status:', error)
+      if (utfall === 'hoppad' && !error) {
+        try {
+          await userApi.updateOnboardingStep('valkomstHoppad', true)
+        } catch (e) {
+          console.warn('[Onboarding] kunde inte spara att turen hoppades över:', e)
+        }
+      }
     } finally {
       setSaving(false)
       setDismissed(true)
@@ -221,7 +240,7 @@ export function OnboardingFlow() {
 
   const handleNext = () => {
     if (isLast) {
-      markCompleted()
+      void markCompleted('klar')
     } else {
       setCurrentStep(currentStep + 1)
     }
@@ -234,12 +253,12 @@ export function OnboardingFlow() {
   const handleAction = () => {
     // Sista steget = "klar" + behåll på dashboard. Övriga steg = navigera till
     // resp. sida och stäng modalen (markeras som klar).
-    void markCompleted()
+    void markCompleted('klar')
     navigate(step.route)
   }
 
   const handleSkip = () => {
-    void markCompleted()
+    void markCompleted('hoppad')
   }
 
   return (

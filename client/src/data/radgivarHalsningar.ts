@@ -337,6 +337,24 @@ export const OVERSIKT_STEG: Record<StegId, Omit<Halsning, 'steg'>> = {
     sv: 'Hej, det är Andreas. Du har planerat att höra av dig till ett företag igen. Ett kort meddelande räcker.',
     en: 'Hi, this is Andreas. You planned to contact a company again. A short message is enough.',
   },
+  interview: {
+    // belägg: pages/hubs/nastaStegRegler.ts (kalenderhändelse av typen intervju → /interview-simulator)
+    coachId: 'jobbcoach',
+    sv: 'Hej, det är Andreas. Du har en intervju snart. Du kan öva på några frågor först, i din egen takt.',
+    en: 'Hi, this is Andreas. You have an interview soon. You can practise a few questions first, at your own pace.',
+  },
+  interviewDone: {
+    // belägg: pages/hubs/nastaStegRegler.ts (intervjun låg igår eller dagen före → /applications, /diary)
+    coachId: 'jobbcoach',
+    sv: 'Hej, det är Andreas. Hur gick intervjun? Du kan uppdatera ansökan, eller skriva en rad i dagboken medan du minns.',
+    en: 'Hi, this is Andreas. How did the interview go? You can update the application, or write a line in your diary while you remember.',
+  },
+  firstStep: {
+    // belägg: pages/hubs/nastaStegRegler.ts (valkomstHoppad → /cv)
+    coachId: 'jobbcoach',
+    sv: 'Hej, det är Andreas. När du vill kan du börja med ditt CV. Det är ett lugnt första steg, och du bestämmer takten.',
+    en: 'Hi, this is Andreas. When you want to, you can start with your CV. It is a calm first step, and you set the pace.',
+  },
   event: {
     coachId: 'arbetsterapeut',
     sv: 'Hej, det är Linnea. Du har något inbokat snart. Titta i kalendern, så vet du tid och plats.',
@@ -388,8 +406,9 @@ export const OVERSIKT_INGET: Omit<Halsning, 'steg'> = {
  * fäller när ett klipp har lagts i public men posten står kvar här.
  * todaysPass (2026-10-19): ny regel, ingen röst-id finns sparad för Linnea —
  * spelas in av Mikael med samma röst som de andra klippen.
+ * interview, interviewDone (2026-10-24, FN2/FN3): nya steg, klippen spelas in av Mikael.
  */
-export const OVERSIKT_KLIPP_SAKNAS: ReadonlySet<StegId> = new Set<StegId>(['todaysPass'])
+export const OVERSIKT_KLIPP_SAKNAS: ReadonlySet<StegId> = new Set<StegId>(['todaysPass', 'interview', 'interviewDone', 'firstStep'])
 
 /** Ljudfil för en hälsning. Klippen ligger i public/radgivare/ljud/. */
 export function ljudFor(nyckel: string, sprak: 'sv' | 'en'): string { return `/radgivare/ljud/${nyckel}-${sprak}.mp3` }

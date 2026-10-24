@@ -48,6 +48,7 @@ function makeBuilder(data: unknown, count?: number) {
     return builder
   })
   builder.gte = vi.fn(() => builder)
+  builder.lt = vi.fn(() => builder)
   builder.not = vi.fn(() => builder)
   builder.order = vi.fn(() => builder)
   builder.limit = vi.fn(() => builder)
@@ -124,8 +125,8 @@ describe('useMinVardagHubSummary', () => {
     // DL4: nästa möte och nästa pass till kalenderraden på Översikt
     expect(fromMock).toHaveBeenCalledWith('consultant_meetings')
     expect(fromMock).toHaveBeenCalledWith('activity_sessions')
-    // diary_entries anropas två gånger (count + latest) → 7 tabellanrop
-    expect(fromMock).toHaveBeenCalledTimes(7)
+    // diary_entries anropas två gånger (count + latest) → 7 tabellanrop + intervjufrågan (FN3) = 8 + intervjufrågan (FN3) = 8
+    expect(fromMock).toHaveBeenCalledTimes(8)
     expect(builders.diary_entries).toHaveLength(2)
     // …och konsulenten hämtas med RPC:n, inte som ett sjätte tabellanrop
     expect(rpcMock).toHaveBeenCalledWith('get_my_consultant')

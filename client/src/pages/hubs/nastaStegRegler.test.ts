@@ -255,3 +255,104 @@ describe('dagens pass', () => {
     expect(kandidater(med({ consultant: konsulent, nastaPass: pass({ date: datum(1) }) }), NU).map((k) => k.id)).not.toContain('todaysPass')
   })
 })
+
+describe('intervjun (FN2)', () => {
+  const med = (type: string | null, dagar: number) => {
+    const s = lugn()
+    s.minVardag!.upcomingEvents = [{ id: 'e', title: 'Intervju hos Nordfrakt', date: datum(dagar), time: '10:00', type }]
+    return s
+  }
+
+  it('en intervju i dag eller i morgon blir steget "interview" och leder till simulatorn', () => {
+    const k = kandidater(med('interview', 0), NU)
+    expect(k[0].id).toBe('interview')
+    expect(k[0].till).toBe('/interview-simulator')
+    expect(k[0].varden.idag).toBe(true)
+    expect(kandidater(med('interview', 1), NU)[0].varden.idag).toBe(false)
+  })
+
+  it('intervjun dubbleras inte som en vanlig kalenderhändelse', () => {
+    expect(ids(med('interview', 0))).not.toContain('event')
+  })
+
+  it('en annan typ av bokning är fortfarande en vanlig händelse', () => {
+    expect(ids(med('meeting', 0))).toContain('event')
+    expect(ids(med('meeting', 0))).not.toContain('interview')
+    expect(ids(med(null, 0))).not.toContain('interview')
+  })
+
+  it('en intervju om en vecka ger inget steg', () => {
+    expect(ids(med('interview', 6))).not.toContain('interview')
+  })
+
+  it('intervjun går före uppföljningen av en gammal ansökan', () => {
+    const s = med('interview', 1)
+    s.jobsok!.applicationStats.awaitingSince = forDagarSedan(10).slice(0, 10)
+    expect(kandidater(s, NU)[0].id).toBe('interview')
+  })
+})
+
+describe('"Hur gick intervjun?" (FN3)', () => {
+  const med = (dagar: number | null) => {
+    const s = lugn()
+    s.minVardag!.senasteIntervju =
+      dagar === null ? null : { id: 'i', title: 'Intervju', date: datum(-dagar), job_application_id: null }
+    return s
+  }
+
+  it('frågan ställs dagen efter, med ansökan först och dagboken som andra val', () => {
+    const k = kandidater(med(1), NU)[0]
+    expect(k.id).toBe('interviewDone')
+    expect(k.till).toBe('/applications')
+    expect(k.sekundar?.till).toBe('/diary')
+  })
+
+  it('ställs också dagen därpå, men inte efter tre dagar', () => {
+    expect(ids(med(2))).toContain('interviewDone')
+    expect(ids(med(3))).not.toContain('interviewDone')
+  })
+
+  it('ställs INTE på intervjudagen själv eller när intervjun ligger framåt', () => {
+    expect(ids(med(0))).not.toContain('interviewDone')
+    expect(ids(med(-1))).not.toContain('interviewDone')
+  })
+
+  it('ställs INTE utan underlag: ingen intervju, eller skivan ej hämtad', () => {
+    expect(ids(med(null))).not.toContain('interviewDone')
+    expect(ids(lugn())).not.toContain('interviewDone')
+  })
+})
+
+describe('mjukt första steg efter överhoppad välkomsttur (FN5)', () => {
+  const med = (prog: Record<string, boolean> | null, cv = false) => {
+    const s = lugn()
+    s.profile!.onboarding_progress = prog
+    s.jobsok = { ...s.jobsok!, cv: cv ? { id: 'cv', updated_at: forDagarSedan(3) } : null }
+    return s
+  }
+
+  it('tänds när turen hoppades över och inget steg är gjort — och ersätter "skapa CV"', () => {
+    const k = kandidater(med({ valkomstHoppad: true }), NU)
+    expect(k.map((x) => x.id)).toContain('firstStep')
+    expect(k.find((x) => x.id === 'firstStep')!.till).toBe('/cv')
+    expect(k.map((x) => x.id)).not.toContain('createCv')
+  })
+
+  it('försvinner så fort ett av stegen är gjort', () => {
+    for (const steg of ['cv', 'interest', 'jobSearch', 'career', 'spontaneous']) {
+      expect(ids(med({ valkomstHoppad: true, [steg]: true }))).not.toContain('firstStep')
+    }
+  })
+
+  it('tänds INTE utan överhoppning, utan underlag, eller när CV redan finns', () => {
+    expect(ids(med({}))).not.toContain('firstStep')
+    expect(ids(med(null))).not.toContain('firstStep')
+    expect(ids(med({ valkomstHoppad: true }, true))).not.toContain('firstStep')
+  })
+
+  it('en intervju i morgon går före det mjuka steget', () => {
+    const s = med({ valkomstHoppad: true })
+    s.minVardag!.upcomingEvents = [{ id: 'e', title: 'Intervju', date: datum(1), time: null, type: 'interview' }]
+    expect(kandidater(s, NU)[0].id).toBe('interview')
+  })
+})

@@ -22,7 +22,7 @@ export function useMinVardagHubSummary() {
       const today = formatLocalDate(new Date())
 
       // Promise.all of 6 supabase calls (mood/diary-count/diary-latest/calendar/network-count/consultant-join):
-      const [moodR, diaryCountR, diaryLatestR, calR, contactsR, consultantR, moteR, passR] = await Promise.all([
+      const [moodR, diaryCountR, diaryLatestR, calR, contactsR, consultantR, moteR, passR, intervjuR] = await Promise.all([
         // Hälsa — 7 days
         supabase
           .from('mood_logs')
@@ -86,6 +86,18 @@ export function useMinVardagHubSummary() {
           .order('start_time', { ascending: true })
           .limit(1)
           .maybeSingle(),
+        // FN3: senaste intervjun de senaste dagarna (regeln avgör själv om frågan
+        // ska ställas). Ett fel här ger ingen fråga — aldrig en gissning.
+        supabase
+          .from('calendar_events')
+          .select('id, title, date, job_application_id')
+          .eq('user_id', userId)
+          .eq('type', 'interview')
+          .lt('date', today)
+          .gte('date', formatLocalDate(new Date(Date.now() - 3 * 86_400_000)))
+          .order('date', { ascending: false })
+          .limit(1)
+          .maybeSingle(),
       ])
 
       const rpcRow = consultantR.data as
@@ -117,6 +129,7 @@ export function useMinVardagHubSummary() {
         consultant,
         nastaMote: (moteR.data as MinVardagSummary['nastaMote']) ?? null,
         nastaPass: (passR.data as MinVardagSummary['nastaPass']) ?? null,
+        senasteIntervju: (intervjuR.data as MinVardagSummary['senasteIntervju']) ?? null,
       }
 
       return summary

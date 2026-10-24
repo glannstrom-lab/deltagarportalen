@@ -168,6 +168,9 @@ function useAtgarder(props: Props) {
         return punkt.mote?.meetingLink
           ? { kontroll: null, primar: { etikett: 'Anslut till mötet', onClick: () => window.open(punkt.mote!.meetingLink!, '_blank', 'noopener,noreferrer') } }
           : { kontroll: null, primar: { etikett: 'Öppna', onClick: () => oppna(pid) }, tertiar: true }
+      case 'mote_forslag':
+        // Svaret (Bekräfta tiden / Passar inte) ges i möteskortet på deltagarsidan, där tiden ses mot passen.
+        return { kontroll: null, primar: { etikett: 'Svara', onClick: () => oppna(pid) } }
       case 'kontakt':
         return props.onLoggaKontakt
           ? { kontroll: null, primar: { etikett: 'Logga kontakt', onClick: () => void kor(() => props.onLoggaKontakt!(pid)) } }
@@ -216,6 +219,8 @@ function nastaRubrik(punkt: MinDagPunkt, namn: string, regelverk?: Regelverk | n
       const tid = d ? `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}` : undefined
       return { rubrik: `Möte med ${namn}`, text: `${punkt.lage}. ${punkt.detalj ?? ''}`.trim(), tid }
     }
+    case 'mote_forslag':
+      return { rubrik: `${f} föreslår en mötestid`, text: `${punkt.lage}. ${punkt.detalj ?? ''}`.trim() }
     case 'deadline':
       return { rubrik: `Titta på ${genitiv(f)} mål`, text: punkt.lage }
     case 'kontakt':
@@ -401,7 +406,7 @@ function Rad({ person, props }: { person: MinDagPerson; props: Props }) {
       {fallsUt && oppen && (
         <ul id={panelId} className="mx-4 sm:mx-[18px] mb-3.5 sm:ml-[72px] px-4 py-3 rounded-j-s bg-j-sankt" aria-label={`Allt om ${namn} i dag`}>
           {person.punkter.map((p, i) => (
-            <Underpunkt key={`${p.typ}-${p.pass?.id ?? p.mote?.id ?? i}`} punkt={p} namn={namn} props={props} forsta={i === 0 && !!atgard.kontroll} />
+            <Underpunkt key={`${p.typ}-${p.pass?.id ?? p.mote?.id ?? p.forslag?.id ?? i}`} punkt={p} namn={namn} props={props} forsta={i === 0 && !!atgard.kontroll} />
           ))}
         </ul>
       )}

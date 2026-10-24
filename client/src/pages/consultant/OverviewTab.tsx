@@ -41,6 +41,7 @@ import { kontaktText, dagarSedanKontakt } from '@/lib/kontaktText'
 import { DagensPass } from '@/components/consultant/DagensPass'
 import { consultantService } from '@/services/consultantService'
 import { FYSISKT_GRANS_DAGAR, hamtaMotenForKonsulent, type MoteRad } from '@/services/moteskadens'
+import { hamtaForslagForKonsulent } from '@/services/motesforslagKonsulent'
 import { aktivitetsplanApi, type ActivityPlan, type AttendanceInput } from '@/services/aktivitetApi'
 import { orgApi, type OrgKind } from '@/services/orgApi'
 import { MottagnaUnderlag } from '@/components/consultant/MottagnaUnderlag'
@@ -65,6 +66,7 @@ import {
   type KontaktPunkt,
   type MalDeadline,
   type MoteIdag,
+  type MoteForslagRad,
   type PlaceringRad,
 } from './oversiktRegler'
 import { BradskandeIdag } from './BradskandeIdag'
@@ -116,6 +118,9 @@ export function OverviewTab() {
   const [levFel, setLevFel] = useState(false)
   const [underlagsDag, setUnderlagsDag] = useState<Date | null>(null)
   const [moten, setMoten] = useState<MoteIdag[]>([])
+  // FN20: deltagarnas förslag på mötestid. Ett läsfel är ett eget läge, aldrig "inga förslag".
+  const [forslag, setForslag] = useState<MoteForslagRad[]>([])
+  const [forslagFel, setForslagFel] = useState(false)
   const [deadlines, setDeadlines] = useState<MalDeadline[]>([])
   const [kontakter, setKontakter] = useState<KontaktPunkt[]>([])
 
@@ -175,8 +180,8 @@ export function OverviewTab() {
 
   const personer = useMemo(() => {
     if (!underlagsDag) return []
-    return minDagPersoner({ attGora, bradskande, leverantor, moten, deadlines, kontakter, idag: underlagsDag, franvaroSomFakta: arLeverantor })
-  }, [attGora, bradskande, leverantor, moten, deadlines, kontakter, underlagsDag, arLeverantor])
+    return minDagPersoner({ attGora, bradskande, leverantor, moten, forslag, deadlines, kontakter, idag: underlagsDag, franvaroSomFakta: arLeverantor })
+  }, [attGora, bradskande, leverantor, moten, forslag, deadlines, kontakter, underlagsDag, arLeverantor])
 
   const nu = new Date()
   const markeraNu = useMemo(() => (bradskandeFel ? [] : passAttMarkera(egnaPass, new Date())), [egnaPass, bradskandeFel])
@@ -218,6 +223,10 @@ export function OverviewTab() {
         hamtaMotenForKonsulent(idagNu),
         aktivitetsplanApi.listSessionsBetween(passFran, passTill),
       ])
+      const forslagUnderlag = hamtaForslagForKonsulent(idagNu).then(
+        (v) => ({ ok: true as const, v }),
+        (e: unknown) => ({ ok: false as const, e }),
+      )
       const planUnderlag = Promise.allSettled([
         aktivitetsplanApi.listAll(),
         consultantService.getMinaPlaceringar(),
@@ -270,6 +279,12 @@ export function OverviewTab() {
       setBradskandeFel(underlagFel)
       setAttGoraPass(passUtfall.status === 'fulfilled' ? (passUtfall.value as AttGoraPass[]) : [])
       setUnderlagsDag(idagNu)
+      const forslagUtfall = await forslagUnderlag
+      if (!forslagUtfall.ok) console.warn('[OverviewTab] mötesförslag kunde inte hämtas', forslagUtfall.e)
+      setForslagFel(!forslagUtfall.ok)
+      setForslag(forslagUtfall.ok
+        ? forslagUtfall.v.map((f) => ({ id: f.id, participantId: f.participant_id, scheduledAt: f.scheduled_at, meetingType: f.meeting_type, note: f.proposed_note }))
+        : [])
       const [planUtfall, placeringUtfall] = await planUnderlag
       setEgnaPlanIds(planUtfall.status === 'fulfilled'
         ? new Set(planUtfall.value.filter((p) => p.consultant_id === user.id).map((p) => p.id))
@@ -378,9 +393,11 @@ export function OverviewTab() {
   const felRad = !klart ? null
     : bradskandeFel
       ? 'Möten och frånvaro kunde inte hämtas — det som ska göras i dag visas inte just nu. Ladda om sidan för att försöka igen.'
-      : arLeverantor && levFel
-        ? 'Planer eller placeringar kunde inte hämtas — veckan mot avtalet visas inte just nu.'
-        : null
+      : forslagFel
+        ? 'Deltagarnas förslag på mötestid kunde inte hämtas — de visas inte just nu. Ladda om sidan för att försöka igen.'
+        : arLeverantor && levFel
+          ? 'Planer eller placeringar kunde inte hämtas — veckan mot avtalet visas inte just nu.'
+          : null
   const tomt = klart && !nyKonsulent && personer.length === 0 && markeraNu.length === 0 && dagensPassAntal === 0
 
   const oppnaMote = (pid: string, fysiskt: boolean) => {

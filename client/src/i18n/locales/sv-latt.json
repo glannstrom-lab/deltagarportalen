@@ -929,6 +929,26 @@
         "body": "Det tar en halv minut att skriva hur du mår. Efter några veckor ser du vad som gör dig pigg.",
         "cta": "Skriv hur du mår",
         "short": "Skriv hur du mår i dag"
+      },
+      "interview": {
+        "title": "Du har en intervju: {{titel}}",
+        "bodyToday": "Den är i dag. Du kan öva på några frågor först.",
+        "bodyTomorrow": "Den är i morgon. Du kan öva på några frågor först.",
+        "cta": "Öva inför intervjun",
+        "short": "Öva inför intervjun"
+      },
+      "interviewDone": {
+        "title": "Hur gick intervjun?",
+        "body": "Hur det än gick: du var där. Skriv ner det medan du minns. Lägg också in det i ansökan.",
+        "cta": "Ändra ansökan",
+        "ctaSecondary": "Skriv en rad i dagboken",
+        "short": "Berätta hur det gick"
+      },
+      "firstStep": {
+        "title": "När du vill: börja med ditt CV",
+        "body": "Det är ett lugnt första steg. Du kan sluta när du vill. Allt sparas.",
+        "cta": "Öppna CV-byggaren",
+        "short": "Börja med ditt CV"
       }
     },
     "pagar": {
@@ -1257,7 +1277,7 @@
       "consent": {
         "aiDesc": "AI kan hjälpa dig att skriva CV och brev. AI kan ge tips inför en intervju och föreslå jobb. Du väljer själv. Du kan använda sidan utan AI. Du kan ändra dig när du vill.",
         "aiLasMer": "Läs mer om AI",
-        "aiDetaljer": "AI-tjänsten heter gpt-oss-120b. Vi använder den genom företaget OpenRouter. Texterna skickas till datorer i USA. Lagen GDPR säger att du får säga nej till AI. Det står i artikel 21.",
+        "aiDetaljer": "AI-tjänsten heter gpt-oss-120b. Vi använder den genom företaget OpenRouter (USA). Texten skickas först till en dator i Irland (EU). Om den inte går att nå kan en annan dator, även i USA, läsa texten. Lagen GDPR säger att du får säga nej till AI. Det står i artikel 21.",
         "wellnessDesc": "Då kan du skriva hur du mår: humör, energi, sömn och stress. Dagboken behöver inget ja. Om du stänger av det här kan din konsulent inte längre se hur du mår. Det du redan skrivit finns kvar tills du tar bort det."
       },
       "aiToggle": {

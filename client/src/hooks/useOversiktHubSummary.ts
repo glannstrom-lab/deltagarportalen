@@ -5,6 +5,7 @@ import { useJobsokHubSummary } from './useJobsokHubSummary'
 import { useKarriarHubSummary } from './useKarriarHubSummary'
 import { useResurserHubSummary } from './useResurserHubSummary'
 import { useMinVardagHubSummary } from './useMinVardagHubSummary'
+import type { OnboardingProgress } from '@/services/supabaseApi'
 import type { JobsokSummary, KarriarSummary, ResurserSummary, MinVardagSummary } from './hubSummaryTypes'
 
 /**
@@ -16,6 +17,8 @@ export interface OversiktSummary {
     onboarded_hubs: string[]
     full_name: string | null
     profile_image_url: string | null
+    /** FN5: vilka välkomststeg som är gjorda, och om turen hoppades över. */
+    onboarding_progress?: OnboardingProgress | null
   } | null
   jobsok: JobsokSummary | undefined
   karriar: KarriarSummary | undefined
@@ -64,7 +67,7 @@ export function useOversiktHubSummary(): {
     queryFn: async () => {
       const r = await supabase
         .from('profiles')
-        .select('onboarded_hubs, full_name, profile_image_url')
+        .select('onboarded_hubs, full_name, profile_image_url, onboarding_progress')
         .eq('id', userId)
         .maybeSingle()
       /**
@@ -81,11 +84,13 @@ export function useOversiktHubSummary(): {
         onboarded_hubs?: string[] | null
         full_name?: string | null
         profile_image_url?: string | null
+        onboarding_progress?: OnboardingProgress | null
       } | null
       return {
         onboarded_hubs: row?.onboarded_hubs ?? [],
         full_name: row?.full_name ?? null,
         profile_image_url: row?.profile_image_url ?? null,
+        onboarding_progress: row?.onboarding_progress ?? null,
       }
     },
   })

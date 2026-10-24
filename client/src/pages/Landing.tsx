@@ -669,7 +669,7 @@ export default function Landing() {
               // A24 (2026-08-09): påstod "Ingen data lämnar EES", vilket motsägs av
               // projektets eget docs/HOSTING-REGIONS.md:14 — OpenRouter (all AI) är
               // USA. Hela portalen utom AI-vägen ligger i EU; säg det i stället.
-              description={t('landing.trust.euDesc', 'Databas, konto och filer lagras i EU. Använder du AI-funktionerna behandlas den texten i USA.')}
+              description={t('landing.trust.euDesc', 'Databas, konto och filer lagras i EU. Använder du AI-funktionerna skickas texten först till Amazon Bedrock i Irland (EU). Är den inte tillgänglig kan en annan leverantör, även i USA, behandla den.')}
             />
             <TrustChip
               icon={Zap}

@@ -309,6 +309,11 @@ export default function Stad({
               onClick: () => navigate(val.primar.till),
               fokus: DELTAGAR_FOKUS[val.primar.id],
             }}
+            sekundar={
+              val.primar.sekundar && stegTexter.knappSekundar
+                ? { etikett: stegTexter.knappSekundar, onClick: () => navigate(val.primar.sekundar!.till) }
+                : undefined
+            }
           />
         </div>
       )}

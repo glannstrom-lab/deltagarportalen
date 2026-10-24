@@ -1528,7 +1528,15 @@
       "downloadAsPdf": "Ladda ner som PDF",
       "restoreDraft": "Gå tillbaka till utkastet",
       "copiedAria": "Brevet är kopierat.",
-      "draftUtanText": "Jobbet är ifyllt, men brevet är inte skrivet än."
+      "draftUtanText": "Jobbet är ifyllt, men brevet är inte skrivet än.",
+      "kort": {
+        "rubrik": "Behöver du något kortare?",
+        "beskrivning": "Många annonser vill bara ha ett kort meddelande. Här får du samma sak i kortare form, byggd på samma uppgifter som brevet.",
+        "mejl": "Kort mejl (tre meningar)",
+        "chatt": "Chattmeddelande",
+        "laddar": "Skriver den korta versionen …",
+        "fel": "Det gick inte att skriva den korta versionen just nu. Försök igen om en stund."
+      }
     },
     "templates": {
       "selectAria": "Välj brevmall",
@@ -5688,7 +5696,7 @@
         "withdrawalWarning": "Om du återkallar ett samtycke kan vissa funktioner sluta fungera. Du kan alltid ge samtycke igen senare.",
         "saveFailed": "Vi kunde inte spara ditt val just nu, så ingenting har ändrats. Försök igen om en stund.",
         "aiLasMer": "Läs mer om AI-tjänsten",
-        "aiDetaljer": "AI-tjänsten är språkmodellen gpt-oss-120b. Vi når den genom företaget OpenRouter, och texterna behandlas på servrar i USA. Att du kan säga nej till AI är din rätt enligt GDPR artikel 21 (rätten att invända mot profilering)."
+        "aiDetaljer": "AI-tjänsten är språkmodellen gpt-oss-120b. Vi når den genom företaget OpenRouter (USA), som skickar texten i första hand till Amazon Bedrock i Irland (EU). Är den inte tillgänglig kan en annan leverantör, även i USA, behandla den. Att du kan säga nej till AI är din rätt enligt GDPR artikel 21 (rätten att invända mot profilering)."
       },
       "orgAiLock": {
         "text": "AI-funktionerna är avstängda av {{orgName}}. Det gäller oavsett din egen inställning.",
@@ -5862,7 +5870,7 @@
       "acceptPrivacy": "Jag har läst och godkänner",
       "privacyLink": "integritetspolicyn",
       "acceptAi": "Jag samtycker till AI-behandling av mina uppgifter",
-      "aiDescription": "Vi använder AI för att hjälpa dig skriva CV och personliga brev. Din data behandlas då av vår AI-leverantör OpenRouter, med servrar i USA. Detta samtycke är valfritt men krävs för AI-funktioner.",
+      "aiDescription": "Vi använder AI för att hjälpa dig skriva CV och personliga brev. Din text går via vår AI-förmedlare OpenRouter (USA), i första hand till Amazon Bedrock i Irland (EU). Är den inte tillgänglig kan en annan leverantör, även i USA, behandla den. Detta samtycke är valfritt men krävs för AI-funktioner.",
       "optionalLabel": "Valfritt"
     },
     "invite": {
@@ -6283,7 +6291,7 @@
       "gdpr": "GDPR-kompatibel",
       "gdprDesc": "All data hanteras enligt EU:s dataskyddsförordning",
       "eu": "EU-data",
-      "euDesc": "Databas, konto och filer lagras i EU. Använder du AI-funktionerna behandlas den texten i USA.",
+      "euDesc": "Databas, konto och filer lagras i EU. Använder du AI-funktionerna skickas texten först till Amazon Bedrock i Irland (EU). Är den inte tillgänglig kan en annan leverantör, även i USA, behandla den.",
       "af": "Jobb från Arbetsförmedlingen",
       "afDesc": "Jobbsöket hämtar lediga jobb ur Arbetsförmedlingens öppna data"
     },
@@ -6709,7 +6717,7 @@
       "title": "AI-modeller vi använder",
       "intro": "Jobin använder följande AI-tjänster:",
       "openai": "OpenRouter (modell: gpt-oss-120b)",
-      "openaiDesc": "Används för att generera CV-texter, personliga brev och ge skrivförslag. Vi anlitar OpenRouter, som i sin tur kör språkmodellen gpt-oss-120b. Behandlingen sker i USA.",
+      "openaiDesc": "Används för att generera CV-texter, personliga brev och ge skrivförslag. Vi anlitar OpenRouter, som i sin tur kör språkmodellen gpt-oss-120b. Behandlingen sker i första hand hos Amazon Bedrock i Irland (EU); är den inte tillgänglig kan den ske i USA.",
       "provider": "Leverantör:",
       "purpose": "Användningsområde:",
       "location": "Databehandling:"
@@ -9581,6 +9589,26 @@
         "body": "Att logga måendet tar en halv minut, och efter några veckor ser du vad som ger energi.",
         "cta": "Logga hur du mår",
         "short": "Logga hur dagen känns"
+      },
+      "interview": {
+        "title": "Du har en intervju: {{titel}}",
+        "bodyToday": "Det är i dag. Du kan öva på några frågor först, i din egen takt.",
+        "bodyTomorrow": "Det är i morgon. Du kan öva på några frågor först, i din egen takt.",
+        "cta": "Öva inför intervjun",
+        "short": "Öva inför intervjun"
+      },
+      "interviewDone": {
+        "title": "Hur gick intervjun?",
+        "body": "Oavsett hur det gick: du tog dig dit. Skriv ner det medan du minns, och lägg in vad du vet i ansökan.",
+        "cta": "Uppdatera ansökan",
+        "ctaSecondary": "Skriv en rad i dagboken",
+        "short": "Berätta hur intervjun gick"
+      },
+      "firstStep": {
+        "title": "När du vill: börja med ditt CV",
+        "body": "Det är ett lugnt första steg. Du kan stanna när du vill, och allt sparas.",
+        "cta": "Öppna CV-byggaren",
+        "short": "Börja med ditt CV"
       }
     },
     "pagar": {

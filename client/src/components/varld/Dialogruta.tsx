@@ -34,6 +34,8 @@ export interface Replik {
    *  eftersom klippen aldrig får innehålla personuppgifter. */
   detalj?: string
   knapp: { text: string; till: string } | null
+  /** Ett andra, lugnare val bredvid huvudknappen (FN3: dagboken efter intervjun). */
+  knappSekundar?: { text: string; till: string } | null
 }
 
 interface Props {
@@ -235,7 +237,7 @@ export function Dialogruta({ coachId, repliker, variant = 'kort', vidByte, class
             </p>
           )}
 
-          {(replik.knapp || repliker.length > 1) && (
+          {(replik.knapp || replik.knappSekundar || repliker.length > 1) && (
             <div className="mt-3.5 flex flex-wrap items-center gap-2.5">
               {replik.knapp && (
                 <Link
@@ -244,6 +246,14 @@ export function Dialogruta({ coachId, repliker, variant = 'kort', vidByte, class
                 >
                   {replik.knapp.text}
                   <ArrowRight className="w-4 h-4" aria-hidden="true" />
+                </Link>
+              )}
+              {replik.knappSekundar && (
+                <Link
+                  to={replik.knappSekundar.till}
+                  className="inline-flex items-center gap-2 min-h-11 rounded-xl px-4 text-[0.9375rem] font-semibold text-[var(--c-text)] ring-1 ring-[var(--c-accent)] bg-white dark:bg-stone-900 no-underline hover:bg-[var(--c-bg)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--c-solid)]"
+                >
+                  {replik.knappSekundar.text}
                 </Link>
               )}
               {repliker.length > 1 && (

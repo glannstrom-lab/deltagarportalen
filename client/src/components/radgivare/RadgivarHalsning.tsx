@@ -86,6 +86,7 @@ function OversiktHalsning({ variant, vidByte }: { variant: Variant; vidByte?: (s
       // mening när den bär en siffra. Resten säger repliken redan.
       detalj: forstaMeningMedTal(tx.body),
       knapp: { text: tx.knapp, till: s.till },
+      knappSekundar: s.sekundar && tx.knappSekundar ? { text: tx.knappSekundar, till: s.sekundar.till } : null,
     }
   })
   return (

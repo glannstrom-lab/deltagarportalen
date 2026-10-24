@@ -60,6 +60,7 @@ import { userApi } from '@/services/userApi'
 import { generateCoverLetterPDFViaReactPdf, downloadPDF } from '@/services/pdfExportService'
 import { useAutoSave } from '@/hooks/useAutoSave'
 import type { CVData, ProfilePreferences } from '@/services/supabaseApi'
+import { KortaVersioner, type KortLangd } from './KortaVersioner'
 import { byggBrevmall, raknaLuckor } from '@/data/brevmall'
 
 // Sparat jobb interface
@@ -188,6 +189,8 @@ async function generateCoverLetterWithAI(data: {
    * medvetet variera öppning och styckesindelning, utan att röra sanningsreglerna.
    */
   variera?: boolean
+  /** AIX10: brev (standard), mejl eller chatt. Servern har vitlista. */
+  langd?: KortLangd
 }) {
   const profileContext: string[] = []
 
@@ -287,7 +290,8 @@ async function generateCoverLetterWithAI(data: {
     // Servern kan härleda det ur kontexten, men klienten VET det säkert —
     // och skillnaden avgör om brevet blir färdig prosa eller ett utkast med
     // luckor att fylla i. Se `personligt-brev` i client/api/ai.js.
-    tomtUnderlag: !data.cvData && !fullContext
+    tomtUnderlag: !data.cvData && !fullContext,
+    ...(data.langd ? { langd: data.langd } : {}),
   })
 }
 
@@ -649,6 +653,22 @@ export function CoverLetterWrite() {
       setIsGenerating(false)
       setGenererarSedan(null)
     }
+  }
+
+  /** AIX10: kort version (mejl/chatt) av brevet. Samma underlag som brevet. */
+  const skapaKortVersion = async (langd: KortLangd): Promise<string> => {
+    const result = await generateCoverLetterWithAI({
+      cvData,
+      profileData,
+      profile,
+      jobData: { company: formData.company, jobTitle: formData.jobTitle, jobAd: formData.jobAd },
+      tone: formData.tone,
+      extraMotivation: formData.motivation,
+      langd,
+    })
+    const payload = result as { brev?: unknown; result?: unknown }
+    const raw = payload.brev ?? payload.result
+    return typeof raw === 'string' ? raw : ''
   }
 
   /** Titel för ett sparat brev: företag och jobb om de finns. */
@@ -1095,6 +1115,7 @@ export function CoverLetterWrite() {
                 arOrordAiText={arOrordAiText}
                 genereratPaTunntUnderlag={genereratPaTunntUnderlag}
                 arMall={arMall}
+                onKortVersion={skapaKortVersion}
               />
             )}
           </Card>
@@ -1821,7 +1842,9 @@ function Step3ReviewSave({
   arOrordAiText,
   genereratPaTunntUnderlag,
   arMall,
+  onKortVersion,
 }: {
+  onKortVersion: (langd: KortLangd) => Promise<string>
   editedLetter: string
   setEditedLetter: (text: string) => void
   generatedLetter: string
@@ -1981,6 +2004,12 @@ function Step3ReviewSave({
         {arMall && <MallNot antalLuckor={raknaLuckor(editedLetter)} />}
         {genereratPaTunntUnderlag && !arMall && arOrordAiText && <TunntUnderlagNot />}
       </div>
+
+      {/* AIX10: korta versioner. Bara när brevet kommer från AI:n (inte mallen):
+          mallen är handskriven och en AI-förkortning av den vore en ny AI-text. */}
+      {!arMall && generatedLetter.trim().length > 0 && !isGenerating && (
+        <KortaVersioner skapa={onKortVersion} />
+      )}
 
       {/* Saknas namnet blir underskriften tom — sagt innan personen klickar,
           inte efteråt. */}

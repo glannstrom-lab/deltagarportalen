@@ -21,7 +21,15 @@
  *   följ upp ansökan     `awaitingSince` ≥ 7 dagar gammalt. Utan datum: inget
  *                        förslag, för då vet vi inte hur länge.
  *   spontanansökan       en uppföljning förfaller inom tre dagar
- *   kalender             en händelse i dag eller i morgon
+ *   intervju             en kalenderhändelse av typen intervju i dag eller i morgon
+ *                        (FN2) — leder till intervjusimulatorn, inte kalendern
+ *   hur gick intervjun   en intervju låg igår eller dagen före (FN3). Källan är
+ *                        kalenderhändelsen: `saved_jobs.interview_date` är ifyllt
+ *                        på 0 av 46 rader i prod (mätt 2026-10-24)
+ *   kalender             en annan händelse i dag eller i morgon
+ *   första steget       välkomstturen hoppades över och inget av stegen cv/intresse/
+ *                        jobbsök/karriär/spontan är gjort (FN5). Mjukt kort till CV-byggaren;
+ *                        ersätter "skapa CV" för just dessa personer
  *   skapa CV             `cv === null`
  *   fyll på CV           CV:t inte ändrat på 90 dagar
  *   första jobbet        CV finns, inga ansökningar
@@ -45,7 +53,10 @@ export type StegId =
   | 'todaysPass'
   | 'followUp'
   | 'spontaneous'
+  | 'interview'
+  | 'interviewDone'
   | 'event'
+  | 'firstStep'
   | 'createCv'
   | 'updateCv'
   | 'firstJob'
@@ -57,6 +68,8 @@ export interface Steg {
   id: StegId
   /** Rutt som knappen leder till. */
   till: string
+  /** Ett andra val, när steget har två knappar (FN3: ansökan + dagboken). */
+  sekundar?: { till: string }
   /** Värden som texterna interpolerar. Bara det som faktiskt finns. */
   varden: {
     /** Dagar sedan (följ upp). */
@@ -95,6 +108,8 @@ function lokaltDatum(d: Date): string {
 export const FOLJ_UPP_EFTER_DAGAR = 7
 export const CV_GAMMALT_EFTER_DAGAR = 90
 export const UPPFOLJNING_INOM_DAGAR = 3
+/** "Hur gick intervjun?" visas dagen efter och dagen därpå — sedan lämnar vi personen i fred. */
+export const INTERVJU_FRAGA_DAGAR = 2
 
 /**
  * Räknar fram alla kandidater vars villkor är uppfyllda, i angelägenhetsordning.
@@ -126,6 +141,36 @@ export function kandidater(s: OversiktSummary, nu: Date = new Date()): Steg[] {
     })
   }
 
+  // 0b. En intervju i dag eller i morgon (FN2). Går före uppföljningar: en
+  // intervju har en tid, och förberedelsen är det som hjälper mest nu.
+  const idag = lokaltDatum(nu)
+  const imorgon = lokaltDatum(new Date(nu.getTime() + DYGN))
+  const intervju = (vardag?.upcomingEvents ?? []).find(
+    (e) => e.type === 'interview' && (e.date === idag || e.date === imorgon)
+  )
+  if (intervju) {
+    ut.push({
+      id: 'interview',
+      till: '/interview-simulator',
+      varden: { titel: intervju.title, datum: intervju.date, idag: intervju.date === idag },
+    })
+  }
+
+  // 0c. Intervjun var nyss (FN3). Frågan ställs en gång, utan poäng, och med
+  // två vägar vidare. Ingen tidpunkt påstås — bara datumet vet vi.
+  const gammal = vardag?.senasteIntervju
+  if (gammal) {
+    const tidigast = lokaltDatum(new Date(nu.getTime() - INTERVJU_FRAGA_DAGAR * DYGN))
+    if (gammal.date < idag && gammal.date >= tidigast) {
+      ut.push({
+        id: 'interviewDone',
+        till: '/applications',
+        sekundar: { till: '/diary' },
+        varden: { titel: gammal.title, datum: gammal.date },
+      })
+    }
+  }
+
   // 1. En ansökan har väntat på svar länge nog för att en fråga är rimlig.
   const vantatDagar = dagarSedan(jobsok?.applicationStats?.awaitingSince, nu)
   if (vantatDagar !== null && vantatDagar >= FOLJ_UPP_EFTER_DAGAR) {
@@ -142,9 +187,10 @@ export function kandidater(s: OversiktSummary, nu: Date = new Date()): Steg[] {
   }
 
   // 3. Något inbokat i dag eller i morgon.
-  const idag = lokaltDatum(nu)
-  const imorgon = lokaltDatum(new Date(nu.getTime() + DYGN))
-  const handelse = (vardag?.upcomingEvents ?? []).find((e) => e.date === idag || e.date === imorgon)
+  // Intervjuer har ett eget steg ovan — de dubbleras inte här.
+  const handelse = (vardag?.upcomingEvents ?? []).find(
+    (e) => e.type !== 'interview' && (e.date === idag || e.date === imorgon)
+  )
   if (handelse) {
     ut.push({
       id: 'event',
@@ -153,10 +199,20 @@ export function kandidater(s: OversiktSummary, nu: Date = new Date()): Steg[] {
     })
   }
 
+  // 3b. Välkomstturen hoppades över och inget första steg är taget (FN5).
+  // Lägre än allt som har ett datum. Försvinner av sig självt så fort ett av
+  // stegen markeras. Kräver att CV inte redan finns, och ersätter då "skapa CV".
+  const prog = s.profile?.onboarding_progress
+  const forstaSteg =
+    prog?.valkomstHoppad === true &&
+    !prog.cv && !prog.interest && !prog.jobSearch && !prog.career && !prog.spontaneous &&
+    !jobsok?.cv
+  if (forstaSteg) ut.push({ id: 'firstStep', till: '/cv', varden: {} })
+
   // 4–5. CV:t: saknas helt, eller är gammalt.
   // `jobsok` undefined betyder att skivan inte är hämtad — då vet vi inget om
   // CV:t och föreslår inget om det. `cv === null` är däremot ett faktum.
-  if (jobsok && jobsok.cv === null) {
+  if (jobsok && jobsok.cv === null && !forstaSteg) {
     ut.push({ id: 'createCv', till: '/cv', varden: {} })
   } else if (jobsok?.cv) {
     const cvDagar = dagarSedan(jobsok.cv.updated_at, nu)

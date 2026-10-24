@@ -63,6 +63,17 @@ vi.mock('@/lib/supabase', () => ({
   },
 }))
 
+// FN20: förslagshämtningen kan styras separat — den delar tabell med dagens möten i mocken ovan.
+const forslagStyr = vi.hoisted(() => ({ fel: false }))
+vi.mock('@/services/motesforslagKonsulent', async (orig) => {
+  const verklig = await orig<typeof import('@/services/motesforslagKonsulent')>()
+  return {
+    ...verklig,
+    hamtaForslagForKonsulent: vi.fn((...a: Parameters<typeof verklig.hamtaForslagForKonsulent>) =>
+      forslagStyr.fel ? Promise.reject(new Error('timeout')) : verklig.hamtaForslagForKonsulent(...a)),
+  }
+})
+
 function makeParticipant(overrides: Partial<Record<string, unknown>> = {}) {
   return {
     participant_id: 'p1',
@@ -270,5 +281,55 @@ describe('OverviewTab — en vy, en primärknapp', () => {
     renderTab()
     await screen.findByTestId('mindag-nasta-steg')
     expect(document.querySelectorAll('[data-variant="primary"]')).toHaveLength(1)
+  })
+})
+
+/**
+ * FN20: deltagarens mötesförslag syns i Min dag. Motprov (körda): (1) ta bort
+ * forslag ur minDagPersoner-anropet i OverviewTab → första testet faller.
+ * (2) ändra setForslagFel(!forslagUtfall.ok) till setForslagFel(false) → felfallet
+ * faller (konsulenten fick "Inget väntar på dig").
+ */
+describe('OverviewTab — FN20: deltagarens förslag på mötestid', () => {
+  const framtid = () => {
+    const nu = new Date()
+    return new Date(nu.getFullYear(), nu.getMonth(), nu.getDate() + 3, 14, 0).toISOString()
+  }
+
+  it('ett förslag blir nästa steg med deltagarens namn, form och egen rad', async () => {
+    tableResponses.consultant_dashboard_participants = {
+      data: [makeParticipant({ participant_id: 'leila', first_name: 'Leila', last_name: 'Demo', last_contact_at: new Date().toISOString() })],
+      error: null,
+    }
+    tableResponses.consultant_meetings = {
+      data: [{ id: 'f1', participant_id: 'leila', scheduled_at: framtid(), meeting_type: 'phone', status: 'proposed', proposed_note: 'Efter lunch passar bäst' }],
+      error: null,
+    }
+    renderTab()
+    const steg = await screen.findByTestId('mindag-nasta-steg')
+    expect(steg).toHaveAttribute('data-typ', 'mote_forslag')
+    expect(within(steg).getByRole('heading', { level: 2 })).toHaveTextContent('Leila föreslår en mötestid')
+    expect(within(steg).getByText(/per telefon/)).toBeInTheDocument()
+    expect(within(steg).getByText(/Efter lunch passar bäst/)).toBeInTheDocument()
+    expect(screen.queryByTestId('mindag-tomt')).not.toBeInTheDocument()
+  })
+
+  it('kan förslagen inte hämtas står det så — aldrig "Inget väntar på dig" eller tomläge', async () => {
+    forslagStyr.fel = true
+    try {
+      tableResponses.consultant_dashboard_participants = { data: [makeParticipant({ last_contact_at: new Date().toISOString() })], error: null }
+      renderTab()
+      expect(await screen.findByText(/förslag på mötestid kunde inte hämtas/)).toBeInTheDocument()
+      expect(screen.queryByTestId('mindag-tomt')).not.toBeInTheDocument()
+      expect(screen.getByTestId('mindag-antal')).not.toHaveTextContent('Inget väntar på dig')
+    } finally {
+      forslagStyr.fel = false
+    }
+  })
+
+  it('utan förslag står ingen förslagsrad och tomläget gäller', async () => {
+    tableResponses.consultant_dashboard_participants = { data: [makeParticipant({ last_contact_at: new Date().toISOString() })], error: null }
+    renderTab()
+    expect(await screen.findByTestId('mindag-tomt')).toBeInTheDocument()
   })
 })
