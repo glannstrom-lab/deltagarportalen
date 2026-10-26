@@ -137,6 +137,10 @@ tr:last-child td{border-bottom:none}
 footer{border-top:1px solid var(--line);margin-top:3rem;padding:1.75rem 0 2.5rem;
   font-size:.9rem;color:var(--muted)}
 footer a{color:var(--muted)}
+.footer-projects{margin-top:1.25rem;padding-top:1.25rem;border-top:1px solid var(--line)}
+.footer-projects h2{font-size:.95rem;margin:0 0 .6rem;color:var(--fg)}
+.footer-projects ul{list-style:none;padding:0;margin:0;display:grid;gap:.35rem}
+.fp-d{color:var(--muted)}
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;
   clip:rect(0 0 0 0);white-space:nowrap;border:0}
 /* F18 (2026-08-09): skip-länken fanns men blev ALDRIG synlig — .sr-only saknade
@@ -227,6 +231,8 @@ function vadArDetHar({ lattlast = false } = {}) {
  * inga inskjutna bisatser. Att beskriva krishjälp i krånglig text vore en
  * motsägelse just för den grupp som behöver den mest.
  */
+const PROJEKT_BLOCK = '<nav class="footer-projects" aria-label="Andra projekt av Glänne &amp; Söner"><h2>Andra projekt av Glänne &amp; Söner</h2><ul><li><a href="https://glannstrom.se">Glänne &amp; Söner</a> <span class="fp-d">föreläsningar, coachning och AI-konsultation</span></li><li><a href="https://coachonline.se">CoachOnline</a> <span class="fp-d">guider om psykisk hälsa och coaching</span></li><li><a href="https://nyheterai.se">Nyheter AI</a> <span class="fp-d">AI-nyheter och verktygsjämförelser på svenska</span></li><li><a href="https://teorikollen.se">Teorikollen</a> <span class="fp-d">öva körkortsteori gratis</span></li><li><a href="https://minstart.se">Minstart</a> <span class="fp-d">personlig startsida, likadan på alla enheter</span></li><li><a href="https://livsteam.se">Livsteam</a> <span class="fp-d">ditt eget team av AI-coacher</span></li><li><a href="https://mittaiteam.se">Mitt AI-team</a> <span class="fp-d">ett AI-team för ditt företag</span></li><li><a href="https://comdira.com">Comdira</a> <span class="fp-d">personlig utveckling</span></li><li><a href="https://zenmanus.com">Bläck</a> <span class="fp-d">skrivassistent</span></li><li><a href="https://travsim.se">Travsim</a> <span class="fp-d">driv ett travstall genom travåret</span></li></ul></nav>'
+
 function krisstod({ lattlast = false } = {}) {
   const text = lattlast
     ? `<strong>Mår du dåligt?</strong> Du kan alltid ringa och prata med någon.
@@ -534,6 +540,7 @@ ${krisstod({ lattlast: arLattlastSida })}
     <p><strong>Jobin</strong> — stöd och verktyg för dig som söker jobb.
     <a href="${appUrl('/oversikt')}">Öppna portalen</a> · <a href="/guider/">Alla guider</a></p>
     <p><a href="/#/privacy">Integritet</a> · <a href="/#/tillganglighet">Tillgänglighet</a> · <a href="/om-oss/">Om oss</a></p>
+  ${PROJEKT_BLOCK}
   </div>
 </footer>
 </body>
@@ -644,6 +651,7 @@ ${krisstod()}
 <footer>
   <div class="wrap">
     <p><strong>Jobin</strong> — stöd och verktyg för dig som söker jobb. <a href="${appUrl('/oversikt')}">Öppna portalen</a></p>
+  ${PROJEKT_BLOCK}
   </div>
 </footer>
 </body>
@@ -740,6 +748,7 @@ ${krisstod({ lattlast: true })}
 <footer>
   <div class="wrap">
     <p><strong>Jobin</strong> — hjälp för dig som söker jobb. <a href="${appUrl('/oversikt')}">Öppna Jobin</a></p>
+  ${PROJEKT_BLOCK}
   </div>
 </footer>
 </body>
@@ -874,6 +883,7 @@ ${krisstod()}
 <footer>
   <div class="wrap">
     <p><strong>Jobin</strong> — hjälp för dig som söker jobb. <a href="${appUrl('/oversikt')}">Öppna Jobin</a></p>
+  ${PROJEKT_BLOCK}
   </div>
 </footer>
 </body>
@@ -1020,6 +1030,7 @@ ${krisstod()}
     <p><strong>Jobin</strong> — stöd och verktyg för dig som söker jobb.
     <a href="/guider/">Alla guider</a> · <a href="/verktyg/">Alla verktyg</a></p>
     <p><a href="/#/privacy">Integritet</a> · <a href="/#/tillganglighet">Tillgänglighet</a> · <a href="/om-oss/">Om oss</a></p>
+  ${PROJEKT_BLOCK}
   </div>
 </footer>
 </body>
@@ -1083,6 +1094,7 @@ ${krisstod()}
 <footer>
   <div class="wrap">
     <p><strong>Jobin</strong> — stöd och verktyg för dig som söker jobb. <a href="${appUrl('/oversikt')}">Öppna portalen</a></p>
+  ${PROJEKT_BLOCK}
   </div>
 </footer>
 </body>
@@ -1288,6 +1300,7 @@ ${krisstod()}
     <p><strong>Jobin</strong> — stöd och verktyg för dig som söker jobb.
     <a href="/guider/">Alla guider</a> · <a href="/verktyg/">Alla verktyg</a></p>
     <p><a href="/#/privacy">Integritet</a> · <a href="/#/tillganglighet">Tillgänglighet</a> · <a href="/om-oss/">Om oss</a></p>
+  ${PROJEKT_BLOCK}
   </div>
 </footer>
 </body>
@@ -1476,6 +1489,7 @@ ${krisstod()}
     <p><strong>Jobin</strong> — stöd och verktyg för dig som söker jobb.
     <a href="${SITUATION_BAS}/">Alla situationer</a> · <a href="/guider/">Alla guider</a> · <a href="/verktyg/">Alla verktyg</a></p>
     <p><a href="/#/privacy">Integritet</a> · <a href="/#/tillganglighet">Tillgänglighet</a> · <a href="/om-oss/">Om oss</a></p>
+  ${PROJEKT_BLOCK}
   </div>
 </footer>
 </body>
@@ -1570,6 +1584,7 @@ ${krisstod()}
     <p><strong>Jobin</strong> — stöd och verktyg för dig som söker jobb.
     <a href="/guider/">Alla guider</a> · <a href="/verktyg/">Alla verktyg</a></p>
     <p><a href="/#/privacy">Integritet</a> · <a href="/#/tillganglighet">Tillgänglighet</a> · <a href="/om-oss/">Om oss</a></p>
+  ${PROJEKT_BLOCK}
   </div>
 </footer>
 </body>
@@ -1678,6 +1693,7 @@ ${krisstod()}
     <p><strong>Jobin</strong> — stöd och verktyg för dig som söker jobb.
     <a href="/guider/">Alla guider</a> · <a href="/verktyg/">Alla verktyg</a></p>
     <p><a href="/#/privacy">Integritet</a> · <a href="/#/tillganglighet">Tillgänglighet</a> · <a href="/om-oss/">Om oss</a></p>
+  ${PROJEKT_BLOCK}
   </div>
 </footer>
 </body>
@@ -1776,6 +1792,7 @@ ${krisstod()}
     <p><strong>Jobin</strong> — stöd och verktyg för dig som söker jobb.
     <a href="/guider/">Alla guider</a> · <a href="/verktyg/">Alla verktyg</a></p>
     <p><a href="/#/privacy">Integritet</a> · <a href="/#/tillganglighet">Tillgänglighet</a> · <a href="/om-oss/">Om oss</a></p>
+  ${PROJEKT_BLOCK}
   </div>
 </footer>
 </body>
