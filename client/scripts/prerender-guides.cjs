@@ -34,6 +34,7 @@ const {
   renderSituation,
   renderSituationIndex,
   renderOmOss,
+  renderSakerhet,
   titelForLang,
   TITEL_MAX,
 } = require('./lib/guide-template.cjs')
@@ -419,6 +420,18 @@ if (fs.existsSync(OM_OSS_FILE)) {
   antalOmOss = 1
 }
 
+// FN9 (2026-10-27): sidan "Säkerhet och avtal". En sida, ingen guide-gating;
+// den länkar bara till /#/-rutter, B2B-sidorna och mailto.
+const SAKERHET_FILE = path.join(CLIENT, 'content', 'sakerhet-och-avtal.json')
+let antalSakerhet = 0
+if (fs.existsSync(SAKERHET_FILE)) {
+  const o = JSON.parse(fs.readFileSync(SAKERHET_FILE, 'utf8'))
+  const dir = path.join(DIST, o.slug)
+  fs.mkdirSync(dir, { recursive: true })
+  skrivSida(path.join(dir, 'index.html'), renderSakerhet(o), 'utf8')
+  antalSakerhet = 1
+}
+
 const totalKb = Math.round(
   publicerade.reduce(
     (n, a) => n + fs.statSync(path.join(DIST, 'guider', a.slug, 'index.html')).size,
@@ -482,7 +495,7 @@ if (fs.existsSync(LANDING)) {
 console.log(
   `prerender-guides: ${skrivna} guidesidor + /guider/ + ${antalKategorier} ämnessidor + ` +
     `${antalVerktyg} verktygssidor + ${antalSituationer} situationssidor + ` +
-    `${antalB2B} B2B-sidor + ${antalOmOss} om oss-sida skrivna ` +
+    `${antalB2B} B2B-sidor + ${antalOmOss} om oss-sida + ${antalSakerhet} säkerhetssida skrivna ` +
     `(${totalKb} kB guider), ${antalRoutes} routes validerade, ` +
     `${snapshot.count - skrivna} artiklar ännu opublicerade.`
 )

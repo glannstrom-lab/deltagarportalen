@@ -23,6 +23,7 @@ import {
 import { showToast } from '@/components/Toast'
 import { useFocusTrap } from '@/hooks/useFocusTrap'
 import { useApplicationLookup } from '@/hooks/useApplications'
+import { SamtalsmanusPanel } from './SamtalsmanusPanel'
 import { applicationContactsApi } from '@/services/applicationsApi'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import type { Application, ApplicationContact, CreateContactInput } from '@/types/application.types'
@@ -250,11 +251,14 @@ function ContactFormModal({
 function ContactCard({
   contact,
   applicationLabel,
+  ansokan,
   onEdit,
   onDelete,
   onMarkContacted
 }: {
   contact: ApplicationContact
+  /** Ansökan kontakten hör till — ger företag och roll till samtalsmanuset (AIX6) */
+  ansokan?: Application
   /** "Tjänst · Företag" för ansökan kontakten hör till */
   applicationLabel?: string
   onEdit: (contact: ApplicationContact) => void
@@ -365,6 +369,9 @@ function ContactCard({
             )}
           </div>
 
+          {/* AIX6: manus för första samtalet */}
+          <SamtalsmanusPanel kontaktnamn={contact.name} kontakttitel={contact.title} ansokan={ansokan} />
+
           {/* Notes */}
           {contact.notes && (
             <p className="text-sm text-stone-700 mt-2 italic">&quot;{contact.notes}&quot;</p>
@@ -411,6 +418,7 @@ export function ApplicationsContacts() {
   // `useApplications()` hade dragit igång fem queries för det här.
   const {
     applications,
+    byId,
     isLoading: laddarAnsokningar,
     isError: felAnsokningar,
     refetch: hamtaAnsokningarIgen
@@ -582,6 +590,7 @@ export function ApplicationsContacts() {
               key={contact.id}
               contact={contact}
               applicationLabel={applicationLabelById.get(contact.applicationId)}
+              ansokan={byId.get(contact.applicationId)}
               onEdit={setFormular}
               onDelete={handleDelete}
               onMarkContacted={handleMarkContacted}

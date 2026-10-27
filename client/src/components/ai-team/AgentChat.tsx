@@ -47,7 +47,7 @@ interface AgentChatProps {
 
 export const AgentChat = forwardRef<AgentChatHandle, AgentChatProps>(
   function AgentChat({ onSendMessage, className }, ref) {
-    const { t } = useTranslation()
+    const { t, i18n } = useTranslation()
     const {
       selectedAgent,
       selectedPersonality,
@@ -243,6 +243,9 @@ export const AgentChat = forwardRef<AgentChatHandle, AgentChatProps>(
             agentTyp: selectedAgent,
             personlighet: selectedPersonality,
             responsLage: responseMode,
+            // AIX25: chattens språkgren (en/sv) var död eftersom språket aldrig
+            // skickades; Lätt svenska läggs på i aiApi.prepareAiRequest.
+            sprak: i18n.language,
             // Skicka bara DATA om användaren — agent + personlighet
             // material:as serverside (security 2026-05-09).
             userDataContext,
@@ -280,6 +283,7 @@ export const AgentChat = forwardRef<AgentChatHandle, AgentChatProps>(
         abortControllerRef.current = null
       }
     }, [
+      i18n.language,
       orgSparr,
       medMaende,
       inputValue,

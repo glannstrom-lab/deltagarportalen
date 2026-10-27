@@ -22,6 +22,7 @@ import { ApplicationsContacts } from '@/components/applications/ApplicationsCont
 import { ApplicationsAnalytics } from '@/components/applications/ApplicationsAnalytics'
 import { ApplicationsActivityReport } from '@/components/applications/ApplicationsActivityReport'
 import { AddApplicationModal } from '@/components/applications/AddApplicationModal'
+import { FickJobbetKort } from '@/components/applications/FickJobbetKort'
 import { ApplicationDetailModal } from '@/components/applications/ApplicationDetailModal'
 import type { Application } from '@/types/application.types'
 import { FokusVaxel } from '@/components/focus/shell/FokusVaxel'
@@ -125,6 +126,7 @@ function ApplicationsInner() {
           </Button>
         }
       >
+        <FickJobbetKort />
         <Routes>
           <Route
             index

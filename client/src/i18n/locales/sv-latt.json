@@ -1650,5 +1650,35 @@
     "loggaIn": "Du måste logga in för att skicka.",
     "felForManga": "Du har skickat många. Vänta lite. Försök sedan igen.",
     "felOkant": "Det gick inte att skicka. Försök igen senare."
+  },
+  "annonsForklaring": {
+    "knapp": "Förklara annonsen",
+    "laddar": "Läser annonsen …",
+    "fel": "Det gick inte att förklara annonsen nu. Försök igen strax.",
+    "ansvar": "Gjort enklare av AI. Det som gäller är den riktiga annonsen.",
+    "tomt": "Vi hittade inget i texten som vi kunde peka ut säkert. Läs annonsen själv. Du kan alltid fråga arbetsgivaren.",
+    "uppgifter": "Det här gör du på jobbet",
+    "krav": "Det här vill annonsen ha",
+    "onskemalTips": "Ett önskemål behöver du inte ha för att söka.",
+    "ord": "Ord som kan vara svåra",
+    "iAnnonsen": "Så står det i annonsen:",
+    "typ": {
+      "oklart": "Annonsen säger inte om det måste vara så"
+    }
+  },
+  "samtalsmanus": {
+    "knapp": "Förbered samtalet",
+    "varforRingerDu": "Varför ska du ringa?",
+    "skriv": "Skriv ett manus"
+  },
+  "uppfoljningsmejl": {
+    "introAvslag": "Ett nej är tungt. Det säger inget om vem du är. Om du vill kan du fråga om du kan få veta mer.",
+    "introTystnad": "Det har gått minst två veckor sedan du sökte. Det är vanligt att det dröjer. Om du vill kan du höra av dig och fråga.",
+    "knapp": "Skriv ett kort mejl",
+    "arInteOrsak": "AI:n vet inte varför det blev så, och mejlet skriver inget om det."
+  },
+  "ansokanAi": {
+    "luckor": "Ett utkast från AI. Fyll i det som står i [hakparentes]. {{antal}} kvar.",
+    "utkast": "Ett utkast från AI. Läs det och ändra så att det låter som du."
   }
 }

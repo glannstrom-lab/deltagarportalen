@@ -1,6 +1,6 @@
 // KA3 (2026-09-12): Chatt: kunskapsbankens chatbot och AI-teamets agentchatt.
 // Flyttad ordagrant ur api/ai.js. Sanningsregeln läggs på i ./index.js, inte här.
-const { REGELVERKSREGEL, AGENT_PROMPTS, PERSONALITY_MODIFIERS, DEFAULT_AGENT, DEFAULT_PERSONALITY } = require('./_delat');
+const { sprakFran, medLattSvenska, REGELVERKSREGEL, AGENT_PROMPTS, PERSONALITY_MODIFIERS, DEFAULT_AGENT, DEFAULT_PERSONALITY } = require('./_delat');
 
 /**
  * 2026-09-24: historiken togs emot obegränsad. Varje sträng kapas till 5 000
@@ -35,7 +35,7 @@ module.exports = {
     // DESIGN.md §2 — för någon som varit arbetslös i tre år är en kvot det
     // sämsta möjliga första steget.
     return {
-      system: [
+      system: medLattSvenska([
         'Du är Jobins AI-karriärcoach. Du talar med en arbetssökande — ofta någon som varit',
         'utan jobb länge och har begränsad ork. Var en lugn följeslagare, inte en myndighet',
         'och inte en peppande säljare.',
@@ -60,7 +60,7 @@ module.exports = {
         '  och håll svaret kortare och stegen färre.',
         '- Svara på svenska, i löpande text utan markdown-formatering (UI:t renderar inte',
         '  fetstil), och håll dig till högst tre stycken.',
-      ].join('\n'),
+      ].join('\n'), data),
       user: historik.length > 0 ? historik.map(h => h.roll + ': ' + h.innehall).join('\n') + '\n\nAnvändare: ' + (data?.meddelande || 'Hej!') : (data?.meddelande || 'Hej!'),
       // Höjt från 800: skarpa svar kapades mitt i en siffra, vilket är värre än
       // ett långt svar. Hela AI-lagret har gjort 50 anrop sedan april — taket
@@ -117,7 +117,9 @@ module.exports = {
     // svenska", så en användare som bytt till engelska fick perfekt översatta
     // knappar och ett svenskt svar. `sprak` skickas av klienten; okända
     // värden faller tillbaka på svenska.
-    const svarsSprak = data?.sprak === 'en'
+    // AIX25: 'sv-latt' är svenska med en extra regel (sist i systemprompten), och
+    // får aldrig falla till engelska. Engelska grenen är oförändrad.
+    const svarsSprak = sprakFran(data) === 'en'
       ? '- Answer in English'
       : '- Svara på svenska';
     const userContextBlock = userDataContext
@@ -125,7 +127,7 @@ module.exports = {
       : '';
 
     return {
-      system: `${baseSystem}\n\n${personalityNote}${userContextBlock}\n\nVIKTIGT - Svarsformat:\n${lengthInstruction}\n- Använd punktlistor med TYDLIGA RUBRIKER i fetstil\n- Lägg till EN BLANK RAD mellan varje punkt för läsbarhet\n- Formatera så här:\n\n**Rubrik 1**\nKort förklaring här.\n\n**Rubrik 2**\nKort förklaring här.\n\n- Gå rakt på sak - skippa inledande fraser\n${svarsSprak}\n- Var konkret och handlingsinriktad`,
+      system: medLattSvenska(`${baseSystem}\n\n${personalityNote}${userContextBlock}\n\nVIKTIGT - Svarsformat:\n${lengthInstruction}\n- Använd punktlistor med TYDLIGA RUBRIKER i fetstil\n- Lägg till EN BLANK RAD mellan varje punkt för läsbarhet\n- Formatera så här:\n\n**Rubrik 1**\nKort förklaring här.\n\n**Rubrik 2**\nKort förklaring här.\n\n- Gå rakt på sak - skippa inledande fraser\n${svarsSprak}\n- Var konkret och handlingsinriktad`, data),
       user: conversation + 'Användare: ' + (data?.meddelande || 'Hej!'),
       maxTokens: maxTokensForMode,
       responseKey: 'svar'

@@ -43,6 +43,7 @@ const mall = require('../../scripts/lib/guide-template.cjs') as {
   renderSituation: (s: unknown, v: unknown[], g: unknown[]) => string
   renderSituationIndex: (s: unknown[]) => string
   renderOmOss: (o: unknown) => string
+  renderSakerhet: (o: unknown) => string
 }
 const { KATEGORIER } = require('../../scripts/lib/guides.cjs') as {
   KATEGORIER: { key: string; rubrik: string }[]
@@ -59,6 +60,8 @@ const B2B = (require('../../content/b2b.json') as { sidor: Record<string, unknow
 const SITUATIONER = (require('../../content/situationer.json') as { sidor: Record<string, unknown>[] }).sidor
 // KM12 (9): om oss-sidan, samma princip.
 const OM_OSS = require('../../content/om-oss.json') as Record<string, unknown>
+// FN9: säkerhets- och avtalssidan, samma princip.
+const SAKERHET = require('../../content/sakerhet-och-avtal.json') as Record<string, unknown>
 /* eslint-enable @typescript-eslint/no-require-imports */
 
 /** Formen är hämtad ur `articles.snapshot.json`, inte ur en bekvämare fantasiform. */
@@ -99,6 +102,7 @@ const sidtyper: [string, () => string][] = [
   ['situationssida', () => mall.renderSituation(SITUATIONER[0], [VERKTYG[0]], [artikel()])],
   ['situationsindex', () => mall.renderSituationIndex(SITUATIONER)],
   ['om oss-sida', () => mall.renderOmOss(OM_OSS)],
+  ['säkerhetssida', () => mall.renderSakerhet(SAKERHET)],
 ]
 
 describe('krisstöd finns på varje publik sidtyp', () => {

@@ -33,6 +33,7 @@ import { useAchievementTracker } from '../hooks/useAchievementTracker'
 import type { EnhancedArticle } from '@/data/artikelkategorier'
 import { kategoriNamn } from '@/data/artikelkategorier'
 import { textUrMarkdown } from '../components/knowledge-base/articleMarkdown'
+import { Skyddad } from '../components/knowledge-base/ArticleContent'
 import { generateArticlePDF, downloadPDF, type ArticleForPDF } from '../services/pdfExportService'
 import { kortDatum } from '@/lib/datumsprak'
 import { BookOpen } from '@/components/ui/icons'
@@ -363,7 +364,7 @@ function ArticleInner() {
 
         {/* Title */}
         <h1 className="text-3xl md:text-4xl font-bold text-stone-900 dark:text-stone-100 mb-6">
-          {article.title}
+          <Skyddad text={article.title} />
         </h1>
 
         {/*

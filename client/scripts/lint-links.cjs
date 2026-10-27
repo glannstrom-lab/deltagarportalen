@@ -222,6 +222,12 @@ function byggPrerenderade() {
       const o = JSON.parse(fs.readFileSync(omOssFil, 'utf8'))
       if (o?.slug) sidor.add(`/${o.slug}/`)
     }
+    // FN9: säkerhets- och avtalssidan, ur content/sakerhet-och-avtal.json.
+    const sakerhetFil = path.join(CLIENT, 'content', 'sakerhet-och-avtal.json')
+    if (fs.existsSync(sakerhetFil)) {
+      const o = JSON.parse(fs.readFileSync(sakerhetFil, 'utf8'))
+      if (o?.slug) sidor.add(`/${o.slug}/`)
+    }
   } catch (err) {
     // Saknas snapshoten går linten vidare utan de här sidorna hellre än att
     // krascha — men säg det, annars ser tystnaden ut som att allt är grönt.

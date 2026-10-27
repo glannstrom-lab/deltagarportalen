@@ -2354,6 +2354,25 @@
         "method": "How you applied",
         "outcome": "What happened"
       }
+    },
+    "fickJobbet": {
+      "region": "Congratulations on the job",
+      "rubrik": "Congratulations, you got the job!",
+      "stang": "Close",
+      "enDeltagare": "A participant",
+      "startdatum": "When do you start? (if you know)",
+      "checklista": {
+        "akassa": "Contact your a-kassa (unemployment insurance fund) and tell them you are starting work",
+        "af": "Tell Arbetsförmedlingen (Swedish Public Employment Service) if you have a contact there",
+        "avtal": "Read the employment contract before you sign it"
+      },
+      "guide": "Read the guide about your first 90 days",
+      "pausa": "Pause my job alerts",
+      "beratta": "Tell my consultant",
+      "pausad": "Your job alerts are paused. You can turn them on again under Find jobs.",
+      "pausaFel": "We could not pause the alerts right now. Please try again.",
+      "skickad": "Your consultant has been told.",
+      "hoppad": "We could not send this to your consultant right now. You can tell them yourself."
     }
   },
   "spontaneous": {
@@ -6448,7 +6467,8 @@
       "allTools": "All tools",
       "coverLetter": "Cover letter",
       "guidesTitle": "Guides",
-      "skillsAnalysis": "Skills analysis"
+      "skillsAnalysis": "Skills analysis",
+      "securityAgreements": "Security and agreements"
     },
     "guides": {
       "all": "All guides",
@@ -10681,5 +10701,55 @@
     "lankOgiltig": "The link does not work any more. It may already have been used, or it is too old.",
     "nyKod": "Send a new code",
     "medLosenord": "Log in with a password instead"
+  },
+  "annonsForklaring": {
+    "knapp": "Explain the ad",
+    "region": "The ad explained",
+    "laddar": "Reading the ad …",
+    "fel": "We could not explain the ad right now. Please try again in a moment.",
+    "proviIgen": "Try again",
+    "ansvar": "Simplified by AI. The original ad is the one that counts.",
+    "tomt": "We did not find anything in the text that we could point to with confidence. Read the ad yourself. You can always ask the employer.",
+    "uppgifter": "What you would do at work",
+    "krav": "What the ad asks for",
+    "onskemalTips": "You can apply even if you do not meet a wish.",
+    "ord": "Words that can be hard",
+    "iAnnonsen": "This is what the ad says:",
+    "typ": {
+      "hart": "Requirement",
+      "onskemal": "Wish",
+      "oklart": "The ad does not say if this is a requirement"
+    }
+  },
+  "samtalsmanus": {
+    "knapp": "Prepare the call",
+    "varforRingerDu": "Why are you calling?",
+    "syfte": {
+      "fraga": "Ask about the ad",
+      "foljUpp": "Follow up my application",
+      "spontan": "Call without an ad"
+    },
+    "skriv": "Write a script",
+    "skrivNytt": "Write a new script",
+    "laddar": "Writing …",
+    "fel": "We could not write a script right now. Please try again in a moment."
+  },
+  "uppfoljningsmejl": {
+    "region": "Follow-up",
+    "introAvslag": "A rejection is hard, and it is not a judgement of you. If you want, you can ask if you can get some feedback.",
+    "introTystnad": "It has been at least two weeks since you applied. It is common that the answer takes time. If you want, you can get in touch and ask how it is going.",
+    "knapp": "Write a short email",
+    "laddar": "Writing …",
+    "fel": "We could not write the email right now. Please try again in a moment.",
+    "proviIgen": "Try again",
+    "arInteOrsak": "The AI has no information about why it turned out this way, and the email says nothing about it."
+  },
+  "ansokanAi": {
+    "luckor": "A draft from AI. Fill in what is in [square brackets]. {{antal}} left.",
+    "utkast": "A draft from AI. Read it and change it so that it sounds like you.",
+    "utkastRegion": "The draft",
+    "kopiera": "Copy",
+    "kopierad": "Copied",
+    "kopieraFel": "We could not copy. Select the text and copy it yourself."
   }
 }

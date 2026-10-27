@@ -1,6 +1,8 @@
 // KA3 (2026-09-12): Karriär: karriärplan, kompetensgap och anpassningsråd.
 // Flyttad ordagrant ur api/ai.js. Sanningsregeln läggs på i ./index.js, inte här.
 
+const { sprakFran, medLattSvenska } = require('./_delat');
+
 module.exports = {
   'karriarplan': (data) => ({
     // G10 (2026-07-27): `riasec` skickas med av PlanTab när intresseguiden är
@@ -48,11 +50,11 @@ Om en intresseprofil (RIASEC) anges: låt den styra VILKA steg du föreslår (fo
   }),
 
   'adaptation-recommendations': (data) => {
-    const en = data?.language === 'en';
+    const en = sprakFran(data) === 'en';
     return {
-      system: en
+      system: medLattSvenska(en
         ? 'You are an occupational therapist and expert on workplace accommodations in Sweden (Arbetsförmedlingen, Försäkringskassan, the Discrimination Act). Give concrete, warm, practical advice in English.'
-        : 'Du är arbetsterapeut och expert på arbetsplatsanpassningar i Sverige (Arbetsförmedlingen, Försäkringskassan, Diskrimineringslagen). Ge konkreta, varma och praktiska råd på svenska. Hitta ALDRIG på siffror som är regler — belopp, procentsatser, dagantal eller åldersgränser ändras och personen fattar beslut om sin försörjning utifrån det du skriver. Beskriv vad stödet gör och vem som beslutar, och hänvisa det exakta till Arbetsförmedlingen, Försäkringskassan eller kommunen. Hitta heller aldrig på diagnoser, begränsningar eller behov som personen inte själv uppgett.',
+        : 'Du är arbetsterapeut och expert på arbetsplatsanpassningar i Sverige (Arbetsförmedlingen, Försäkringskassan, Diskrimineringslagen). Ge konkreta, varma och praktiska råd på svenska. Hitta ALDRIG på siffror som är regler — belopp, procentsatser, dagantal eller åldersgränser ändras och personen fattar beslut om sin försörjning utifrån det du skriver. Beskriv vad stödet gör och vem som beslutar, och hänvisa det exakta till Arbetsförmedlingen, Försäkringskassan eller kommunen. Hitta heller aldrig på diagnoser, begränsningar eller behov som personen inte själv uppgett.', data),
       user: en
         ? `A job seeker has identified these workplace accommodation needs:\n\n${data?.selectedAdaptations || ''}\n\nGive 3-5 concrete recommendations: complementary accommodations worth considering, how to prioritize them, and what support (Försäkringskassan/Arbetsförmedlingen) can be applied for. Keep it short and practical.`
         : `En arbetssökande har identifierat följande behov av arbetsplatsanpassningar:\n\n${data?.selectedAdaptations || ''}\n\nGe 3-5 konkreta rekommendationer: kompletterande anpassningar värda att överväga, hur de bör prioriteras, och vilket stöd (Försäkringskassan/Arbetsförmedlingen) som kan sökas. Kort och praktiskt.`,
@@ -61,11 +63,11 @@ Om en intresseprofil (RIASEC) anges: låt den styra VILKA steg du föreslår (fo
     };
   },
   'adaptation-conversation': (data) => {
-    const en = data?.language === 'en';
+    const en = sprakFran(data) === 'en';
     return {
-      system: en
+      system: medLattSvenska(en
         ? 'You are a coach who helps job seekers prepare conversations with employers about workplace accommodations. Write a personal, respectful conversation script in English.'
-        : 'Du är en coach som hjälper arbetssökande att förbereda samtal med arbetsgivare om arbetsplatsanpassningar. Skriv ett personligt, respektfullt samtalsmanus på svenska. Hitta ALDRIG på siffror som är regler — belopp, procentsatser, dagantal eller åldersgränser ändras och personen fattar beslut om sin försörjning utifrån det du skriver. Beskriv vad stödet gör och vem som beslutar, och hänvisa det exakta till Arbetsförmedlingen, Försäkringskassan eller kommunen. Hitta heller aldrig på diagnoser, begränsningar eller behov som personen inte själv uppgett.',
+        : 'Du är en coach som hjälper arbetssökande att förbereda samtal med arbetsgivare om arbetsplatsanpassningar. Skriv ett personligt, respektfullt samtalsmanus på svenska. Hitta ALDRIG på siffror som är regler — belopp, procentsatser, dagantal eller åldersgränser ändras och personen fattar beslut om sin försörjning utifrån det du skriver. Beskriv vad stödet gör och vem som beslutar, och hänvisa det exakta till Arbetsförmedlingen, Försäkringskassan eller kommunen. Hitta heller aldrig på diagnoser, begränsningar eller behov som personen inte själv uppgett.', data),
       user: en
         ? `Write a short conversation script (max ~200 words) the person can use with their employer to request these accommodations:\n\n${data?.selectedAdaptations || ''}\n\nInclude: a respectful opening, the concrete needs, a mention that Försäkringskassan/Arbetsförmedlingen can subsidize costs, and an inviting closing question.`
         : `Skriv ett kort samtalsmanus (max ~200 ord) som personen kan använda med sin arbetsgivare för att be om dessa anpassningar:\n\n${data?.selectedAdaptations || ''}\n\nInkludera: en respektfull inledning, de konkreta behoven, att Försäkringskassan/Arbetsförmedlingen kan ge bidrag för kostnader, och en inbjudande avslutande fråga.`,

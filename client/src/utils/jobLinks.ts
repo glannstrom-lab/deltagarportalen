@@ -26,6 +26,9 @@ export function buildCoverLetterUrl(job: PlatsbankenJob, descMaxLength = 500): s
  */
 export function buildCvAdaptUrl(job: PlatsbankenJob, descMaxLength = 3000): string {
   const params = new URLSearchParams({
+    // AIX1: annonsens id är nyckeln för "Förklara annonsen" på /cv/adapt, så att
+    // förklaringen cachas per annons även när sidan nås från kortet.
+    jobId: job.id,
     title: job.headline,
     company: job.employer?.name || '',
     desc: job.description?.text?.substring(0, descMaxLength) || '',

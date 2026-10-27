@@ -2354,6 +2354,25 @@
         "method": "Hur du sökte",
         "outcome": "Vad det ledde till"
       }
+    },
+    "fickJobbet": {
+      "region": "Grattis till jobbet",
+      "rubrik": "Grattis, du fick jobbet!",
+      "stang": "Stäng",
+      "enDeltagare": "En deltagare",
+      "startdatum": "När börjar du? (om du vet)",
+      "checklista": {
+        "akassa": "Hör av dig till din a-kassa och berätta att du börjar jobba",
+        "af": "Meddela Arbetsförmedlingen om du har en kontakt där",
+        "avtal": "Läs igenom anställningsavtalet innan du skriver under"
+      },
+      "guide": "Läs guiden om dina första 90 dagar",
+      "pausa": "Pausa min jobbevakning",
+      "beratta": "Berätta för min konsulent",
+      "pausad": "Din jobbevakning är pausad. Du kan slå på den igen under Söka jobb.",
+      "pausaFel": "Det gick inte att pausa bevakningen just nu. Försök igen.",
+      "skickad": "Din konsulent har fått veta.",
+      "hoppad": "Det gick inte att skicka till din konsulent just nu. Berätta gärna själv."
     }
   },
   "spontaneous": {
@@ -6448,7 +6467,8 @@
       "allTools": "Alla verktyg",
       "coverLetter": "Personligt brev",
       "guidesTitle": "Guider",
-      "skillsAnalysis": "Kompetensanalys"
+      "skillsAnalysis": "Kompetensanalys",
+      "securityAgreements": "Säkerhet och avtal"
     },
     "guides": {
       "all": "Alla guider",
@@ -10681,5 +10701,55 @@
     "lankOgiltig": "Länken fungerar inte längre. Den kan ha använts redan eller vara för gammal.",
     "nyKod": "Skicka en ny kod",
     "medLosenord": "Logga in med lösenord i stället"
+  },
+  "annonsForklaring": {
+    "knapp": "Förklara annonsen",
+    "region": "Annonsen förklarad",
+    "laddar": "Läser annonsen …",
+    "fel": "Det gick inte att förklara annonsen just nu. Försök igen om en stund.",
+    "proviIgen": "Försök igen",
+    "ansvar": "Förenklat av AI, originalet gäller.",
+    "tomt": "Vi hittade inget i texten som vi kunde peka ut säkert. Läs annonsen själv — du kan alltid fråga arbetsgivaren.",
+    "uppgifter": "Det här gör du på jobbet",
+    "krav": "Det här ber annonsen om",
+    "onskemalTips": "Ett önskemål behöver du inte ha för att söka.",
+    "ord": "Ord som kan vara svåra",
+    "iAnnonsen": "Så står det i annonsen:",
+    "typ": {
+      "hart": "Krav",
+      "onskemal": "Önskemål",
+      "oklart": "Annonsen säger inte om det är ett krav"
+    }
+  },
+  "samtalsmanus": {
+    "knapp": "Förbered samtalet",
+    "varforRingerDu": "Varför ringer du?",
+    "syfte": {
+      "fraga": "Fråga om annonsen",
+      "foljUpp": "Följa upp min ansökan",
+      "spontan": "Ringa spontant"
+    },
+    "skriv": "Skriv ett manus",
+    "skrivNytt": "Skriv ett nytt manus",
+    "laddar": "Skriver …",
+    "fel": "Det gick inte att skriva ett manus just nu. Försök igen om en stund."
+  },
+  "uppfoljningsmejl": {
+    "region": "Uppföljning",
+    "introAvslag": "Ett avslag är tungt, och det är inte ett omdöme om dig. Om du vill kan du fråga om du får någon återkoppling.",
+    "introTystnad": "Det har gått minst två veckor sedan du sökte. Det är vanligt att svaret dröjer. Om du vill kan du höra av dig och fråga hur det går.",
+    "knapp": "Skriv ett kort mejl",
+    "laddar": "Skriver …",
+    "fel": "Det gick inte att skriva mejlet just nu. Försök igen om en stund.",
+    "proviIgen": "Försök igen",
+    "arInteOrsak": "AI:n har inget underlag för varför det blev som det blev, och mejlet säger ingenting om det."
+  },
+  "ansokanAi": {
+    "luckor": "Ett utkast från AI. Fyll i det som står i [hakparentes] — {{antal}} kvar.",
+    "utkast": "Ett utkast från AI. Läs igenom och ändra så att det låter som du.",
+    "utkastRegion": "Utkastet",
+    "kopiera": "Kopiera",
+    "kopierad": "Kopierat",
+    "kopieraFel": "Det gick inte att kopiera. Markera texten och kopiera själv."
   }
 }

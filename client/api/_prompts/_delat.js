@@ -38,6 +38,57 @@ const REGELVERKSREGEL = 'ABSOLUT REGEL OM REGELVERK: påstå aldrig något om a-
 // enskild prompt valt.
 const SANNINGSREGEL = `SANNINGSREGEL: hitta ALDRIG på siffror som är regler — belopp, procentsatser, dagantal, åldersgränser eller kvalificeringsvillkor. De ändras, och personen fattar beslut om sin försörjning utifrån det du skriver. Beskriv vad stödet gör och vem som beslutar, och hänvisa det exakta till Arbetsförmedlingen, den egna a-kassan, Försäkringskassan eller kommunen. Hitta heller aldrig på erfarenheter, kompetenser, meriter eller andra uppgifter om personen som inte finns i underlaget. Är du osäker — utelämna det.\n\nTRUTH RULE (English): never invent numbers that act as rules — amounts, percentages, day counts, age limits or qualification conditions. These change, and the person makes decisions about their livelihood based on what you write. Describe what the support does and who decides, and refer the exact details to Arbetsförmedlingen (the Swedish Public Employment Service), the unemployment fund the person belongs to (a-kassa), Försäkringskassan (the Social Insurance Agency) or the municipality. Never invent experience, skills, qualifications or other facts about the person that are not in the material either. If unsure, leave it out.`;
 
+/**
+ * AIX25 (2026-10-27): Lätt svenska i AI-svaren.
+ *
+ * Den som valt Lätt svenska i språkväljaren (`sv-latt`, se src/i18n/lattSvenska.ts)
+ * fick vanlig svenska från AI:n: chatten skilde bara på 'en' och allt annat.
+ * `sv-latt` är inget i18next-språk (i18n.language är 'sv' även då) — valet bor i
+ * localStorage — så klienten måste skicka koden själv i `data.sprak`.
+ *
+ * `sprakFran` är ENDA stället som tolkar språkparametern. Den läser både
+ * `sprak` (chatten) och `language` (adaptation-*); sv-latt vinner över allt,
+ * därefter engelska, annars svenska. Okända värden blir 'sv', aldrig 'en'.
+ * @param {any} data
+ * @returns {'sv' | 'sv-latt' | 'en'}
+ */
+function sprakFran(data) {
+  const koder = [data?.sprak, data?.language]
+    .map((v) => (typeof v === 'string' ? v.trim().toLowerCase().replace('_', '-') : ''));
+  if (koder.some((k) => k === 'sv-latt')) return 'sv-latt';
+  if (koder.some((k) => k === 'en' || k.startsWith('en-'))) return 'en';
+  return 'sv';
+}
+
+/**
+ * Instruktionen som läggs till när svaret ska vara Lätt svenska. Gäller
+ * språkets form, aldrig innehållet: sanningsregeln och regelverksregeln står
+ * kvar oförändrade, och "förklara svåra ord" får inte bli en ursäkt att hitta
+ * på belopp eller villkor.
+ */
+const LATT_SVENSKA_REGEL = [
+  'LÄTT SVENSKA: skriv så att den som läser svenska som andraspråk eller har lässvårigheter förstår direkt.',
+  '- Korta meningar, helst under 12 ord. Ett budskap per mening.',
+  '- Vanliga, korta ord. Skriv "hjälp" i stället för "stöd", "ansöka" i stället för "inkomma med ansökan".',
+  '- Förklara svåra ord eller myndighetsord första gången de förekommer, med några enkla ord ("a-kassa, pengar du kan få om du blir arbetslös").',
+  '- Samma ord för samma sak hela vägen. Inga idiom, ordspråk eller bildspråk.',
+  '- Skriv aktivt ("Du kan ringa Arbetsförmedlingen"), inte passivt ("Kontakt kan tas").',
+  '- Håll texten kort. Hellre färre råd som är tydliga än många som är långa.',
+  'Detta ändrar bara HUR du skriver. Alla andra regler gäller oförändrade.',
+].join('\n');
+
+/**
+ * Lägger Lätt svenska-regeln sist i en systemprompt om språket är sv-latt,
+ * annars lämnas texten orörd (byte för byte — engelska och svenska grenar
+ * påverkas inte).
+ * @param {string} system
+ * @param {any} data
+ * @returns {string}
+ */
+function medLattSvenska(system, data) {
+  return sprakFran(data) === 'sv-latt' ? `${system}\n\n${LATT_SVENSKA_REGEL}` : system;
+}
+
 const AGENT_PROMPTS = {
   // AR4 (2026-08-17): rollen hade redan "hitta inte på eller anta saker" om
   // CV-uppgifter, men saknade regelverksskyddet som `chatbot` fick i B22 —
@@ -80,4 +131,4 @@ function skillText(s) {
   return '';
 }
 
-module.exports = { REGELVERKSREGEL, SANNINGSREGEL, AGENT_PROMPTS, PERSONALITY_MODIFIERS, DEFAULT_AGENT, DEFAULT_PERSONALITY, skillText };
+module.exports = { sprakFran, LATT_SVENSKA_REGEL, medLattSvenska, REGELVERKSREGEL, SANNINGSREGEL, AGENT_PROMPTS, PERSONALITY_MODIFIERS, DEFAULT_AGENT, DEFAULT_PERSONALITY, skillText };

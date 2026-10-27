@@ -10,7 +10,7 @@
 const domaner = [require('./konsulent'), require('./ansokan'), require('./karriar'), require('./cv'), require('./intervju'), require('./chatt'), require('./reflektion')];
 const { SANNINGSREGEL } = require('./_delat');
 
-const ORDNING = ['konsulent-rapportutkast', 'konsulent-lagesbild', 'personligt-brev', 'karriarplan', 'kompetensgap', 'cv-jobbmatchning', 'cv-import', 'cv-import-erfarenhet', 'adaptation-recommendations', 'adaptation-conversation', 'linkedin-optimering', 'intervju-simulator', 'intervju-sammanfattning', 'profile-summary', 'cv-writing', 'chatbot', 'ai-team-chat', 'vecko-reflektion'];
+const ORDNING = ['konsulent-rapportutkast', 'konsulent-lagesbild', 'personligt-brev', 'karriarplan', 'kompetensgap', 'cv-jobbmatchning', 'cv-import', 'cv-import-erfarenhet', 'adaptation-recommendations', 'adaptation-conversation', 'linkedin-optimering', 'intervju-simulator', 'intervju-sammanfattning', 'profile-summary', 'cv-writing', 'chatbot', 'ai-team-chat', 'vecko-reflektion', 'annons-forklaring', 'samtalsmanus', 'uppfoljningsmejl'];
 
 /** @type {Record<string, (data: any) => any>} */
 const PROMPTS = {};

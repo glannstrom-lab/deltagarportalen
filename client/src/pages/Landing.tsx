@@ -1011,6 +1011,7 @@ export default function Landing() {
               <ul className="space-y-3 text-sm">
                 {/* KM12 (9): prerenderad sida, därför <a href>, inte <Link> */}
                 <li><a href="/om-oss/" className="hover:text-white transition-colors inline-flex items-center min-h-[44px] py-2">{t('landing.footer.aboutUs')}</a></li>
+                <li><a href="/sakerhet-och-avtal/" className="hover:text-white transition-colors inline-flex items-center min-h-[44px] py-2">{t('landing.footer.securityAgreements', 'Säkerhet och avtal')}</a></li>
                 <li><a href="mailto:support@jobin.se" className="hover:text-white transition-colors inline-flex items-center min-h-[44px] py-2">{t('landing.footer.contact')}</a></li>
                 <li><Link to="/privacy" className="hover:text-white transition-colors inline-flex items-center min-h-[44px] py-2">{t('landing.footer.privacyPolicy')}</Link></li>
                 <li><Link to="/terms" className="hover:text-white transition-colors inline-flex items-center min-h-[44px] py-2">{t('landing.footer.termsOfUse')}</Link></li>

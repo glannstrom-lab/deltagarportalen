@@ -7,6 +7,7 @@ import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { cvApi } from '@/services/supabaseApi'
 import { JobAdaptPanel } from '@/components/cv/JobAdaptPanel'
+import { AnnonsForklaring } from '@/components/jobs/AnnonsForklaring'
 import { showToast } from '@/components/Toast'
 import { Loader2, FileText, ArrowRight } from '@/components/ui/icons'
 import { Link, useSearchParams } from 'react-router-dom'
@@ -17,7 +18,7 @@ export default function JobAdaptPage() {
   const [cvData, setCvData] = useState<CVData | null>(null)
   // O9: annonsen som länken på jobbsidan skickade med — titel, arbetsgivare och text.
   const [sok] = useSearchParams()
-  const annons = { title: sok.get('title') ?? '', company: sok.get('company') ?? '', desc: sok.get('desc') ?? '' }
+  const annons = { jobId: sok.get('jobId') ?? undefined, title: sok.get('title') ?? '', company: sok.get('company') ?? '', desc: sok.get('desc') ?? '' }
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -139,6 +140,15 @@ export default function JobAdaptPage() {
         <p className="mb-4 text-sm text-stone-700 dark:text-stone-300" role="status">
           {t('cv.jobAdapt.franAnnons', { title: annons.title, company: annons.company })}
         </p>
+      )}
+      {/* AIX1: annonsen i enkla ord — bara när annonsen följde med länken. */}
+      {annons.desc && (
+        <div className="mb-4 flex flex-wrap">
+          <AnnonsForklaring
+            storlek="stor"
+            annons={{ id: annons.jobId, titel: annons.title, foretag: annons.company, text: annons.desc }}
+          />
+        </div>
       )}
       {/* Job Adapt Panel - Full width version */}
       <JobAdaptPanel

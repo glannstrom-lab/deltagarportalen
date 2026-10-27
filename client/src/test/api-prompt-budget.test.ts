@@ -33,6 +33,10 @@ const UNDERLAG: unknown[] = [
   // AIX10 (2026-10-24): personligt-brev har längdgrenar som bara nås med `langd`.
   { langd: 'mejl' },
   { langd: 'chatt' },
+  // AIX1/AIX5/AIX6 (2026-10-27): ansökningsstödet.
+  { annons: 'Vi söker en lagerarbetare. Körkort B är ett krav.' },
+  { syfte: 'spontan', foretag: 'Nordfrakt AB' },
+  { orsak: 'avslag', foretag: 'Nordfrakt AB' },
 ]
 
 describe('promptbudgetar rymmer resonemang + svar', () => {

@@ -1,6 +1,8 @@
 // KA3 (2026-09-12): Veckoreflektion.
 // Flyttad ordagrant ur api/ai.js. Sanningsregeln läggs på i ./index.js, inte här.
 
+const { medLattSvenska } = require('./_delat');
+
 module.exports = {
 
   // ===========================================================================
@@ -30,7 +32,7 @@ module.exports = {
       .join('\n');
 
     return {
-      system: `Du skriver en kort, varm veckoreflektion till en arbetssökande utifrån personens egna dagboksanteckningar och måendeloggar. Svara ENDAST med JSON i detta format:
+      system: medLattSvenska(`Du skriver en kort, varm veckoreflektion till en arbetssökande utifrån personens egna dagboksanteckningar och måendeloggar. Svara ENDAST med JSON i detta format:
 {"summary":"2-4 meningar om veckan, i andra person","noticed":["Något konkret du ser i underlaget"],"gentleSuggestion":"En mjuk idé till nästa vecka"}
 
 ABSOLUTA REGLER:
@@ -41,7 +43,7 @@ ABSOLUTA REGLER:
 - En tunn vecka är helt okej. Om underlaget är litet: säg det lugnt och utan att antyda misslyckande ("Det här är allt jag har från veckan — det räcker gott").
 - noticed: 1-3 punkter, konkreta och hämtade ur texten.
 - gentleSuggestion: EN mening, formulerad som en möjlighet ("Om du vill kan du ..."), aldrig som en uppgift. Utelämna fältet helt om underlaget inte ger stöd för något förslag.
-- Allt på svenska.`,
+- Allt på svenska.`, data),
       user: `DAGBOKSANTECKNINGAR (senaste 7 dagarna):\n${diaryText || 'Inga anteckningar.'}\n\nMÅENDELOGGAR (senaste 7 dagarna):\n${moodText || 'Inga loggar.'}\n\nSkriv veckoreflektionen. Svara ENDAST med JSON.`,
       maxTokens: 700,
       responseKey: 'reflektion',

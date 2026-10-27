@@ -209,6 +209,7 @@ const LANGA_FALT = { cvText: 10000 };
 // SANNINGSREGEL, AGENT_PROMPTS m.fl.) bor i ./_prompts/ — en fil per domän och
 // sammansättningen (inkl. sanningsregeln på varje prompt) i ./_prompts/index.js.
 const { PROMPTS } = require('./_prompts');
+const { citatFinnsIAnnons, normalisera, ANNONS_MAX } = require('./_prompts/_annons');
 
 // ============================================
 // Rate Limiting Configuration
@@ -239,6 +240,10 @@ const RATE_LIMITS = {
   'vecko-reflektion': { limit: 5, windowMinutes: 60 },
   'konsulent-rapportutkast': { limit: 10, windowMinutes: 15 },
   'konsulent-lagesbild': { limit: 20, windowMinutes: 15 },
+  // AIX1/AIX5/AIX6 (2026-10-27): deltagarens ansökningsstöd.
+  'annons-forklaring': { limit: 15, windowMinutes: 15 },
+  'samtalsmanus': { limit: 10, windowMinutes: 15 },
+  'uppfoljningsmejl': { limit: 10, windowMinutes: 15 },
   'default': { limit: 20, windowMinutes: 15 }
 };
 
@@ -840,6 +845,50 @@ function extractJsonContent(raw) {
  * @returns {{ ok: true, value: unknown } | { ok: false, error: string }}
  */
 const RESPONSE_VALIDATORS = {
+  // AIX1 (2026-10-27): Förklara annonsen. Varje rad måste bära ett citat som
+  // står ORDAGRANT i annonstexten (samma text som prompten fick, kapad vid
+  // 3 000). Rader utan belägg tas bort här, på servern — klienten får aldrig
+  // se ett krav ingen kan peka ut i annonsen. Tom lista är ett giltigt svar
+  // (annonsen kan sakna krav); ett svar som inte ens är ett objekt är det inte.
+  'annons-forklaring': (value, indata) => {
+    if (!isPlainObject(value)) {
+      return { ok: false, error: 'annonsförklaringen var inte ett JSON-objekt' };
+    }
+    const annons = typeof indata?.annons === 'string' ? indata.annons : '';
+    const text = (v, tak) => (typeof v === 'string' ? v.trim().slice(0, tak) : '');
+    const rader = (v, tak) => (Array.isArray(v) ? v.slice(0, tak * 3) : []);
+    // Positionell rad ELLER objektform — ett svar vi kan läsa fälls inte för formen.
+    const kol = (rad, i, namn) => (Array.isArray(rad) ? rad[i] : isPlainObject(rad) ? rad[namn] : undefined);
+
+    const uppgifter = [];
+    for (const rad of rader(value.uppgifter, 4)) {
+      const punkt = text(kol(rad, 0, 'punkt'), 200);
+      const citat = text(kol(rad, 1, 'citat'), 300);
+      if (punkt && citat && citatFinnsIAnnons(citat, annons)) uppgifter.push({ punkt, citat });
+      if (uppgifter.length >= 4) break;
+    }
+    const krav = [];
+    for (const rad of rader(value.krav, 6)) {
+      const typ = text(kol(rad, 0, 'typ'), 20).toLowerCase();
+      const punkt = text(kol(rad, 1, 'punkt'), 200);
+      const citat = text(kol(rad, 2, 'citat'), 300);
+      if (!punkt || !citat || !citatFinnsIAnnons(citat, annons)) continue;
+      // Okänd typ blir "oklart", aldrig "hart": att kalla något krav utan att
+      // annonsen sagt det är det fel som får folk att sålla bort sig själva.
+      krav.push({ typ: typ === 'hart' || typ === 'onskemal' ? typ : 'oklart', punkt, citat });
+      if (krav.length >= 6) break;
+    }
+    const ord = [];
+    for (const rad of rader(value.ord, 3)) {
+      const o = text(kol(rad, 0, 'ord'), 60);
+      const betydelse = text(kol(rad, 1, 'betydelse'), 160);
+      // Ordet ska finnas i annonsen — annars förklarar vi något som inte står där.
+      if (o && betydelse && normalisera(annons.slice(0, ANNONS_MAX)).includes(normalisera(o))) ord.push({ ord: o, betydelse });
+      if (ord.length >= 3) break;
+    }
+    return { ok: true, value: { uppgifter, krav, ord } };
+  },
+
   // Feedback-grenen: {"rating":1-5,"feedback":"…","nastaFraga":"…"}
   // Klienten (`pages/InterviewSimulator.tsx`) har sedan B12 egna vakter på
   // rating och feedback, men ingen på svarets FORM — en `{ raw: "…" }` eller
@@ -1573,7 +1622,9 @@ const hanterare = async (req, res) => {
         }
         content = { raw: content };
       } else if (validator) {
-        const checked = validator(extracted.value);
+        // Andra argumentet: indata efter sanering, för validatorer som måste
+        // jämföra svaret mot underlaget (AIX1: citat mot annonstexten).
+        const checked = validator(extracted.value, promptData);
         if (!checked.ok) {
           console.warn(`[AI] ${fn}: ogiltig svarsform — ${checked.error}`);
           await logga(aiData.usage?.total_tokens || 0, `ogiltig svarsform: ${checked.error}`);

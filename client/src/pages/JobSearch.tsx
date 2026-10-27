@@ -44,6 +44,7 @@ import { CreateApplicationModal } from '@/components/workflow';
 import { AlertsTab } from '@/components/jobs/AlertsTab';
 import { MatchningTab } from '@/components/jobs/MatchningTab';
 import { DailyJobTab } from '@/components/jobs/DailyJobTab';
+import { AnnonsForklaring } from '@/components/jobs/AnnonsForklaring';
 import { SlumpjobbetTab } from '@/components/jobs/SlumpjobbetTab';
 
 // Tab definitions with i18n keys
@@ -994,6 +995,10 @@ function SearchTab() {
                         {t('jobSearch.adaptCv')}
                       </Link>
 
+                      <AnnonsForklaring
+                        annons={{ id: job.id, titel: job.headline, foretag: job.employer?.name, text: job.description?.text ?? '' }}
+                      />
+
                       <button
                         onClick={(e) => {
                           e.stopPropagation()
@@ -1254,6 +1259,12 @@ function SearchTab() {
                       <FileText size={18} />
                       <span className="text-sm sm:text-base">{t('jobSearch.adaptCvLong')}</span>
                     </Link>
+
+                    {/* AIX1: annonsen i enkla ord, med citat ur texten. */}
+                    <AnnonsForklaring
+                      storlek="stor"
+                      annons={{ id: selectedJob.id, titel: selectedJob.headline, foretag: selectedJob.employer?.name, text: selectedJob.description?.text ?? '' }}
+                    />
                   </div>
 
                   <button

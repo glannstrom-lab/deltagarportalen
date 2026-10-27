@@ -1,0 +1,164 @@
+{
+  "_kommentar": "Innehåll för den publika sidan /sakerhet-och-avtal/ (roadmap FN9, 2026-10-27). Läsaren är kommunens IT-säkerhetsansvariga, dataskyddsombud och upphandlare. VARJE PÅSTÅENDE ÄR VERIFIERAT MOT KODEN, KONFIGURATIONEN ELLER PROD INNAN DET SKREVS — belägg per påstående finns i slutrapporten för FN9 och i docs: regioner mot docs/HOSTING-REGIONS.md och client/vercel.json (regions fra1); biträden mot docs/GDPR-ART30-REGISTER.md (Personuppgiftsbiträden); tvåsteg mot client/src/services/mfaApi.ts (ROLLER_MED_KRAV = chef, admin) och components/auth/MfaGrind.tsx; AI-vägen mot client/api/ai.js (OPENROUTER_PROVIDER_EU_STRIKT, orgKopplad) och supabase/functions/_shared/aiGate.ts (valjModell, SOKMODELL, OPENROUTER_PROVIDER_EU_STRIKT); AI av som standard mot prod (organizations.ai_enabled column_default = false, mätt 2026-10-27) och migration 20261011_org_ai_av_som_standard.sql; gallring mot cron.job i prod (mätt 2026-10-27) och docs/RETENTION-POLICY.md; backup mot .github/workflows/backup.yml och docs/BACKUP.md; incidentrutin mot docs/INCIDENT-RESPONSE.md; tillgänglighet mot src/i18n/locales/sv.json (accessibility.*); PUB-utkastet mot juridik/PUB-avtal-kommun-UTKAST.md. Sidan ska vara ärlig om luckorna — ta aldrig bort ett avsnitt ur 'luckor' utan att luckan är stängd och verifierad. Inga kundreferenser, certifieringar, SLA-nivåer eller uppgifter om uppetid.",
+  "slug": "sakerhet-och-avtal",
+  "title": "Säkerhet och avtal",
+  "description": "Underbiträden och regioner, tvåstegsinloggning, AI i EU, gallring, backup och incidentrutin — och vad som ännu saknas. För kommunens IT och dataskyddsombud.",
+  "h1": "Säkerhet och avtal",
+  "lead": "Här finns svaren på de frågor kommunens IT-säkerhetsansvariga och dataskyddsombud brukar ställa. Det som är klart står som klart. Det som saknas står under rubriken Det som ännu inte finns. Sidan beskriver läget den 27 oktober 2026.",
+  "uppdaterad": "2026-10-27",
+  "facts": ["Databas i Irland (EU)", "Serverfunktioner i Frankfurt (EU)", "Kommunen är personuppgiftsansvarig"],
+  "ctaLabel": "Mejla om säkerhet och avtal",
+  "ctaAmne": "Säkerhet%20och%20avtal",
+  "sektioner": [
+    {
+      "id": "roller",
+      "rubrik": "Vem som ansvarar för vad",
+      "stycken": [
+        "Jobin drivs av Glänne & Söner, en enskild firma i Sverige. Innehavare är arbetskonsulenten Mikael Glännström. Det finns inget större bolag bakom, och det är en person som har tillgång till databasen, hostingen och domänen.",
+        "När en kommun använder portalen är kommunen personuppgiftsansvarig och Jobin personuppgiftsbiträde. Biträdesavtalet tecknas innan första deltagaren läggs in."
+      ],
+      "punkter": [
+        "Inget dataskyddsombud är formellt utsett hos oss. Adressen dpo@jobin.se läses av innehavaren.",
+        "Det finns ingen ersättare med tillgång till driften om innehavaren är borta. Det är en känd sårbarhet och står därför också under Det som ännu inte finns."
+      ]
+    },
+    {
+      "id": "underbitraden",
+      "rubrik": "Underbiträden och regioner",
+      "intro": "Det här är de tjänster som behandlar personuppgifter för Jobins räkning, och var. Kolumnen Avtalsläge säger om ett biträdesavtal är bekräftat.",
+      "tabell": {
+        "rubriker": ["Tjänst", "Vad den gör", "Region", "Avtalsläge"],
+        "rader": [
+          ["Supabase", "Databas, inloggning och lagrade filer", "Irland (EU)", "Leverantörens standardavtal (DPA) gäller"],
+          ["Vercel", "Webbhotell och serverfunktioner (AI-vägen, CV-till-PDF)", "Frankfurt (EU)", "Leverantörens standardavtal (DPA) gäller"],
+          ["Vercel Blob", "Profilbilder", "Regionen är inte bekräftad i vårt register", "Del av Vercels avtal; regionen ska verifieras"],
+          ["Vercel Web Analytics", "Besöksstatistik utan cookies; ingen IP-adress sparas", "Enligt Vercel", "Del av Vercels avtal"],
+          ["OpenRouter", "Förmedlar AI-anrop till modellleverantören", "USA", "Standardavtalsklausuler och överföringsbedömning finns; biträdesavtalet ska verifieras"],
+          ["Amazon Bedrock (AWS)", "Kör språkmodellen för organisationers AI-anrop", "Irland (EU)", "Nås via OpenRouter; ingår ännu inte som egen rad i vårt register"],
+          ["Perplexity", "Sökmodell med webbsökning. Används bara för konton som inte tillhör en organisation", "USA", "Biträdesavtal saknas"],
+          ["Resend", "Utskick av mejl, till exempel inbjudningar och påminnelser", "EU enligt vår uppsättning", "Biträdesavtal och region ska bekräftas i kontot"],
+          ["Sentry", "Felspårning, bara för den som tackat ja till analyskakor", "Inte bekräftad som EU", "Leverantörens standardavtal (DPA) finns"],
+          ["GitHub", "Bygge och lagring av krypterade nattliga säkerhetskopior", "Väljs inte av oss", "Innehåller ingen läsbar persondata utan vårt lösenord; ingår ännu inte som egen rad i vårt register"],
+          ["Google Översätt", "Sidöversättning som deltagaren själv slår på", "USA", "Inget biträdesavtal; funktionen är frivillig och portalen fungerar utan den"]
+        ]
+      },
+      "stycken": [
+        "Nya eller utbytta underbiträden anmäls skriftligt till kommunen minst 30 dagar innan, och kommunen har rätt att invända. Det står i det avtalsutkast som beskrivs längre ned."
+      ]
+    },
+    {
+      "id": "tvasteg",
+      "rubrik": "Inloggning och tvåstegsverifiering",
+      "punkter": [
+        "Tvåstegsverifiering med en autentiseringsapp (TOTP) finns för alla konton och slås på under Inställningar, Säkerhet.",
+        "Den är obligatorisk för personal med rollen chef eller admin i en organisation: utan en verifierad faktor visas en uppmaning att slå på den i stället för konsulentvyn.",
+        "För övrig personal och för deltagare är den frivillig.",
+        "Förlorar någon sin telefon återställer vi faktorn för hand. Något adminverktyg för det finns inte än."
+      ],
+      "obs": "Kravet på chef och admin är i dag en spärr i gränssnittet. Databasens åtkomstregler kräver ännu inte den andra verifieringen vid direkta anrop. Den genomgången är planerad men inte gjord."
+    },
+    {
+      "id": "ai",
+      "rubrik": "AI: i EU, och av som standard",
+      "punkter": [
+        "En ny organisation startar med AI avstängt. Ni slår på det själva, och kan stänga av det för hela organisationen.",
+        "För konton som hör till en organisation, personal och deltagare som personalen handleder, går AI-anropen bara till Amazon Bedrock i Irland. Det finns ingen reserv: är Irland otillgängligt blir svaret ett felmeddelande, inte ett svar från en leverantör utanför EU.",
+        "Anropen förmedlas av OpenRouter i USA. Vi begär att leverantören varken sparar eller tränar på texten.",
+        "Innan texten lämnar vår server byts personens eget namn, ålder, födelsedatum och angivet kön ut mot platshållare. Personnummer, kontonummer, e-post och telefonnummer maskeras för alla konton. Andra namn i fritext och pronomen som hon och han tas inte bort.",
+        "Webbsökningen via Perplexity är avstängd för organisationers konton sedan 2026-09-12. Den finns kvar för konton som inte tillhör en organisation, och står i integritetspolicyn.",
+        "Användarens egen AI-brytare kontrolleras på servern. För funktioner som rör hälsouppgifter krävs dessutom ett registrerat samtycke innan något skickas.",
+        "Språkmodellen är låst till en och samma modell (openai/gpt-oss-120b). Den byts inte utan ett uttryckligt beslut."
+      ],
+      "obs": "Konton som inte tillhör en organisation har en reserv som kan ligga utanför EU. Integritetspolicyn beskriver det för dem."
+    },
+    {
+      "id": "gallring",
+      "rubrik": "Gallring",
+      "intro": "Gallringen körs som schemalagda jobb i databasen (pg_cron). Jobben finns och är aktiva i produktion. Så här länge sparas det som är mest relevant för en kommun:",
+      "tabell": {
+        "rubriker": ["Uppgift", "Sparas"],
+        "rader": [
+          ["Inaktivt konto", "24 månader efter senaste inloggning; varning skickas efter 18 månader"],
+          ["Konsulentens journal och anteckningar", "5 år efter avslutat uppdrag"],
+          ["Meddelanden mellan konsulent och deltagare", "2 år"],
+          ["Placeringar och uppföljning", "2 år"],
+          ["AI-anrop (användningslogg)", "90 dagar"],
+          ["Aktivitetslogg", "12 månader"],
+          ["Inloggningsförsök", "30 dagar"],
+          ["Samtyckeshistorik och granskningsloggar", "5 år"],
+          ["Begärd kontoradering", "Raderas efter en ångerfrist på 14 dagar"]
+        ]
+      },
+      "stycken": [
+        "Dagbok, mående och CV sparas tills deltagaren själv raderar dem eller sitt konto. Kommunen kan begära kortare tider i biträdesavtalet."
+      ]
+    },
+    {
+      "id": "backup",
+      "rubrik": "Backup och återställning",
+      "punkter": [
+        "En krypterad säkerhetskopia av databasen tas varje natt. Den innehåller roller, schema, all data och schemalagda jobb, och sparas i 30 dagar.",
+        "Kopian krypteras (AES-256-GCM) i minnet. Klartext rör aldrig diskens innehåll på den maskin som tar kopian.",
+        "Varje natt kontrolleras att kopian går att läsa och att kontotabellerna inte är tomma.",
+        "Ett återställningsprov har gjorts: alla tabeller i den publika databasen fick exakt samma radantal som originalet."
+      ],
+      "obs": "Vi har ingen punkt-i-tid-återställning. Vid ett haveri kan upp till ett dygns ändringar gå förlorade. Profilbilder i Vercel Blob ingår inte i säkerhetskopian."
+    },
+    {
+      "id": "incident",
+      "rubrik": "Incidentrutin",
+      "punkter": [
+        "Det finns en skriven rutin för personuppgiftsincidenter, med bedömning av omfattning och risk, anmälan till Integritetsskyddsmyndigheten inom 72 timmar och information till berörda vid hög risk.",
+        "I det avtalsutkast vi föreslår står att vi underrättar kommunens kontaktperson utan onödigt dröjsmål och senast inom 24 timmar, så att kommunen hinner göra sin egen anmälan.",
+        "Rutinen gäller för oss som biträde; anmälan till tillsynsmyndigheten är kommunens som ansvarig."
+      ],
+      "obs": "Det finns ingen övervakning som larmar dygnet runt. Upptäckt sker i dag genom att någon hör av sig, genom felrapporter från dem som tackat ja till analyskakor, eller genom att innehavaren märker det själv."
+    },
+    {
+      "id": "tillganglighet",
+      "rubrik": "Tillgänglighet",
+      "stycken": [
+        "Målet är WCAG 2.1 nivå AA. Det är ett mål, inte en uppnådd certifiering. Bedömningen är en intern granskning med automatiserad testning och manuell tangentbordstestning. Ingen oberoende expertgranskning och ingen test med riktig skärmläsare är gjord ännu."
+      ],
+      "lank": { "href": "/#/tillganglighet", "text": "Läs hela tillgänglighetsredogörelsen" }
+    },
+    {
+      "id": "pub",
+      "rubrik": "Biträdesavtal (PUB)",
+      "stycken": [
+        "Vi har ett utkast till personuppgiftsbiträdesavtal där kommunen är ansvarig och Jobin biträde. Det följer SKR:s struktur och artikel 28 i dataskyddsförordningen, med bilagor för behandling, underbiträden och säkerhetsåtgärder.",
+        "Utkastet är inte juridiskt granskat och är inte klart att signeras som det är. Det är tänkt som underlag för ett första samtal, och det listar öppet de punkter där vi avviker från vad en kommun brukar kräva. Vi skickar det på begäran."
+      ]
+    }
+  ],
+  "luckor": {
+    "rubrik": "Det som ännu inte finns",
+    "intro": "Det här är de luckor vi känner till. De står här för att ni ska kunna väga dem före ett beslut, inte efter.",
+    "punkter": [
+      "Inget avtalat SLA: ingen avtalad tillgänglighet och ingen garanterad svarstid. Support sker via support@jobin.se och besvaras av samma person som bygger portalen.",
+      "Konsekvensbedömningen (DPIA) och AI Act-klassificeringen är interna utkast som inte godkänts av en personuppgiftsansvarig.",
+      "Biträdesavtalet är ett utkast som inte är juridiskt granskat. Vår egen integritetspolicy, vårt register över behandlingar och utkastet beskriver ännu inte AI-vägen likadant, och ska rättas mot varandra före signering.",
+      "Biträdesavtal med Perplexity, och bekräftat avtal och region för OpenRouter och Resend, saknas eller ska verifieras.",
+      "Ingen oberoende säkerhetsgranskning eller penetrationstest är gjord, och vi har inga certifieringar.",
+      "Inloggning med kommunens Microsoft-konto (Entra ID) för personal är beslutad men inte byggd. BankID erbjuds inte.",
+      "Ingen samlad export av hela organisationens data med en knapp. Varje konsulent kan ladda ner sina deltagares uppgifter, och vi lämnar ut resten på begäran.",
+      "Företagskontots tabeller har ännu ingen gallringsregel.",
+      "Ingen övervakning som larmar dygnet runt, och ingen ersättare om innehavaren är borta.",
+      "Ingen publik statussida."
+    ]
+  },
+  "kontakt": {
+    "rubrik": "Fråga oss, eller be om underlag",
+    "text": "Skicka frågorna ni har i upphandlingen, eller be om avtalsutkastet, så svarar vi ärligt på vad vi kan och inte kan åta oss.",
+    "rader": [
+      { "etikett": "Säkerhet, avtal och dataskydd", "epost": "dpo@jobin.se" },
+      { "etikett": "Support", "epost": "support@jobin.se" }
+    ]
+  },
+  "lankar": [
+    { "href": "/#/privacy", "text": "Integritetspolicy" },
+    { "href": "/#/tillganglighet", "text": "Tillgänglighetsredogörelse" },
+    { "href": "/for-arbetsmarknadsenheter/", "text": "För arbetsmarknadsenheter" },
+    { "href": "/for-rusta-och-matcha/", "text": "För Rusta och matcha-leverantörer" }
+  ]
+}

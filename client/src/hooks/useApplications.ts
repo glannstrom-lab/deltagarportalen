@@ -13,6 +13,7 @@ import {
   applicationHistoryApi
 } from '@/services/applicationsApi'
 import { useAchievementTracker } from './useAchievementTracker'
+import { useFickJobbetStore } from '@/stores/fickJobbetStore'
 import { useCelebration } from './useCelebration'
 import type {
   Application,
@@ -203,6 +204,8 @@ export function useApplications(
           break
         case 'accepted':
           trackJobAccepted(title, company)
+          // FN14: grattiskortet (pausa bevakning, checklista, 90-dagarsguide)
+          useFickJobbetStore.getState().visa({ id: app.id, titel: title ?? '', foretag: company ?? '' })
           break
       }
     }

@@ -18,6 +18,7 @@ import { supabase } from '@/lib/supabase'
 import { sanitizeForAi } from '@/lib/piiSanitizer'
 import { apiLogger } from '@/lib/logger'
 import { useAuthStore } from '@/stores/authStore'
+import { arLattSvenska } from '@/i18n/lattSvenska'
 
 /**
  * Art. 9-funktioner: tar emot särskilda kategorier av personuppgifter (hälsa,
@@ -223,6 +224,12 @@ async function prepareAiRequest(
     apiLogger.debug('[callAI] PII-warning (behållen, krävs för AI-output):', { functionName, warnings })
   }
 
+  // AIX25: Lätt svenska är inget i18next-språk (i18n.language är 'sv'), så
+  // servern kan inte se valet. Det skickas här, för alla anrop. Engelska vinner,
+  // annars blir det Lätt svenska även om anroparen skickat 'sv'.
+  if (arLattSvenska() && sanitized.sprak !== 'en' && sanitized.language !== 'en') {
+    return { token, sanitized: { ...sanitized, sprak: 'sv-latt' } }
+  }
   return { token, sanitized }
 }
 

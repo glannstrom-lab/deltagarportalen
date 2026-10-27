@@ -15,6 +15,7 @@ import { cn } from '@/lib/utils'
 import { useApplication, useApplications } from '@/hooks/useApplications'
 import { useFocusTrap } from '@/hooks/useFocusTrap'
 import { DocumentSelector } from './DocumentSelector'
+import { UppfoljningsmejlPanel } from './UppfoljningsmejlPanel'
 import { showToast } from '@/components/Toast'
 import {
   APPLICATION_STATUS_CONFIG,
@@ -595,6 +596,12 @@ export function ApplicationDetailModal({
         <div className="flex-1 overflow-y-auto p-4">
           {activeTab === 'overview' && (
             <div className="space-y-4">
+              {/* AIX5: avslag eller 14 dagar utan svar — erbjuder ett kort mejl. */}
+              <UppfoljningsmejlPanel
+                ansokan={application}
+                kontaktnamn={(contacts.find((c) => c.isPrimary) ?? contacts[0])?.name}
+              />
+
               {/* Notes */}
               {application.notes && (
                 <Card className="p-4">

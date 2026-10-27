@@ -1,0 +1,30 @@
+{
+  "namn": [
+    "Arbetsförmedlingen",
+    "Försäkringskassan",
+    "Migrationsverket",
+    "Skatteverket",
+    "Bolagsverket",
+    "Integritetsskyddsmyndigheten",
+    "a-kassa",
+    "CSN",
+    "personnummer",
+    "samordningsnummer",
+    "BankID",
+    "komvux",
+    "yrkeshögskola",
+    "folkbokföring",
+    "Jourhavande medmänniska"
+  ],
+  "bojningar": [
+    "personnumret",
+    "personnumrets",
+    "samordningsnumret",
+    "samordningsnumrets",
+    "a-kassor",
+    "a-kassorna",
+    "a-kassornas",
+    "yrkeshögskolor",
+    "yrkeshögskolorna"
+  ]
+}

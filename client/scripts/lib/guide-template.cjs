@@ -23,6 +23,8 @@ const { markdownToHtml, markdownToPlain, renderInline, escapeHtml } = require('.
 const { ogBildFor } = require('./og-bild.cjs')
 const { SITE, TOOLS, KATEGORI_NAMN, KATEGORIER, kategoriUrl, appUrl, verktygFor, guideUrl } =
   require('./guides.cjs')
+// FN19: samma lista som appen (src/i18n/skyddadeNamn.ts) — datan bor i JSON.
+const SKYDDADE = require('../../src/i18n/skyddadeNamn.json')
 
 const CSS = `
 :root{
@@ -364,6 +366,39 @@ function publikaArtikellankar(html, publiceradeSlugs) {
 }
 
 /**
+ * Markerar myndighetsnamn `translate="no"` så Chromes och Googles översättning
+ * lämnar dem (FN19). Bara textnoder: allt mellan `<` och `>` rörs inte, och
+ * innehållet i <code>, <script> och <style> hoppas över. Regeln är densamma som
+ * `skyddadeNamnRegex()` i src/i18n/skyddadeNamn.ts; skyddadeNamn.test.ts håller
+ * de två lika.
+ */
+const _escRe = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+const SKYDDAD_RE = new RegExp(
+  '(?<![\\p{L}\\p{N}])(?:' +
+    [
+      ...SKYDDADE.namn.map((n) => `${_escRe(n)}(?:s|n|ns|en|ens|et|ets)?`),
+      ...SKYDDADE.bojningar.map(_escRe),
+    ].join('|') +
+    ')(?![\\p{L}\\p{N}])',
+  'giu'
+)
+function skyddaNamn(html) {
+  let hoppa = 0
+  return html
+    .split(/(<[^>]*>)/)
+    .map((del) => {
+      if (del.startsWith('<')) {
+        const m = /^<(\/?)(code|script|style)\b/i.exec(del)
+        if (m) hoppa += m[1] ? -1 : 1
+        return del
+      }
+      if (hoppa > 0) return del
+      return del.replace(SKYDDAD_RE, (n) => `<span translate="no" class="notranslate">${n}</span>`)
+    })
+    .join('')
+}
+
+/**
  * @param {object} a artikel ur snapshoten
  * @param {object[]} relaterade artiklar som också är publicerade
  * @param {{slug:string,guideInvit:string,guideInvitLank:string}[]} [b2b]
@@ -378,7 +413,7 @@ function renderGuide(a, relaterade, b2b = [], publiceradeSlugs = new Set()) {
   const kategori = KATEGORI_NAMN[a.category_key] || 'Guide'
   const verktyg = verktygFor(a)
   const primart = verktyg[0]
-  const body = publikaArtikellankar(markdownToHtml(a.content), publiceradeSlugs)
+  const body = skyddaNamn(publikaArtikellankar(markdownToHtml(a.content), publiceradeSlugs))
   // Beskrivningen tas ur summary; faller tillbaka på inledningen om den saknas.
   const beskrivning = (a.summary || markdownToPlain(a.content).slice(0, 160)).trim().slice(0, 160)
   // Används av både vadArDetHar och krisstod — samma sida ska inte kunna få
@@ -1800,7 +1835,141 @@ ${krisstod()}
 `
 }
 
+/**
+ * FN9 (2026-10-27) — /sakerhet-och-avtal/: svaren på det kommunens IT och
+ * dataskyddsombud frågar om varje gång. Data ur content/sakerhet-och-avtal.json.
+ *
+ * Samma yttre skal som B2B-sidorna, men innehållet är sektioner (stycken,
+ * punkter, tabell) i stället för en marknadsföringsstruktur. Två val att
+ * behålla: `luckor` renderas som en egen, synlig ruta efter sektionerna — den
+ * ska inte kunna glömmas bort när någon lägger till en sektion — och sidan har
+ * ingen pris- eller SLA-rad, för det finns inget att belägga.
+ */
+function renderSakerhet(o) {
+  const url = `${SITE}/${o.slug}/`
+  const mailto = (amne) => `mailto:dpo@jobin.se?subject=${amne}`
+  const lista = (arr) => `<ul>${arr.map((p) => `<li>${escapeHtml(p)}</li>`).join('')}</ul>`
+  const stycken = (arr) => (arr || []).map((p) => `<p>${escapeHtml(p)}</p>`).join('')
+  const tabell = (t) =>
+    `<div class="table-wrap"><table>
+      <thead><tr>${t.rubriker.map((h) => `<th scope="col">${escapeHtml(h)}</th>`).join('')}</tr></thead>
+      <tbody>${t.rader
+        .map(
+          (r) =>
+            `<tr>${r
+              .map((c, i) => (i === 0 ? `<th scope="row">${escapeHtml(c)}</th>` : `<td>${escapeHtml(c)}</td>`))
+              .join('')}</tr>`
+        )
+        .join('')}</tbody>
+    </table></div>`
+
+  const sektioner = o.sektioner
+    .map(
+      (s) => `<section id="${escapeHtml(s.id)}">
+      <h2>${escapeHtml(s.rubrik)}</h2>
+      ${s.intro ? `<p>${escapeHtml(s.intro)}</p>` : ''}
+      ${stycken(s.stycken)}
+      ${s.tabell ? tabell(s.tabell) : ''}
+      ${s.punkter ? lista(s.punkter) : ''}
+      ${s.obs ? `<p><strong>Det som saknas här:</strong> ${escapeHtml(s.obs)}</p>` : ''}
+      ${s.lank ? `<p><a href="${escapeHtml(s.lank.href)}">${escapeHtml(s.lank.text)}</a></p>` : ''}
+    </section>`
+    )
+    .join('')
+
+  const kontakt = `<ul>${o.kontakt.rader
+    .map((r) => `<li>${escapeHtml(r.etikett)}: <a href="mailto:${escapeHtml(r.epost)}">${escapeHtml(r.epost)}</a></li>`)
+    .join('')}</ul>`
+  const factsHtml = (o.facts || []).map((f) => `<span class="chip">${escapeHtml(f)}</span>`).join('')
+
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    url,
+    name: o.title,
+    description: o.description,
+    dateModified: o.uppdaterad,
+    publisher: { '@type': 'Organization', name: 'Jobin', url: SITE },
+  }
+
+  return `<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>${escapeHtml(sidtitel(o.title))}</title>
+<meta name="description" content="${escapeHtml(o.description)}">
+<link rel="canonical" href="${url}">
+<meta name="robots" content="index, follow">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Jobin">
+<meta property="og:locale" content="sv_SE">
+<meta property="og:url" content="${url}">
+<meta property="og:title" content="${escapeHtml(o.title)}">
+<meta property="og:description" content="${escapeHtml(o.description)}">
+<meta property="og:image" content="${ogBildFor({ typ: 'b2b' })}">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/png" href="/favicon-64.png">
+<style>${CSS}</style>
+<script type="application/ld+json">${JSON.stringify(jsonLd)}</script>
+</head>
+<body>
+<a class="sr-only" href="#innehall">Hoppa till innehållet</a>
+
+<header class="topbar">
+  <div class="wrap">
+    <a class="brand" href="/">Jobin</a>
+    <a class="btn btn-sm" href="${mailto(o.ctaAmne)}">${escapeHtml(o.ctaLabel)}</a>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="wrap">
+    <nav class="crumb" aria-label="Brödsmulor"><a href="/">Jobin</a></nav>
+    <h1>${escapeHtml(o.h1)}</h1>
+    <p class="lead">${escapeHtml(o.lead)}</p>
+    <div class="facts">${factsHtml}</div>
+    <p><small>Senast uppdaterad ${escapeHtml(o.uppdaterad)}</small></p>
+  </div>
+</div>
+
+<main id="innehall">
+  <div class="wrap">
+    ${sektioner}
+
+    <section class="cta" id="luckor">
+      <h2>${escapeHtml(o.luckor.rubrik)}</h2>
+      <p>${escapeHtml(o.luckor.intro)}</p>
+      ${lista(o.luckor.punkter)}
+    </section>
+
+    <section class="cta" id="kontakt">
+      <h2>${escapeHtml(o.kontakt.rubrik)}</h2>
+      <p>${escapeHtml(o.kontakt.text)}</p>
+      ${kontakt}
+    </section>
+
+    <p>${o.lankar.map((l) => `<a href="${escapeHtml(l.href)}">${escapeHtml(l.text)}</a>`).join(' · ')}</p>
+  </div>
+</main>
+
+${krisstod()}
+
+<footer>
+  <div class="wrap">
+    <p><strong>Jobin</strong> — stöd och verktyg för dig som söker jobb.
+    <a href="/guider/">Alla guider</a> · <a href="/verktyg/">Alla verktyg</a></p>
+    <p><a href="/#/privacy">Integritet</a> · <a href="/#/tillganglighet">Tillgänglighet</a> · <a href="/sakerhet-och-avtal/">Säkerhet och avtal</a> · <a href="/om-oss/">Om oss</a></p>
+  ${PROJEKT_BLOCK}
+  </div>
+</footer>
+</body>
+</html>
+`
+}
+
 module.exports = {
+  skyddaNamn,
   renderOmOss,
   renderGuide,
   renderIndex,
@@ -1810,6 +1979,7 @@ module.exports = {
   renderToolIndex,
   renderB2B,
   renderDemo,
+  renderSakerhet,
   renderSituation,
   renderSituationIndex,
   // SE3: exporteras för byggrapporten och testerna.

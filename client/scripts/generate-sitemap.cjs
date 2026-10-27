@@ -106,6 +106,13 @@ if (fs.existsSync(OM_OSS)) {
   if (o?.slug) urls.push({ loc: `/${o.slug}/`, changefreq: 'monthly', priority: '0.5' })
 }
 
+// FN9: säkerhets- och avtalssidan, samma källa som prerender-guides.cjs.
+const SAKERHET = path.join(__dirname, '..', 'content', 'sakerhet-och-avtal.json')
+if (fs.existsSync(SAKERHET)) {
+  const o = JSON.parse(fs.readFileSync(SAKERHET, 'utf8'))
+  if (o?.slug) urls.push({ loc: `/${o.slug}/`, changefreq: 'monthly', priority: '0.6' })
+}
+
 const today = new Date().toISOString().slice(0, 10)
 
 const body = urls

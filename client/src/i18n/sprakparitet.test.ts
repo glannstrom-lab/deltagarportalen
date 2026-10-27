@@ -23,6 +23,7 @@
 import { describe, it, expect } from 'vitest'
 import sv from './locales/sv.json'
 import en from './locales/en.json'
+import { SKYDDADE_NAMN } from './skyddadeNamn'
 
 type Trad = { [k: string]: string | string[] | Trad }
 
@@ -93,23 +94,7 @@ describe('interpolationen är identisk mellan språken', () => {
  * "Arbetsförmedlingen (the Swedish Public Employment Service)" passerar,
  * eftersom kontrollen bara kräver att det svenska namnet FINNS kvar.
  */
-const SKYDDADE_NAMN = [
-  'Arbetsförmedlingen',
-  'Försäkringskassan',
-  'Migrationsverket',
-  'Skatteverket',
-  'Bolagsverket',
-  'Integritetsskyddsmyndigheten',
-  'a-kassa',
-  'CSN',
-  'personnummer',
-  'samordningsnummer',
-  'BankID',
-  'komvux',
-  'yrkeshögskola',
-  'folkbokföring',
-  'Jourhavande medmänniska',
-] as const
+// Listan bor i skyddadeNamn.json (delad med ArticleContent och guidesidorna, FN19).
 
 /** Nycklar där termen medvetet inte följer med till engelskan. */
 const UNDANTAG = new Set<string>([])
