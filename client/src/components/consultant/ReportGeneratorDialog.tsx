@@ -35,6 +35,8 @@ import { orgApi, type OrgKind } from '@/services/orgApi'
 import { regelverk } from '@/components/consultant/orgTypVisning'
 import { formatLocalDate } from '@/services/aktivitetSchema'
 import { kvartalGranser } from '@/services/ivoKvartal'
+import { A2_BESVARAD } from './a2Sparr'
+import { NamndTextSektion } from './NamndTextSektion'
 import {
   downloadNamndrapport,
   generateNamndrapportDataUrl,
@@ -64,6 +66,8 @@ interface ReportGeneratorDialogProps {
    * ögonblicksvärde-meddelande i stället för en påhittad period.
    */
   periodLabel?: string
+  /** AIX16: text till nämnden med AI. Standard = spärr A2 (a2Sparr.ts); tester sätter den. */
+  namndAi?: boolean
 }
 
 type ReportSection = 'overview' | 'cohort' | 'participants'
@@ -83,6 +87,7 @@ export function ReportGeneratorDialog({
   analyticsData,
   consultantName: consultantNameProp,
   periodLabel,
+  namndAi = A2_BESVARAD,
 }: ReportGeneratorDialogProps) {
   const { t, i18n } = useTranslation()
   const omfang = useRapportOmfang()
@@ -108,6 +113,8 @@ export function ReportGeneratorDialog({
   const [kvartalNyckel, setKvartalNyckel] = useState<KvartalValNyckel>('innevarande')
   const [namnd, setNamnd] = useState<{ underlag: Namndrapport; organisation: string | null } | null>(null)
   const [namndFel, setNamndFel] = useState<string | null>(null)
+  // AIX16: chefens tillägg under tabellen. `medAi` = utkastet kom från AI (märks i PDF:en).
+  const [tillagg, setTillagg] = useState({ text: '', medAi: false })
   // RR9 (rollspelet 2026-09-27): "Nämndrapport (kvartal)" är kommunens rapport
   // till socialnämnden och visades för Rusta och matcha-leverantörer. Samma
   // regel som Rapporter (orgTypVisning): gömd medan medlemskapen laddar, gömd
@@ -146,6 +153,7 @@ export function ReportGeneratorDialog({
       setGenerating(false)
       setNamnd(null)
       setNamndFel(null)
+      setTillagg({ text: '', medAi: false })
     }
   }, [isOpen])
 
@@ -186,13 +194,15 @@ export function ReportGeneratorDialog({
     setSelectedSections(newSections)
   }
 
+  const tillaggTillPdf = () => (namndAi && tillagg.text.trim() ? tillagg : undefined)
+
   const handleGeneratePreview = async () => {
     setGenerating(true)
     setNamndFel(null)
     try {
       if (valdTyp === 'namnd') {
         const { underlag, organisation } = await hamtaNamnd()
-        setPreviewUrl(await generateNamndrapportDataUrl(underlag, { organisation, konsulentNamn: consultantName, datum: formatLocalDate(new Date()) }))
+        setPreviewUrl(await generateNamndrapportDataUrl(underlag, { organisation, konsulentNamn: consultantName, datum: formatLocalDate(new Date()), tillagg: tillaggTillPdf() }))
         setStep('preview')
         return
       }
@@ -222,7 +232,7 @@ export function ReportGeneratorDialog({
 
   const handleDownload = () => {
     if (valdTyp === 'namnd') {
-      if (namnd) void downloadNamndrapport(namnd.underlag, { organisation: namnd.organisation, konsulentNamn: consultantName, datum: formatLocalDate(new Date()) })
+      if (namnd) void downloadNamndrapport(namnd.underlag, { organisation: namnd.organisation, konsulentNamn: consultantName, datum: formatLocalDate(new Date()), tillagg: tillaggTillPdf() })
       onClose()
       return
     }
@@ -368,6 +378,14 @@ export function ReportGeneratorDialog({
                   </p>
                   {namndFel && <p role="alert" className="text-sm text-red-700 dark:text-red-300 mt-2">{namndFel}</p>}
                 </div>
+              )}
+
+              {valdTyp === 'namnd' && namndAi && (
+                <NamndTextSektion
+                  hamtaUnderlag={async () => (await hamtaNamnd()).underlag}
+                  text={tillagg.text}
+                  onText={(text, franAi) => setTillagg((prev) => ({ text, medAi: franAi ? true : text.trim() ? prev.medAi : false }))}
+                />
               )}
 
               {valdTyp === 'konsult' && (<>

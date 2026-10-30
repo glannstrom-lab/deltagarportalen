@@ -185,4 +185,6 @@ function validera(value, text) {
 
 module.exports = {
   arRattstavning, validera, MAX_ANDRINGAR, TEXT_MAX, MAX_ANDEL_BERORD, FUNKTIONSORD,
+  // AIX8: hjälpfunktionerna delas med _tal.js.
+  ordLista, siffror, lika, avstand, tolerans, medHopslagna,
 };

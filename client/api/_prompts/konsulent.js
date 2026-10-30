@@ -1,6 +1,9 @@
 // KA3 (2026-09-12): Konsulentvyn: rapportutkast till uppdragsgivaren.
 // Flyttad ordagrant ur api/ai.js. Sanningsregeln läggs på i ./index.js, inte här.
 
+const { underlagText } = require('./_namndtext');
+const { katalogRader, postText, MAL_MAX } = require('./_aktivitetsforslag');
+
 module.exports = {
   // Konsulent: rapportutkast från journalanteckningar + måldata.
   // Klienten skickar ALDRIG deltagarens namn — personen refereras som
@@ -78,6 +81,49 @@ Skriv journalposten:`,
       maxTokens: 600,
       reasoningEffort: 'low',
       responseKey: 'journalpost'
+    };
+  },
+
+  // AIX16 (2026-10-30): text till nämnd och verksamhetsberättelse. Indata är BARA
+  // aggregerade tal ur nämndrapporten (services/namndTextApi.ts undertrycker celler
+  // under 5 före anropet och underlagText() gör det en gång till här). Validatorn
+  // (_namndtext.js) stryker varje mening med ett tal som inte står i underlaget,
+  // en orsaksförklaring eller en utveckling över tid. Svarsformen är ett platt objekt.
+  'konsulent-namndtext': (data) => {
+    return {
+      system: 'Du hjälper en chef på en kommun att skriva en kort löptext till socialnämnden om aktivitetskravet under ett kvartal. Underlaget är en redan färdig räkning, uppdelad på grupper. Skriv två korta stycken på svenska, högst 140 ord sammanlagt, sakligt och i dåtid, och börja med "Under kvartalet". Använd ENBART tal som står ordagrant i underlaget och skriv dem som siffror utan mellanslag eller tusentalsavgränsare. Räkna aldrig ut nya tal: ingen summa, differens, andel, kvot eller medelvärde som inte redan står där, och inga ord som "hälften" eller "dubbelt". Förklara aldrig varför något blev som det blev: inga orsaker, inga antaganden om deltagarna och inget om vad som borde göras. Jämför inte med andra kvartal eller år, eftersom underlaget saknar sådana tal, och skriv inget om en ökning eller minskning. Värdera inte (inte bra eller dålig, inte positiv eller negativ). Uppgifter markerade "undertryckt" eller "—" redovisas inte: nämn dem inte och gissa aldrig ett värde. Skriv inga namn och inga enskilda personer, bara grupperna. Svara ENDAST med JSON, ingen annan text, i exakt den här formen: {"text":"…"}',
+      user: `UNDERLAG:
+${underlagText(data?.underlag)}
+
+Svara med JSON:`,
+      maxTokens: 900,
+      reasoningEffort: 'low',
+      parseJson: true,
+      responseKey: 'namndtext'
+    };
+  },
+
+  // AIX21 (2026-10-30): aktivitetsförslag ur organisationens egen katalog. Prompten
+  // får katalogposterna under korta id:n och får bara svara med dem; validatorn
+  // (_aktivitetsforslag.js) förkastar varje okänt id. Svarsformen är en lista av
+  // platta objekt, aldrig [[…]] (modellen tappar sista ]). Målet är konsulentens
+  // egen formulering och pseudonymiseras av callAI före anropet.
+  'konsulent-aktivitetsforslag': (data) => {
+    const poster = katalogRader(data?.katalog);
+    const mal = typeof data?.mal === 'string' ? data.mal.trim().slice(0, MAL_MAX) : '';
+    return {
+      system: 'Du hjälper en arbetskonsulent att välja aktiviteter åt en deltagare. Du får deltagarens mål, skrivet av konsulenten, och en lista över kommunens egna aktiviteter, var och en med ett kort id. Välj tre till fyra aktiviteter ur listan som tydligt passar målet. Passar färre än tre, välj färre; passar ingen, svara med en tom lista. Svara BARA med id:n ur listan, aldrig med en aktivitet som inte står där. Skriv en motivering på en mening (högst 25 ord) per aktivitet som kopplar den till något som står i målet. Hitta aldrig på innehåll, tider, platser eller siffror som inte står i listan eller i målet. Gissa inte om deltagarens hälsa eller bakgrund. Svara ENDAST med JSON, ingen annan text, i exakt den här formen: {"forslag":[{"id":"a1","motivering":"…"}]}',
+      user: `MÅL:
+${mal || 'Inget mål angivet.'}
+
+AKTIVITETER:
+${poster.map(postText).join('\n') || 'Inga aktiviteter.'}
+
+Svara med JSON:`,
+      maxTokens: 700,
+      reasoningEffort: 'low',
+      parseJson: true,
+      responseKey: 'aktivitetsforslag'
     };
   },
 };

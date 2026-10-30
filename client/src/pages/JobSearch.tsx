@@ -45,6 +45,7 @@ import { AlertsTab } from '@/components/jobs/AlertsTab';
 import { MatchningTab } from '@/components/jobs/MatchningTab';
 import { DailyJobTab } from '@/components/jobs/DailyJobTab';
 import { AnnonsForklaring } from '@/components/jobs/AnnonsForklaring';
+import { AnnonsMatchning } from '@/components/jobs/AnnonsMatchning';
 import { SlumpjobbetTab } from '@/components/jobs/SlumpjobbetTab';
 
 // Tab definitions with i18n keys
@@ -1263,6 +1264,11 @@ function SearchTab() {
                     {/* AIX1: annonsen i enkla ord, med citat ur texten. */}
                     <AnnonsForklaring
                       storlek="stor"
+                      annons={{ id: selectedJob.id, titel: selectedJob.headline, foretag: selectedJob.employer?.name, text: selectedJob.description?.text ?? '' }}
+                    />
+
+                    {/* AIX9: skälen rad för rad, med citat ur annonsen och CV:t. Inget procenttal. */}
+                    <AnnonsMatchning
                       annons={{ id: selectedJob.id, titel: selectedJob.headline, foretag: selectedJob.employer?.name, text: selectedJob.description?.text ?? '' }}
                     />
                   </div>

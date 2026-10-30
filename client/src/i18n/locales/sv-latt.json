@@ -1811,5 +1811,59 @@
     "interview": {
       "storyHint": "I vanligt läge kan du också skriva en berättelse om något du klarade. Sedan kan du öva på att berätta den."
     }
+  },
+  "tal": {
+    "saknas": "Din webbläsare kan inte skriva ner tal. Prova Chrome, Edge eller Safari. Eller skriv som vanligt.",
+    "fel": "Det gick inte att städa texten nu. Det du sa finns kvar. Du kan använda det som det är.",
+    "klart": "Klart. Texten ligger sist i fältet.",
+    "info": "När du pratar skickar din webbläsare ljudet till sin leverantör. I Chrome är det Google. Då blir ljudet till text. Vi sparar inget ljud. Sedan städar vår AI-tjänst texten. Du väljer själv vad som blir kvar.",
+    "stoppa": "Sluta prata",
+    "knapp": "Prata in text",
+    "lyssnar": "Jag lyssnar. Prata på. Tryck på Sluta prata när du är klar.",
+    "rensar": "Städar texten …",
+    "hort": "Det här skrevs ner:",
+    "langText": "Texten är lång. Vi städar de första {{antal}} tecknen.",
+    "rensa": "Städa texten",
+    "anvandOriginal": "Använd som den är",
+    "kasta": "Släng",
+    "original": "Som du sa det",
+    "rensad": "Städad",
+    "anvandRensad": "Använd den städade"
+  },
+  "annonsMatchning": {
+    "knapp": "Varför passar jobbet mig?",
+    "region": "Ditt CV och annonsen",
+    "laddar": "Läser annonsen och ditt CV …",
+    "fel": "Det gick inte att jämföra nu. Försök igen strax.",
+    "proviIgen": "Försök igen",
+    "inteCv": "Du har inget CV än. Skriv några rader i ditt CV, så kan vi visa vad som stämmer med annonsen.",
+    "tillCv": "Gå till ditt CV",
+    "ansvar": "En AI har jämfört. Det som gäller är annonsen. Det är inget betyg på dig.",
+    "tomt": "Vi hittade inget som vi kunde peka ut säkert. Läs annonsen själv. Jämför med ditt CV.",
+    "traffar": "Det här finns i ditt CV",
+    "saknas": "Det här hittar vi inte i ditt CV",
+    "saknasTips": "Har du det ändå? Skriv in det i ditt CV. Du behöver inte klara allt för att söka.",
+    "iAnnonsen": "Så står det i annonsen:",
+    "iCv": "Så står det i ditt CV:"
+  },
+  "brevstil": {
+    "rubrik": "Brevskrivaren lär sig av dig",
+    "laddar": "Hämtar dina inställningar…",
+    "lasfel": "Vi kunde inte hämta dina inställningar nu. Inget har ändrats.",
+    "forsokIgen": "Försök igen",
+    "intro": "Du kan ändra ett utkast till ett brev och spara det. Då kan Jobin se hur du gillar att skriva. Till exempel utan utropstecken eller med korta meningar. Det är ingen AI-träning. Det räknas ut i din webbläsare och sparas på ditt konto. Nästa gång du skriver ett brev får skrivhjälpen veta hur du vill ha det. Det gäller bara stilen. Aldrig vad du har gjort eller kan.",
+    "val": "Låt brevskrivaren lära sig av mina ändringar",
+    "paForklaring": "Påslaget. Du kan stänga av det när du vill. Då används inga val och inga nya sparas.",
+    "avForklaring": "Avstängt. Inget sparas och inget skickas med.",
+    "listaRubrik": "Det Jobin har sett",
+    "tomt": "Inget än. Det kommer hit när du har ändrat ett utkast och sparat brevet.",
+    "andraEtikett": "Ändra raden",
+    "spara": "Spara",
+    "avbryt": "Avbryt",
+    "andra": "Ändra",
+    "taBort": "Ta bort",
+    "rensaAlla": "Ta bort alla",
+    "sparFel": "Det gick inte att spara nu. Försök igen om en stund.",
+    "halsaFel": "Raden är tom, eller så handlar den om hälsa. Här sparas bara hur du vill att brevet ska låta. Skriv om raden, eller ta bort den."
   }
 }

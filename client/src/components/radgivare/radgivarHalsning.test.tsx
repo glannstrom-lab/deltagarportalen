@@ -160,8 +160,10 @@ describe('hälsningen på en verktygssida', () => {
 
   it('/externa-resurser får sin egen hälsning, inte de sparade resursernas', () => {
     rendera('/externa-resurser')
-    expect(screen.getByText(SIDHALSNINGAR.externalResources.sv)).toBeTruthy()
-    expect(screen.queryByText(SIDHALSNINGAR.resources.sv)).toBeNull()
+    // Texten kan vara delad i flera noder (translate="no" runt myndighetsnamn, FN19) — jämför textContent.
+    const medText = (t: string) => screen.queryAllByText((_, el) => el?.tagName === 'P' && el.textContent === t)
+    expect(medText(SIDHALSNINGAR.externalResources.sv).length).toBeGreaterThan(0)
+    expect(medText(SIDHALSNINGAR.resources.sv)).toHaveLength(0)
   })
 
   it('en sida utan rådgivare får ingen hälsning', () => {

@@ -56,6 +56,8 @@ const AI_ENABLED_EXEMPT_FUNCTIONS = new Set([
   'konsulent-rapportutkast',
   'konsulent-lagesbild',
   'konsulent-journalpost',
+  'konsulent-namndtext',
+  'konsulent-aktivitetsforslag',
 ])
 
 /**

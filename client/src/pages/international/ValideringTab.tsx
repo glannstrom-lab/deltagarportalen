@@ -20,6 +20,7 @@
  * ligger kvar ordagrant, men bakom "Läs mer" — inget är borttaget.
  */
 import { useTranslation } from 'react-i18next'
+import { Skyddad } from '@/i18n/Skyddad'
 import { Link } from 'react-router-dom'
 import { GraduationCap, Stethoscope, FileCheck, Info, ExternalLink, ArrowRight } from '@/components/ui/icons'
 import { Card } from '@/components/ui'
@@ -83,7 +84,7 @@ export default function ValideringTab() {
             </p>
             <Ytterlank href={LANKAR.uhr}>{t('international.validation.uhr.link')}</Ytterlank>
             <LasMer>
-              <p>{t('international.validation.uhr.body')}</p>
+              <p><Skyddad text={t('international.validation.uhr.body')} /></p>
               <p>{t('international.validation.uhr.tip')}</p>
             </LasMer>
           </div>
@@ -97,7 +98,7 @@ export default function ValideringTab() {
           <div className="min-w-0">
             <h2 className={RUBRIK}>{t('international.validation.regulated.title')}</h2>
             <p className={RAD}>
-              {t('international.validation.regulated.lead', 'Många yrken i vården och skolan kräver svensk legitimation.')}
+              <Skyddad text={t('international.validation.regulated.lead', 'Många yrken i vården och skolan kräver svensk legitimation.')} />
             </p>
             <div className="flex flex-wrap gap-x-5 gap-y-2">
               <Ytterlank href={LANKAR.socialstyrelsen}>
@@ -108,12 +109,12 @@ export default function ValideringTab() {
               </Ytterlank>
             </div>
             <LasMer>
-              <p>{t('international.validation.regulated.body')}</p>
+              <p><Skyddad text={t('international.validation.regulated.body')} /></p>
               <p>{t('international.validation.regulated.health')}</p>
               <p>{t('international.validation.regulated.teacher')}</p>
               <p>
-                {t('international.validation.regulated.other')}{' '}
-                <Ytterlank href={LANKAR.arbetsformedlingen}>Arbetsförmedlingen</Ytterlank>
+                <Skyddad text={t('international.validation.regulated.other')} />{' '}
+                <Ytterlank href={LANKAR.arbetsformedlingen}><Skyddad text="Arbetsförmedlingen" /></Ytterlank>
               </p>
             </LasMer>
           </div>
@@ -134,7 +135,7 @@ export default function ValideringTab() {
                 <p className={RAD}>
                   {t('international.validation.permit.euAnswer', 'Du behöver inget tillstånd.')}
                 </p>
-                <Ytterlank href={LANKAR.mvEu}>{t('international.validation.permit.linkEu')}</Ytterlank>
+                <Ytterlank href={LANKAR.mvEu}><Skyddad text={t('international.validation.permit.linkEu')} /></Ytterlank>
               </li>
               <li className="p-3 rounded-lg bg-stone-50 dark:bg-stone-700 border border-stone-200 dark:border-stone-600">
                 <p className="text-sm font-medium text-stone-900 dark:text-stone-100">
@@ -145,19 +146,19 @@ export default function ValideringTab() {
                 </p>
                 <div className="flex flex-col gap-1">
                   <Ytterlank href={LANKAR.mvArbetstillstand}>
-                    {t('international.validation.permit.linkPermit')}
+                    <Skyddad text={t('international.validation.permit.linkPermit')} />
                   </Ytterlank>
                   <Ytterlank href={LANKAR.mvUndantag}>
-                    {t('international.validation.permit.linkException')}
+                    <Skyddad text={t('international.validation.permit.linkException')} />
                   </Ytterlank>
                 </div>
               </li>
             </ul>
             <LasMer>
-              <p>{t('international.validation.permit.eu')}</p>
-              <p>{t('international.validation.permit.thirdCountry')}</p>
+              <p><Skyddad text={t('international.validation.permit.eu')} /></p>
+              <p><Skyddad text={t('international.validation.permit.thirdCountry')} /></p>
               <p className="text-xs text-stone-600 dark:text-stone-400">
-                {t('international.validation.permit.noNumbers')}
+                <Skyddad text={t('international.validation.permit.noNumbers')} />
               </p>
             </LasMer>
           </div>

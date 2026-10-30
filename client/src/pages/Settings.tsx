@@ -21,6 +21,8 @@ import { ProgramSelector } from '@/components/settings/ProgramSelector'
 import { SprakVal } from '@/components/settings/SprakVal'
 import { DeleteAccountSection } from '@/components/settings/DeleteAccountSection'
 import { MittUnderlagSection } from '@/components/settings/MittUnderlagSection'
+import { BrevStilSection } from '@/components/settings/BrevStilSection'
+import { BREV_STIL_KOLUMN_FINNS } from '@/lib/brevStil'
 import { DataSharingSettings } from '@/components/consent/DataSharingSettings'
 import {
   Card, CardHeader, CardSection,
@@ -895,6 +897,13 @@ function SettingsInner() {
             <CardSection title={t('underlag.rubrik', 'Ta med dig ditt underlag')}>
               <MittUnderlagSection />
             </CardSection>
+
+            {/* KF13: brevskrivaren lär sig av dina ändringar. Av som standard; sektionen finns först när kolumnen finns. */}
+            {BREV_STIL_KOLUMN_FINNS && !orgAiSparr && (
+              <CardSection title={t('brevstil.rubrik', 'Brevskrivaren lär sig av dig')}>
+                <BrevStilSection />
+              </CardSection>
+            )}
 
             {/* Delete Account Section */}
             <CardSection title={t('settings.deleteAccount.sectionTitle')}>

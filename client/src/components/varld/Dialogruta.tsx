@@ -17,6 +17,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { Skyddad } from '@/i18n/Skyddad'
 import { ArrowRight, EyeOff, Pause, Volume2, X, RefreshCw } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 import { COACHES, type CoachId } from '@/data/coaches'
@@ -141,7 +142,7 @@ export function Dialogruta({ coachId, repliker, variant = 'kort', vidByte, class
           className="min-w-0 flex-1 text-left text-[0.9375rem] text-stone-700 dark:text-stone-300 truncate hover:underline underline-offset-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--c-solid)] rounded"
         >
           <span translate="no" className="font-semibold text-stone-900 dark:text-stone-100">{coach.name}: </span>
-          {replik.knapp ? replik.knapp.text : replik.text}
+          <Skyddad text={replik.knapp ? replik.knapp.text : replik.text} />
         </button>
         {!saknas && (
           <button
@@ -229,7 +230,7 @@ export function Dialogruta({ coachId, repliker, variant = 'kort', vidByte, class
 
           <div className="col-span-2 sm:col-span-1 sm:col-start-2 min-w-0">
           <p key={replik.nyckel} className="varld-replik m-0 text-[1rem] sm:text-[1.0625rem] leading-relaxed text-stone-800 dark:text-stone-100 max-w-[62ch]">
-            {replik.text}
+            <Skyddad text={replik.text} />
           </p>
           {replik.detalj && (
             <p className="m-0 mt-1.5 text-[0.875rem] leading-snug text-stone-600 dark:text-stone-400 max-w-[62ch]">

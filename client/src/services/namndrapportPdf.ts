@@ -173,6 +173,8 @@ export interface NamndrapportMeta {
   konsulentNamn?: string
   /** `YYYY-MM-DD` — skickas in så tester och PDF:en säger samma datum. */
   datum: string
+  /** AIX16: chefens egen text under tabellen. Ett TILLÄGG — tabellerna står kvar oavsett. */
+  tillagg?: { text: string; medAi: boolean }
 }
 
 const STRECK = '—'
@@ -236,7 +238,21 @@ export async function generateNamndrapportDoc(u: Namndrapport, meta: Namndrappor
 
   const efterTabell = (doc as unknown as { lastAutoTable?: { finalY: number } }).lastAutoTable?.finalY ?? 80
   let y = efterTabell + 8
+  const sidhojd = doc.internal.pageSize.getHeight()
   doc.setFontSize(9)
+  const tillaggText = meta.tillagg?.text.trim()
+  if (tillaggText) {
+    const rubrik = meta.tillagg?.medAi
+      ? `Text till nämnden (utkast med AI-stöd, granskat av ${meta.konsulentNamn ?? 'konsulenten'})`
+      : 'Text till nämnden'
+    const brutna = doc.splitTextToSize(tillaggText, bredd - 2 * marginal) as string[]
+    if (y + 6 + brutna.length * 4.6 > sidhojd - 15) { doc.addPage(); y = 20 }
+    doc.setFont('helvetica', 'bold')
+    doc.text(rubrik, marginal, y)
+    doc.setFont('helvetica', 'normal')
+    doc.text(brutna, marginal, y + 6)
+    y += 6 + brutna.length * 4.6 + 6
+  }
   const rader = [
     'Läsanvisning: "Deltagare med plan" = unika personer med en aktivitetsplan som var aktiv någon dag i kvartalet.',
     '"Bedömda pass" = pass där konsulenten satt närvaro. "Närvarograd" = närvarande (inkl. extern aktivitet) delat med bedömda pass.',

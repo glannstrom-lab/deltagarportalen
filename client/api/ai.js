@@ -222,11 +222,15 @@ const LANGA_FALT = { cvText: 10000 };
 // sammansättningen (inkl. sanningsregeln på varje prompt) i ./_prompts/index.js.
 const { PROMPTS } = require('./_prompts');
 const { citatFinnsIAnnons, normalisera, ANNONS_MAX } = require('./_prompts/_annons');
+const { valideraSkal } = require('./_prompts/_matchskal'); // AIX9
 const berattelse = require('./_prompts/_berattelse'); // AIX4
 const forstaSteg = require('./_prompts/_forstasteg'); // AIX7
 const { validera: valideraRattstavning } = require('./_prompts/_rattstavning');
+const { validera: valideraTal } = require('./_prompts/_tal');
 const { validera: valideraVardag } = require('./_prompts/_vardag'); // AIX2
 const { validera: valideraSprak } = require('./_prompts/_sprakvalidering');
+const { validera: valideraNamndtext } = require('./_prompts/_namndtext'); // AIX16
+const { validera: valideraAktivitetsforslag } = require('./_prompts/_aktivitetsforslag'); // AIX21
 
 // ============================================
 // Rate Limiting Configuration
@@ -258,8 +262,11 @@ const RATE_LIMITS = {
   'konsulent-rapportutkast': { limit: 10, windowMinutes: 15 },
   'konsulent-lagesbild': { limit: 20, windowMinutes: 15 },
   'konsulent-journalpost': { limit: 40, windowMinutes: 15 }, // AIX11 — det konsulenten gör flest gånger per dag
+  'konsulent-namndtext': { limit: 10, windowMinutes: 15 }, // AIX16 — en text per kvartal och chef
+  'konsulent-aktivitetsforslag': { limit: 30, windowMinutes: 15 }, // AIX21
   // AIX1/AIX5/AIX6 (2026-10-27): deltagarens ansökningsstöd.
   'annons-forklaring': { limit: 15, windowMinutes: 15 },
+  'annons-matchning': { limit: 15, windowMinutes: 15 }, // AIX9
   'samtalsmanus': { limit: 10, windowMinutes: 15 },
   'uppfoljningsmejl': { limit: 10, windowMinutes: 15 },
   // AIX4 (2026-10-30): en omgång = en händelse och upp till fyra följdfrågor.
@@ -267,6 +274,7 @@ const RATE_LIMITS = {
   // AIX27 (2026-10-30): rättstavning av eget brev.
   'ratta-stavning': { limit: 15, windowMinutes: 15 },
   'vad-har-jag-med-mig': { limit: 10, windowMinutes: 15 }, // AIX2
+  'rensa-tal': { limit: 15, windowMinutes: 15 }, // AIX8
   // AIX24/AIX29 (2026-10-30): språkstöd.
   'myndighetsbrev': { limit: 10, windowMinutes: 15 },
   'gor-mindre': { limit: 15, windowMinutes: 15 },
@@ -486,6 +494,8 @@ const AI_ENABLED_EXEMPT_FUNCTIONS = new Set([
   'konsulent-rapportutkast',
   'konsulent-lagesbild', // KF6 — samma resonemang: deltagarens data, personalens anrop
   'konsulent-journalpost', // AIX11 — stolpar om deltagaren, personalens anrop
+  'konsulent-namndtext', // AIX16 — aggregerade tal, men organisationens data och personalens anrop
+  'konsulent-aktivitetsforslag', // AIX21 — målet om en deltagare, personalens anrop
 ]);
 
 /**
@@ -923,9 +933,21 @@ function extractJsonContent(raw) {
  * @returns {{ ok: true, value: unknown } | { ok: false, error: string }}
  */
 const RESPONSE_VALIDATORS = {
+  // AIX16 (2026-10-30): text till nämnd. Logiken bor i _prompts/_namndtext.js (varje tal ska stå i
+  // underlaget, inga orsaker, inga jämförelser över tid; meningar som bryter stryks).
+  'konsulent-namndtext': (value, indata) => valideraNamndtext(value, indata),
+
+  // AIX21 (2026-10-30): aktivitetsförslag. Logiken bor i _prompts/_aktivitetsforslag.js (varje id ska
+  // finnas i katalogen som prompten fick; okända förkastas).
+  'konsulent-aktivitetsforslag': (value, indata) => valideraAktivitetsforslag(value, indata),
+
   // AIX2 (2026-10-30): Vad har jag med mig? Logiken bor i _prompts/_vardag.js (citat ordagrant
   // i personens svar, inga nya siffror/titlar/omfattningsord, ingen hälsa).
   'vad-har-jag-med-mig': (value, indata) => valideraVardag(value, indata),
+
+  // AIX8 (2026-10-30): "Prata, så skriver vi". Logiken bor i _prompts/_tal.js (inga nya
+  // ord av betydelse, inga nya siffror, inget innehåll borttaget, inte längre än originalet).
+  'rensa-tal': (value, indata) => valideraTal(value, typeof indata?.text === 'string' ? indata.text : ''),
 
   // AIX27 (2026-10-30): rättstavning. Logiken bor i _prompts/_rattstavning.js
   // (deterministisk kontroll: inga nya ord av betydelse, inga nya siffror, inte
@@ -942,6 +964,15 @@ const RESPONSE_VALIDATORS = {
   // 3 000). Rader utan belägg tas bort här, på servern — klienten får aldrig
   // se ett krav ingen kan peka ut i annonsen. Tom lista är ett giltigt svar
   // (annonsen kan sakna krav); ett svar som inte ens är ett objekt är det inte.
+  // AIX9 (2026-10-30): Varför passar annonsen mig? Logiken bor i
+  // _prompts/_matchskal.js: annonscitat mot annonsen, CV-citat mot CV-texten,
+  // inga procenttal. Jämförs mot texterna som prompten fick.
+  'annons-matchning': (value, indata) => valideraSkal(
+    value,
+    typeof indata?.annons === 'string' ? indata.annons : '',
+    typeof indata?.cvText === 'string' ? indata.cvText : '',
+  ),
+
   'annons-forklaring': (value, indata) => {
     if (!isPlainObject(value)) {
       return { ok: false, error: 'annonsförklaringen var inte ett JSON-objekt' };

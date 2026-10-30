@@ -14,6 +14,8 @@ import { valbaraPasstyper, veckovisaDatum, type PassTyp } from '@/services/aktiv
 import { PLAN_PASS_KOLUMNER_FINNS, forvaldaFlaggor } from '@/services/planMarkning'
 import { PassFlaggorFalt, type Flaggor } from '../PassFlaggorFalt'
 import { AKTIVITETSTYP_ETIKETT, AKTIVITETSTYP_ORDNING, kortDatum } from '../aktivitetEtiketter'
+import { A2_BESVARAD } from '../a2Sparr'
+import { AktivitetsforslagYta } from './AktivitetsforslagYta'
 
 export interface NyttPassDialogProps {
   isOpen: boolean
@@ -25,6 +27,8 @@ export interface NyttPassDialogProps {
   planSlut: string | null
   /** Antal pass som lades till (fler än ett vid upprepning). */
   onCreated: (antal: number) => void
+  /** AIX21: förslag ur katalogen. Standard = spärr A2 (a2Sparr.ts); tester sätter den. */
+  aktivitetsforslag?: boolean
 }
 
 export function NyttPassDialog(props: NyttPassDialogProps) {
@@ -33,7 +37,7 @@ export function NyttPassDialog(props: NyttPassDialogProps) {
   return <NyttPassForm {...props} />
 }
 
-function NyttPassForm({ isOpen, onClose, planId, participantId, defaultDate, planSlut, onCreated }: NyttPassDialogProps) {
+function NyttPassForm({ isOpen, onClose, planId, participantId, defaultDate, planSlut, onCreated, aktivitetsforslag = A2_BESVARAD }: NyttPassDialogProps) {
   const [form, setForm] = useState<SessionInput>({ date: defaultDate, start_time: '09:00', end_time: '12:00', title: '', activity_type: 'jobsearch', location: '' })
   // RK28: upprepa varje vecka till planens slut. Utan slutdatum finns inget slut att gå till.
   const [upprepa, setUpprepa] = useState(false)
@@ -75,6 +79,12 @@ function NyttPassForm({ isOpen, onClose, planId, participantId, defaultDate, pla
         <h2 id="nytt-pass-title" className="m-0 font-rubrik text-lg font-bold">Lägg till pass</h2>
       </div>
       <div className="p-5 space-y-4">
+        {aktivitetsforslag && (
+          <AktivitetsforslagYta
+            franDatum={form.date || defaultDate}
+            onValj={(f) => setForm((prev) => ({ ...prev, ...f }))}
+          />
+        )}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <Input id="pass-datum" label="Datum" type="date" value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} fullWidth />
           <Input id="pass-start" label="Start" type="time" value={form.start_time} onChange={(e) => setForm({ ...form, start_time: e.target.value })} fullWidth />

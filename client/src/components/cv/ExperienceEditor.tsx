@@ -11,6 +11,7 @@ import {
   Sparkles, CheckCircle, AlertCircle, ArrowUp, ArrowDown
 } from '@/components/ui/icons'
 import { RichTextEditor } from './RichTextEditor'
+import { PrataSaSkriverVi } from '@/components/tal/PrataSaSkriverVi'
 import type { WorkExperience } from '@/services/supabaseApi'
 import { formatLocalDate } from '@/services/aktivitetSchema'
 
@@ -441,6 +442,11 @@ export function ExperienceEditor({ experiences, onChange }: ExperienceEditorProp
                             maxLength={1000}
                             minHeight="100px"
                             helpText="Tips: Använd aktiva verb som 'Ledde', 'Utvecklade', 'Förbättrade'. Kvantifiera resultat när det är möjligt."
+                          />
+                          {/* AIX8: prata in beskrivningen */}
+                          <PrataSaSkriverVi
+                            text={exp.description || ''}
+                            onApply={(nyText) => updateExperience(exp.id, 'description', nyText)}
                           />
                         </div>
 

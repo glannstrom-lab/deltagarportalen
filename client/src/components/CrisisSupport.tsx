@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import { useTranslation } from 'react-i18next'
+import { Skyddad } from '@/i18n/Skyddad'
 import { Heart, X, Phone, ExternalLink, MessageCircle, Shield } from '@/components/ui/icons'
 
 interface CrisisResource {
@@ -255,7 +256,7 @@ export default function CrisisSupport({ variant = 'fixed' }: CrisisSupportProps)
                             "Dygnet / runt". rose-500 på vitt var 3,7:1 → rose-700. */}
                         <div className="min-w-0 flex-1">
                           <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-                            <span className="font-semibold text-rose-900">{t(resource.nameKey)}</span>
+                            <span className="font-semibold text-rose-900"><Skyddad text={t(resource.nameKey)} /></span>
                             <span className="text-xs text-rose-700 font-medium bg-white px-2 py-0.5 rounded whitespace-nowrap">
                               {t(resource.hoursKey)}
                             </span>
@@ -292,7 +293,7 @@ export default function CrisisSupport({ variant = 'fixed' }: CrisisSupportProps)
                         </div>
                         <div className="flex-1">
                           <div className="font-medium text-stone-900">
-                            {t(resource.nameKey)}
+                            <Skyddad text={t(resource.nameKey)} />
                           </div>
                           <div className="text-sm text-stone-600">
                             {t(resource.descriptionKey)}
@@ -328,7 +329,7 @@ export default function CrisisSupport({ variant = 'fixed' }: CrisisSupportProps)
                       <ExternalLink size={18} className="text-stone-600" aria-hidden="true" />
                       <div className="flex-1">
                         <div className="font-medium text-stone-900">
-                          {t(resource.nameKey)}
+                          <Skyddad text={t(resource.nameKey)} />
                         </div>
                         <div className="text-sm text-stone-700">
                           {t(resource.descriptionKey)}

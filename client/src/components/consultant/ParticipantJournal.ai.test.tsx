@@ -12,7 +12,8 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { ConfirmDialogProvider } from '@/components/ui/ConfirmDialog'
-import { ParticipantJournal, JOURNAL_AI_A2_BESVARAD, type JournalMutationResult } from './ParticipantJournal'
+import { ParticipantJournal, type JournalMutationResult } from './ParticipantJournal'
+import { A2_BESVARAD } from './a2Sparr'
 import { AI_MARKERING } from './journalAi'
 import { callAI } from '@/services/aiApi'
 
@@ -192,7 +193,7 @@ describe('AIX11 — granskning och fel', () => {
   })
 
   it('spärr A2: knappen finns inte i drift förrän juristfrågan är besvarad', () => {
-    expect(JOURNAL_AI_A2_BESVARAD).toBe(false)
+    expect(A2_BESVARAD).toBe(false)
     renderJournal({ journalAi: undefined })
     skrivStolpar('sökt 2 jobb')
     expect(screen.queryByTestId('journalpost-ai')).toBeNull()

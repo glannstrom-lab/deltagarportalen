@@ -41,6 +41,7 @@ import { RichTextEditor } from '@/components/cv/RichTextEditor'
 import { ExperienceEditor } from '@/components/cv/ExperienceEditor'
 import { VadHarJagMedMig } from '@/components/cv/VadHarJagMedMig'
 import { Rattstavning } from '@/components/cover-letter/Rattstavning'
+import { PrataSaSkriverVi } from '@/components/tal/PrataSaSkriverVi'
 import { EducationEditor } from '@/components/cv/EducationEditor'
 import { SkillsEditor } from '@/components/cv/SkillsEditor'
 import { ContextualHelp } from '@/components/cv/ContextualHelp'
@@ -1086,6 +1087,8 @@ export default function CVBuilder() {
         </div>
         {/* AIX27: rättstavning av sammanfattningen. Bara godkända ändringar tillämpas. */}
         <Rattstavning text={data.summary || ''} onApply={(nyText) => setData(prev => ({ ...prev, summary: nyText }))} />
+        {/* AIX8: prata in sammanfattningen. Original och städad text visas bredvid varandra. */}
+        <PrataSaSkriverVi text={data.summary || ''} onApply={(nyText) => setData(prev => ({ ...prev, summary: nyText }))} />
       </Card>
 
       <ContextualHelp context="summary" data={data.summary} />

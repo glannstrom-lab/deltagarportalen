@@ -98,6 +98,7 @@ import { UtkastGranskning } from './UtkastGranskning'
 import { hittaHalsoord } from './utkastGranskare'
 
 import { AI_MARKERING, medAiMarkering } from './journalAi'
+import { A2_BESVARAD } from './a2Sparr'
 
 export type NoteCategory = 'GENERAL' | 'PROGRESS' | 'CONCERN' | 'GOAL'
 
@@ -136,7 +137,7 @@ interface ParticipantJournalProps {
   solKolumner?: boolean
   /** AIX11: AI avstängd (egen brytare eller organisationens) — knappen "Formulera med AI" visas då inte. */
   aiAv?: boolean
-  /** AIX11 visas bara när spärren A2 är hävd (se JOURNAL_AI_A2_BESVARAD). Tester sätter den. */
+  /** AIX11 visas bara när spärren A2 är hävd (se a2Sparr.ts). Tester sätter den. */
   journalAi?: boolean
   className?: string
 }
@@ -168,14 +169,6 @@ const categoryConfig: Record<NoteCategory, { label: string; badge: string; borde
   },
 }
 
-/**
- * Spärr för AIX11 (ROADMAP rad "Spärr för AIX11–AIX22"): juristfrågan A2 — rättslig
- * grund för att konsulentens AI behandlar deltagarens journaldata — ska vara
- * besvarad innan funktionen släpps till kund. Push är deploy, så koden ligger i
- * drift men knappen är av. Sätt true först när A2 är besvarad.
- */
-export const JOURNAL_AI_A2_BESVARAD = false
-
 export function ParticipantJournal({
   participantName,
   entries,
@@ -187,7 +180,7 @@ export function ParticipantJournal({
   currentConsultantId,
   solKolumner = JOURNAL_SOL_KOLUMNER,
   aiAv = false,
-  journalAi = JOURNAL_AI_A2_BESVARAD,
+  journalAi = A2_BESVARAD,
   className,
 }: ParticipantJournalProps) {
   const { confirm } = useConfirmDialog()

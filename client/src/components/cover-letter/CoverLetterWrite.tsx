@@ -59,9 +59,11 @@ import { AIGeneratedWatermark, AIBadge } from '@/components/ai/AIBadge'
 import { userApi } from '@/services/userApi'
 import { generateCoverLetterPDFViaReactPdf, downloadPDF } from '@/services/pdfExportService'
 import { useAutoSave } from '@/hooks/useAutoSave'
+import { stilForAnrop, laraAvAndringar } from '@/lib/brevStil'
 import type { CVData, ProfilePreferences } from '@/services/supabaseApi'
 import { KortaVersioner, type KortLangd } from './KortaVersioner'
 import { Rattstavning } from './Rattstavning'
+import { PrataSaSkriverVi } from '@/components/tal/PrataSaSkriverVi'
 import { byggBrevmall, raknaLuckor } from '@/data/brevmall'
 
 // Sparat jobb interface
@@ -182,6 +184,8 @@ async function generateCoverLetterWithAI(data: {
   }
   tone: 'professional' | 'enthusiastic' | 'formal'
   extraMotivation?: string
+  /** KF13: deltagarens egna stilpreferenser (bara om hon slagit på det). Stil, aldrig fakta. */
+  stilpreferenser?: string[]
   /**
    * Skav 14 (persona 2026-09-12): "Skriv ett nytt utkast" bad om exakt samma
    * underlag som första genereringen, så modellen — särskilt vid låg
@@ -293,6 +297,7 @@ async function generateCoverLetterWithAI(data: {
     // luckor att fylla i. Se `personligt-brev` i client/api/ai.js.
     tomtUnderlag: !data.cvData && !fullContext,
     ...(data.langd ? { langd: data.langd } : {}),
+    ...(data.stilpreferenser && data.stilpreferenser.length > 0 ? { stilpreferenser: data.stilpreferenser } : {}),
   })
 }
 
@@ -629,6 +634,7 @@ export function CoverLetterWrite() {
         tone: formData.tone,
         extraMotivation: formData.motivation,
         variera: opts?.variera === true,
+        stilpreferenser: await stilForAnrop(user?.id),
       })
 
       // `callAI` är löst typad, så svaret smalnas av här i stället för att
@@ -666,6 +672,7 @@ export function CoverLetterWrite() {
       tone: formData.tone,
       extraMotivation: formData.motivation,
       langd,
+      stilpreferenser: await stilForAnrop(user?.id),
     })
     const payload = result as { brev?: unknown; result?: unknown }
     const raw = payload.brev ?? payload.result
@@ -814,6 +821,8 @@ export function CoverLetterWrite() {
       if (sparatBrevId) await coverLetterApi.update(sparatBrevId, falt)
       else await coverLetterApi.create(falt)
 
+      // KF13: lär av ändringarna. Av som standard; kastar aldrig och väntas inte på.
+      if (user?.id && generatedLetter.trim() && !arMall) void laraAvAndringar(user.id, generatedLetter, editedLetter)
       clearSavedData()
       showToast.success(t('coverLetter.write.savedShort', 'Sparat'))
       navigate('/cover-letter/my-letters')
@@ -2014,6 +2023,10 @@ function Step3ReviewSave({
         {genereratPaTunntUnderlag && !arMall && arOrordAiText && <TunntUnderlagNot />}
         {/* AIX27: rättstavning. Förslag som personen godkänner en och en. */}
         <Rattstavning text={editedLetter} onApply={onRattstavning} disabled={isGenerating} />
+        {/* AIX8: prata in en text och lägg den sist i brevet */}
+        {/* Inpratad text är personens egen: den gör brevet till ett blandat brev, så AI-märkningen
+            ska släppa som vid egen skrivning (setEditedLetter), inte följa med som vid rättstavning. */}
+        <PrataSaSkriverVi text={editedLetter} onApply={setEditedLetter} disabled={isGenerating} />
       </div>
 
       {/* AIX10: korta versioner. Bara när brevet kommer från AI:n (inte mallen):

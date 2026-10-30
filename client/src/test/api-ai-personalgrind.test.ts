@@ -36,7 +36,7 @@ function makeRes() {
   return { res, captured }
 }
 
-function stubNetwork(profil: Record<string, unknown>) {
+function stubNetwork(profil: Record<string, unknown>, innehall = 'Utkast') {
   const openrouter: unknown[] = []
   global.fetch = vi.fn(async (input: unknown, init?: { body?: string }) => {
     const url = String(typeof input === 'string' ? input : (input as { url: string }).url)
@@ -44,7 +44,7 @@ function stubNetwork(profil: Record<string, unknown>) {
       new Response(JSON.stringify(body), { status: 200, headers: { 'Content-Type': 'application/json' } })
     if (url.includes('openrouter.ai')) {
       openrouter.push(JSON.parse(init?.body || '{}'))
-      return json({ choices: [{ message: { content: 'Utkast' } }], usage: { total_tokens: 10 } })
+      return json({ choices: [{ message: { content: innehall } }], usage: { total_tokens: 10 } })
     }
     if (url.includes('/auth/v1/user')) return json({ id: 'u1', aud: 'authenticated' })
     if (url.includes('/rest/v1/rpc/check_rate_limit')) return json([{ allowed: true, remaining: 9 }])
@@ -154,6 +154,32 @@ describe('/api/ai: konsulent-lagesbild kräver personalroll', () => {
     const { openrouter } = stubNetwork({ role: 'USER', roles: ['USER', 'CONSULTANT'] })
     const { res, captured } = makeRes()
     await laddaHandler()(lagesbild(), res)
+    expect(captured.status).toBe(200)
+    expect(openrouter).toHaveLength(1)
+  })
+})
+
+// AIX16/AIX21 (2026-10-30): nämndtexten och aktivitetsförslaget är personalens anrop — samma grind.
+// Båda är JSON-funktioner med validator: stubben måste svara med giltig JSON för att 200 ska gå att nå.
+describe.each([
+  ['konsulent-namndtext', { underlag: { kvartal: 3, ar: 2026, grupper: [], summa: null } }, '{"text":"Under kvartalet redovisades inga grupper."}'],
+  ['konsulent-aktivitetsforslag', { mal: 'vill komma ut i arbete', katalog: [{ id: 'a1', namn: 'Jobbklubb' }] }, '{"forslag":[{"id":"a1","motivering":"Passar målet."}]}'],
+])('/api/ai: %s kräver personalroll', (fn, data, svar) => {
+  const anrop = () => ({ method: 'POST', headers: { authorization: 'Bearer tok' }, body: { function: fn, data } })
+
+  it('en deltagare (USER) nekas — ingenting går till OpenRouter', async () => {
+    const { openrouter } = stubNetwork({ role: 'USER', roles: ['USER'], ai_enabled: false })
+    const { res, captured } = makeRes()
+    await laddaHandler()(anrop(), res)
+    expect(captured.status).toBe(403)
+    expect(captured.body).toMatchObject({ reason: 'not_staff' })
+    expect(openrouter).toHaveLength(0)
+  })
+
+  it('en konsulent släpps igenom', async () => {
+    const { openrouter } = stubNetwork({ role: 'USER', roles: ['USER', 'CONSULTANT'] }, svar)
+    const { res, captured } = makeRes()
+    await laddaHandler()(anrop(), res)
     expect(captured.status).toBe(200)
     expect(openrouter).toHaveLength(1)
   })

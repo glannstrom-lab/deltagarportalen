@@ -29,6 +29,7 @@
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { Skyddad } from '@/i18n/Skyddad'
 import { Check, ChevronDown, ChevronUp, ExternalLink, Info, AlertCircle } from '@/components/ui/icons'
 import { Card, Button } from '@/components/ui'
 import { integrationChecklistApi } from '@/services/cloudStorage'
@@ -212,10 +213,10 @@ export default function IntegrationTab() {
               {t('international.integration.firstNote.title')}
             </h2>
             <p className="text-sm text-stone-700 dark:text-stone-200">
-              {t('international.integration.firstNote.lead', 'Nästan allt annat kräver att du först är folkbokförd och har ett personnummer.')}
+              <Skyddad text={t('international.integration.firstNote.lead', 'Nästan allt annat kräver att du först är folkbokförd och har ett personnummer.')} />
             </p>
             <LasMer>
-              <p>{t('international.integration.firstNote.body')}</p>
+              <p><Skyddad text={t('international.integration.firstNote.body')} /></p>
             </LasMer>
           </div>
         </div>
@@ -278,7 +279,7 @@ export default function IntegrationTab() {
       {KATEGORIER.map((kategori) => (
         <section key={kategori.nyckel} className="space-y-2">
           <h2 className="font-semibold text-stone-900 dark:text-stone-100">
-            {t(`international.integration.categories.${kategori.nyckel}`)}
+            <Skyddad text={t(`international.integration.categories.${kategori.nyckel}`)} />
           </h2>
 
           <ul className="space-y-2">
@@ -319,7 +320,7 @@ export default function IntegrationTab() {
                             'block font-medium text-stone-900 dark:text-stone-100',
                             klar && 'line-through text-stone-600 dark:text-stone-400',
                           )}>
-                            {titel}
+                            <Skyddad text={titel} />
                           </span>
                           {punkt.endastTredjeland && (
                             <span className="block text-xs text-stone-600 dark:text-stone-400 mt-0.5">
@@ -346,7 +347,7 @@ export default function IntegrationTab() {
 
                     <div id={`punkt-${punkt.id}`} hidden={!utfalld} className="px-4 pb-4 space-y-4">
                       <p className="text-sm text-stone-700 dark:text-stone-200">
-                        {t(`${bas}.body`)}
+                        <Skyddad text={t(`${bas}.body`)} />
                       </p>
 
                       {punkt.url && (
@@ -356,7 +357,7 @@ export default function IntegrationTab() {
                           rel="noopener noreferrer"
                           className="inline-flex items-center gap-1 text-sm font-medium text-[var(--c-text)] dark:text-[var(--c-text)] underline"
                         >
-                          {t(`${bas}.linkLabel`)}
+                          <Skyddad text={t(`${bas}.linkLabel`)} />
                           <ExternalLink className="w-3 h-3" aria-hidden="true" />
                           <span className="sr-only">{t('international.opensInNewTab')}</span>
                         </a>

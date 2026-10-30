@@ -23,31 +23,14 @@ import type { ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { parseArticleMarkdown, parseInline, rubrikId } from './articleMarkdown'
 import type { ArticleBlock } from './articleMarkdown'
-import { delaPaSkyddadeNamn } from '@/i18n/skyddadeNamn'
+import { Skyddad } from '@/i18n/Skyddad'
 
 export type ArticleFontSize = 'normal' | 'large' | 'xlarge'
 
 const KOD_KLASS =
   'px-1.5 py-0.5 rounded bg-stone-100 dark:bg-stone-900 text-[0.9em] font-mono text-stone-900 dark:text-stone-100'
 
-/**
- * Text med myndighetsnamnen markerade `translate="no"` (FN19). Google Översätt
- * översatte annars "Arbetsförmedlingen" för arabiska, somaliska och tigrinja.
- * Bara textnoder passerar här — aldrig href, kod eller alt-text.
- */
-export function Skyddad({ text }: { text: string }): ReactNode {
-  const bitar = delaPaSkyddadeNamn(text)
-  if (!bitar.some((b) => b.skyddad)) return text
-  return bitar.map((b, i) =>
-    b.skyddad ? (
-      <span key={i} translate="no" className="notranslate">
-        {b.text}
-      </span>
-    ) : (
-      b.text
-    )
-  )
-}
+export { Skyddad }
 
 /** `**fet**`, `*kursiv*`, `` `kod` `` och `[text](url)` → React-noder. */
 function renderInline(text: string, nyckelPrefix: string): ReactNode {
