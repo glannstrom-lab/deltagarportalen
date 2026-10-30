@@ -1,6 +1,46 @@
 import { describe, it, expect } from 'vitest'
 import { sanitizeForAi, sanitizeObjectForAi } from './piiSanitizer'
 
+describe('piiSanitizer — publika myndighetsnummer (AIX24)', () => {
+  it.each([
+    '0771-416 416',
+    '0771 416 416',
+    '0771-524 524',
+    '0771-567 567',
+  ])('släpper igenom %s (var BORTTAGET-BANKKONTO)', (nr) => {
+    const r = sanitizeForAi(`Kontakta oss på ${nr} vid frågor.`)
+    expect(r.sanitized).toBe(`Kontakta oss på ${nr} vid frågor.`)
+    expect(r.stripped.bankAccount).toBeUndefined()
+    expect(r.warnings.find((w) => w.type === 'phone')).toBeUndefined()
+  })
+
+  it('1177, 112 och 114 14 rörs inte', () => {
+    const t = 'Ring 1177, vid fara 112, polisen 114 14.'
+    expect(sanitizeForAi(t).sanitized).toBe(t)
+  })
+
+  it('exakt match, inte prefix: 0771-nummer som inte är listat saneras som förut', () => {
+    const r = sanitizeForAi('Mitt konto 0771-416 417')
+    expect(r.sanitized).toContain('[BORTTAGET-BANKKONTO]')
+  })
+
+  it('allowlistat nummer följt av fler siffror är inte längre ett allowlistat nummer', () => {
+    expect(sanitizeForAi('0771-416 416 99').sanitized).toContain('[BORTTAGET-BANKKONTO]')
+  })
+
+  it('användarens eget bankkonto saneras fortfarande bredvid myndighetsnumret', () => {
+    const r = sanitizeForAi('AF 0771-416 416, mitt konto 12345-123 456 7')
+    expect(r.sanitized).toContain('0771-416 416')
+    expect(r.sanitized).toContain('[BORTTAGET-BANKKONTO]')
+    expect(r.sanitized).not.toContain('456 7')
+  })
+
+  it('ett privat mobilnummer räknas fortfarande som telefon', () => {
+    const r = sanitizeForAi('Ring 070-123 45 67')
+    expect(r.warnings.find((w) => w.type === 'phone')?.count).toBe(1)
+  })
+})
+
 describe('piiSanitizer', () => {
   describe('hard strips — alltid bort', () => {
     it('strippar svenska personnummer (YYYYMMDD-XXXX)', () => {

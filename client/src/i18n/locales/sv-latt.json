@@ -1774,6 +1774,42 @@
       "failed": "Det gick inte att lägga steget i kalendern. Försök igen.",
       "meta": "Cirka 15 minuter. Det kostar inget.",
       "aiNote": "Förslag från AI. Du bestämmer om det passar dig."
+    },
+    "download": {
+      "firstStep": "Första steget"
+    }
+  },
+  "vardagCv": {
+    "rubrik": "Vad har jag med mig? Hjälp att hitta det som räknas",
+    "intro": "Det du har gjort utan lön kan stå på ditt CV. Svara på det du vill. Du behöver inte svara på allt. AI:n ger förslag. Inget läggs till förrän du klickar på just den raden.",
+    "fraga1": "Har du hjälpt någon nära dig? Till exempel barn, äldre, en granne eller en vän. Vad gjorde du?",
+    "fraga2": "Har du gjort något utan lön? Till exempel i en förening, kyrka eller skola, eller på ett evenemang.",
+    "fraga3": "Har du skött något hemma som kräver att man kan saker? Till exempel pengar, renovering, matlagning eller att tolka åt någon.",
+    "fraga4": "Har du gjort något i ett annat land som du tror inte räknas här?",
+    "knapp": "Hitta förslag till mitt CV",
+    "laddar": "Läser det du har skrivit …",
+    "inga": "Vi hittade inga förslag i det du skrev. Skriv gärna mer om vad du gjorde. Sedan försöker vi igen.",
+    "halsa": "Det du skrev verkar handla om hälsa. Vi skickar inte hälsa till AI. Skriv utan den delen och försök igen. Eller lägg till erfarenheten själv nedan. Det du skrev finns kvar.",
+    "fel": "Vi kunde inte ta fram förslag nu. Det du skrev finns kvar. Försök igen om en stund.",
+    "felAv": "AI är avstängt just nu. Du kan lägga till erfarenhet själv nedan.",
+    "forslagRubrik": "Förslag från AI. Du bestämmer vad som tas med.",
+    "duSkrev": "Du skrev:",
+    "laggTill": "Lägg till i mitt CV",
+    "tillagd": "Tillagd under Arbetslivserfarenhet. Fyll i datum där."
+  },
+  "underlag": {
+    "rubrik": "Ta med dig ditt underlag",
+    "intro": "Hämta det du har gjort i Jobin som en fil. Du kan ta med den om du byter leverantör eller kommun. Filen har ditt CV, dina ansökningar, din aktivitetsrapport, din plan och dina mål. Den har också nästa vecka som kalenderfil.",
+    "journalVal": "Ta med anteckningarna från min konsulent",
+    "journalForklaring": "Din konsulent har skrivit anteckningar om dig. Bocka bara i om den som får filen ska få läsa dem. Din dagbok följer aldrig med.",
+    "pagar": "Samlar ihop…",
+    "knapp": "Hämta mitt underlag",
+    "fel": "Det gick inte att skapa filen nu. Försök igen om en stund.",
+    "klart": "Filen är hämtad. Så här gick det:"
+  },
+  "focus": {
+    "interview": {
+      "storyHint": "I vanligt läge kan du också skriva en berättelse om något du klarade. Sedan kan du öva på att berätta den."
     }
   }
 }

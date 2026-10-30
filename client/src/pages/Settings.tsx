@@ -20,6 +20,7 @@ import { RoleSelector } from '@/components/settings/RoleSelector'
 import { ProgramSelector } from '@/components/settings/ProgramSelector'
 import { SprakVal } from '@/components/settings/SprakVal'
 import { DeleteAccountSection } from '@/components/settings/DeleteAccountSection'
+import { MittUnderlagSection } from '@/components/settings/MittUnderlagSection'
 import { DataSharingSettings } from '@/components/consent/DataSharingSettings'
 import {
   Card, CardHeader, CardSection,
@@ -888,6 +889,11 @@ function SettingsInner() {
             {/* Data Sharing with Consultant - GDPR Art. 9 */}
             <CardSection title={t('settings.privacy.delningRubrik', 'Vad din konsulent får se')}>
               <DataSharingSettings />
+            </CardSection>
+
+            {/* FN16: Ta med dig-paketet. Egen sektion, inte gömd under Radera konto. */}
+            <CardSection title={t('underlag.rubrik', 'Ta med dig ditt underlag')}>
+              <MittUnderlagSection />
             </CardSection>
 
             {/* Delete Account Section */}

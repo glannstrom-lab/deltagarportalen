@@ -19,6 +19,7 @@ import React, { useState, useEffect } from 'react';
 import { X, Mail, User, Phone, MessageSquare, CheckCircle, Loader2, UserPlus } from '@/components/ui/icons';
 import { supabase } from '@/lib/supabase';
 import { Dialog } from '@/components/ui/Dialog';
+import { UppladdningDeltagarlistaDialog } from './UppladdningDeltagarlistaDialog';
 
 import { anvandareFranSession } from '@/lib/anvandareFranSession'
 import { KOPPLINGSFORFRAGAN_FINNS } from '@/services/kopplingsforfraganApi'
@@ -50,6 +51,8 @@ export const InviteParticipantDialog: React.FC<InviteParticipantDialogProps> = (
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState<SuccessType | null>(null);
   const [error, setError] = useState<string | null>(null);
+  // FN6: samma dialog, två lägen — en deltagare i taget eller en uppladdad lista.
+  const [lage, setLage] = useState<'enskild' | 'lista'>('enskild');
 
   // Reset form when dialog closes
   useEffect(() => {
@@ -58,6 +61,7 @@ export const InviteParticipantDialog: React.FC<InviteParticipantDialogProps> = (
       setSuccess(null);
       setError(null);
       setLoading(false);
+      setLage('enskild');
     }
   }, [isOpen]);
 
@@ -175,6 +179,17 @@ export const InviteParticipantDialog: React.FC<InviteParticipantDialogProps> = (
     }
   };
 
+  if (lage === 'lista') {
+    return (
+      <UppladdningDeltagarlistaDialog
+        isOpen={isOpen}
+        onClose={onClose}
+        onKlar={onSuccess}
+        onEnskild={() => setLage('enskild')}
+      />
+    );
+  }
+
   if (success) {
     return (
       <Dialog
@@ -264,6 +279,17 @@ export const InviteParticipantDialog: React.FC<InviteParticipantDialogProps> = (
               </ul>
             </div>
           </div>
+        </div>
+
+        <div className="mx-6 mt-4 text-sm text-gray-600 dark:text-gray-400">
+          Ska du bjuda in många på en gång?{' '}
+          <button
+            type="button"
+            onClick={() => setLage('lista')}
+            className="font-medium text-primary-700 dark:text-primary-300 underline min-h-[44px] px-1"
+          >
+            Ladda upp en deltagarlista (CSV)
+          </button>
         </div>
 
         {/* Form */}

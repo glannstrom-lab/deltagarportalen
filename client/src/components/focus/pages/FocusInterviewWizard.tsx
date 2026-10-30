@@ -143,12 +143,23 @@ export function FocusInterviewWizard({ onExit }: Props) {
       )}
 
       {current.id === 'done' && (
-        <p className="text-stone-600 dark:text-stone-300">
-          {t(
-            'focus.interview.doneText',
-            'Du har övat på en fråga. Vill du öva fler? Gå till intervjusimulatorn i normalt läge för mer.'
-          )}
-        </p>
+        <div className="space-y-3 text-stone-600 dark:text-stone-300">
+          <p>
+            {t(
+              'focus.interview.doneText',
+              'Du har övat på en fråga. Vill du öva fler? Gå till intervjusimulatorn i normalt läge för mer.'
+            )}
+          </p>
+          {/* AIX4: berättelsebyggaren startar en AI-övning och hör hemma i
+              normalvyn. Den bäddas inte in här — fokusläget ska ha EN sak
+              åt gången och ingen AI-loop (se filhuvudet). Vägen dit anges. */}
+          <p>
+            {t(
+              'focus.interview.storyHint',
+              'I normalt läge kan du också bygga en berättelse om något du har klarat och öva på att berätta den.'
+            )}
+          </p>
+        </div>
       )}
     </FocusWizardFrame>
   )

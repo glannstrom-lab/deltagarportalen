@@ -70,7 +70,13 @@ export function laddaNerAnalys(
   if (actionPlan.length === 0) {
     rader.push('—')
   } else {
-    actionPlan.forEach(a => rader.push(`${a.order}. ${a.title}: ${a.description}`))
+    actionPlan.forEach(a => {
+      rader.push(`${a.order}. ${a.title}: ${a.description}`)
+      // AIX7: första steget (en handling på ~15 min) ska följa med filen.
+      if (a.forstaSteg) {
+        rader.push(`   ${t('skillsGapAnalysis.download.firstStep', 'Första steget')}: ${a.forstaSteg}`)
+      }
+    })
   }
 
   const blob = new Blob([rader.join('\n')], { type: 'text/plain;charset=utf-8' })

@@ -11,6 +11,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { Plus, Search, Trash2, Building2 } from '@/components/ui/icons'
 import { LoadingState, ErrorState } from '@/components/ui/LoadingState'
 import { useConfirmDialog } from '@/components/ui/ConfirmDialog'
+import { PilotVy } from './PilotVy'
 import {
   orgAdminApi,
   ORG_KIND_ETIKETT,
@@ -239,6 +240,8 @@ export function OrganisationerTab({ users }: Props) {
           </p>
         </div>
       )}
+
+      {orgs.length > 0 && <PilotVy orgs={orgs} medlemmar={medlemmar} />}
 
       {valdOrg && (
         <Medlemmar

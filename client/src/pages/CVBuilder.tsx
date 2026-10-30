@@ -39,6 +39,8 @@ import { useCVAutoSave, useCVDraft } from '@/hooks/useCVAutoSave'
 // SaveIndicator is now rendered in CVPage header
 import { RichTextEditor } from '@/components/cv/RichTextEditor'
 import { ExperienceEditor } from '@/components/cv/ExperienceEditor'
+import { VadHarJagMedMig } from '@/components/cv/VadHarJagMedMig'
+import { Rattstavning } from '@/components/cover-letter/Rattstavning'
 import { EducationEditor } from '@/components/cv/EducationEditor'
 import { SkillsEditor } from '@/components/cv/SkillsEditor'
 import { ContextualHelp } from '@/components/cv/ContextualHelp'
@@ -1082,6 +1084,8 @@ export default function CVBuilder() {
         <div className="mt-4">
           <AIWritingAssistant content={data.summary || ''} onChange={(v) => setData(prev => ({ ...prev, summary: v }))} type="summary" cvData={data} />
         </div>
+        {/* AIX27: rättstavning av sammanfattningen. Bara godkända ändringar tillämpas. */}
+        <Rattstavning text={data.summary || ''} onApply={(nyText) => setData(prev => ({ ...prev, summary: nyText }))} />
       </Card>
 
       <ContextualHelp context="summary" data={data.summary} />
@@ -1109,6 +1113,11 @@ export default function CVBuilder() {
   const renderStep4 = () => (
     <div className="space-y-6">
       <ContextualHelp context="experience" data={data.workExperience} />
+
+      {/* AIX2: vardag, ideellt och oavlönat blir förslag; inget läggs till utan klick på raden. */}
+      <VadHarJagMedMig
+        onAdd={(rad) => setData(prev => ({ ...prev, workExperience: [...(prev.workExperience || []), rad] }))}
+      />
 
       <div>
         <h3 className="font-semibold text-stone-800 dark:text-stone-200 mb-4 flex items-center gap-2">

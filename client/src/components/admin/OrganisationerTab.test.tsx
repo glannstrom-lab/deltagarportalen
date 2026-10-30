@@ -21,6 +21,7 @@ vi.mock('@/services/orgApi', async () => {
     },
   }
 })
+vi.mock('./PilotVy', () => ({ PilotVy: () => null }))
 vi.mock('@/components/ui/ConfirmDialog', () => ({ useConfirmDialog: () => ({ confirm: vi.fn(async () => true) }) }))
 
 const users = [

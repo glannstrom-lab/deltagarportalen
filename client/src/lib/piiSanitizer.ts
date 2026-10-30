@@ -17,6 +17,32 @@
  *                 client/api/_utils/pseudonym.js.)
  */
 
+/**
+ * Publika myndighets- och organisationsnummer som släpps igenom (AIX24: ett
+ * inklistrat myndighetsbrev ska behålla "vem kontaktar jag"). Före detta blev
+ * Arbetsförmedlingens `0771-416 416` `[BORTTAGET-BANKKONTO]`: bankRegex tar
+ * 4-5 + 3-4 + 3-4 siffror = 10 siffror, och ett 0771-nummer har exakt den
+ * formen. EXAKT match på siffrorna (inga prefix: `0771` ensam släpper inget).
+ * Varje nummer belagt på myndighetens egen webbplats 2026-10-30:
+ *   AF 0771-416 416 (arbetsformedlingen.se/kontakta-oss), Försäkringskassan
+ *   0771-524 524 (forsakringskassan.se), Skatteverket 0771-567 567
+ *   (skatteverket.se/kontaktaoss), 1177 (1177.se), 112 och 114 14 (polisen.se).
+ * CSN utelämnat: numret gick inte att belägga. HÅLL I SYNK med
+ * PUBLIKA_NUMMER i client/api/ai.js.
+ */
+const PUBLIKA_NUMMER: ReadonlySet<string> = new Set([
+  '0771416416',
+  '0771524524',
+  '0771567567',
+  '1177',
+  '112',
+  '11414',
+])
+
+function aerPubliktNummer(match: string): boolean {
+  return PUBLIKA_NUMMER.has(match.replace(/\D/g, ''))
+}
+
 export interface SanitizeResult {
   /** Den saniterade texten — säker att skicka till AI */
   sanitized: string
@@ -80,6 +106,7 @@ export function sanitizeForAi(
   sanitized = sanitized.replace(bankRegex, (match) => {
     // Filtrera bort uppenbara icke-bankkonton (datum, telefon)
     const digits = match.replace(/\D/g, '')
+    if (aerPubliktNummer(match)) return match
     if (digits.length >= 10 && digits.length <= 16) {
       stripped.bankAccount = (stripped.bankAccount || 0) + 1
       return '[BORTTAGET-BANKKONTO]'
@@ -97,7 +124,9 @@ export function sanitizeForAi(
     }
 
     // Svenska telefonnummer: 070-XXX XX XX, +46 70 XXX XX XX, 08-XX XX XX, etc.
-    const phoneMatches = sanitized.match(/\b(?:\+46[-\s]?|0)(?:\d[-\s]?){8,11}\b/g)
+    const phoneMatches = sanitized
+      .match(/\b(?:\+46[-\s]?|0)(?:\d[-\s]?){8,11}\b/g)
+      ?.filter((m) => !aerPubliktNummer(m))
     if (phoneMatches && phoneMatches.length > 0) {
       warnings.push({ type: 'phone', count: phoneMatches.length })
     }

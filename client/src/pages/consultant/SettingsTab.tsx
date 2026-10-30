@@ -22,6 +22,7 @@ import { Button } from '@/components/ui/Button'
 import { LoadingState, ErrorState } from '@/components/ui/LoadingState'
 import { ProgramSelector } from '@/components/settings/ProgramSelector'
 import { OrganisationSektion } from '@/components/consultant/OrganisationSektion'
+import { EnhetsExportKort } from '@/components/admin/EnhetsExportKort'
 import { cn } from '@/lib/utils'
 import { formatLocalDate } from '@/services/aktivitetSchema'
 
@@ -312,6 +313,9 @@ export function SettingsTab() {
 
       {/* Organisation (KM2) — ersatte den hårdkodade tomma teamlistan 2026-09-11 */}
       <OrganisationSektion />
+
+      {/* FN12: chef/admin tar ut enhetens data; kortet döljer sig själv för alla andra */}
+      <EnhetsExportKort />
 
       {/* Data & Privacy */}
       <Card className="p-5">

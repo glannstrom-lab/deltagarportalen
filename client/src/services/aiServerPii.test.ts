@@ -103,6 +103,33 @@ describe('stripPii — e-post och telefon (servern maskerar, till skillnad från
   })
 })
 
+describe('stripPii — publika myndighetsnummer släpps igenom (AIX24)', () => {
+  it.each(['0771-416 416', '0771-524 524', '0771-567 567'])(
+    '%s varken bankkonto eller telefon',
+    (nr) => {
+      expect(aiHandler.stripPii(`Ring ${nr} för hjälp.`)).toBe(`Ring ${nr} för hjälp.`)
+    }
+  )
+
+  it('1177, 112 och 114 14 rörs inte', () => {
+    const t = 'Ring 1177, vid fara 112, polisen 114 14.'
+    expect(aiHandler.stripPii(t)).toBe(t)
+  })
+
+  it('exakt match, inte prefix: andra 0771-nummer maskeras', () => {
+    expect(aiHandler.stripPii('Konto 0771-416 417')).toContain('[BORTTAGET-BANKKONTO]')
+    expect(aiHandler.stripPii('0771-416 416 99')).toContain('[BORTTAGET-BANKKONTO]')
+  })
+
+  it('privat mobil och eget bankkonto maskeras bredvid myndighetsnumret', () => {
+    const out = aiHandler.stripPii('AF 0771-416 416, mobil 070-123 45 67, konto 12345-123 456 7')
+    expect(out).toContain('0771-416 416')
+    expect(out).toContain('[BORTTAGET-TELEFON]')
+    expect(out).toContain('[BORTTAGET-BANKKONTO]')
+    expect(out).not.toContain('070-123')
+  })
+})
+
 describe('stripPii — lämnar ofarlig text orörd', () => {
   it('rör inte vanlig brödtext utan PII', () => {
     const text = 'Jag har fem års erfarenhet som snickare och söker nu en ny roll.'

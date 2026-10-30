@@ -110,6 +110,15 @@ function luhnCheck(digits) {
 }
 
 /**
+ * Publika myndighetsnummer som släpps igenom — EXAKT match på siffrorna, aldrig
+ * prefix. Var tidigare `[BORTTAGET-BANKKONTO]` (0771-416 416 har bankmönstrets
+ * 4+3+3 siffror) och sedan `[BORTTAGET-TELEFON]`. HÅLL I SYNK med PUBLIKA_NUMMER
+ * i client/src/lib/piiSanitizer.ts (där källorna står). CSN är utelämnat: obelagt.
+ */
+const PUBLIKA_NUMMER = new Set(['0771416416', '0771524524', '0771567567', '1177', '112', '11414']);
+const aerPubliktNummer = (match) => PUBLIKA_NUMMER.has(match.replace(/\D/g, ''));
+
+/**
  * Maskerar PII i en sträng innan den kan nå en AI-prompt. Ordningen är
  * medveten: IBAN före bankkonto (siffrorna överlappar annars).
  */
@@ -141,6 +150,7 @@ function stripPii(text) {
   // Svenska bankkonto (clearing + nummer), PlusGiro, BankGiro.
   out = out.replace(/\b\d{4,5}[\s-]\d{3,4}[\s-]\d{3,4}(?:[\s-]\d{1,4})?\b/g, (match) => {
     const digits = match.replace(/\D/g, '');
+    if (aerPubliktNummer(match)) return match;
     return digits.length >= 10 && digits.length <= 16 ? '[BORTTAGET-BANKKONTO]' : match;
   });
 
@@ -148,7 +158,9 @@ function stripPii(text) {
   out = out.replace(/\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b/g, '[BORTTAGET-EPOST]');
 
   // Svenska telefonnummer: 070-XXX XX XX, +46 70 XXX XX XX, 08-XX XX XX, etc.
-  out = out.replace(/\b(?:\+46[-\s]?|0)(?:\d[-\s]?){8,11}\b/g, '[BORTTAGET-TELEFON]');
+  out = out.replace(/\b(?:\+46[-\s]?|0)(?:\d[-\s]?){8,11}\b/g, (match) =>
+    aerPubliktNummer(match) ? match : '[BORTTAGET-TELEFON]'
+  );
 
   return out;
 }
@@ -213,6 +225,7 @@ const { citatFinnsIAnnons, normalisera, ANNONS_MAX } = require('./_prompts/_anno
 const berattelse = require('./_prompts/_berattelse'); // AIX4
 const forstaSteg = require('./_prompts/_forstasteg'); // AIX7
 const { validera: valideraRattstavning } = require('./_prompts/_rattstavning');
+const { validera: valideraVardag } = require('./_prompts/_vardag'); // AIX2
 const { validera: valideraSprak } = require('./_prompts/_sprakvalidering');
 
 // ============================================
@@ -253,6 +266,7 @@ const RATE_LIMITS = {
   'intervju-berattelse': { limit: 20, windowMinutes: 15 },
   // AIX27 (2026-10-30): rättstavning av eget brev.
   'ratta-stavning': { limit: 15, windowMinutes: 15 },
+  'vad-har-jag-med-mig': { limit: 10, windowMinutes: 15 }, // AIX2
   // AIX24/AIX29 (2026-10-30): språkstöd.
   'myndighetsbrev': { limit: 10, windowMinutes: 15 },
   'gor-mindre': { limit: 15, windowMinutes: 15 },
@@ -858,6 +872,10 @@ function extractJsonContent(raw) {
  * @returns {{ ok: true, value: unknown } | { ok: false, error: string }}
  */
 const RESPONSE_VALIDATORS = {
+  // AIX2 (2026-10-30): Vad har jag med mig? Logiken bor i _prompts/_vardag.js (citat ordagrant
+  // i personens svar, inga nya siffror/titlar/omfattningsord, ingen hälsa).
+  'vad-har-jag-med-mig': (value, indata) => valideraVardag(value, indata),
+
   // AIX27 (2026-10-30): rättstavning. Logiken bor i _prompts/_rattstavning.js
   // (deterministisk kontroll: inga nya ord av betydelse, inga nya siffror, inte
   // för stor ändringslista). Jämförs mot texten som prompten fick.

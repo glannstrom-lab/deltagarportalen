@@ -10,7 +10,7 @@
 const domaner = [require('./konsulent'), require('./ansokan'), require('./karriar'), require('./cv'), require('./intervju'), require('./chatt'), require('./reflektion'), require('./sprak')];
 const { SANNINGSREGEL } = require('./_delat');
 
-const ORDNING = ['konsulent-rapportutkast', 'konsulent-lagesbild', 'personligt-brev', 'karriarplan', 'kompetensgap', 'cv-jobbmatchning', 'cv-import', 'cv-import-erfarenhet', 'adaptation-recommendations', 'adaptation-conversation', 'linkedin-optimering', 'intervju-simulator', 'intervju-sammanfattning', 'profile-summary', 'cv-writing', 'chatbot', 'ai-team-chat', 'vecko-reflektion', 'annons-forklaring', 'samtalsmanus', 'uppfoljningsmejl', 'myndighetsbrev', 'gor-mindre', 'ratta-stavning', 'intervju-berattelse', 'konsulent-journalpost'];
+const ORDNING = ['konsulent-rapportutkast', 'konsulent-lagesbild', 'personligt-brev', 'karriarplan', 'kompetensgap', 'cv-jobbmatchning', 'cv-import', 'cv-import-erfarenhet', 'adaptation-recommendations', 'adaptation-conversation', 'linkedin-optimering', 'intervju-simulator', 'intervju-sammanfattning', 'profile-summary', 'cv-writing', 'chatbot', 'ai-team-chat', 'vecko-reflektion', 'annons-forklaring', 'samtalsmanus', 'uppfoljningsmejl', 'myndighetsbrev', 'gor-mindre', 'ratta-stavning', 'intervju-berattelse', 'konsulent-journalpost', 'vad-har-jag-med-mig'];
 
 /** @type {Record<string, (data: any) => any>} */
 const PROMPTS = {};

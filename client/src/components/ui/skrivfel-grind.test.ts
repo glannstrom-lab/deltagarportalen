@@ -51,7 +51,7 @@ const SKRIVVAGAR = [
  * komponenter. Mätt 2026-09-27 efter RD26: 18 (grinden skriver ut talet om det
  * ändras. Sänk när du lagar; höj aldrig.
  */
-const TAK = 18
+const TAK = 16
 
 const SKRIVORD =
   /^(insert|update|upsert|delete|rpc|remove|send\w*|save\w*|create\w*|skicka\w*|spara\w*|anmal\w*|angra|forklara|updateProfile|updateCV|onSend\w*|onSave\w*)$/i
