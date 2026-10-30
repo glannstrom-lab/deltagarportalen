@@ -1639,7 +1639,7 @@ const hanterare = async (req, res) => {
 
     // Non-streaming mode (original behavior)
     // C6: fetchWithRetry retrierar 5xx + 429 upp till 2 ggr med 2s/4s backoff
-    const aiResponse = await fetchWithRetry('https://openrouter.ai/api/v1/chat/completions', {
+    const modellBegaran = {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
@@ -1670,7 +1670,8 @@ const hanterare = async (req, res) => {
         // alls är begäran identisk med tidigare.
         ...(prompt.reasoningEffort ? { reasoning: { effort: prompt.reasoningEffort } } : {})
       })
-    });
+    };
+    const aiResponse = await fetchWithRetry('https://openrouter.ai/api/v1/chat/completions', modellBegaran);
 
     if (!aiResponse.ok) {
       // Statuskoden från OpenRouter fördes tidigare inte vidare någonstans, så
@@ -1726,8 +1727,30 @@ const hanterare = async (req, res) => {
       // B17: fence-tolerant tolkning först. `{ raw }`-fallbacken finns kvar
       // för funktioner som Zod-validerar hos anroparen — de visar ett ärligt
       // formatfel i UI:t och ska inte förlora den vägen.
-      const extracted = extractJsonContent(content);
+      let extracted = extractJsonContent(content);
       const validator = RESPONSE_VALIDATORS[fn];
+
+      // Mätt i prod 2026-10-30: modellen skriver ogiltig JSON i ungefär vart
+      // sjätte anrop (ratta-stavning, myndighetsbrev, vad-har-jag-med-mig) —
+      // ~970 tokens mot taket 1 500, alltså inte ett kapat svar. Ett nytt
+      // försök med samma begäran, EN gång, innan användaren får ett fel.
+      if (!extracted.ok && validator) {
+        try {
+          const omforsok = await fetchWithRetry('https://openrouter.ai/api/v1/chat/completions', modellBegaran);
+          if (omforsok.ok) {
+            const omData = /** @type {OpenRouterSvar} */ (await omforsok.json());
+            const omContent = omData.choices?.[0]?.message?.content;
+            const omExtracted = extractJsonContent(omContent);
+            await logga(aiData.usage?.total_tokens || 0, 'ogiltig JSON, nytt försök gjort');
+            if (omExtracted.ok) {
+              extracted = omExtracted;
+              aiData.usage = omData.usage ?? aiData.usage;
+            }
+          }
+        } catch (err) {
+          console.warn(`[AI] ${fn}: nytt försök efter ogiltig JSON misslyckades — ${err && err.message}`);
+        }
+      }
 
       if (!extracted.ok) {
         if (validator) {

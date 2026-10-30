@@ -67,7 +67,8 @@ function jsonResponse(body: unknown, status = 200) {
  * @param profile profilraden art. 9-grinden läser
  */
 function stubNetwork(
-  modelContent: string,
+  // En sträng = samma svar varje gång; en lista = ett svar per anrop, i tur och ordning.
+  modelContent: string | string[],
   profile: { ai_consent_at: string | null; ai_enabled: boolean } = {
     ai_consent_at: '2026-08-01T10:00:00Z',
     ai_enabled: true,
@@ -85,8 +86,11 @@ function stubNetwork(
 
     if (url.includes('openrouter.ai')) {
       openRouterCalls.push(url)
+      const svar = Array.isArray(modelContent)
+        ? modelContent[Math.min(openRouterCalls.length - 1, modelContent.length - 1)]
+        : modelContent
       return jsonResponse({
-        choices: [{ message: { content: modelContent } }],
+        choices: [{ message: { content: svar } }],
         usage: { total_tokens: 10 },
       })
     }
@@ -163,6 +167,37 @@ describe('handlern kör formkontrollen på JSON-svar (B17)', () => {
 
     expect(captured.status).toBe(502)
     expect(captured.body).toMatchObject({ code: 'AI_INVALID_RESPONSE' })
+  })
+
+  it('försöker EN gång till när modellen skrev ogiltig JSON (var sjätte gång i prod)', async () => {
+    const { openRouterCalls } = stubNetwork(['{"rating":4,"feedback":"Bra', '{"rating":4,"feedback":"Bra","nastaFraga":"Och sen?"}'])
+    const { res, captured } = makeRes()
+
+    await handler(makeReq('intervju-simulator', { roll: 'Snickare', anvandarSvar: 'x' }), res)
+
+    expect(openRouterCalls).toHaveLength(2)
+    expect(captured.status).toBe(200)
+    expect(captured.body?.resultat).toMatchObject({ rating: 4, nastaFraga: 'Och sen?' })
+  })
+
+  it('ger upp efter ett nytt försök — aldrig fler än två modellanrop', async () => {
+    const { openRouterCalls } = stubNetwork('inte json alls')
+    const { res, captured } = makeRes()
+
+    await handler(makeReq('intervju-simulator', { roll: 'Snickare', anvandarSvar: 'x' }), res)
+
+    expect(openRouterCalls).toHaveLength(2)
+    expect(captured.status).toBe(502)
+    expect(captured.body).toMatchObject({ code: 'AI_INVALID_RESPONSE' })
+  })
+
+  it('försöker inte igen när JSON:en tolkades men formen var fel (det är modellens svar, inte ett skrivfel)', async () => {
+    const { openRouterCalls } = stubNetwork('{"kommentar":"Jag vet inte"}')
+    const { res } = makeRes()
+
+    await handler(makeReq('intervju-simulator', { roll: 'Snickare', anvandarSvar: 'x' }), res)
+
+    expect(openRouterCalls).toHaveLength(1)
   })
 
   it('släpper igenom ett giltigt intervjusvar och normaliserar bort skräpfält', async () => {

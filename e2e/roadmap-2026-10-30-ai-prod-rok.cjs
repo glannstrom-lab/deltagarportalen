@@ -68,5 +68,12 @@ Om du uteblir utan giltigt skäl kan det påverka din ersättning.`
   ok(h.status === 200, `intervju-berattelse ${h.status} på ${h.ms} ms`)
   console.log('  ' + JSON.stringify(h.j).slice(0, 500))
 
+  // Pass 2: myndighetsnumret ska stå kvar i svaret (PII-fixen), och AIX2
+  const b2 = await anropa(tok, 'myndighetsbrev', { brev: BREV })
+  ok(/0771-416 416|0771416416/.test(JSON.stringify(b2.j)) && !/BORTTAGET-BANKKONTO/.test(JSON.stringify(b2.j)), 'myndighetsnumret står kvar (ingen BORTTAGET-BANKKONTO)')
+  const v = await anropa(tok, 'vad-har-jag-med-mig', { svar: [{ fraga: 'Hjälper du andra?', text: 'Jag handlar och lagar mat åt min granne varje vecka och har hjälpt honom med pappersarbete.' }, { fraga: 'Ideellt?', text: 'Jag har tränat ett fotbollslag för barn i två säsonger.' }] })
+  ok(v.status === 200, `vad-har-jag-med-mig ${v.status} på ${v.ms} ms`)
+  console.log('  ' + JSON.stringify(v.j).slice(0, 600))
+
   console.log(fel ? `\n${fel} fel` : '\nalla kontroller gröna'); process.exit(fel ? 1 : 0)
 })().catch((e) => { console.error(e); process.exit(1) })
