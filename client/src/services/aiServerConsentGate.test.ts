@@ -157,6 +157,7 @@ describe('AI_ENABLED_EXEMPT_FUNCTIONS', () => {
   // personalgrinden + organisationens brytare gäller). Varje ny rad här ska ha det skälet.
   it('undantar exakt konsulentfunktionerna — inte fler, inte färre (sta-* borta 2026-09-12)', () => {
     expect([...aiHandler.AI_ENABLED_EXEMPT_FUNCTIONS].sort()).toEqual([
+      'konsulent-journalpost', // AIX11 (2026-10-30)
       'konsulent-lagesbild',
       'konsulent-rapportutkast',
     ])

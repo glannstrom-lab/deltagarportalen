@@ -156,6 +156,33 @@ describe('CV:t', () => {
     expect(ids(lugn())).not.toContain('updateCv')
   })
 
+  it('FN4: påbörjat CV med tom sektion pekar på den första tomma — före "fyll på"', () => {
+    const s = lugn()
+    s.jobsok!.cv = { id: 'cv', updated_at: forDagarSedan(3), paborjat: true, tommaSektioner: ['work_experience', 'skills'] }
+    const k = kandidater(s, NU)
+    const steg = k.find((x) => x.id === 'continueCv')
+    expect(steg?.varden.sektion).toBe('work_experience')
+    expect(steg?.till).toBe('/cv')
+
+    s.jobsok!.cv = { id: 'cv', updated_at: forDagarSedan(CV_GAMMALT_EFTER_DAGAR), paborjat: true, tommaSektioner: ['skills'] }
+    const ordning = ids(s)
+    expect(ordning.indexOf('continueCv')).toBeGreaterThanOrEqual(0)
+    expect(ordning.indexOf('continueCv')).toBeLessThan(ordning.indexOf('updateCv'))
+  })
+
+  it('FN4: inget "fortsätt" när inget saknas, när CV:t inte är påbörjat, eller när vi inte vet', () => {
+    const komplett = lugn()
+    komplett.jobsok!.cv = { id: 'cv', updated_at: forDagarSedan(3), paborjat: true, tommaSektioner: [] }
+    expect(ids(komplett)).not.toContain('continueCv')
+
+    const tomRad = lugn()
+    tomRad.jobsok!.cv = { id: 'cv', updated_at: forDagarSedan(3), paborjat: false, tommaSektioner: ['summary', 'skills'] }
+    expect(ids(tomRad)).not.toContain('continueCv')
+
+    // Skivan utan fältet (laddar / äldre cache) får inte påstå något.
+    expect(ids(lugn())).not.toContain('continueCv')
+  })
+
   it('"första jobbet" bara när CV finns och inga ansökningar', () => {
     const s = lugn()
     s.jobsok!.applicationStats = { total: 0, byStatus: {}, segments: [], awaitingSince: null }

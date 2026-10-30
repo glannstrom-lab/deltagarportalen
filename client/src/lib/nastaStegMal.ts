@@ -29,6 +29,7 @@ export interface NastaStegMal {
 export const DELTAGAR_FOKUS: Partial<Record<StegId, string>> = {
   todaysPass: 'jag-ar-har',
   createCv: 'cv-start',
+  continueCv: 'cv-start',
   updateCv: 'cv-start',
   firstJob: 'jobbsok-sok',
   firstLetter: 'brev-start',

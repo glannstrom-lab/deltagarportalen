@@ -71,6 +71,8 @@ import {
   RefreshCw,
   X,
   History,
+  Sparkles,
+  Loader2,
 } from '@/components/ui/icons'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
@@ -91,6 +93,11 @@ import {
   type Kontaktform,
 } from '@/services/journalSol'
 import { JournalHistorik } from './JournalHistorik'
+import { callAI, AiConsentRequiredError } from '@/services/aiApi'
+import { UtkastGranskning } from './UtkastGranskning'
+import { hittaHalsoord } from './utkastGranskare'
+
+import { AI_MARKERING, medAiMarkering } from './journalAi'
 
 export type NoteCategory = 'GENERAL' | 'PROGRESS' | 'CONCERN' | 'GOAL'
 
@@ -127,6 +134,10 @@ interface ParticipantJournalProps {
   currentConsultantId?: string
   /** RK38: finns SoL-kolumnerna? Standard: JOURNAL_SOL_KOLUMNER. Injicerbar för test. */
   solKolumner?: boolean
+  /** AIX11: AI avstängd (egen brytare eller organisationens) — knappen "Formulera med AI" visas då inte. */
+  aiAv?: boolean
+  /** AIX11 visas bara när spärren A2 är hävd (se JOURNAL_AI_A2_BESVARAD). Tester sätter den. */
+  journalAi?: boolean
   className?: string
 }
 
@@ -157,6 +168,14 @@ const categoryConfig: Record<NoteCategory, { label: string; badge: string; borde
   },
 }
 
+/**
+ * Spärr för AIX11 (ROADMAP rad "Spärr för AIX11–AIX22"): juristfrågan A2 — rättslig
+ * grund för att konsulentens AI behandlar deltagarens journaldata — ska vara
+ * besvarad innan funktionen släpps till kund. Push är deploy, så koden ligger i
+ * drift men knappen är av. Sätt true först när A2 är besvarad.
+ */
+export const JOURNAL_AI_A2_BESVARAD = false
+
 export function ParticipantJournal({
   participantName,
   entries,
@@ -167,6 +186,8 @@ export function ParticipantJournal({
   onDeleteEntry,
   currentConsultantId,
   solKolumner = JOURNAL_SOL_KOLUMNER,
+  aiAv = false,
+  journalAi = JOURNAL_AI_A2_BESVARAD,
   className,
 }: ParticipantJournalProps) {
   const { confirm } = useConfirmDialog()
@@ -186,7 +207,64 @@ export function ParticipantJournal({
   const [kontaktform, setKontaktform] = useState<Kontaktform | ''>('')
   const [historikFor, setHistorikFor] = useState<string | null>(null)
 
+  // AIX11: journalpost från stolpar. Förslaget sparas aldrig av sig självt — det läggs i
+  // textrutan först när konsulenten kryssat "läst" och klickat "Använd förslaget".
+  const [aiLaddar, setAiLaddar] = useState(false)
+  const [aiFel, setAiFel] = useState<string | null>(null)
+  const [halsoVarning, setHalsoVarning] = useState<string[] | null>(null)
+  const [aiForslag, setAiForslag] = useState<{ text: string; stolpar: string } | null>(null)
+  const [aiGranskat, setAiGranskat] = useState(false)
+  const [aiMarkerad, setAiMarkerad] = useState(false)
+
+  const rensaAi = () => {
+    setAiFel(null)
+    setHalsoVarning(null)
+    setAiForslag(null)
+    setAiGranskat(false)
+  }
+
+  const formuleraMedAi = async (trotsVarning = false) => {
+    const stolpar = content.trim()
+    if (!stolpar || aiLaddar) return
+    setAiFel(null)
+    setAiForslag(null)
+    setAiGranskat(false)
+    // Hälsouppgifter är särskilda personuppgifter: varna INNAN något lämnar portalen.
+    const halsoord = hittaHalsoord(stolpar)
+    if (halsoord.length > 0 && !trotsVarning) {
+      setHalsoVarning(halsoord)
+      return
+    }
+    setHalsoVarning(null)
+    setAiLaddar(true)
+    try {
+      const svar = await callAI<string>('konsulent-journalpost', { stolpar })
+      const text = (svar as Record<string, unknown>)?.journalpost
+      if (typeof text !== 'string' || !text.trim()) throw new Error('Tomt svar från AI')
+      setAiForslag({ text: text.trim(), stolpar })
+    } catch (err) {
+      console.error('Journalposten kunde inte formuleras:', err)
+      setAiFel(
+        err instanceof AiConsentRequiredError
+          ? 'AI-funktionerna är avstängda för din organisation, eller så gick det inte att kontrollera inställningen just nu. Spara anteckningen som den är.'
+          : 'Journalposten kunde inte formuleras. Din text är kvar — försök igen eller spara den som den är.'
+      )
+    } finally {
+      setAiLaddar(false)
+    }
+  }
+
+  const anvandForslag = () => {
+    if (!aiForslag || !aiGranskat) return
+    setContent(aiForslag.text)
+    setAiMarkerad(true)
+    setAiForslag(null)
+    setAiGranskat(false)
+  }
+
   const resetForm = () => {
+    rensaAi()
+    setAiMarkerad(false)
     setIsAdding(false)
     setEditingId(null)
     setContent('')
@@ -209,7 +287,8 @@ export function ParticipantJournal({
     setSubmitting(true)
     setFormError(null)
     const extra = extraFalt()
-    const result = extra ? await onAddEntry(content.trim(), category, extra) : await onAddEntry(content.trim(), category)
+    const sparText = aiMarkerad ? medAiMarkering(content) : content.trim()
+    const result = extra ? await onAddEntry(sparText, category, extra) : await onAddEntry(sparText, category)
     setSubmitting(false)
     if (result.ok) {
       resetForm()
@@ -392,12 +471,89 @@ export function ParticipantJournal({
             <textarea
               aria-label="Anteckning"
               value={content}
-              onChange={(e) => setContent(e.target.value)}
+              onChange={(e) => { setContent(e.target.value); if (halsoVarning) setHalsoVarning(null) }}
               placeholder="Skriv din anteckning här..."
               className="w-full p-4 border border-[var(--j-linje-2)] rounded-[var(--j-r-m)] bg-[var(--j-kort)] text-[var(--j-blak)] focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] resize-none"
               rows={4}
               autoFocus
             />
+
+            {!editingId && journalAi && (
+              <div className="grid gap-3" data-testid="journalpost-ai">
+                {aiAv ? (
+                  <p className="m-0 text-xs text-[var(--j-blak-3)]" role="status">
+                    AI är avstängd. Skriv anteckningen själv.
+                  </p>
+                ) : (
+                  <div className="flex flex-wrap items-center gap-3">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => void formuleraMedAi()}
+                      disabled={!content.trim() || aiLaddar || submitting}
+                      leftIcon={aiLaddar ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
+                    >
+                      {aiLaddar ? 'Formulerar …' : 'Formulera med AI'}
+                    </Button>
+                    <span className="text-xs text-[var(--j-blak-3)]">
+                      Skriv stolpar ovan. AI:n gör en saklig journalpost av dem — inget sparas förrän du klickar Spara.
+                    </span>
+                  </div>
+                )}
+
+                {aiMarkerad && (
+                  <p className="m-0 text-xs text-[var(--j-blak-3)]">
+                    Sparas med märkningen &quot;{AI_MARKERING}&quot; i slutet av texten.
+                  </p>
+                )}
+
+                {halsoVarning && (
+                  <div role="alert" className="flex items-start gap-2 p-3 rounded-lg bg-[var(--s-vantar-bg)] border border-[var(--j-linje-2)] text-sm text-[var(--s-vantar-text)]">
+                    <AlertTriangle className="w-4 h-4 flex-shrink-0 mt-0.5" aria-hidden="true" />
+                    <div className="grid gap-2">
+                      <p className="m-0">
+                        Stolparna verkar innehålla hälsouppgifter (&quot;{halsoVarning.join('&quot;, &quot;')}&quot;). Det är känsliga personuppgifter. Vi föreslår att du sparar anteckningen utan AI — då lämnar texten inte portalen.
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        <Button size="sm" variant="outline" onClick={() => setHalsoVarning(null)}>Spara utan AI</Button>
+                        <Button size="sm" variant="ghost" onClick={() => void formuleraMedAi(true)}>Formulera med AI ändå</Button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {aiFel && (
+                  <p role="alert" className="m-0 text-sm text-[var(--s-ogiltig-text)]">{aiFel}</p>
+                )}
+
+                {aiForslag && (
+                  <div className="grid gap-3 p-3 rounded-lg border border-[var(--j-linje-2)] bg-[var(--j-kort)]" data-testid="journalpost-forslag">
+                    <p className="m-0 text-sm font-medium text-[var(--j-blak)]">Förslag från AI</p>
+                    <p className="m-0 whitespace-pre-wrap text-sm text-[var(--j-blak)]" data-ai-generated="true">{aiForslag.text}</p>
+                    <p className="m-0 text-xs text-[var(--j-blak-3)]">
+                      Sparas som: {kontaktform ? KONTAKTFORM_ETIKETT[kontaktform] : 'egen anteckning'}
+                      {', '}
+                      {journalTid(franDatetimeLocal(klockslag) ?? new Date().toISOString())}
+                      . Datum och kontaktform fylls i av portalen, inte av AI:n.
+                    </p>
+                    <UtkastGranskning utkast={aiForslag.text} underlag={aiForslag.stolpar} />
+                    <label className="flex items-start gap-2 text-sm text-[var(--j-blak-2)] cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={aiGranskat}
+                        onChange={(e) => setAiGranskat(e.target.checked)}
+                        className="mt-1"
+                      />
+                      <span>Jag har läst igenom förslaget och kan stå för det.</span>
+                    </label>
+                    <div className="flex flex-wrap gap-2">
+                      <Button size="sm" onClick={anvandForslag} disabled={!aiGranskat}>Använd förslaget</Button>
+                      <Button size="sm" variant="ghost" onClick={rensaAi}>Släng förslaget</Button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
 
             <div className="flex justify-end gap-2">
               <Button variant="ghost" onClick={resetForm} disabled={submitting}>

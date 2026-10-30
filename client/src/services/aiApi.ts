@@ -55,6 +55,7 @@ const ART9_FUNCTIONS = new Set([
 const AI_ENABLED_EXEMPT_FUNCTIONS = new Set([
   'konsulent-rapportutkast',
   'konsulent-lagesbild',
+  'konsulent-journalpost',
 ])
 
 /**

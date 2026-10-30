@@ -40,6 +40,7 @@ import type { SkillsAnalysis } from '@/services/careerApi'
 import type { Education } from '@/services/educationApi'
 import { antalKlara, arLangDromjobb, forhandsvisning, kortDromjobb, sakerUrl } from './dromjobb'
 import type { Utbildningslage } from './useSkillsGap'
+import { ForstaStegRad } from './ForstaStegRad'
 
 /**
  * Skillnadens storlek som text plus en intensitet av sidans egen hubbfärg.
@@ -350,6 +351,9 @@ export function SkillsGapResult({
                 <div>
                   <p className="font-medium text-stone-800 dark:text-stone-100">{item.title}</p>
                   <p className="text-sm text-stone-700 dark:text-stone-300">{item.description}</p>
+                  {item.forstaSteg && (
+                    <ForstaStegRad steg={item.forstaSteg} typ={item.forstaStegTyp} rubrik={item.title} />
+                  )}
                 </div>
               </li>
             ))}

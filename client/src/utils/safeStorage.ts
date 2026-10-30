@@ -110,6 +110,9 @@ export const USER_SCOPED_STORAGE_KEYS: readonly string[] = [
   'jobin_daily_job_date',
   'jobin_daily_job_filter',
   'jobin_daily_job_seen',
+  // AIX29 (2026-10-30): sparade "Gör det mindre"-listor (services/gorDetMindreLista.ts)
+  // — personens egna ord om vad hen behöver göra.
+  'gor-det-mindre',
   // OBS, MEDVETET INTE MED: 'deltagarportal-settings' (settingsStore.ts).
   // Den nyckelns `partialize` blandar innehåll (emailNotifications,
   // pushNotifications, weeklySummary, energyLevel, hasCompletedOnboarding,

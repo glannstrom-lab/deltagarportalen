@@ -27,6 +27,8 @@ import { useArticles } from '@/hooks/knowledge-base/useArticles'
 import { datumSprak } from '@/lib/datumsprak'
 import { formatLocalDate } from '@/services/aktivitetSchema'
 import { artikelOmIntervju } from './intervjuArtiklar'
+import { BerattelseByggare, type OvningsBerattelse } from '@/components/interview/BerattelseByggare'
+import { STAR_STEG, type StarStegText } from '@/services/berattelseApi'
 
 /**
  * O10 steg 1: en rad om hur svaret levererades. Siffror, inget omdöme — portalen sätter
@@ -414,6 +416,9 @@ function InterviewSimulatorInner() {
    * samma rubrik "Fråga 1", som om en rekryterare ställt den.
    */
   const [fragaKalla, setFragaKalla] = useState<'ai' | 'reserv'>('ai')
+  // AIX4: stödord ur en egen berättelse. Bor här, med resten av den pågående övningen,
+  // och visas bredvid frågan så länge övningen pågår. Skickas aldrig till AI:n.
+  const [ovningsStod, setOvningsStod] = useState<StarStegText | null>(null)
   /** Mikrofonfel — `onerror` tog inte ens emot event-objektet tidigare. */
   const [talFel, setTalFel] = useState<string | null>(null)
   /** Tidigare övningar, för löftet i sammanfattningen. Se `TidigareOvningar`. */
@@ -713,6 +718,29 @@ function InterviewSimulatorInner() {
     }
   }, [roll, foretag, selectedCategory, t])
 
+  const stodNamn: Record<(typeof STAR_STEG)[number], string> = {
+    situation: t('interviewSimulator.story.step.situation', 'Situationen'),
+    uppgift: t('interviewSimulator.story.step.uppgift', 'Din uppgift'),
+    handling: t('interviewSimulator.story.step.handling', 'Det du gjorde'),
+    resultat: t('interviewSimulator.story.step.resultat', 'Vad som hände efteråt'),
+  }
+
+  // AIX4: öva en färdig berättelse. Ingen AI behövs för första frågan — den är fast,
+  // och berättelsen är personens egen. Nästa frågor och bedömningen går som vanligt.
+  const ovaBerattelse = useCallback((b: OvningsBerattelse) => {
+    setRoll((r) => r.trim() || t('interviewSimulator.story.practiceRole', 'ett jobb jag söker'))
+    setHarStartat(true)
+    setIsLoading(false)
+    setTimerSeconds(0)
+    setSupportPhrase(null)
+    setAiFel(null)
+    setTalFel(null)
+    setOvningsStod(b.steg)
+    setNuvarandeFraga(t('interviewSimulator.story.practiceQuestion', 'Berätta om en gång då du löste något, hjälpte någon eller lärde dig något. Du har dina stödord här bredvid.'))
+    setFragaKalla('ai')
+    setIsTimerRunning(true)
+  }, [t])
+
   const svara = useCallback(async () => {
     if (!anvandarSvar.trim() || isLoading) return
 
@@ -840,6 +868,7 @@ function InterviewSimulatorInner() {
     }
 
     setHarStartat(false)
+    setOvningsStod(null)
     setRoll('')
     setForetag('')
     setSelectedCategory('')
@@ -1156,6 +1185,9 @@ ${t('interviewSimulator.download.tipsForImprovement')}:
             </Button>
           </div>
         </Card>
+
+        {/* AIX4: gör ett eget minne till en berättelse och öva den. */}
+        <BerattelseByggare onOva={ovaBerattelse} disabled={isLoading} />
 
         {/*
           Tidigare övningar.
@@ -1677,6 +1709,27 @@ ${t('interviewSimulator.download.tipsForImprovement')}:
           </div>
         </div>
       </Card>
+
+      {/* AIX4: stödord ur personens egen berättelse. Hennes ord, inte våra. */}
+      {ovningsStod && (
+        <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700 shadow-sm" role="region" aria-label={t('interviewSimulator.story.supportAria', 'Dina stödord')}>
+          <h3 className="font-semibold text-stone-800 dark:text-stone-100 mb-3">
+            {t('interviewSimulator.story.supportTitle', 'Dina stödord')}
+          </h3>
+          <ul className="space-y-2 list-none p-0 m-0">
+            {STAR_STEG.map((k) => (
+              <li key={k} className="text-sm text-stone-800 dark:text-stone-100">
+                <span className="font-medium">{stodNamn[k]}: </span>
+                {ovningsStod[k] ?? (
+                  <span className="text-stone-700 dark:text-stone-300">
+                    {t('interviewSimulator.story.supportMissing', 'Här fyller du i själv när du berättar.')}
+                  </span>
+                )}
+              </li>
+            ))}
+          </ul>
+        </Card>
+      )}
 
       {/* Timer & Answer Input */}
       <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700 shadow-sm">

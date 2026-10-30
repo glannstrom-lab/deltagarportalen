@@ -9,6 +9,7 @@ import { cn } from '@/lib/utils'
 import { AgentSelector, getAgentById } from '@/components/ai-team/AgentSelector'
 import { AgentChat, type AgentChatHandle } from '@/components/ai-team/AgentChat'
 import { AITeamVerktyg } from '@/components/ai-team/AITeamVerktyg'
+import { SprakStod } from '@/components/sprakstod/SprakStod'
 import { useAITeamStore } from '@/stores/aiTeamStore'
 import { agentColorClasses } from '@/components/ai-team/types'
 import { Users, Lightbulb, Bot, ChevronDown } from '@/components/ui/icons'
@@ -186,6 +187,9 @@ function AITeamInner() {
           </details>
         </div>
       </div>
+
+      {/* AIX24/AIX29: förklara ett brev, dela upp en stor uppgift */}
+      <SprakStod />
     </PageLayout>
   )
 }

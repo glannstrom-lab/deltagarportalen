@@ -158,3 +158,29 @@ describe('/api/ai: konsulent-lagesbild kräver personalroll', () => {
     expect(openrouter).toHaveLength(1)
   })
 })
+
+// AIX11 (2026-10-30): journalposten bär stolpar om en deltagare — samma grind.
+describe('/api/ai: konsulent-journalpost kräver personalroll', () => {
+  const journalpost = () => ({
+    method: 'POST',
+    headers: { authorization: 'Bearer tok' },
+    body: { function: 'konsulent-journalpost', data: { stolpar: 'ringde, sökt 2 jobb' } },
+  })
+
+  it('en deltagare (USER) nekas — ingenting går till OpenRouter', async () => {
+    const { openrouter } = stubNetwork({ role: 'USER', roles: ['USER'], ai_enabled: false })
+    const { res, captured } = makeRes()
+    await laddaHandler()(journalpost(), res)
+    expect(captured.status).toBe(403)
+    expect(captured.body).toMatchObject({ reason: 'not_staff' })
+    expect(openrouter).toHaveLength(0)
+  })
+
+  it('en konsulent släpps igenom', async () => {
+    const { openrouter } = stubNetwork({ role: 'USER', roles: ['USER', 'CONSULTANT'] })
+    const { res, captured } = makeRes()
+    await laddaHandler()(journalpost(), res)
+    expect(captured.status).toBe(200)
+    expect(openrouter).toHaveLength(1)
+  })
+})

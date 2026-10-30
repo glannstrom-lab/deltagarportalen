@@ -949,6 +949,18 @@
         "body": "Det är ett lugnt första steg. Du kan sluta när du vill. Allt sparas.",
         "cta": "Öppna CV-byggaren",
         "short": "Börja med ditt CV"
+      },
+      "continueCv": {
+        "title": "Ditt CV är påbörjat",
+        "body": "Det du har skrivit är sparat. Du kan fortsätta när du vill, med {{sektion}}.",
+        "cta": "Fortsätt med ditt CV",
+        "short": "Fortsätt med ditt CV: {{sektion}}",
+        "sektion": {
+          "summary": "din text om dig",
+          "work_experience": "jobb du har haft",
+          "education": "din utbildning",
+          "skills": "det du kan"
+        }
       }
     },
     "pagar": {
@@ -1680,5 +1692,88 @@
   "ansokanAi": {
     "luckor": "Ett utkast från AI. Fyll i det som står i [hakparentes]. {{antal}} kvar.",
     "utkast": "Ett utkast från AI. Läs det och ändra så att det låter som du."
+  },
+  "sprakStod": {
+    "rubrik": "Hjälp med brev och stora uppgifter",
+    "brev": {
+      "rubrik": "Jag fick ett brev som jag inte förstår",
+      "hint": "Klistra in texten från brevet. Personnummer tas bort innan texten skickas. Klistra inte in läkarintyg eller journaltext.",
+      "etikett": "Texten från brevet",
+      "knapp": "Förklara brevet",
+      "laddar": "Läser brevet …",
+      "fel": "Vi kunde inte förklara brevet nu. Försök igen strax.",
+      "avvisat": "Det här ser ut som ett läkarintyg eller en journaltext. Vi läser inte sådana texter här. Fråga din läkare, din handläggare eller Försäkringskassan.",
+      "ansvar": "AI har gjort texten enklare. Brevet gäller. Förstår du inte något? Fråga den som skickade brevet.",
+      "vad": "Vad är det här?",
+      "fran": "Från:",
+      "gor": "Vad ska jag göra?",
+      "gorTomt": "Vi hittade inget säkert i brevet. Fråga den som skickade brevet vad du ska göra.",
+      "senast": "Senast när?",
+      "senastTomt": "Vi hittade inget säkert datum i brevet. Läs brevet en gång till eller fråga den som skickade det.",
+      "vem": "Vem ska jag kontakta?",
+      "vemTomt": "Vi hittade ingen säker kontakt i brevet. Leta efter ett telefonnummer längst ner i brevet.",
+      "iBrevet": "Så här står det i brevet:"
+    },
+    "mindre": {
+      "rubrik": "Något känns för stort att börja med",
+      "etikett": "Vad känns för stort just nu?",
+      "exempel": "Till exempel: Jag måste ringa Arbetsförmedlingen",
+      "knapp": "Dela upp det",
+      "laddar": "Tänker ut små steg …",
+      "fel": "Vi kunde inte dela upp det nu. Försök igen strax.",
+      "forslag": "Det här är ett förslag från AI. Du måste inte göra så. Gör så som passar dig.",
+      "spara": "Spara som lista med rutor att bocka i",
+      "sparfel": "Webbläsaren lät oss inte spara listan. Skriv av stegen om du vill ha kvar dem.",
+      "dinaListor": "Dina listor",
+      "privat": "Listorna är bara dina. De sparas i den här webbläsaren. Du ser dem inte på andra enheter.",
+      "tomt": "Här ser du de listor som du sparar.",
+      "taBort": "Ta bort listan"
+    }
+  },
+  "rattstavning": {
+    "knapp": "Kolla stavningen",
+    "langText": "Brevet är långt. Vi kollar de första {{antal}} tecknen.",
+    "laddar": "Vi läser brevet …",
+    "inga": "Vi hittade inget att rätta. Din text är kvar som den var.",
+    "fel": "Det gick inte att kolla stavningen nu. Din text är som förut. Försök igen om en stund.",
+    "inget": "Vi ändrade inget.",
+    "klart": "Klart. Vi ändrade {{antal}} saker.",
+    "overhoppade": "{{antal}} passade inte längre i texten. De ändrades inte.",
+    "rubrik": "Förslag på rättelser. Välj dem du vill ha.",
+    "forklaring": "AI:n föreslår bara små ändringar av stavning och ordens former. Inget ändras förrän du trycker på knappen nedan.",
+    "fore": "Nu:",
+    "efter": "Blir:",
+    "gor": "Gör de ändringar jag valt",
+    "valjAlla": "Välj alla",
+    "avbryt": "Inte nu"
+  },
+  "applications": {
+    "card": {
+      "followUpRejected": "Det finns ett mejl där du kan be om svar på varför",
+      "followUpSilence": "Det finns ett mejl där du kan fråga hur det går"
+    }
+  },
+  "interviewSimulator": {
+    "story": {
+      "error": "Det gick inte att bygga berättelsen nu. Det du skrev finns kvar. Försök igen om en stund.",
+      "intro": "Berätta om något du har varit med om. Vi ställer en fråga i taget. Vi sätter dina egna ord i ordning. Vi lägger inte till något.",
+      "eventLabel": "En gång när du löste ett problem, hjälpte någon eller lärde dig något",
+      "eventPlaceholder": "Skriv som du pratar. Det behöver inte vara fint.",
+      "privacy": "Berättelsen sparas bara i den här webbläsaren. Skriv inte vad andra personer heter.",
+      "missing": "Saknas än så länge. Det du skriver här blir ditt eget svar, inte vårt.",
+      "struck": "Vi tog bort något som inte fanns i det du skrev. Bara dina egna ord får vara med.",
+      "summaryAi": "AI har satt det du skrev i ordning. Läs igenom. Om något är fel gäller det du sa själv.",
+      "partial": "Du kan öva nu. Det som saknas kan du fylla i själv när du berättar.",
+      "practiceQuestion": "Berätta om en gång när du löste ett problem, hjälpte någon eller lärde dig något. Dina stödord står bredvid.",
+      "supportMissing": "Det här fyller du i själv när du berättar."
+    }
+  },
+  "skillsGapAnalysis": {
+    "firstStep": {
+      "added": "Det ligger nu i din kalender för i dag.",
+      "failed": "Det gick inte att lägga steget i kalendern. Försök igen.",
+      "meta": "Cirka 15 minuter. Det kostar inget.",
+      "aiNote": "Förslag från AI. Du bestämmer om det passar dig."
+    }
   }
 }

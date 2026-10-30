@@ -935,6 +935,9 @@ export interface ActionPlanItem {
   order: number;
   title: string;
   description: string;
+  /** AIX7: en handling på ~15 minuter, 0 kr. Saknas på analyser från före 2026-10-30. */
+  forstaSteg?: string;
+  forstaStegTyp?: string;
 }
 
 export interface SkillsAnalysis {

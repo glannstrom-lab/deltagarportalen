@@ -210,6 +210,10 @@ const LANGA_FALT = { cvText: 10000 };
 // sammansättningen (inkl. sanningsregeln på varje prompt) i ./_prompts/index.js.
 const { PROMPTS } = require('./_prompts');
 const { citatFinnsIAnnons, normalisera, ANNONS_MAX } = require('./_prompts/_annons');
+const berattelse = require('./_prompts/_berattelse'); // AIX4
+const forstaSteg = require('./_prompts/_forstasteg'); // AIX7
+const { validera: valideraRattstavning } = require('./_prompts/_rattstavning');
+const { validera: valideraSprak } = require('./_prompts/_sprakvalidering');
 
 // ============================================
 // Rate Limiting Configuration
@@ -240,10 +244,18 @@ const RATE_LIMITS = {
   'vecko-reflektion': { limit: 5, windowMinutes: 60 },
   'konsulent-rapportutkast': { limit: 10, windowMinutes: 15 },
   'konsulent-lagesbild': { limit: 20, windowMinutes: 15 },
+  'konsulent-journalpost': { limit: 40, windowMinutes: 15 }, // AIX11 — det konsulenten gör flest gånger per dag
   // AIX1/AIX5/AIX6 (2026-10-27): deltagarens ansökningsstöd.
   'annons-forklaring': { limit: 15, windowMinutes: 15 },
   'samtalsmanus': { limit: 10, windowMinutes: 15 },
   'uppfoljningsmejl': { limit: 10, windowMinutes: 15 },
+  // AIX4 (2026-10-30): en omgång = en händelse och upp till fyra följdfrågor.
+  'intervju-berattelse': { limit: 20, windowMinutes: 15 },
+  // AIX27 (2026-10-30): rättstavning av eget brev.
+  'ratta-stavning': { limit: 15, windowMinutes: 15 },
+  // AIX24/AIX29 (2026-10-30): språkstöd.
+  'myndighetsbrev': { limit: 10, windowMinutes: 15 },
+  'gor-mindre': { limit: 15, windowMinutes: 15 },
   'default': { limit: 20, windowMinutes: 15 }
 };
 
@@ -459,6 +471,7 @@ async function checkArt9Consent(supabase, userId) {
 const AI_ENABLED_EXEMPT_FUNCTIONS = new Set([
   'konsulent-rapportutkast',
   'konsulent-lagesbild', // KF6 — samma resonemang: deltagarens data, personalens anrop
+  'konsulent-journalpost', // AIX11 — stolpar om deltagaren, personalens anrop
 ]);
 
 /**
@@ -845,6 +858,16 @@ function extractJsonContent(raw) {
  * @returns {{ ok: true, value: unknown } | { ok: false, error: string }}
  */
 const RESPONSE_VALIDATORS = {
+  // AIX27 (2026-10-30): rättstavning. Logiken bor i _prompts/_rattstavning.js
+  // (deterministisk kontroll: inga nya ord av betydelse, inga nya siffror, inte
+  // för stor ändringslista). Jämförs mot texten som prompten fick.
+  'ratta-stavning': (value, indata) => valideraRattstavning(value, typeof indata?.text === 'string' ? indata.text : ''),
+
+  // AIX24/AIX29 (2026-10-30): språkstöd. Logiken bor i _prompts/_sprakvalidering.js
+  // (egen fil: ai.js är redan över 1 600 rader). Se AIX1 nedan för mönstret.
+  'myndighetsbrev': (value, indata) => valideraSprak('myndighetsbrev', value, indata),
+  'gor-mindre': (value, indata) => valideraSprak('gor-mindre', value, indata),
+
   // AIX1 (2026-10-27): Förklara annonsen. Varje rad måste bära ett citat som
   // står ORDAGRANT i annonstexten (samma text som prompten fick, kapad vid
   // 3 000). Rader utan belägg tas bort här, på servern — klienten får aldrig
@@ -887,6 +910,82 @@ const RESPONSE_VALIDATORS = {
       if (ord.length >= 3) break;
     }
     return { ok: true, value: { uppgifter, krav, ord } };
+  },
+
+  // AIX4 (2026-10-30): Intervjuberättelse av egna minnen. Varje STAR-steg måste
+  // stå ordagrant i det personen själv skrivit (indata = hennes text efter
+  // sanering). Det som inte gör det stryks och steget räknas som saknat, så att
+  // modellen aldrig kan fylla i ett resultat åt henne. Sammanställningen visas
+  // bara när alla fyra finns, och faller den på stödkontrollen byggs den av
+  // hennes egna citat i stället.
+  'intervju-berattelse': (value, indata) => {
+    if (!isPlainObject(value)) {
+      return { ok: false, error: 'berättelsesvaret var inte ett JSON-objekt' };
+    }
+    const text = berattelse.anvandarText(indata);
+    const rader = isPlainObject(value.steg) ? value.steg : {};
+    const steg = {};
+    const struket = [];
+    for (const k of berattelse.STEG) {
+      const citat = nonEmptyString(rader[k]);
+      if (!citat) { steg[k] = null; continue; }
+      if (berattelse.citatFinnsIText(citat, text)) steg[k] = citat.slice(0, 400);
+      else { steg[k] = null; struket.push(k); }
+    }
+    const saknas = berattelse.STEG.filter((k) => !steg[k]);
+    if (saknas.length > 0) {
+      const forslag = nonEmptyString(value.fraga);
+      // En följdfråga får inte innehålla tal personen inte skrivit och inte
+      // vara en ledande ja/nej-fråga som lägger svaret i hennes mun.
+      const duger = forslag && forslag.length <= 220 && forslag.endsWith('?')
+        && !/^(var det|blev det|gick det|var det inte|hade du)\b/i.test(forslag)
+        && (forslag.match(/\d+/g) || []).every((n) => text.includes(n));
+      return {
+        ok: true,
+        value: {
+          steg,
+          struket,
+          fragaSteg: saknas[0],
+          fraga: duger ? forslag : berattelse.RESERVFRAGOR[saknas[0]],
+          sammanstallning: null,
+          kalla: null,
+        },
+      };
+    }
+    const forslag = nonEmptyString(value.sammanstallning);
+    const stodd = forslag && forslag.length <= 900 && berattelse.harStodITexten(forslag, text);
+    const egnaOrd = berattelse.STEG.map((k) => steg[k].replace(/[.\s]+$/, '')).join('. ') + '.';
+    return {
+      ok: true,
+      value: {
+        steg,
+        struket,
+        fragaSteg: null,
+        fraga: null,
+        sammanstallning: stodd ? forslag : egnaOrd,
+        kalla: stodd ? 'ai' : 'egna-ord',
+      },
+    };
+  },
+
+  // AIX7 (2026-10-30): kompetensgapet bär ett "forstaSteg" per steg. Resten av
+  // svaret släpps orört (klientens Zod-schema äger formen); här stryks bara ett
+  // första steg som låter som kurs, köp, anordnare eller belopp, och en
+  // stegtyp utanför den fasta listan. Länkar skriver klienten, aldrig modellen.
+  'kompetensgap': (value) => {
+    if (!isPlainObject(value)) {
+      return { ok: false, error: 'kompetensgapet var inte ett JSON-objekt' };
+    }
+    if (!Array.isArray(value.actionPlan)) return { ok: true, value };
+    const actionPlan = value.actionPlan.map((steg) => {
+      if (!isPlainObject(steg)) return steg;
+      const { forstaSteg: rått, forstaStegTyp: typRått, ...rest } = steg;
+      const text = forstaSteg.rensaForstaSteg(rått);
+      if (!text) return rest;
+      const typ = forstaSteg.rensaStegTyp(typRått);
+      return typ ? { ...rest, forstaSteg: text, forstaStegTyp: typ } : { ...rest, forstaSteg: text };
+    });
+    return { ok: true, value: { ...value, actionPlan } };
   },
 
   // Feedback-grenen: {"rating":1-5,"feedback":"…","nastaFraga":"…"}

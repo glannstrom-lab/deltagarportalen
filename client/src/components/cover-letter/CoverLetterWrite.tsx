@@ -61,6 +61,7 @@ import { generateCoverLetterPDFViaReactPdf, downloadPDF } from '@/services/pdfEx
 import { useAutoSave } from '@/hooks/useAutoSave'
 import type { CVData, ProfilePreferences } from '@/services/supabaseApi'
 import { KortaVersioner, type KortLangd } from './KortaVersioner'
+import { Rattstavning } from './Rattstavning'
 import { byggBrevmall, raknaLuckor } from '@/data/brevmall'
 
 // Sparat jobb interface
@@ -1116,6 +1117,12 @@ export function CoverLetterWrite() {
                 genereratPaTunntUnderlag={genereratPaTunntUnderlag}
                 arMall={arMall}
                 onKortVersion={skapaKortVersion}
+                onRattstavning={(rattad) => {
+                  // Stavningsrättning gör inte AI:ns brev till personens eget:
+                  // var texten AI:ns före rättningen följer märkningen med.
+                  if (arOrordAiText) setGeneratedLetter(rattad)
+                  setEditedLetter(rattad)
+                }}
               />
             )}
           </Card>
@@ -1843,8 +1850,10 @@ function Step3ReviewSave({
   genereratPaTunntUnderlag,
   arMall,
   onKortVersion,
+  onRattstavning,
 }: {
   onKortVersion: (langd: KortLangd) => Promise<string>
+  onRattstavning: (text: string) => void
   editedLetter: string
   setEditedLetter: (text: string) => void
   generatedLetter: string
@@ -2003,6 +2012,8 @@ function Step3ReviewSave({
         )}
         {arMall && <MallNot antalLuckor={raknaLuckor(editedLetter)} />}
         {genereratPaTunntUnderlag && !arMall && arOrordAiText && <TunntUnderlagNot />}
+        {/* AIX27: rättstavning. Förslag som personen godkänner en och en. */}
+        <Rattstavning text={editedLetter} onApply={onRattstavning} disabled={isGenerating} />
       </div>
 
       {/* AIX10: korta versioner. Bara när brevet kommer från AI:n (inte mallen):

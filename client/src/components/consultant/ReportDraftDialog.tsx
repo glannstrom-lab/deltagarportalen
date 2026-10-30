@@ -30,6 +30,8 @@ import { notifications } from '@/lib/toast'
 import { callAI } from '@/services/aiApi'
 import { Button } from '@/components/ui/Button'
 import { Dialog } from '@/components/ui/Dialog'
+import { UtkastGranskning } from './UtkastGranskning'
+import { rapportUnderlag } from './rapportUnderlag'
 import { cn } from '@/lib/utils'
 
 import { anvandareFranSession } from '@/lib/anvandareFranSession'
@@ -58,6 +60,8 @@ interface StoredDraft {
   text: string
   participantId: string
   savedAt: number
+  /** AIX13: texten AI:n fick bygga på, så granskningen finns kvar för ett återställt utkast. */
+  underlag?: string
 }
 
 function draftStorageKey(consultantId: string, participantId: string): string {
@@ -76,19 +80,24 @@ function readStoredDraft(key: string): StoredDraft | null {
       sessionStorage.removeItem(key)
       return null
     }
-    return { text: parsed.text, participantId: parsed.participantId ?? '', savedAt: parsed.savedAt }
+    return {
+      text: parsed.text,
+      participantId: parsed.participantId ?? '',
+      savedAt: parsed.savedAt,
+      underlag: typeof parsed.underlag === 'string' ? parsed.underlag : undefined,
+    }
   } catch {
     return null
   }
 }
 
-function writeStoredDraft(key: string, text: string, participantId: string) {
+function writeStoredDraft(key: string, text: string, participantId: string, underlag?: string | null) {
   try {
     if (!text.trim()) {
       sessionStorage.removeItem(key)
       return
     }
-    const entry: StoredDraft = { text, participantId, savedAt: Date.now() }
+    const entry: StoredDraft = { text, participantId, savedAt: Date.now(), ...(underlag ? { underlag } : {}) }
     sessionStorage.setItem(key, JSON.stringify(entry))
   } catch {
     // sessionStorage kan vara otillgängligt (privat läge m.m.) — utkastet
@@ -113,6 +122,9 @@ export function ReportDraftDialog({ isOpen, onClose, participantId }: ReportDraf
   const [includeConcern, setIncludeConcern] = useState(false)
   const [generating, setGenerating] = useState(false)
   const [draft, setDraft] = useState('')
+  // AIX13: exakt den text AI:n fick bygga på — granskningen jämför utkastet mot den.
+  const [underlag, setUnderlag] = useState<string | null>(null)
+  const underlagRef = useRef<string | null>(null)
   const [copied, setCopied] = useState(false)
 
   // 'offer' = ett sparat utkast hittades vid öppning och väntar på ett
@@ -138,6 +150,7 @@ export function ReportDraftDialog({ isOpen, onClose, participantId }: ReportDraf
 
   useEffect(() => {
     draftRef.current = draft
+    underlagRef.current = underlag
     // storageKeyRef hålls i synk med state-versionen så unmount-flushen (som
     // måste läsa synkront ur en ref, inte ur state) alltid ser samma nyckel
     // som write-effekten nedan just använde.
@@ -194,7 +207,7 @@ export function ReportDraftDialog({ isOpen, onClose, participantId }: ReportDraf
     debounceTimer.current = setTimeout(() => {
       debounceTimer.current = null
       if (pendingText.current !== null) {
-        writeStoredDraft(storageKey, pendingText.current, participantId)
+        writeStoredDraft(storageKey, pendingText.current, participantId, underlagRef.current)
       }
       pendingText.current = null
     }, DRAFT_DEBOUNCE_MS)
@@ -212,7 +225,7 @@ export function ReportDraftDialog({ isOpen, onClose, participantId }: ReportDraf
         debounceTimer.current = null
       }
       if (pendingText.current !== null && storageKeyRef.current) {
-        writeStoredDraft(storageKeyRef.current, pendingText.current, participantId)
+        writeStoredDraft(storageKeyRef.current, pendingText.current, participantId, underlagRef.current)
       }
       pendingText.current = null
     }
@@ -268,19 +281,19 @@ export function ReportDraftDialog({ isOpen, onClose, participantId }: ReportDraf
         return
       }
 
-      const result = await callAI<string>('konsulent-rapportutkast', {
-        periodLabel: PERIOD_LABELS[period],
-        entries,
-        goals: (goalsData || []).map(g => ({
-          title: g.title,
-          status: g.status,
-          deadline: g.deadline ? new Date(g.deadline).toLocaleDateString('sv-SE') : null,
-          progress: g.progress,
-        })),
-      })
+      const goals = (goalsData || []).map(g => ({
+        title: g.title,
+        status: g.status,
+        deadline: g.deadline ? new Date(g.deadline).toLocaleDateString('sv-SE') : null,
+        progress: g.progress,
+      }))
+      const payload = { periodLabel: PERIOD_LABELS[period], entries, goals }
+
+      const result = await callAI<string>('konsulent-rapportutkast', payload)
 
       const text = (result as Record<string, unknown>)?.utkast
       if (typeof text === 'string' && text.trim()) {
+        setUnderlag(rapportUnderlag(payload))
         setDraft(text.trim())
       } else {
         throw new Error('Tomt svar från AI')
@@ -320,6 +333,7 @@ export function ReportDraftDialog({ isOpen, onClose, participantId }: ReportDraf
   const handleDiscard = () => {
     clearPersistedDraft()
     setDraft('')
+    setUnderlag(null)
     setCopied(false)
   }
 
@@ -333,7 +347,10 @@ export function ReportDraftDialog({ isOpen, onClose, participantId }: ReportDraf
   }
 
   const handleResumeDraft = () => {
-    if (offeredDraft) setDraft(offeredDraft.text)
+    if (offeredDraft) {
+      setDraft(offeredDraft.text)
+      setUnderlag(offeredDraft.underlag ?? null)
+    }
     setOfferedDraft(null)
     setDraftDecision('resolved')
   }
@@ -447,6 +464,7 @@ export function ReportDraftDialog({ isOpen, onClose, participantId }: ReportDraf
                     'text-stone-900 dark:text-stone-100'
                   )}
                 />
+                <UtkastGranskning utkast={draft} underlag={underlag} />
               </div>
             )}
           </div>

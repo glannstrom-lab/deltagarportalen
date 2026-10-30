@@ -20,7 +20,7 @@ import { useState } from 'react'
 import {
   Building2, MapPin, ExternalLink, MoreVertical,
   Clock, Calendar, AlertCircle, ChevronRight,
-  Trash2, Archive, Edit2, FileText
+  Trash2, Archive, Edit2, FileText, Mail
 } from '@/components/ui/icons'
 import { Card, useConfirmDialog } from '@/components/ui'
 import {
@@ -35,6 +35,7 @@ import {
   type ApplicationStatus
 } from '@/types/application.types'
 import { datumSprak } from '@/lib/datumsprak'
+import { uppfoljningsOrsak } from './uppfoljning'
 
 interface ApplicationCardProps {
   application: Application
@@ -75,6 +76,13 @@ export function ApplicationCard({
   const [nu] = useState(() => Date.now())
   const daysSinceUpdate = Math.floor((nu - new Date(application.updatedAt).getTime()) / (1000 * 60 * 60 * 24))
   const isStale = daysSinceUpdate >= 7 && !['accepted', 'rejected', 'withdrawn'].includes(application.status)
+
+  // AIX5: erbjuds ett uppföljningsmejl? Samma regel som panelen i detaljvyn —
+  // kortet pekar bara ut att det finns, utan att tolka varför.
+  const uppfoljning = uppfoljningsOrsak(application)
+  const uppfoljningText = uppfoljning === 'avslag'
+    ? t('applications.card.followUpRejected', 'Mejl att be om återkoppling finns')
+    : t('applications.card.followUpSilence', 'Uppföljningsmejl finns')
 
   const priorityColors = {
     high: 'bg-red-100 text-red-700 border-red-200',
@@ -236,12 +244,21 @@ export function ApplicationCard({
           )}
         </div>
 
-        <div className="flex items-center justify-between gap-2 mt-2">
+        <div className="flex flex-wrap items-center justify-between gap-2 mt-2">
           <span className="text-xs text-stone-600 dark:text-stone-400">
             {daysSinceUpdate === 0
               ? t('applications.common.today', 'Idag')
               : t('applications.card.daysShort', { count: daysSinceUpdate })}
           </span>
+          {uppfoljning && (
+            <span
+              data-testid="uppfoljning-markering"
+              className="inline-flex items-center gap-1 rounded border border-stone-300 bg-stone-100 px-1.5 py-0.5 text-xs text-stone-800 dark:border-stone-600 dark:bg-stone-800 dark:text-stone-200"
+            >
+              <Mail className="w-3 h-3" aria-hidden="true" />
+              {uppfoljningText}
+            </span>
+          )}
           <div className="flex items-center gap-1">
             {isStale && (
               <AlertCircle className="w-3.5 h-3.5 text-amber-500" aria-hidden="true" />
@@ -323,6 +340,17 @@ export function ApplicationCard({
               <span className="px-2 py-0.5 rounded text-xs font-medium bg-amber-100 text-amber-700 border border-amber-200 flex items-center gap-1">
                 <AlertCircle className="w-3 h-3" aria-hidden="true" />
                 {t('applications.card.needsFollowUp', 'Behöver uppföljning')}
+              </span>
+            )}
+
+            {/* AIX5: uppföljningsmejl finns att skapa */}
+            {uppfoljning && (
+              <span
+                data-testid="uppfoljning-markering"
+                className="px-2 py-0.5 rounded text-xs border border-stone-300 bg-stone-100 text-stone-800 dark:border-stone-600 dark:bg-stone-800 dark:text-stone-200 flex items-center gap-1"
+              >
+                <Mail className="w-3 h-3" aria-hidden="true" />
+                {uppfoljningText}
               </span>
             )}
 

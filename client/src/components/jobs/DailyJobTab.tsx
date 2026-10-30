@@ -25,6 +25,7 @@ import { Card, Button } from '@/components/ui';
 import { cn } from '@/lib/utils';
 import { searchJobs, type PlatsbankenJob } from '@/services/arbetsformedlingenApi';
 import { buildCoverLetterUrl, buildCvAdaptUrl } from '@/utils/jobLinks';
+import { AnnonsForklaring } from '@/components/jobs/AnnonsForklaring';
 import { useSavedJobs } from '@/hooks/useSavedJobs';
 import { cvApi } from '@/services/cvApi';
 import { interestGuideApi } from '@/services/cloudStorage';
@@ -698,6 +699,12 @@ export function DailyJobTab() {
                   <FileText className="w-5 h-5" />
                   {t('jobSearch.adaptCvLong')}
                 </Link>
+
+                {/* AIX1: annonsen i enkla ord, med citat ur texten. */}
+                <AnnonsForklaring
+                  storlek="stor"
+                  annons={{ id: job.id, titel: job.headline, foretag: job.employer?.name, text: job.description?.text ?? '' }}
+                />
               </div>
 
               {job.application_details?.url && (

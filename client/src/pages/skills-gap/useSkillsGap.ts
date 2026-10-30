@@ -192,7 +192,9 @@ export function useSkillsGap() {
       const actionPlan: ActionPlanItem[] = (parsed.data.actionPlan ?? []).map((a, idx) => ({
         order: a.order ?? idx + 1,
         title: a.title,
-        description: a.description || a.title
+        description: a.description || a.title,
+        ...(a.forstaSteg ? { forstaSteg: a.forstaSteg } : {}),
+        ...(a.forstaSteg && a.forstaStegTyp ? { forstaStegTyp: a.forstaStegTyp } : {}),
       }))
 
       const saved = await skillsAnalysisApi.create({

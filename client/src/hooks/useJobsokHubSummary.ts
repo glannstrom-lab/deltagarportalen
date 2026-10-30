@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { useAuth } from '@/hooks/useSupabase'
 import { supabase } from '@/lib/supabase'
+import { tommaCvSektioner, arCvPaborjat } from '@/lib/cvSektioner'
 import { applicationsApi } from '@/services/applicationsApi'
 import type { JobsokSummary } from './hubSummaryTypes'
 import type { ApplicationStatus } from '@/types/application.types'
@@ -113,7 +114,7 @@ export function useJobsokHubSummary() {
       // salary_data and international_targets tables do NOT exist in live DB (Plan 01 verified).
       // Those widgets stay in empty-state mode — not included in this Promise.all.
       const [cvR, lettersR, sessionsR, appsR, sponR] = await Promise.all([
-        supabase.from('cvs').select('id, updated_at').eq('user_id', userId).maybeSingle(),
+        supabase.from('cvs').select('id, updated_at, first_name, summary, work_experience, education, skills').eq('user_id', userId).maybeSingle(),
         supabase.from('cover_letters').select('id, title, created_at').eq('user_id', userId).order('created_at', { ascending: false }).limit(3),
         supabase.from('interview_sessions').select('id, score, created_at').eq('user_id', userId).not('completed_at', 'is', null).order('created_at', { ascending: false }).limit(8),
         // Via applicationsApi — enda ägaren av saved_jobs (E12). Returnerar
@@ -137,7 +138,14 @@ export function useJobsokHubSummary() {
 
       const sponRows = (sponR.data as SponRow[] | null) ?? []
       const summary: JobsokSummary = {
-        cv: cvR.data ?? null,
+        cv: cvR.data
+          ? {
+              id: cvR.data.id,
+              updated_at: cvR.data.updated_at,
+              tommaSektioner: tommaCvSektioner(cvR.data),
+              paborjat: arCvPaborjat(cvR.data),
+            }
+          : null,
         coverLetters: lettersR.data ?? [],
         interviewSessions: sessionsR.data ?? [],
         applicationStats: buildApplicationStats(appsR ?? []),

@@ -31,6 +31,9 @@
  *                        jobbsök/karriär/spontan är gjort (FN5). Mjukt kort till CV-byggaren;
  *                        ersätter "skapa CV" för just dessa personer
  *   skapa CV             `cv === null`
+ *   fortsätt CV          CV:t är påbörjat och en sektion är tom (FN4). Pekar på den
+ *                        första tomma. Det enda utkast som sparas i molnet är CV-raden;
+ *                        `user_drafts` har noll rader och noll anropare
  *   fyll på CV           CV:t inte ändrat på 90 dagar
  *   första jobbet        CV finns, inga ansökningar
  *   första brevet        ansökningar finns, inga brev
@@ -48,6 +51,7 @@
  */
 
 import type { OversiktSummary } from '@/hooks/useOversiktHubSummary'
+import type { CvSektion } from '@/lib/cvSektioner'
 
 export type StegId =
   | 'todaysPass'
@@ -58,6 +62,7 @@ export type StegId =
   | 'event'
   | 'firstStep'
   | 'createCv'
+  | 'continueCv'
   | 'updateCv'
   | 'firstJob'
   | 'firstLetter'
@@ -80,6 +85,8 @@ export interface Steg {
     titel?: string
     /** true = i dag, false = i morgon. */
     idag?: boolean
+    /** Första tomma CV-sektionen (continueCv, FN4). */
+    sektion?: CvSektion
   }
 }
 
@@ -215,6 +222,12 @@ export function kandidater(s: OversiktSummary, nu: Date = new Date()): Steg[] {
   if (jobsok && jobsok.cv === null && !forstaSteg) {
     ut.push({ id: 'createCv', till: '/cv', varden: {} })
   } else if (jobsok?.cv) {
+    // 4b. Påbörjat men inte färdigt (FN4). Går före "fyll på": ett halvfärdigt CV
+    // är det som tappar folk. `tommaSektioner` undefined = vi vet inte, inget förslag.
+    const tomma = jobsok.cv.tommaSektioner
+    if (jobsok.cv.paborjat === true && tomma && tomma.length > 0) {
+      ut.push({ id: 'continueCv', till: '/cv', varden: { sektion: tomma[0] } })
+    }
     const cvDagar = dagarSedan(jobsok.cv.updated_at, nu)
     if (cvDagar !== null && cvDagar >= CV_GAMMALT_EFTER_DAGAR) {
       ut.push({ id: 'updateCv', till: '/cv', varden: { datum: jobsok.cv.updated_at, dagar: cvDagar } })

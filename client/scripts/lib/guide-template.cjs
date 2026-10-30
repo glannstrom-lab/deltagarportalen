@@ -527,8 +527,8 @@ ${vadArDetHar({ lattlast: arLattlastSida })}
     <nav class="crumb" aria-label="Brödsmulor">
       <a href="/">Jobin</a> › <a href="/guider/">Guider</a> › ${escapeHtml(kategori)}
     </nav>
-    <h1>${escapeHtml(a.title)}</h1>
-    ${a.summary ? `<p class="lead">${escapeHtml(a.summary)}</p>` : ''}
+    <h1>${skyddaNamn(escapeHtml(a.title))}</h1>
+    ${a.summary ? `<p class="lead">${skyddaNamn(escapeHtml(a.summary))}</p>` : ''}
     <div class="facts">
       ${a.reading_time ? `<span class="chip">${a.reading_time} min läsning</span>` : ''}
       ${a.difficulty && SVARIGHET[a.difficulty] ? `<span class="chip">${SVARIGHET[a.difficulty]}</span>` : ''}

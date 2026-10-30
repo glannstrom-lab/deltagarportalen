@@ -365,6 +365,12 @@ export const OVERSIKT_STEG: Record<StegId, Omit<Halsning, 'steg'>> = {
     sv: 'Hej, det är Andreas. Ett CV är grunden för det mesta här. Du kan ladda upp ett du redan har, eller bygga ett steg för steg.',
     en: 'Hi, this is Andreas. A CV is the base for most things here. You can upload one you already have, or build one step by step.',
   },
+  continueCv: {
+    // belägg: pages/hubs/nastaStegRegler.ts (CV påbörjat, en sektion tom → /cv)
+    coachId: 'jobbcoach',
+    sv: 'Hej, det är Andreas. Ditt CV är påbörjat och det du skrivit är sparat. Du kan fortsätta där du slutade, i din egen takt.',
+    en: 'Hi, this is Andreas. Your CV is started and what you wrote is saved. You can continue where you stopped, at your own pace.',
+  },
   updateCv: {
     coachId: 'jobbcoach',
     sv: 'Hej, det är Andreas. Det var ett tag sedan du ändrade ditt CV. Lägg till något nytt du har gjort sedan dess.',
@@ -407,8 +413,9 @@ export const OVERSIKT_INGET: Omit<Halsning, 'steg'> = {
  * todaysPass (2026-10-19): ny regel, ingen röst-id finns sparad för Linnea —
  * spelas in av Mikael med samma röst som de andra klippen.
  * interview, interviewDone (2026-10-24, FN2/FN3): nya steg, klippen spelas in av Mikael.
+ * continueCv (2026-10-30, FN4): nytt steg, klippet spelas in av Mikael.
  */
-export const OVERSIKT_KLIPP_SAKNAS: ReadonlySet<StegId> = new Set<StegId>(['todaysPass', 'interview', 'interviewDone', 'firstStep'])
+export const OVERSIKT_KLIPP_SAKNAS: ReadonlySet<StegId> = new Set<StegId>(['todaysPass', 'interview', 'interviewDone', 'firstStep', 'continueCv'])
 
 /** Ljudfil för en hälsning. Klippen ligger i public/radgivare/ljud/. */
 export function ljudFor(nyckel: string, sprak: 'sv' | 'en'): string { return `/radgivare/ljud/${nyckel}-${sprak}.mp3` }

@@ -23,6 +23,7 @@ import {
 import { cn } from '@/lib/utils'
 import { useNotifications, notificationConfig } from '@/hooks/useNotifications'
 import type { Notification, NotificationType } from '@/hooks/useNotifications'
+import { placeringsRad } from '@/lib/placeringsRad'
 import { formatDistanceToNow } from 'date-fns'
 import { sv, enGB } from 'date-fns/locale'
 
@@ -159,6 +160,17 @@ function NotificationItem({
         <p className="text-xs text-stone-500 dark:text-stone-400 mt-0.5 line-clamp-2">
           {notification.message}
         </p>
+        {/* FN14: deltagaren har fått jobb. Placeringens uppgifter bor i data.placering
+            (employer_name, job_title, start_date) — visas som en rad konsulenten kan
+            skriva av, utan att registrera något åt hen. */}
+        {notification.type === 'deltagare_fick_jobb' && (() => {
+          const rad = placeringsRad(notification.data?.placering)
+          return rad ? (
+            <p className="text-xs text-stone-700 dark:text-stone-300 mt-1">
+              {t('notificationBell.fickJobb.placering', 'Att registrera: {{rad}}', { rad })}
+            </p>
+          ) : null
+        })()}
         {/* F3 (2026-09-13): påminnelsen bär platsen i data.location — en kartlänk är
             det som skiljer "Hjernet, Malmgatan 4" som text från något man kan gå till.
             stopPropagation så klicket inte också navigerar till Min vecka. */}

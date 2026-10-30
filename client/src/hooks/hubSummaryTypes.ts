@@ -7,9 +7,21 @@
  * deras typer är levande.
  */
 
+import type { CvSektion } from '@/lib/cvSektioner'
+
 /** Söka jobb-hubbens datasnitt */
 export interface JobsokSummary {
-  cv: { id: string; updated_at: string; completion_pct?: number } | null
+  cv: {
+    id: string
+    updated_at: string
+    completion_pct?: number
+    /**
+     * FN4: sektioner som är tomma, och om CV:t är påbörjat. Utelämnade = vet inte
+     * (då föreslås inget "fortsätt"); en tom lista = inget saknas.
+     */
+    tommaSektioner?: CvSektion[]
+    paborjat?: boolean
+  } | null
   coverLetters: Array<{ id: string; title?: string; created_at: string }>
   interviewSessions: Array<{ id: string; score: number | null; created_at: string }>
   applicationStats: {

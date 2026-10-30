@@ -58,6 +58,10 @@ export const ActionPlanStepSchema = z.object({
   order: z.number().optional(),
   title: z.string(),
   description: z.string().optional(),
+  // AIX7: en handling på ~15 minuter utan kostnad. Servern har redan strukit allt som
+  // låter som kurs/köp; typen är en av fyra fasta (länken sätter klienten).
+  forstaSteg: z.string().optional(),
+  forstaStegTyp: z.string().optional(),
 })
 
 export const KompetensgapSchema = z.object({

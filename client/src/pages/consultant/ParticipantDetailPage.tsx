@@ -1128,6 +1128,7 @@ export function ParticipantDetailPage() {
             onUpdateEntry={updateJournalEntry}
             onDeleteEntry={deleteJournalEntry}
             currentConsultantId={currentUserId ?? undefined}
+            aiAv={aiAv}
           />
         </div>
       )}

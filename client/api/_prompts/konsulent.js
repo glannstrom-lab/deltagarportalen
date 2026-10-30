@@ -61,4 +61,23 @@ Skriv lägesbilden:`,
       responseKey: 'lagesbild'
     };
   },
+
+  // AIX11 (2026-10-30): journalpost från stolpar. Stolparna är ENDA indata — inget
+  // namn, ingen tidigare journal, ingen plan. Datum, klockslag och kontaktform
+  // fyller koden i (journalSol.ts, fälten i formuläret); AI:n skriver bara texten.
+  // Klienten varnar INNAN anrop om stolparna innehåller hälsoord
+  // (components/consultant/utkastGranskare.ts) och granskar svaret efteråt.
+  'konsulent-journalpost': (data) => {
+    const stolpar = typeof data?.stolpar === 'string' ? data.stolpar.trim().slice(0, 1500) : '';
+    return {
+      system: 'Du hjälper en arbetskonsulent att skriva en journalpost efter en kontakt med en deltagare. Gör stolparna till två till fem korta, sakliga meningar på svenska, i dåtid, med "deltagaren" som subjekt. Använd ENBART det som står i stolparna: hitta aldrig på händelser, orsaker, avsikter, siffror, namn eller överenskommelser, och lägg inte till råd eller uppföljning som inte nämns. Skriv inget datum, klockslag, kontaktform, rubrik eller signatur — det fyller systemet i. Inga värdeomdömen om personen (till exempel motiverad, engagerad, ointresserad, duktig, bra, dålig, positiv, negativ, attityd): står ett omdöme i en stolpe, skriv i stället vad deltagaren sa eller gjorde, eller lämna omdömet utan. Tolka inte varför något hände och gissa aldrig om hälsa. Behåll siffror, datum och namn exakt som i stolparna. Är stolparna för tunna för en mening, skriv bara det som finns. Svara med journalposten och inget annat.',
+      user: `STOLPAR:
+${stolpar || 'Inga stolpar.'}
+
+Skriv journalposten:`,
+      maxTokens: 600,
+      reasoningEffort: 'low',
+      responseKey: 'journalpost'
+    };
+  },
 };

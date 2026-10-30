@@ -65,6 +65,10 @@ export type NotificationType =
   | 'foretag_svar'
   | 'foretag_meddelande'
   | 'foretag_avstamning'
+  // FN14 (2026-10-27): skrivs av DELTAGAREN till konsulenten (services/fickJobbet.ts) när
+  // en ansökan blir anställning. `data.placering` = { employer_name, job_title, start_date }.
+  // Kräver RLS-migrationen 20261027_fn14_deltagare_fick_jobb_notis.sql innan den skrivs.
+  | 'deltagare_fick_jobb'
 
 export interface Notification {
   id: string
@@ -547,6 +551,13 @@ export const notificationConfig: Record<NotificationType, {
     color: 'text-sky-700',
     bgColor: 'bg-sky-100',
     label: 'Avstämning',
+  },
+  // FN14 — konsulentens notis när en deltagare fått jobb. Hub-färg sky (Söka jobb-ton undviks: konsulentvy).
+  deltagare_fick_jobb: {
+    icon: 'Briefcase',
+    color: 'text-sky-700',
+    bgColor: 'bg-sky-100',
+    label: 'Deltagare fick jobb',
   },
 }
 

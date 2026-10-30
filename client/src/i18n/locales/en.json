@@ -2065,7 +2065,9 @@
       "cv": "CV",
       "letter": "Letter",
       "viewAd": "View listing",
-      "deleteConfirm": "Delete this application?"
+      "deleteConfirm": "Delete this application?",
+      "followUpRejected": "An email asking for feedback is ready",
+      "followUpSilence": "A follow-up email is ready"
     },
     "timeline": {
       "emptyHeading": "Here's what has happened",
@@ -6983,6 +6985,41 @@
       "fyller": "Words often used as fillers: {{lista}}.",
       "ingaFyller": "No common filler words were found.",
       "integritet": "Counted from the speech recognition text, in your browser. No audio is saved. Speech recognition often removes \"eh\" and \"uh\", so they are not counted reliably. Compare with your own answers — there is no correct speed."
+    },
+    "story": {
+      "step": {
+        "situation": "The situation",
+        "uppgift": "Your task",
+        "handling": "What you did",
+        "resultat": "What happened afterwards"
+      },
+      "error": "We could not build the story right now. What you wrote is still here. Please try again in a moment.",
+      "title": "Turn a memory into an interview story",
+      "intro": "Tell us about something you have been through. We ask one question at a time and put your own words in order. We do not add anything.",
+      "eventLabel": "A time when you solved a problem, helped someone or learned something",
+      "eventPlaceholder": "Write the way you talk. It does not have to be neat.",
+      "privacy": "The story is saved only in this browser. Do not write the names of other people.",
+      "start": "Continue",
+      "missing": "Missing for now. What you write here will be your own answer, not ours.",
+      "struck": "We removed something that was not in what you wrote. Only your own words are allowed.",
+      "answer": "Answer",
+      "summaryTitle": "Your story, in order",
+      "summaryAi": "Put in order by AI from what you wrote. Read it through. If something is wrong, what you said yourself is what counts.",
+      "summaryOwn": "These are your own sentences, in order.",
+      "partial": "You can practise now. You can fill in what is missing yourself when you tell the story.",
+      "practice": "Practise this story",
+      "saved": "Saved",
+      "save": "Save in this browser",
+      "startOver": "Start over with a new memory",
+      "readMore": "Read about the STAR method",
+      "savedTitle": "Your saved stories",
+      "practiceShort": "Practise",
+      "delete": "Delete",
+      "practiceRole": "a job I am applying for",
+      "practiceQuestion": "Tell us about a time when you solved a problem, helped someone or learned something. Your own notes are next to this question.",
+      "supportAria": "Your notes",
+      "supportTitle": "Your notes",
+      "supportMissing": "You fill this in yourself when you tell the story."
     }
   },
   "profile": {
@@ -7840,7 +7877,19 @@
       "educationSource": "Source: Arbetsförmedlingen's education database.",
       "actionPlan": "NEXT STEPS"
     },
-    "showUnderlag": "Show the text we compare with"
+    "showUnderlag": "Show the text we compare with",
+    "firstStep": {
+      "taskPrefix": "First step",
+      "added": "Added to your calendar for today.",
+      "failed": "We could not add the step to your calendar. Please try again.",
+      "title": "First step today",
+      "meta": "About 15 minutes. It costs nothing.",
+      "aiNote": "A suggestion from AI. You decide if it suits you.",
+      "addedShort": "It is in your calendar",
+      "openCalendar": "Open the calendar",
+      "addToCalendar": "Add to my calendar for today",
+      "readMore": "Read more in the knowledge base"
+    }
   },
   "cvBuilder": {
     "templates": {
@@ -9629,6 +9678,18 @@
         "body": "This is a calm first step. You can stop when you like, and everything is saved.",
         "cta": "Open the CV builder",
         "short": "Start with your CV"
+      },
+      "continueCv": {
+        "title": "Your CV is started",
+        "body": "What you wrote is saved. Continue when you want to, with {{sektion}}.",
+        "cta": "Continue your CV",
+        "short": "Continue your CV: {{sektion}}",
+        "sektion": {
+          "summary": "your profile text",
+          "work_experience": "your work experience",
+          "education": "your education",
+          "skills": "your skills"
+        }
       }
     },
     "pagar": {
@@ -10165,6 +10226,9 @@
       "close": "Close",
       "unreadCount_one": "Notifications ({{count}} unread)",
       "unreadCount_other": "Notifications ({{count}} unread)"
+    },
+    "fickJobb": {
+      "placering": "To register: {{rad}}"
     }
   },
   "occupation": {
@@ -10751,5 +10815,59 @@
     "kopiera": "Copy",
     "kopierad": "Copied",
     "kopieraFel": "We could not copy. Select the text and copy it yourself."
+  },
+  "sprakStod": {
+    "rubrik": "Help with letters and big tasks",
+    "brev": {
+      "rubrik": "I got a letter I do not understand",
+      "hint": "Paste the text from the letter. Personal identity numbers (personnummer) are removed before the text is sent. Do not paste a medical certificate or medical records.",
+      "etikett": "The text from the letter",
+      "knapp": "Explain the letter",
+      "laddar": "Reading the letter …",
+      "fel": "We could not explain the letter right now. Please try again in a while.",
+      "avvisat": "This looks like a medical certificate or medical records. We do not read that kind of text here. Ask your doctor, your case worker or Försäkringskassan (the Swedish Social Insurance Agency) instead.",
+      "ansvar": "Made simpler by AI. The letter is what counts. If something is unclear, ask the sender of the letter.",
+      "vad": "What is this?",
+      "fran": "From:",
+      "gor": "What should I do?",
+      "gorTomt": "We found nothing in the letter that we could point out with certainty. Ask the sender what you need to do.",
+      "senast": "By when?",
+      "senastTomt": "The letter mentions no date that we could point out with certainty. Read the letter once more or ask the sender.",
+      "vem": "Who do I contact?",
+      "vemTomt": "The letter gives no contact that we could point out with certainty. Look for a phone number at the bottom of the letter.",
+      "iBrevet": "This is what the letter says:"
+    },
+    "mindre": {
+      "rubrik": "Something feels too big to start",
+      "etikett": "What feels too big right now?",
+      "exempel": "For example: I have to call Arbetsförmedlingen (the Swedish Public Employment Service)",
+      "knapp": "Break it down",
+      "laddar": "Thinking of small steps …",
+      "fel": "We could not break it down right now. Please try again in a while.",
+      "forslag": "This is a suggestion from AI, not a demand. Do what suits you.",
+      "spara": "Save as a list with check boxes",
+      "sparfel": "The browser did not let us save the list. Copy the steps if you want to keep them.",
+      "dinaListor": "Your lists",
+      "privat": "The lists are only yours. They are saved in this browser and do not show on other devices.",
+      "tomt": "The lists you save will appear here.",
+      "taBort": "Delete the list"
+    }
+  },
+  "rattstavning": {
+    "knapp": "Check spelling",
+    "langText": "Your letter is long. We check the first {{antal}} characters.",
+    "laddar": "Reading through your letter …",
+    "inga": "We found nothing to fix. Your text stays as it is.",
+    "fel": "We could not check the spelling right now. Your text is unchanged. Please try again in a moment.",
+    "inget": "No changes were made.",
+    "klart": "Done. {{antal}} changes were made.",
+    "overhoppade": "{{antal}} no longer fit the text and were skipped.",
+    "rubrik": "Suggested fixes. Choose the ones you want.",
+    "forklaring": "The AI only suggests small changes to spelling and word forms. Nothing changes until you press the button below.",
+    "fore": "Now:",
+    "efter": "Becomes:",
+    "gor": "Make the chosen changes",
+    "valjAlla": "Choose all",
+    "avbryt": "Not now"
   }
 }
