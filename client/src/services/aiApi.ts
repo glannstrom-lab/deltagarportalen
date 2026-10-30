@@ -258,7 +258,8 @@ async function throwAiHttpError(response: Response): Promise<never> {
     // skulle göra det omöjligt att veta att ett nytt försök är rimligt.
     const body = await response.json().catch(() => null) as { error?: string; code?: string } | null
     if (body?.code === 'AI_INVALID_RESPONSE' && body.error) {
-      throw new Error(body.error)
+      // Koden följer med så en anropare kan välja att försöka en gång till.
+      throw Object.assign(new Error(body.error), { kod: 'AI_INVALID_RESPONSE' as const })
     }
   }
   throw new Error('Ett fel uppstod vid kommunikation med AI-tjänsten.')

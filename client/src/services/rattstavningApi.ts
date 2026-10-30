@@ -32,7 +32,16 @@ function arRattning(v: unknown): v is Rattning {
 export async function foreslaRattningar(text: string): Promise<Rattning[]> {
   const underlag = text.slice(0, RATTSTAVNING_MAX_TECKEN)
   if (!underlag.trim()) return []
-  const svar = await callAI<unknown>('ratta-stavning', { text: underlag })
+  // Modellen skriver ogiltig JSON i ungefär vart sjätte anrop (mätt i prod
+  // 2026-10-30, ~970 tokens, alltså inte kapat). Ett nytt försök är billigt och
+  // personen slipper ett felmeddelande för något hen inte kan påverka.
+  let svar: unknown
+  try {
+    svar = await callAI<unknown>('ratta-stavning', { text: underlag })
+  } catch (err) {
+    if ((err as { kod?: string })?.kod !== 'AI_INVALID_RESPONSE') throw err
+    svar = await callAI<unknown>('ratta-stavning', { text: underlag })
+  }
   const rattning = (svar as { rattning?: { andringar?: unknown } }).rattning
   if (!rattning || !Array.isArray(rattning.andringar)) {
     throw new Error('Svaret gick inte att läsa. Försök igen om en stund.')
