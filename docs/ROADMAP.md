@@ -1,6 +1,6 @@
 # Roadmap — Jobin (Deltagarportalen)
 
-> **2026-10-30:** roadmap-pass med fem Sonnet-agenter — AIX4, AIX7, AIX11, AIX13, AIX24, AIX27, AIX29 och FN4 byggda, och resterna av AIX1, AIX5, FN14 och FN19 klara (se raderna). AIX11 ligger i drift men är avstängd (`JOURNAL_AI_A2_BESVARAD = false`) tills juristfrågan A2 är besvarad. Ingen av de nya AI-funktionerna är röktestad i prod än.
+> **2026-10-30:** roadmap-pass med fem Sonnet-agenter — AIX4, AIX7, AIX11, AIX13, AIX24, AIX27, AIX29 och FN4 byggda, och resterna av AIX1, AIX5, FN14 och FN19 klara (se raderna). AIX11 ligger i drift men är avstängd (`JOURNAL_AI_A2_BESVARAD = false`) tills juristfrågan A2 är besvarad. **Röktestat i prod** (`e2e/roadmap-2026-10-30-ai-prod-rok.cjs`): myndighetsbrev 3,6–5,5 s utan siffror utanför brevet, läkarintyg avvisat (`avvisad: halsa`), gor-mindre 1,2–2,1 s, intervju-berattelse 2,6–5,6 s och fyller inte i uppgift/resultat själv. ratta-stavning gav 502 i 1 av 6 anrop: modellen svarade ibland med en bar lista, nu accepterad (test + mutation). **Nytt fynd (ej åtgärdat):** PII-saneringen gör myndighetens telefonnummer `0771-416 416` till `[BORTTAGET-BANKKONTO]`, så AIX24:s "vem kontaktar jag" tappar numret — sanera inte kända myndighetsnummer, eller låt klienten sätta tillbaka numret ur brevet.
 >
 > **2026-10-27:** roadmap-pass med fem Sonnet-agenter — AIX1, AIX5, AIX6, AIX25, FN9, FN14, FN19 byggda (se raderna). Väntar på Mikael: FN14:s RLS-migration (notis deltagare → konsulent) och rättning av integritetspolicyn/Art. 30 mot AI-vägen (FN9:s motsägelser).
 >

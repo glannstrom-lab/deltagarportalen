@@ -55,6 +55,12 @@ describe('AIX27: arRattstavning (deterministisk regel)', () => {
 describe('AIX27: validera (hela svaret mot texten)', () => {
   const TEXT = 'Hej! Jag heter Anna och söker tjänsten. Jag är nogrann och har jobbat på lager i 3 år. Jag trivs bra.'
 
+  it('tar emot en bar lista (modellen utelämnar ibland { andringar }) — gav 502 i prod', () => {
+    const r = validera([['nogrann', 'noggrann'], ['i 3 år', 'i 30 år']], TEXT)
+    expect(r.ok).toBe(true)
+    expect(r.value?.andringar).toEqual([{ fore: 'nogrann', efter: 'noggrann' }])
+  })
+
   it('behåller giltiga rättelser och släpper tillagda ord och siffror', () => {
     const r = validera({
       andringar: [
@@ -84,7 +90,7 @@ describe('AIX27: validera (hela svaret mot texten)', () => {
   })
 
   it('avvisar svar som inte är ett objekt med lista', () => {
-    expect(validera([], TEXT).ok).toBe(false)
+    expect(validera('hej', TEXT).ok).toBe(false)
     expect(validera({ raw: 'hej' }, TEXT).ok).toBe(false)
     expect(validera(null, TEXT).ok).toBe(false)
   })

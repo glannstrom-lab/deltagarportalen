@@ -146,7 +146,10 @@ function raknaForekomster(text, bit) {
  * @param {string} text    texten som skickades in
  */
 function validera(value, text) {
-  if (!value || typeof value !== 'object' || Array.isArray(value)) {
+  // Modellen svarar ibland med listan direkt i stället för { andringar: [...] }.
+  // Det är samma innehåll — att avvisa det gav 502 i ungefär vart sjätte anrop i prod.
+  if (Array.isArray(value)) value = { andringar: value };
+  if (!value || typeof value !== 'object') {
     return { ok: false, error: 'rättstavningssvaret var inte ett JSON-objekt' };
   }
   const bas = String(text ?? '').slice(0, TEXT_MAX);
