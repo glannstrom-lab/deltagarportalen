@@ -70,6 +70,30 @@ describe('extractJsonContent', () => {
 // --------------------------------------------------------------------------
 // intervju-simulator
 // --------------------------------------------------------------------------
+describe('extractJsonContent lagar en saknad stängare (mätt i prod 2026-10-30)', () => {
+  // Ordagrant modellsvar för myndighetsbrev, 2 av 3 anrop: sista "]" i vem saknas.
+  const trasig = '{"avsandare":"Arbetsförmedlingen","gor":[["Kom","citat"]],"vem":[["Arbetsförmedlingen","0771-416 416","… på telefon 0771-416 416."]}'
+
+  it('tolkar svaret med den saknade "]" insatt', () => {
+    const r = aiHandler.extractJsonContent(trasig)
+    expect(r.ok).toBe(true)
+    expect((r.value as { vem: string[][] }).vem).toEqual([['Arbetsförmedlingen', '0771-416 416', '… på telefon 0771-416 416.']])
+  })
+
+  it('rör inte klamrar inne i strängar, inte heller efter ett escapat citattecken', () => {
+    const r = aiHandler.extractJsonContent('{"s":"en ] och \\" } här","l":[1,2}')
+    expect(r).toEqual({ ok: true, value: { s: 'en ] och " } här', l: [1, 2] } })
+  })
+
+  it('lägger till stängare som saknas i slutet', () => {
+    expect(aiHandler.extractJsonContent('{"a":[1,{"b":2')).toEqual({ ok: true, value: { a: [1, { b: 2 }] } })
+  })
+
+  it('godtar fortfarande inte ren prosa', () => {
+    expect(aiHandler.extractJsonContent('Tyvärr kan jag inte.').ok).toBe(false)
+  })
+})
+
 describe('RESPONSE_VALIDATORS["intervju-simulator"]', () => {
   const validate = () => aiHandler.RESPONSE_VALIDATORS['intervju-simulator']
 

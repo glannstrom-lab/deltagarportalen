@@ -51,8 +51,11 @@ function myndighetsbrev(value, indata) {
   }
   const vem = [];
   for (const rad of rader(value.vem, 3)) {
-    const namn = text(kol(rad, 0, 'namn'), 120);
     const kontakt = text(kol(rad, 1, 'kontakt'), 120);
+    // Mätt i prod 2026-10-30: modellen lämnar ibland namnet tomt men ger ett
+    // belagt nummer. Avsändaren (som själv är belagd i brevet) får då stå som
+    // namn i stället för att numret försvinner med raden.
+    const namn = text(kol(rad, 0, 'namn'), 120) || (kontakt ? avsandare : '');
     const citat = text(kol(rad, 2, 'citat'), 300);
     if (!namn || !citat || !citatFinnsI(citat, brev, BREV_MAX) || !sifforFinns(namn, brev)) continue;
     // En kontaktuppgift som inte står i brevet tar hela raden med sig.

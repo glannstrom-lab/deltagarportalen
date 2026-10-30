@@ -832,6 +832,49 @@ function nonEmptyString(value) {
  *
  * @returns {{ ok: true, value: unknown } | { ok: false }}
  */
+/**
+ * Lagar obalanserade klamrar utanför strängar. Mätt 2026-10-30 mot
+ * myndighetsbrev: modellen skrev `"vem":[["…","…","…"]}` — sista `]` i en
+ * nästlad lista saknades — i två av tre svar. Ett nytt försök hjälper inte mot
+ * ett systematiskt fel. Saknas en stängare före en annan stängare sätts den
+ * in; saknas stängare i slutet läggs de till. Inget annat ändras, och utdata
+ * används bara om JSON.parse sedan godtar den.
+ *
+ * @param {string} text
+ * @returns {string}
+ */
+function lagaKlamrar(text) {
+  /** @type {string[]} */
+  const stack = [];
+  let ut = '';
+  let iStrang = false;
+  let escape = false;
+  for (const tecken of text) {
+    if (iStrang) {
+      ut += tecken;
+      if (escape) escape = false;
+      else if (tecken === '\\') escape = true;
+      else if (tecken === '"') iStrang = false;
+      continue;
+    }
+    if (tecken === '"') { iStrang = true; ut += tecken; continue; }
+    if (tecken === '{' || tecken === '[') { stack.push(tecken === '{' ? '}' : ']'); ut += tecken; continue; }
+    if (tecken === '}' || tecken === ']') {
+      // Stäng det som står öppet tills stängaren passar (om den alls finns i stacken).
+      if (stack.includes(tecken)) {
+        while (stack.length && stack[stack.length - 1] !== tecken) ut += stack.pop();
+        stack.pop();
+        ut += tecken;
+      }
+      // En stängare utan öppnare släpps.
+      continue;
+    }
+    ut += tecken;
+  }
+  while (stack.length) ut += stack.pop();
+  return ut;
+}
+
 function extractJsonContent(raw) {
   if (typeof raw !== 'string') return { ok: false };
   const text = raw.trim();
@@ -858,6 +901,14 @@ function extractJsonContent(raw) {
   for (const candidate of candidates) {
     try {
       return { ok: true, value: JSON.parse(candidate) };
+    } catch {
+      // nästa kandidat
+    }
+  }
+  // Sist: samma kandidater med lagade klamrar (se lagaKlamrar).
+  for (const candidate of candidates) {
+    try {
+      return { ok: true, value: JSON.parse(lagaKlamrar(candidate)) };
     } catch {
       // nästa kandidat
     }

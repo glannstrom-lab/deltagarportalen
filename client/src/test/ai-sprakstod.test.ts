@@ -164,6 +164,18 @@ describe('AIX24: validatorn tar bort det som saknar belägg', () => {
   })
 })
 
+describe('AIX24: tomt namn men belagt nummer (mätt i prod 2026-10-30)', () => {
+  it('avsändaren står som namn i stället för att numret försvinner', () => {
+    const r = RESPONSE_VALIDATORS['myndighetsbrev']({ ...GILTIGT, vem: [['', '010-486 00 00', 'Ring din handläggare Eva Lind på 010-486 00 00']] }, { brev: BREV })
+    expect(r.value?.vem).toEqual([{ namn: 'Arbetsförmedlingen', kontakt: '010-486 00 00', citat: 'Ring din handläggare Eva Lind på 010-486 00 00' }])
+  })
+
+  it('utan kontaktuppgift kastas en namnlös rad fortfarande', () => {
+    const r = RESPONSE_VALIDATORS['myndighetsbrev']({ ...GILTIGT, vem: [['', '', 'Ring din handläggare Eva Lind på 010-486 00 00']] }, { brev: BREV })
+    expect(r.value?.vem).toEqual([])
+  })
+})
+
 describe('AIX29: Gör det mindre — prompten', () => {
   it('finns, bär sanningsregeln och regelverksskyddet i sin egen text', () => {
     const p = PROMPTS['gor-mindre']({ uppgift: 'Jag måste ringa AF' })
