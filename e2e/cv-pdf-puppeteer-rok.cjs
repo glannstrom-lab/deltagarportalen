@@ -119,7 +119,9 @@ function encodeBase64Url(json) {
     const pdfData = await page.pdf({ format: 'A4', printBackground: true, preferCSSPageSize: true })
     const buf = Buffer.isBuffer(pdfData) ? pdfData : Buffer.from(pdfData)
 
-    const namn = await page.evaluate(() => document.querySelector('.cv-preview')?.textContent?.slice(0, 120) || '')
+    // Hela texten för kontrollen: e-postadressen ligger efter de första 120 tecknen i mallen.
+    const helText = await page.evaluate(() => document.querySelector('.cv-preview')?.textContent || '')
+    const namn = helText.slice(0, 120)
 
     console.log('pdf-bytes:', buf.length)
     console.log('pdf-magic:', buf.subarray(0, 5).toString('latin1'))
@@ -129,7 +131,7 @@ function encodeBase64Url(json) {
     const ok =
       buf.subarray(0, 5).toString('latin1') === '%PDF-' &&
       buf.length > 20000 &&
-      namn.includes('sara@example.com')
+      helText.includes('sara@example.com')
     console.log(ok ? '\nOK — puppeteer-core kunde rendera CV:t till PDF.' : '\nFEL — PDF:en ser inte rimlig ut.')
     if (!ok) kod = 1
   } catch (err) {
