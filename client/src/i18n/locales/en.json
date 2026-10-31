@@ -3096,7 +3096,8 @@
       "jobsUnit": "{{antal}} jobs",
       "regionsTitle": "Where are the jobs?",
       "dataFrom": "Data from",
-      "updated": "Fetched"
+      "updated": "Fetched",
+      "delFel": "We could not load this part right now. Try Refresh."
     }
   },
   "myConsultant": {
@@ -11049,5 +11050,33 @@
     "kopierad": "Copied",
     "laggTill": "Add as a line in my CV",
     "tillagd": "Added under Work experience."
+  },
+  "kurser": {
+    "rubrik": "Short courses",
+    "ingress": "A few articles in a set order. Read at your own pace, and take a break when you want.",
+    "lasfel": "We could not get what you have read. You can still open the courses.",
+    "delarOchTid": "{{antal}} parts, about {{minuter}} minutes",
+    "genomford": "Completed",
+    "lasta": "{{klara}} of {{totalt}} read",
+    "intePaborjad": "Start with the first part when you want",
+    "delLast": "Read",
+    "delMinuter": "{{minuter}} min",
+    "laddar": "Getting what you have read",
+    "arbetslivet": {
+      "namn": "Get ready for working life",
+      "beskrivning": "From the application to the first day: how hiring works and what you can do at each step."
+    },
+    "arbetsplatsen": {
+      "namn": "The Swedish workplace",
+      "beskrivning": "Employment contracts, collective agreements, the union, sick leave and your rights when you are new at a job."
+    },
+    "samhallet": {
+      "namn": "Society and your daily money",
+      "beskrivning": "Digital services, tax on your pay, housing allowance and what to do if the money is not enough."
+    },
+    "myndigheterna": {
+      "namn": "Authorities and your rights",
+      "beskrivning": "Arbetsförmedlingen (the Swedish Public Employment Service), a-kassa (unemployment insurance) and what to do if you disagree with a decision."
+    }
   }
 }

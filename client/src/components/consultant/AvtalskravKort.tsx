@@ -43,6 +43,7 @@ import { useAuthStore } from '@/stores/authStore'
 import { deltagarEtikett } from './rapportOmfang'
 import { useRapportOmfang } from './useRapportOmfang'
 import { OmfangRad } from './OmfangRad'
+import { PeriodiskRapportUnderlag } from './PeriodiskRapportUnderlag'
 
 type Lage =
   | { status: 'laddar' }
@@ -256,6 +257,14 @@ export function AvtalskravKort() {
             fristående aktörer. Det finns inget öppet leverantörs-API mot Arbetsförmedlingen, så portalen kan
             varken skapa eller skicka den rapporten — siffrorna här för du över för hand.
           </p>
+
+          <PeriodiskRapportUnderlag
+            key={val}
+            plans={lage.plans}
+            namn={(p) => deltagarEtikett(p, lage.namn, kollegor)}
+            forvaltFran={manadGranser(val).from}
+            forvaltTill={manadGranser(val).to}
+          />
         </>
       )}
     </Card>

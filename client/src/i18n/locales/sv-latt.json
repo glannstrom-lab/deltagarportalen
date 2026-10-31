@@ -1887,5 +1887,33 @@
     "kopierad": "Kopierad",
     "laggTill": "Lägg till som rad i mitt CV",
     "tillagd": "Tillagd under Arbetslivserfarenhet."
+  },
+  "kurser": {
+    "rubrik": "Korta kurser",
+    "ingress": "Några artiklar i en viss ordning. Läs när det passar dig. Ta en paus när du vill.",
+    "lasfel": "Vi kunde inte hämta vad du har läst. Du kan ändå öppna kurserna.",
+    "delarOchTid": "{{antal}} delar, ungefär {{minuter}} minuter",
+    "genomford": "Klar",
+    "lasta": "{{klara}} av {{totalt}} lästa",
+    "intePaborjad": "Börja med första delen när du vill",
+    "delLast": "Läst",
+    "delMinuter": "{{minuter}} min",
+    "laddar": "Hämtar vad du har läst",
+    "arbetslivet": {
+      "namn": "Förbered dig för jobb",
+      "beskrivning": "Från ansökan till första dagen. Så går en anställning till, och vad du kan göra i varje steg."
+    },
+    "arbetsplatsen": {
+      "namn": "Den svenska arbetsplatsen",
+      "beskrivning": "Anställningsavtal, kollektivavtal, facket, att vara sjuk och dina rättigheter när du är ny på jobbet."
+    },
+    "samhallet": {
+      "namn": "Samhället och din ekonomi",
+      "beskrivning": "Digitala tjänster, skatt på lönen, bostadsbidrag och vad du kan göra om pengarna inte räcker."
+    },
+    "myndigheterna": {
+      "namn": "Myndigheter och dina rättigheter",
+      "beskrivning": "Arbetsförmedlingen, a-kassan och vad du gör om du inte håller med om ett beslut."
+    }
   }
 }

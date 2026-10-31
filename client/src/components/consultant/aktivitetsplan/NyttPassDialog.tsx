@@ -16,6 +16,7 @@ import { PassFlaggorFalt, type Flaggor } from '../PassFlaggorFalt'
 import { AKTIVITETSTYP_ETIKETT, AKTIVITETSTYP_ORDNING, kortDatum } from '../aktivitetEtiketter'
 import { A2_BESVARAD } from '../a2Sparr'
 import { AktivitetsforslagYta } from './AktivitetsforslagYta'
+import { KursForslag } from './KursForslag'
 
 export interface NyttPassDialogProps {
   isOpen: boolean
@@ -85,6 +86,7 @@ function NyttPassForm({ isOpen, onClose, planId, participantId, defaultDate, pla
             onValj={(f) => setForm((prev) => ({ ...prev, ...f }))}
           />
         )}
+        <KursForslag startTid={form.start_time} onValj={(f) => setForm((prev) => ({ ...prev, ...f }))} />
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <Input id="pass-datum" label="Datum" type="date" value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} fullWidth />
           <Input id="pass-start" label="Start" type="time" value={form.start_time} onChange={(e) => setForm({ ...form, start_time: e.target.value })} fullWidth />

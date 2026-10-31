@@ -9,6 +9,7 @@ vi.mock('@/services/orgApi', async () => {
   const faktisk = await vi.importActual<typeof import('@/services/orgApi')>('@/services/orgApi')
   return {
     ...faktisk,
+    orgApi: { inviteColleagueByEmail: vi.fn() },
     orgAdminApi: {
       listOrganizations: vi.fn(),
       createOrganization: vi.fn(),
@@ -105,5 +106,56 @@ describe('OrganisationerTab', () => {
     await screen.findByText('Av')
     expect(orgAdminApi.updateOrganization).toHaveBeenCalledWith('o1', { ai_enabled: false })
     expect(screen.getByRole('switch', { name: /Hällefors/ })).toHaveAttribute('aria-checked', 'false')
+  })
+
+  describe('FN11 — första chef i samma steg', () => {
+    async function fyllIFormulär(epost: string) {
+      const { orgAdminApi } = await import('@/services/orgApi')
+      vi.mocked(orgAdminApi.listOrganizations).mockResolvedValue([])
+      vi.mocked(orgAdminApi.listMembers).mockResolvedValue([])
+      vi.mocked(orgAdminApi.createOrganization).mockResolvedValue(org as never)
+      render(<OrganisationerTab users={users} />)
+      await screen.findByText('Inga organisationer än')
+      fireEvent.click(screen.getByRole('button', { name: 'Ny organisation' }))
+      fireEvent.change(screen.getByLabelText('Namn'), { target: { value: 'Hällefors kommun' } })
+      if (epost) fireEvent.change(screen.getByLabelText(/Första chefens e-post/), { target: { value: epost } })
+    }
+
+    it('bjuder in chefen med rollen chef och visar vad som händer sen', async () => {
+      const { orgApi } = await import('@/services/orgApi')
+      vi.mocked(orgApi.inviteColleagueByEmail).mockResolvedValue({ id: 'i1', email: 'chef@hellefors.se', mejl: 'skickat' })
+      await fyllIFormulär('chef@hellefors.se')
+      fireEvent.click(screen.getByRole('button', { name: 'Skapa organisation och bjud in chef' }))
+      await vi.waitFor(() => expect(orgApi.inviteColleagueByEmail).toHaveBeenCalledWith('o1', 'chef@hellefors.se', 'chef'))
+      const status = await screen.findByRole('status')
+      expect(status).toHaveTextContent(/Inbjudan till chef@hellefors.se är skickad/)
+    })
+
+    it('utan e-post görs ingen inbjudan', async () => {
+      const { orgApi, orgAdminApi } = await import('@/services/orgApi')
+      await fyllIFormulär('')
+      fireEvent.click(screen.getByRole('button', { name: 'Skapa organisation' }))
+      await vi.waitFor(() => expect(orgAdminApi.createOrganization).toHaveBeenCalled())
+      expect(orgApi.inviteColleagueByEmail).not.toHaveBeenCalled()
+    })
+
+    it('ogiltig e-post stoppar innan något skapas', async () => {
+      const { orgApi, orgAdminApi } = await import('@/services/orgApi')
+      await fyllIFormulär('inte-en-adress')
+      fireEvent.submit(screen.getByRole('button', { name: 'Skapa organisation och bjud in chef' }).closest('form')!)
+      expect(await screen.findByRole('alert')).toHaveTextContent(/giltig e-postadress/)
+      expect(orgAdminApi.createOrganization).not.toHaveBeenCalled()
+      expect(orgApi.inviteColleagueByEmail).not.toHaveBeenCalled()
+    })
+
+    it('misslyckad inbjudan lämnar organisationen kvar och säger att den står utan chef', async () => {
+      const { orgApi } = await import('@/services/orgApi')
+      vi.mocked(orgApi.inviteColleagueByEmail).mockRejectedValue(new Error('Okänd roll'))
+      await fyllIFormulär('chef@hellefors.se')
+      fireEvent.click(screen.getByRole('button', { name: 'Skapa organisation och bjud in chef' }))
+      const status = await screen.findByRole('status')
+      expect(status).toHaveTextContent(/står utan chef/)
+      expect(screen.getByRole('button', { name: 'Hällefors kommun', pressed: true })).toBeInTheDocument()
+    })
   })
 })

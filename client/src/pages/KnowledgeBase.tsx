@@ -42,6 +42,7 @@ import { useFocusMode } from '@/components/FocusModeProvider'
 import { FocusKnowledgeBaseWizard } from '@/components/focus/pages/FocusKnowledgeBaseWizard'
 import { FokusVaxel } from '@/components/focus/shell/FokusVaxel'
 import { ARTIKELKATEGORIER, kategoriNamn, kategoriBeskrivning } from '@/data/artikelkategorier'
+import { KursYta } from '@/components/knowledge-base/KursYta'
 
 const TopicsTab = lazy(() => import('@/components/knowledge-base/tabs/TopicsTab'))
 
@@ -235,6 +236,9 @@ function KnowledgeBaseLanding({ articles }: LandingProps) {
           ))}
         </div>
       </section>
+
+      {/* KC15: korta kurser */}
+      <KursYta articles={articles} />
 
       {/* KATEGORIGRID */}
       <section>

@@ -63,6 +63,9 @@ export default function LaborMarketTab() {
   const [isLoading, setIsLoading] = useState(true)
   const [isRefreshing, setIsRefreshing] = useState(false)
   const [error, setError] = useState(false)
+  // Ett avbrott i en enskild del är inte "AF svarade utan data" — det är okänt.
+  const [skillsFel, setSkillsFel] = useState(false)
+  const [occupationsFel, setOccupationsFel] = useState(false)
   const [marketStats, setMarketStats] = useState<MarketStats | null>(null)
   const [trendingSkills, setTrendingSkills] = useState<TrendingSkill[]>([])
   const [popularOccupations, setPopularOccupations] = useState<PopularSearch[]>([])
@@ -86,6 +89,8 @@ export default function LaborMarketTab() {
     setMarketStats(stats)
     setTrendingSkills(skills)
     setPopularOccupations(occupations)
+    setSkillsFel(skillsResult.status === 'rejected')
+    setOccupationsFel(occupationsResult.status === 'rejected')
 
     // Fel = ingenting gick igenom. Att en enskild del är tom är inget fel;
     // det är ett tomtillstånd, och det bärs av sektionen själv.
@@ -253,7 +258,9 @@ export default function LaborMarketTab() {
           </h3>
           {popularOccupations.length === 0 ? (
             <p className="text-sm text-stone-600 dark:text-stone-400">
-              {t('career.laborMarket.occupationsEmpty')}
+              {occupationsFel
+                ? t('career.laborMarket.delFel', 'Vi kunde inte hämta den här delen just nu. Försök med Uppdatera.')
+                : t('career.laborMarket.occupationsEmpty')}
             </p>
           ) : (
             <ul className="divide-y divide-stone-100 dark:divide-stone-700">
@@ -281,7 +288,9 @@ export default function LaborMarketTab() {
           </h3>
           {kompetensGrupper.length === 0 ? (
             <p className="text-sm text-stone-600 dark:text-stone-400">
-              {t('career.laborMarket.skillsEmpty')}
+              {skillsFel
+                ? t('career.laborMarket.delFel', 'Vi kunde inte hämta den här delen just nu. Försök med Uppdatera.')
+                : t('career.laborMarket.skillsEmpty')}
             </p>
           ) : (
             <div className="space-y-3">

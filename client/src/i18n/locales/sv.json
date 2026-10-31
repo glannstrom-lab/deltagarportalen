@@ -3096,7 +3096,8 @@
       "jobsUnit": "{{antal}} jobb",
       "regionsTitle": "Var finns jobben?",
       "dataFrom": "Data från",
-      "updated": "Hämtat"
+      "updated": "Hämtat",
+      "delFel": "Vi kunde inte hämta den här delen just nu. Försök med Uppdatera."
     }
   },
   "myConsultant": {
@@ -11049,5 +11050,33 @@
     "kopierad": "Kopierad",
     "laggTill": "Lägg till som rad i mitt CV",
     "tillagd": "Tillagd under Arbetslivserfarenhet."
+  },
+  "kurser": {
+    "rubrik": "Korta kurser",
+    "ingress": "Några artiklar i en bestämd ordning. Läs i din takt, och ta en paus när du vill.",
+    "lasfel": "Vi kunde inte hämta vad du har läst. Kurserna går ändå att öppna.",
+    "delarOchTid": "{{antal}} delar, ungefär {{minuter}} minuter",
+    "genomford": "Genomförd",
+    "lasta": "{{klara}} av {{totalt}} lästa",
+    "intePaborjad": "Börja med första delen när du vill",
+    "delLast": "Läst",
+    "delMinuter": "{{minuter}} min",
+    "laddar": "Hämtar vad du har läst",
+    "arbetslivet": {
+      "namn": "Förbered dig för arbetslivet",
+      "beskrivning": "Från ansökan till första dagen: hur rekryteringen går till och vad du kan göra inför varje steg."
+    },
+    "arbetsplatsen": {
+      "namn": "Den svenska arbetsplatsen",
+      "beskrivning": "Anställningsavtal, kollektivavtal, facket, sjukdom och dina rättigheter när du är ny på ett jobb."
+    },
+    "samhallet": {
+      "namn": "Samhället och din vardagsekonomi",
+      "beskrivning": "Digitala tjänster, skatt på lönen, bostadsbidrag och vad du kan göra om pengarna inte räcker."
+    },
+    "myndigheterna": {
+      "namn": "Myndigheterna och dina rättigheter",
+      "beskrivning": "Arbetsförmedlingen, a-kassan och vad du gör om du inte håller med om ett beslut."
+    }
   }
 }

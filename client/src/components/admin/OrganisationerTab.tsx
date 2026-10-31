@@ -22,6 +22,13 @@ import {
   type OrgMembership,
   type OrgRole,
 } from '@/services/orgApi'
+import {
+  bjudInMedlem,
+  skapaOrgMedChef,
+  utfallText,
+  valideraNyOrg,
+  type MedlemUtfall,
+} from '@/services/orgMedChef'
 
 export interface PanelUser {
   id: string
@@ -58,6 +65,7 @@ export function OrganisationerTab({ users }: Props) {
   const [fel, setFel] = useState<string | null>(null)
   const [visaNy, setVisaNy] = useState(false)
   const [sparAi, setSparAi] = useState<string | null>(null)
+  const [info, setInfo] = useState<{ ton: 'ok' | 'varning'; text: string } | null>(null)
 
   useEffect(() => {
     let aktiv = true
@@ -95,7 +103,8 @@ export function OrganisationerTab({ users }: Props) {
   const uppdateraMedlemmar = (orgId: string, rader: OrgMembership[]) =>
     setLage({ status: 'klart', orgs, medlemmar: { ...medlemmar, [orgId]: rader } })
 
-  const handleSkapad = (org: Organization) => {
+  const handleSkapad = (org: Organization, meddelande?: { ton: 'ok' | 'varning'; text: string }) => {
+    setInfo(meddelande ?? null)
     setLage({ status: 'klart', orgs: [...orgs, org].sort((a, b) => a.name.localeCompare(b.name, 'sv')), medlemmar: { ...medlemmar, [org.id]: [] } })
     setVisaNy(false)
     setVald(org.id)
@@ -149,6 +158,14 @@ export function OrganisationerTab({ users }: Props) {
           {fel}
         </p>
       )}
+      {info && (
+        <p
+          role="status"
+          className={`p-3 rounded-lg text-sm border ${info.ton === 'ok' ? 'bg-emerald-50 text-emerald-900 border-emerald-200' : 'bg-amber-50 text-amber-900 border-amber-200'}`}
+        >
+          {info.text}
+        </p>
+      )}
 
       <div className="flex items-center justify-between">
         <h2 className="text-lg font-semibold text-gray-900">Organisationer</h2>
@@ -166,7 +183,7 @@ export function OrganisationerTab({ users }: Props) {
 
       {visaNy && (
         <div id="ny-organisation">
-          <NyOrganisationForm onSkapad={handleSkapad} onAvbryt={() => setVisaNy(false)} />
+          <NyOrganisationForm users={users} onSkapad={handleSkapad} onAvbryt={() => setVisaNy(false)} />
         </div>
       )}
 
@@ -250,6 +267,7 @@ export function OrganisationerTab({ users }: Props) {
           users={users}
           userById={userById}
           onFel={setFel}
+          onInfo={setInfo}
           onUppdaterad={(rader) => uppdateraMedlemmar(valdOrg.id, rader)}
         />
       )}
@@ -259,24 +277,40 @@ export function OrganisationerTab({ users }: Props) {
 
 // ---------------------------------------------------------------------------
 
-function NyOrganisationForm({ onSkapad, onAvbryt }: { onSkapad: (o: Organization) => void; onAvbryt: () => void }) {
+function NyOrganisationForm({
+  users,
+  onSkapad,
+  onAvbryt,
+}: {
+  users: PanelUser[]
+  onSkapad: (o: Organization, meddelande?: { ton: 'ok' | 'varning'; text: string }) => void
+  onAvbryt: () => void
+}) {
   const [name, setName] = useState('')
   const [kind, setKind] = useState<OrgKind>('kommun')
   const [orgNumber, setOrgNumber] = useState('')
+  const [chefEpost, setChefEpost] = useState('')
   const [sparar, setSparar] = useState(false)
   const [fel, setFel] = useState<string | null>(null)
 
   const spara = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!name.trim()) {
-      setFel('Organisationen behöver ett namn')
+    const valFel = valideraNyOrg({ name, kind, orgNumber, chefEpost })
+    if (valFel) {
+      setFel(valFel)
       return
     }
     setSparar(true)
     setFel(null)
     try {
-      const org = await orgAdminApi.createOrganization({ name, kind, org_number: orgNumber || null })
-      onSkapad(org)
+      if (!chefEpost.trim()) {
+        const org = await orgAdminApi.createOrganization({ name, kind, org_number: orgNumber || null })
+        onSkapad(org)
+      } else {
+        // FN11: organisationen och första chefen i ett steg (services/orgMedChef.ts).
+        const utfall = await skapaOrgMedChef({ name, kind, orgNumber, chefEpost }, users)
+        onSkapad(utfall.org, utfallText(utfall))
+      }
     } catch (err) {
       setFel(`Kunde inte skapa organisationen: ${felText(err)}`)
     } finally {
@@ -327,9 +361,24 @@ function NyOrganisationForm({ onSkapad, onAvbryt }: { onSkapad: (o: Organization
           />
         </label>
       </div>
+      <label className="block text-sm md:max-w-md">
+        <span className="text-gray-700">Första chefens e-post (valfritt)</span>
+        <input
+          id="ny-org-chef"
+          type="email"
+          value={chefEpost}
+          onChange={(e) => setChefEpost(e.target.value)}
+          placeholder="chef@kommun.se"
+          aria-describedby="ny-org-chef-hjalp"
+          className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+        />
+        <span id="ny-org-chef-hjalp" className="block mt-1 text-xs text-gray-500">
+          Hen får en inbjudan på mejl och blir chef när kontot är skapat. Kom igång-guiden tar över vid första inloggningen.
+        </span>
+      </label>
       <div className="flex gap-2">
         <button type="submit" disabled={sparar} className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-60">
-          {sparar ? 'Skapar…' : 'Skapa organisation'}
+          {sparar ? 'Skapar…' : chefEpost.trim() ? 'Skapa organisation och bjud in chef' : 'Skapa organisation'}
         </button>
         <button type="button" onClick={onAvbryt} className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
           Avbryt
@@ -347,6 +396,7 @@ function Medlemmar({
   users,
   userById,
   onFel,
+  onInfo,
   onUppdaterad,
 }: {
   org: Organization
@@ -354,6 +404,7 @@ function Medlemmar({
   users: PanelUser[]
   userById: Map<string, PanelUser>
   onFel: (fel: string | null) => void
+  onInfo: (info: { ton: 'ok' | 'varning'; text: string } | null) => void
   onUppdaterad: (rader: OrgMembership[]) => void
 }) {
   const { confirm } = useConfirmDialog()
@@ -361,6 +412,8 @@ function Medlemmar({
   const [valdUser, setValdUser] = useState<string>('')
   const [roll, setRoll] = useState<OrgRole>('konsulent')
   const [sparar, setSparar] = useState(false)
+  const [inbjudEpost, setInbjudEpost] = useState('')
+  const [bjuder, setBjuder] = useState(false)
 
   const redanMedlem = new Set(rader.map((r) => r.user_id))
   const q = sok.trim().toLowerCase()
@@ -387,6 +440,36 @@ function Medlemmar({
       onFel(`Kunde inte lägga till medlemmen: ${felText(e)}`)
     } finally {
       setSparar(false)
+    }
+  }
+
+  // FN11: inbjudan via mejl till någon utan konto (eller direkt tillägg om kontot finns).
+  const bjudIn = async () => {
+    const epost = inbjudEpost.trim()
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(epost)) {
+      onFel('Ange en giltig e-postadress')
+      return
+    }
+    setBjuder(true)
+    onFel(null)
+    onInfo(null)
+    let u: MedlemUtfall
+    try {
+      u = await bjudInMedlem(org.id, epost, roll, users)
+    } finally {
+      setBjuder(false)
+    }
+    if (u.status === 'misslyckades') {
+      onFel(`Kunde inte bjuda in: ${u.fel}`)
+      return
+    }
+    setInbjudEpost('')
+    if (u.status === 'tillagd') {
+      onInfo({ ton: 'ok', text: `${u.email} fanns redan och är tillagd. Ladda om organisationen för att se hen i listan.` })
+    } else if (u.mejl === 'skickat') {
+      onInfo({ ton: 'ok', text: `Inbjudan till ${u.email} är skickad. Hen blir medlem när kontot är skapat.` })
+    } else {
+      onInfo({ ton: 'varning', text: `Inbjudan till ${u.email} finns men mejlet ${u.mejl === 'obekraftat' ? 'kunde inte bekräftas som skickat' : 'gick inte iväg'}${u.detalj ? ` (${u.detalj})` : ''}. Försök igen.` })
     }
   }
 
@@ -526,6 +609,31 @@ function Medlemmar({
           <Plus className="w-5 h-5" aria-hidden="true" />
           {sparar ? 'Lägger till…' : 'Lägg till medlem'}
         </button>
+      </div>
+
+      <div className="pt-4 border-t border-gray-200 space-y-3">
+        <h4 className="font-medium text-gray-900">Bjud in via mejl</h4>
+        <p className="text-sm text-gray-500">För den som saknar konto. Rollen väljs i listan Roll ovan.</p>
+        <div className="flex flex-wrap items-end gap-3">
+          <label className="block text-sm flex-1 min-w-[16rem]">
+            <span className="text-gray-700">E-post</span>
+            <input
+              id={`inbjud-medlem-${org.id}`}
+              type="email"
+              value={inbjudEpost}
+              onChange={(e) => setInbjudEpost(e.target.value)}
+              className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+            />
+          </label>
+          <button
+            type="button"
+            onClick={() => void bjudIn()}
+            disabled={bjuder || !inbjudEpost.trim()}
+            className="px-4 py-2 border border-primary-600 text-primary-700 rounded-lg hover:bg-primary-50 disabled:opacity-60"
+          >
+            {bjuder ? 'Bjuder in…' : 'Bjud in via mejl'}
+          </button>
+        </div>
       </div>
     </section>
   )

@@ -147,3 +147,36 @@ Tabellerna nedan är just de tio, sorterade från sämst. Be läsaren bedöma va
 | 8 | Din hyra är 6 450 kronor i månaden och ska vara betald senast den sista varje månad. | Your rent is 6 450 kronor per month and must be paid by the last day of each month. | Din hyra är 6 450 kronor per månad och måste betalas senast den sista dagen i varje månad. | 0.74 | — |
 | 9 | Du måste söka minst 6 jobb varje månad för att behålla din ersättning. | You must apply for at least 6 jobs each month to retain your benefits. | Du måste ansöka om minst 6 jobb varje månad för att behålla dina förmåner. | 0.76 | — |
 | 10 | Efter intervjun får du besked inom 2 veckor, antingen per telefon eller via e-post. | After the interview you will receive a decision within 2 weeks, either by phone or via e‑mail. | Efter intervjun får du ett beslut inom två veckor, antingen per telefon eller via e‑mail. | 0.80 | — |
+
+## Omgång 2: med namnskydd
+
+Samma dag, samma 30 meningar, samma modell (`openai/gpt-oss-120b`, temperatur 0). Två ändringar: (1) mekaniskt namnskydd i stället för att be modellen om det, (2) rättat mått.
+
+### Vad som ändrades
+
+- **Namnskydd** (`skyddaNamn` / `aterstallNamn` i `client/scripts/lib/sprakmatning.cjs`, flagga `--skydda`). Före översättningen byts varje skyddat namn i `src/i18n/skyddadeNamn.json` (inklusive böjningsformer: `Skatteverkets`, `a-kassan`, `personnumret`, `Yrkeshögskolan`) mot en platshållare `⟦N1⟧`, `⟦N2⟧` ...; efter svaret sätts det ursprungliga ordet tillbaka. Funktionerna är rena (ingen I/O, inga beroenden) och kan flyttas oförändrade till en framtida översättningsfunktion. De rapporterar tappade platshållare, förvanskade (okänt nummer, halv platshållare), dubblerade och sådana som återställdes trots avvikande skrivsätt (blanksteg, riktningstecken, östarabiska siffror). Modellen får en prompt som säger att platshållarna ska kopieras oförändrade; tillbakaöversättningen (målspråk till svenska) körs på den återställda texten som förut.
+- **Rättat mått.** Arabiska och persiska ordtal 1-12 räknas som tal (inkl. dual av tidsenheter, "أسبوعين" = 2, och sammansatta "أحد عشر" = 11 utan att "عشر" blir 10). Östarabiska/persiska siffror räknades redan. 12-timmarsformat räknas om ("3:00 PM" = 15:00). Dessutom: tvåsiffriga tal med inledande nolla jämförs utan nollan ("08.00" = "8"), vilket var ett tredje falskt underkännande (dari, "mellan 8 och 16"). Telefonnummer ("010-...") påverkas inte.
+
+### Före och efter
+
+"Före" är omgång 1 enligt tabellen ovan (modellen ombeds skriva kvar namnen). Omgång 1:s fullständiga svar sparades inte som JSON, så de kunde inte poängsättas om med det rättade måttet (`--fran-json` hade inget att läsa). Av de omgång-1-rader som finns dokumenterade ovan är de falska underkännandena kända: arabiska 2 (ordtal "أربع", dual "أسبوعين"), engelska 1 ("3:00 PM"), dari 1 ("08.00"). Kolumnen "före, rättat mått" är därför en uppskattning ur de dokumenterade raderna, inte en ny mätning. Kolumnen "efter" är en ny körning: 240 modellanrop (4 språk x 30 meningar x 2 riktningar), inga omförsök, 0 anropsfel.
+
+| Språk | Godkända före | Namn kvar före | Poäng före | Godkända före, rättat mått (uppskattning) | Godkända efter (namnskydd, rättat mått) | Namn kvar efter | Tal i målspråk / tillbaka efter | Likhet efter | Poäng efter |
+|---|---|---|---|---|---|---|---|---|---|
+| arabiska | 28/30 | 100 % | 0,75 | 30/30 | 30/30 | 100 % | 100 % / 100 % | 0,81 | 0,81 |
+| persiska (farsi) | 25/30 | 85 % | 0,70 | 25/30 | 30/30 | 100 % | 100 % / 100 % | 0,84 | 0,84 |
+| dari | 22/30 | 78 % | 0,64 | 23/30 | 30/30 | 100 % | 100 % / 100 % | 0,85 | 0,85 |
+| somaliska | 29/30 | 99 % | 0,77 | 29/30 | 30/30 | 100 % | 100 % / 100 % | 0,81 | 0,81 |
+
+Namnskyddet: 17 platshållare per språk (68 totalt), **0 tappade, 0 förvanskade, 0 dubblerade, 0 som krävde tolerant återställning**. Modellen kopierade platshållarna rent i alla fyra språken. Längdfel, tomma svar och kopior: 0 i alla.
+
+Notera att skillnaden persiska/dari före-efter bara delvis kommer av det rättade måttet: namnmåttet kontrollerar målspråkstexten, och efter återinsättning är namnen där per konstruktion. Det som visar att skyddet fungerar är alltså raden ovan (platshållare tappade/förvanskade = 0), inte själva "100 %".
+
+### Slutsats
+
+- Namnproblemet i persiska och dari är löst mekaniskt: myndighetsnamnen kommer ut exakt som de skrevs, och det går att upptäcka om skyddet skulle fallera. Mönstret (maskera, översätt, återinsätt, rapportera) är det som en framtida översättningsfunktion i produkten ska använda; funktionerna kräver ingenting av skriptet. Obs: namnet hamnar oböjt-i-målspråkets-grammatik (t.ex. "Bolagsverkets" kvar med svensk genitiv-s inne i persisk text); läsbarheten av det måste en infödd läsare bedöma.
+- **Maskinmätningen är fortfarande inte kvalitetsbevis.** 30/30 betyder att tal och namn är kvar, längden rimlig och tillbakaöversättningen lik originalet. Den ser inte betydelsefel, och sådana finns kvar i omgång 2: "kassakort" blev "kontantkort"/"cash card" (persiska, somaliska "kort med pengarna"), "Lindqvist" blev "Linkvist" (dari), "plan" blev "förslag" (dari), "Praktiken" blev "Utbildningen" (somaliska), "handläggare" blev "ansvarig" (dari/persiska). För myndighetsbrev är sådana fel allvarligare än ett tappat tal.
+- Rekommendationen i tabellen ovan ändras därför bara så här: persiska och dari går från "Inte än" till **"kan gå vidare till granskning av infödd läsare"** (samma status som arabiska och somaliska) givet att namnskyddet används i produkten. Infödd granskning av de tio sämsta per språk är fortfarande villkor för att något språk slås på i AI-vägen. Tigrinja är oförändrat "Nej" (inte omkört). Ingen modell byttes.
+- Kvarstående brister i måttet: ordskrivna tal i andra språk än de som nu hanteras (somaliska "toddobaad" = vecka/sju räknas inte som tal, men ger inget falskt underkännande eftersom siffran skrivs ut), betydelse mäts inte, och trigramlikhet belönar ordval.
+
+De tio sämsta per språk i omgång 2 finns i den sparade utskriften från körningen (`--ut`); samma granskningsuppgift till infödd läsare gäller som ovan.

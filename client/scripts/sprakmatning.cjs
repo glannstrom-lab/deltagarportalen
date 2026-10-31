@@ -8,6 +8,8 @@
  *   node scripts/sprakmatning.cjs --sprak=ar,so   # urval
  *   node scripts/sprakmatning.cjs --ut=fil.md --json=fil.json
  *   node scripts/sprakmatning.cjs --torr          # bara antal anrop
+ *   node scripts/sprakmatning.cjs --skydda        # mekaniskt namnskydd (platshållare)
+ *   node scripts/sprakmatning.cjs --fran-json=fil.json   # poängsätt om sparade svar, inga anrop
  *
  * Nyckeln OPENROUTER_API_KEY läses ur client/.env.production.local (eller
  * miljön) och skrivs aldrig ut. Modellen är låst (docs/AI_MODEL_LOCKING.md).
@@ -16,7 +18,7 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const {
-  bedomMening, sammanfatta, samsta, KVOT_MIN, KVOT_MAX, LIKHET_MIN,
+  bedomMening, sammanfatta, samsta, skyddaNamn, aterstallNamn, KVOT_MIN, KVOT_MAX, LIKHET_MIN,
 } = require('./lib/sprakmatning.cjs');
 
 const MODELL = 'openai/gpt-oss-120b';
@@ -66,9 +68,11 @@ const MENINGAR = [
   'Vi kan inte lova att du får jobbet, men vi hjälper dig att söka och att förbereda dig.',
 ];
 
-const NAMN = JSON.parse(
+const SKYDDADE = JSON.parse(
   fs.readFileSync(path.join(__dirname, '..', 'src', 'i18n', 'skyddadeNamn.json'), 'utf8'),
-).namn;
+);
+const NAMN = SKYDDADE.namn;
+const BOJNINGAR = SKYDDADE.bojningar || [];
 
 function lasNyckel() {
   if (process.env.OPENROUTER_API_KEY) return process.env.OPENROUTER_API_KEY;
@@ -115,13 +119,26 @@ async function fraga(nyckel, system, user) {
 const SYS = 'Du är en översättare. Svara ENBART med översättningen av texten, utan förklaring, citattecken eller anteckningar. Behåll alla siffror, datum och klockslag exakt.';
 const NAMNREGEL = `Svenska myndighetsnamn och begrepp översätts ALDRIG utan skrivs kvar på svenska exakt som här: ${NAMN.join(', ')}.`;
 
-async function kor(sprak, nyckel) {
+const PLATSHALLARREGEL = 'Texten innehåller platshållare som ⟦N1⟧, ⟦N2⟧. Kopiera varje platshållare oförändrad, exakt som den står (med tecknen ⟦ och ⟧ och siffran), på rätt plats i meningen. Översätt dem aldrig och ändra aldrig siffran.';
+
+async function kor(sprak, nyckel, skydda) {
   const ut = [];
   for (const original of MENINGAR) {
-    const a = await fraga(nyckel, `${SYS} ${NAMNREGEL}`, `Översätt från svenska till ${sprak.namn}:\n\n${original}`);
-    const b = a.fel ? { fel: 'hoppad' } : await fraga(nyckel, SYS, `Översätt från ${sprak.namn} till svenska:\n\n${a.text}`);
+    // Med --skydda byts namnen mot platshållare före översättningen och sätts tillbaka efter.
+    const sk = skydda ? skyddaNamn(original, NAMN, BOJNINGAR) : null;
+    const indata = sk ? sk.text : original;
+    const system = skydda ? `${SYS} ${PLATSHALLARREGEL}` : `${SYS} ${NAMNREGEL}`;
+    const a = await fraga(nyckel, system, `Översätt från svenska till ${sprak.namn}:\n\n${indata}`);
+    let mal = a.fel ? '' : a.text;
+    let skydd = null;
+    if (sk && !a.fel) {
+      const t = aterstallNamn(a.text, sk.platshallare);
+      mal = t.text;
+      skydd = { antal: sk.platshallare.length, saknade: t.saknade, forvanskade: t.forvanskade, dubblerade: t.dubblerade, normaliserade: t.normaliserade, ok: t.ok };
+    }
+    const b = a.fel ? { fel: 'hoppad' } : await fraga(nyckel, SYS, `Översätt från ${sprak.namn} till svenska:\n\n${mal}`);
     const fel = Boolean(a.fel || b.fel);
-    ut.push({ original, mal: fel ? '' : a.text, tillbaka: fel ? '' : b.text, fel });
+    ut.push({ original, mal: fel ? '' : mal, tillbaka: fel ? '' : b.text, fel, ...(skydd ? { skydd } : {}) });
   }
   return ut;
 }
@@ -138,6 +155,12 @@ function markdown(resultat) {
     rader.push(`| ${sprak.namn} (${sprak.kod}) | ${s.godkanda}/${s.antal} | ${pct(s.talMal)} | ${pct(s.talTill)} | ${pct(s.namn)} | ${s.likhet.toFixed(2)} | ${s.kvot.toFixed(2)} | ${s.poang.toFixed(2)} | ${s.tomma} | ${s.kopior} | ${s.langdfel} |`);
   }
   const delar = [rader.join('\n')];
+  for (const { sprak, bedomda } of resultat) {
+    const med = bedomda.filter((b) => b.skydd);
+    if (!med.length) continue;
+    const summa = (f) => med.reduce((n, b) => n + f(b.skydd), 0);
+    delar.push(`\nNamnskydd ${sprak.namn}: ${summa((s) => s.antal)} platshållare, ${summa((s) => s.saknade.length)} tappade, ${summa((s) => s.forvanskade.length)} förvanskade, ${summa((s) => s.normaliserade)} återställda trots avvikande skrivsätt.`);
+  }
   const c = (t) => String(t).replace(/\|/g, '\\|').replace(/\n/g, ' ');
   for (const { sprak, bedomda } of resultat) {
     delar.push(`\n#### ${sprak.namn} — de tio sämsta\n`);
@@ -157,11 +180,12 @@ async function main() {
     console.log(`${MENINGAR.length} meningar, ${sprakLista.length} språk, högst ${MENINGAR.length * 2 * sprakLista.length} anrop (+ omförsök).`);
     return;
   }
+  const skydda = process.argv.includes('--skydda');
   const resultat = [];
   if (arg('fran-json')) {
     // Poängsätt om redan hämtade svar — inga modellanrop.
     for (const r of JSON.parse(fs.readFileSync(arg('fran-json'), 'utf8'))) {
-      resultat.push({ sprak: r.sprak, bedomda: r.bedomda.map((b) => ({ ...bedomMening(b, NAMN), original: b.original, mal: b.mal, tillbaka: b.tillbaka, fel: b.fel })) });
+      resultat.push({ sprak: r.sprak, bedomda: r.bedomda.map((b) => ({ ...bedomMening(b, NAMN), original: b.original, mal: b.mal, tillbaka: b.tillbaka, fel: b.fel, skydd: b.skydd })) });
     }
     const md0 = `<!-- trösklar: längdkvot ${KVOT_MIN}–${KVOT_MAX}, likhet >= ${LIKHET_MIN} -->
 ${markdown(resultat)}
@@ -172,7 +196,7 @@ ${markdown(resultat)}
   const nyckel = lasNyckel();
   for (const sprak of sprakLista) {
     console.error(`[${sprak.kod}] startar (anrop hittills: ${anrop})`);
-    const ra = await kor(sprak, nyckel);
+    const ra = await kor(sprak, nyckel, skydda);
     resultat.push({ sprak, bedomda: ra.map((r) => ({ ...bedomMening(r, NAMN), ...r })) });
   }
   console.error(`Klart. Modellanrop inklusive omförsök: ${anrop}`);
