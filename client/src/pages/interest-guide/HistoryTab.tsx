@@ -140,6 +140,7 @@ export default function HistoryTab() {
     return (
       <div className="max-w-lg mx-auto py-12">
         <EmptyState
+          headingLevel="h2"
           illustration="karriar"
           title={t('interestGuide.history.noHistory')}
           description={t('interestGuide.history.noHistoryDesc')}

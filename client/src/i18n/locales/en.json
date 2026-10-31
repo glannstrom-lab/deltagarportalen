@@ -2651,7 +2651,25 @@
     "saveCompanyLabel": "Save {{name}} to your list",
     "aiWatermarkType": "company suggestion",
     "resultsAnnouncement_one": "{{count}} company shown",
-    "resultsAnnouncement_other": "{{count}} companies shown"
+    "resultsAnnouncement_other": "{{count}} companies shown",
+    "kontaktvag": {
+      "button": "Find a way to contact them",
+      "intro": "Bolagsverket (the Swedish Companies Registration Office) does not publish a website, phone number or e-mail. This is what exists, with the source.",
+      "postalAddress": "Postal address",
+      "sourceBolagsverket": "source: Bolagsverket",
+      "addToNotes": "Add to my notes",
+      "addedToNotes": "Added to your notes.",
+      "searchLink": "Search for the company's own website",
+      "searchHint": "Look for a careers page or a contact page on the company's own website. This is a search, not information we have checked.",
+      "draftTitle": "A short e-mail you can use",
+      "draftSubject": "Unsolicited application",
+      "draftBody": "Hello,\n\nMy name is [your name] and I am looking for a job. I am interested in working at {{company}}. Do you have a position that suits me, or may I send you my application?\n\nI can send my CV and cover letter.\n\nKind regards\n[your name]",
+      "draftNote": "Add your name and read it before you send it. You send it yourself.",
+      "copy": "Copy the draft",
+      "copied": "The draft is copied.",
+      "copyFailed": "Could not copy. Select the text and copy it yourself.",
+      "openMail": "Open in your e-mail"
+    }
   },
   "career": {
     "title": "Career",
@@ -11009,5 +11027,27 @@
     "rensaAlla": "Remove all",
     "sparFel": "We could not save right now. Please try again in a moment.",
     "halsaFel": "The line is empty, or it is about health. Only how you want the letter to sound is saved here. Write it again, or remove the line."
+  },
+  "luckanCv": {
+    "rubrik": "What do I write about time without a job?",
+    "intro": "Many people have periods without work, and most employers have seen it before. Choose what is true for you and you get three ready-made sentences. You do not have to say more than you want to. Your choice is not saved and is not sent anywhere.",
+    "vilkenLucka": "Which period is it about?",
+    "fraga": "What is true for {{period}}?",
+    "kod": {
+      "barn": "I stayed at home with children",
+      "narstaende": "I took care of a close family member",
+      "studier": "I was studying",
+      "omstallning": "I changed direction and looked for new work",
+      "sjukdom": "I needed time to recover",
+      "vill_inte_ange": "I do not want to say why"
+    },
+    "forslagRubrik": "This is one way to say it. Change it so it sounds like you, and keep only what is true.",
+    "cvRad": "As a line in your CV",
+    "brev": "One sentence for your letter",
+    "intervju": "If someone asks in an interview",
+    "kopiera": "Copy",
+    "kopierad": "Copied",
+    "laggTill": "Add as a line in my CV",
+    "tillagd": "Added under Work experience."
   }
 }

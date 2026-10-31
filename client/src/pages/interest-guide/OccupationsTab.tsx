@@ -178,6 +178,7 @@ export default function OccupationsTab() {
     return (
       <div className="max-w-lg mx-auto min-h-screen">
         <EmptyState
+          headingLevel="h2"
           icon={ClipboardList}
           title={t('interestGuide.completeTestFirst', 'Genomför testet först')}
           description={t('interestGuide.completeTestForSuggestions', 'Du behöver genomföra intressetestet för att få personliga yrkesförslag.')}

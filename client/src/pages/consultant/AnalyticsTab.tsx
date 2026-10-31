@@ -39,6 +39,8 @@ import { AvtalskravKort } from '@/components/consultant/AvtalskravKort'
 import { GrundersattningKort } from '@/components/consultant/GrundersattningKort'
 import { orgTypVisning } from '@/components/consultant/orgTypVisning'
 import { orgApi, type OrgKind } from '@/services/orgApi'
+import { EnhetensUtfall, VyVaxel, type Vy } from '@/components/consultant/EnhetensUtfall'
+import { arEnhetsroll } from '@/services/enhetensUtfall'
 import type { ReportData } from '@/services/pdfReportGenerator'
 // AR1: kohortberäkningen ligger i egen modul sedan 2026-08-17 — den gick inte
 // att testa härifrån, och det var därför `QNaN NaN` kunde nå en skarp PDF.
@@ -237,6 +239,9 @@ export function AnalyticsTab() {
     : medlemskapQ.isError
       ? { visaAvtalskrav: true, visaIvoUnderlag: true }
       : null
+  // FN7: växeln finns bara för chef/admin. Alla andra ser Mina deltagare, som förut.
+  const [vy, setVy] = useState<Vy>('mina')
+  const chefsMedlemskap = (medlemskapQ.data ?? []).find((m) => arEnhetsroll(m.role))
   const [loading, setLoading] = useState(true)
   // KS7: ett fel (timeout, RLS, kvot) såg tidigare exakt likadant ut som "inga
   // deltagare" — samma skärm, ingen skillnad. Tre lägen krävs (laddar/fel/
@@ -629,6 +634,19 @@ export function AnalyticsTab() {
   // Ett värde utan underlag är "—", aldrig en nolla (CLAUDE.md, 2026-08-09).
   const utanDeltagare = analytics.totalParticipants === 0
 
+  if (chefsMedlemskap && vy === 'enheten') {
+    return (
+      <div className="space-y-6">
+        <VyVaxel vy={vy} onChange={setVy} />
+        <EnhetensUtfall
+          orgId={chefsMedlemskap.org_id}
+          orgNamn={chefsMedlemskap.organization?.name ?? null}
+          arDemo={chefsMedlemskap.organization?.is_demo === true}
+        />
+      </div>
+    )
+  }
+
   if (loading) {
     return <LoadingState fullHeight />
   }
@@ -651,6 +669,7 @@ export function AnalyticsTab() {
 
   return (
     <div className="space-y-6">
+      {chefsMedlemskap && <VyVaxel vy={vy} onChange={setVy} />}
       {/* CH1 (rollspelet 2026-09-28): sidan blandar två omfång. Säg det överst, i stället för
           att låta en chef läsa sina egna fem deltagare som enhetens siffror. */}
       <p className="text-sm text-stone-700 dark:text-stone-300 max-w-prose" data-testid="rapporter-omfang">

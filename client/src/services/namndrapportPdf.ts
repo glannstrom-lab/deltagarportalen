@@ -175,6 +175,8 @@ export interface NamndrapportMeta {
   datum: string
   /** AIX16: chefens egen text under tabellen. Ett TILLÄGG — tabellerna står kvar oavsett. */
   tillagg?: { text: string; medAi: boolean }
+  /** FN7: enhetens utfall som färdiga rader (bara sådana som får visas). Saknas/tom = ingen utfallsrad. */
+  utfall?: readonly string[]
 }
 
 const STRECK = '—'
@@ -240,6 +242,17 @@ export async function generateNamndrapportDoc(u: Namndrapport, meta: Namndrappor
   let y = efterTabell + 8
   const sidhojd = doc.internal.pageSize.getHeight()
   doc.setFontSize(9)
+  if (meta.utfall && meta.utfall.length > 0) {
+    doc.setFont('helvetica', 'bold')
+    doc.text('Utfall för enheten', marginal, y)
+    doc.setFont('helvetica', 'normal')
+    for (const r of meta.utfall) {
+      y += 5
+      doc.text(r, marginal, y)
+    }
+    doc.text('Celler under 5 personer redovisas inte.', marginal, y + 5)
+    y += 12
+  }
   const tillaggText = meta.tillagg?.text.trim()
   if (tillaggText) {
     const rubrik = meta.tillagg?.medAi

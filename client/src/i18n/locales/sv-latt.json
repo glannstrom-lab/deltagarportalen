@@ -1865,5 +1865,27 @@
     "rensaAlla": "Ta bort alla",
     "sparFel": "Det gick inte att spara nu. Försök igen om en stund.",
     "halsaFel": "Raden är tom, eller så handlar den om hälsa. Här sparas bara hur du vill att brevet ska låta. Skriv om raden, eller ta bort den."
+  },
+  "luckanCv": {
+    "rubrik": "Vad skriver jag om tiden utan jobb?",
+    "intro": "Många har tider utan jobb. De flesta som anställer har sett det förut. Välj det som stämmer. Då får du tre färdiga texter. Du behöver inte berätta mer än du vill. Ditt val sparas inte. Det skickas inte någonstans.",
+    "vilkenLucka": "Vilken tid gäller det?",
+    "fraga": "Vad stämmer för {{period}}?",
+    "kod": {
+      "barn": "Jag var hemma med barn",
+      "narstaende": "Jag hjälpte en närstående",
+      "studier": "Jag pluggade",
+      "omstallning": "Jag bytte väg och sökte nytt jobb",
+      "sjukdom": "Jag behövde vila och bli bättre",
+      "vill_inte_ange": "Jag vill inte säga varför"
+    },
+    "forslagRubrik": "Så här kan du skriva. Ändra så det låter som du. Ta bara med det som stämmer.",
+    "cvRad": "Som rad i CV:t",
+    "brev": "En mening till brevet",
+    "intervju": "Om någon frågar på intervjun",
+    "kopiera": "Kopiera",
+    "kopierad": "Kopierad",
+    "laggTill": "Lägg till som rad i mitt CV",
+    "tillagd": "Tillagd under Arbetslivserfarenhet."
   }
 }

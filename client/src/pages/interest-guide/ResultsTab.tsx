@@ -189,6 +189,7 @@ export default function ResultsTab() {
     return (
       <div className="max-w-lg mx-auto min-h-screen">
         <EmptyState
+          headingLevel="h2"
           illustration="karriar"
           title={t('interestGuide.noResultsYet', 'Här visas dina resultat')}
           description={t('interestGuide.completeTestToSeeResults', 'Du behöver genomföra intressetestet för att se dina resultat.')}

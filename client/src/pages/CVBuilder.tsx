@@ -45,6 +45,7 @@ import { PrataSaSkriverVi } from '@/components/tal/PrataSaSkriverVi'
 import { EducationEditor } from '@/components/cv/EducationEditor'
 import { SkillsEditor } from '@/components/cv/SkillsEditor'
 import { ContextualHelp } from '@/components/cv/ContextualHelp'
+import { LuckanICv } from '@/components/cv/LuckanICv'
 import { arOredigeradSnabbmall } from '@/components/cv/quickCvTexter'
 import { CVOnboarding, shouldShowOnboarding, minnsCvTurAvfardad } from '@/components/cv/CVOnboarding'
 import { claimOnboardingSession, releaseOnboardingSession } from '@/lib/onboardingCoordinator'
@@ -1116,6 +1117,12 @@ export default function CVBuilder() {
   const renderStep4 = () => (
     <div className="space-y-6">
       <ContextualHelp context="experience" data={data.workExperience} />
+
+      {/* AIX3: formuleringar för en tidslucka, färdiga mallar utan AI. */}
+      <LuckanICv
+        poster={data.workExperience}
+        onAdd={(rad) => setData(prev => ({ ...prev, workExperience: [...(prev.workExperience || []), rad] }))}
+      />
 
       {/* AIX2: vardag, ideellt och oavlönat blir förslag; inget läggs till utan klick på raden. */}
       <VadHarJagMedMig

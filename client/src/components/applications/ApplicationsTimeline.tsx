@@ -239,6 +239,7 @@ export function ApplicationsTimeline() {
     <div className="space-y-6 pb-24">
       {groupedHistory.length === 0 ? (
         <EmptyState
+          headingLevel="h2"
           icon={Clock}
           title={t('applications.timeline.emptyHeading', 'Här ser du vad som hänt')}
           description={t('applications.timeline.emptyLead', 'Varje gång du sparar ett jobb, flyttar en ansökan framåt eller skriver en anteckning hamnar det här — så du slipper minnas allt själv.')}

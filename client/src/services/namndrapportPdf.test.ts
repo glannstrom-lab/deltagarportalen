@@ -113,6 +113,16 @@ describe('PDF:en', () => {
     expect(text).toContain('inga bedömda pass')
     expect(text).not.toContain('Kohortanalys')
   })
+
+  it('FN7: utfallsraden hamnar på pappret när den ges, och saknas annars', async () => {
+    const u = namndrapportUnderlag([plan('a', 'p1', 'arbetslos')], [pass('a', '2026-08-03', null)], Q3)
+    const las = (blob: Blob) => new Promise<string>((ok) => { const r = new FileReader(); r.onload = () => ok(String(r.result)); r.readAsBinaryString(blob) })
+    const med = avEskapera(await las(await generateNamndrapportBlob(u, { organisation: 'X', datum: '2026-09-13', utfall: ['Avslut: 6 av 10 (60 %)'] })))
+    expect(med).toContain('Utfall för enheten')
+    expect(med).toContain('Avslut: 6 av 10 (60 %)')
+    const utan = avEskapera(await las(await generateNamndrapportBlob(u, { organisation: 'X', datum: '2026-09-13' })))
+    expect(utan).not.toContain('Utfall för enheten')
+  })
 })
 
 /** GG1: samma regel som i IVO-underlaget — se ivoKvartal.test.ts. */

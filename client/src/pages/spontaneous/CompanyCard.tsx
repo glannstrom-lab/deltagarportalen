@@ -29,6 +29,7 @@ import {
   Briefcase,
   MessageCircle,
   Loader2,
+  Compass,
 } from 'lucide-react'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
@@ -45,6 +46,7 @@ import { buildSpontaneousCoverLetterUrl } from '@/utils/jobLinks'
 import { formatLocalDate, parseLocalDate } from '@/services/aktivitetSchema'
 import { datumSprak } from '@/lib/datumsprak'
 import { StatusBadge } from './spontaneousStatus'
+import { KontaktvagPanel } from './KontaktvagPanel'
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -95,6 +97,7 @@ export function CompanyCard({
   })
   const [isAddingToApplications, setIsAddingToApplications] = useState(false)
   const [addedToApplications, setAddedToApplications] = useState(false)
+  const [showKontaktvag, setShowKontaktvag] = useState(false)
 
   const address = company.company_data?.address
   const sniCodes = company.company_data?.sniCodes || []
@@ -450,6 +453,23 @@ export function CompanyCard({
               </button>
             </div>
           )}
+
+          {/* Kontaktväg (KF14): företagets egna publicerade uppgifter, med källa */}
+          <div className="mt-2">
+            <button
+              type="button"
+              onClick={() => setShowKontaktvag(v => !v)}
+              aria-expanded={showKontaktvag}
+              aria-controls={`kontaktvag-${company.id}`}
+              className="text-xs text-stone-600 dark:text-stone-400 hover:text-stone-800 dark:hover:text-stone-200 flex items-center gap-1"
+            >
+              <Compass className="w-3 h-3" aria-hidden="true" />
+              {t('spontaneous.kontaktvag.button', 'Hitta kontaktväg')}
+            </button>
+            {showKontaktvag && (
+              <KontaktvagPanel company={company} onAddToNotes={(notes) => { onUpdate({ notes }); setNotesValue(notes) }} />
+            )}
+          </div>
 
           {/* Notes Section */}
           <div className="mt-3 pt-2 border-t border-stone-100 dark:border-stone-700">

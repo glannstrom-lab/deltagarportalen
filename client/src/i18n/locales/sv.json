@@ -2651,7 +2651,25 @@
     "saveCompanyLabel": "Spara {{name}} i din lista",
     "aiWatermarkType": "företagsförslag",
     "resultsAnnouncement_one": "{{count}} företag visas",
-    "resultsAnnouncement_other": "{{count}} företag visas"
+    "resultsAnnouncement_other": "{{count}} företag visas",
+    "kontaktvag": {
+      "button": "Hitta kontaktväg",
+      "intro": "Bolagsverket publicerar ingen webbplats, telefon eller e-post. Här är det som finns, med källa.",
+      "postalAddress": "Postadress",
+      "sourceBolagsverket": "källa: Bolagsverket",
+      "addToNotes": "Lägg i anteckningar",
+      "addedToNotes": "Lades till i dina anteckningar.",
+      "searchLink": "Sök efter företagets egen webbplats",
+      "searchHint": "Leta efter karriärsida eller kontakt på företagets egen webbplats. Det är en sökning, inte en uppgift vi har kontrollerat.",
+      "draftTitle": "Förslag på kort mejl",
+      "draftSubject": "Spontanansökan",
+      "draftBody": "Hej!\n\nJag heter [ditt namn] och söker jobb. Jag är intresserad av att arbeta hos {{company}} och undrar om ni har någon tjänst som passar mig, eller om jag kan skicka in min ansökan till er.\n\nJag bifogar gärna mitt CV och personliga brev.\n\nVänliga hälsningar\n[ditt namn]",
+      "draftNote": "Fyll i ditt namn och läs igenom innan du skickar. Du skickar själv.",
+      "copy": "Kopiera utkastet",
+      "copied": "Utkastet är kopierat.",
+      "copyFailed": "Det gick inte att kopiera. Markera texten och kopiera själv.",
+      "openMail": "Öppna i din e-post"
+    }
   },
   "career": {
     "title": "Karriär",
@@ -11009,5 +11027,27 @@
     "rensaAlla": "Ta bort alla",
     "sparFel": "Det gick inte att spara just nu. Försök igen om en stund.",
     "halsaFel": "Raden är tom, eller så handlar den om hälsa. Här sparas bara hur du vill att brevet ska låta. Skriv om den, eller ta bort raden."
+  },
+  "luckanCv": {
+    "rubrik": "Vad skriver jag om tiden utan jobb?",
+    "intro": "Många har perioder utan arbete, och de flesta arbetsgivare har sett det förut. Välj det som stämmer, så får du tre färdiga formuleringar. Du behöver inte berätta mer än du vill. Det du väljer sparas inte och skickas ingenstans.",
+    "vilkenLucka": "Vilken period gäller det?",
+    "fraga": "Vad stämmer för {{period}}?",
+    "kod": {
+      "barn": "Jag var hemma med barn",
+      "narstaende": "Jag tog hand om en närstående",
+      "studier": "Jag studerade",
+      "omstallning": "Jag ställde om och sökte nytt arbete",
+      "sjukdom": "Jag behövde tid för att återhämta mig",
+      "vill_inte_ange": "Jag vill inte ange varför"
+    },
+    "forslagRubrik": "Så kan du formulera det. Ändra så det låter som du, och ta bara med det som stämmer.",
+    "cvRad": "Som rad i CV:t",
+    "brev": "En mening till brevet",
+    "intervju": "Om någon frågar i en intervju",
+    "kopiera": "Kopiera",
+    "kopierad": "Kopierad",
+    "laggTill": "Lägg till som rad i mitt CV",
+    "tillagd": "Tillagd under Arbetslivserfarenhet."
   }
 }

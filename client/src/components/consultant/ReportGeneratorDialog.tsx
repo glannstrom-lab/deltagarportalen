@@ -32,6 +32,7 @@ import {
 } from '@/services/pdfReportGenerator'
 import { aktivitetsplanApi, underlagApi } from '@/services/aktivitetApi'
 import { orgApi, type OrgKind } from '@/services/orgApi'
+import { arEnhetsroll, enhetensUtfallApi, utfallTextrader } from '@/services/enhetensUtfall'
 import { regelverk } from '@/components/consultant/orgTypVisning'
 import { formatLocalDate } from '@/services/aktivitetSchema'
 import { kvartalGranser } from '@/services/ivoKvartal'
@@ -111,7 +112,7 @@ export function ReportGeneratorDialog({
   )
   const [reportType, setReportType] = useState<ReportType>('konsult')
   const [kvartalNyckel, setKvartalNyckel] = useState<KvartalValNyckel>('innevarande')
-  const [namnd, setNamnd] = useState<{ underlag: Namndrapport; organisation: string | null } | null>(null)
+  const [namnd, setNamnd] = useState<{ underlag: Namndrapport; organisation: string | null; utfall?: string[] } | null>(null)
   const [namndFel, setNamndFel] = useState<string | null>(null)
   // AIX16: chefens tillägg under tabellen. `medAi` = utkastet kom från AI (märks i PDF:en).
   const [tillagg, setTillagg] = useState({ text: '', medAi: false })
@@ -166,7 +167,7 @@ export function ReportGeneratorDialog({
    * bakåt i tiden — ett underlag lämnat i Q2 nollar Q1:s räkning i en rapport
    * nämnden redan fått.
    */
-  const hamtaNamnd = async (): Promise<{ underlag: Namndrapport; organisation: string | null }> => {
+  const hamtaNamnd = async (): Promise<{ underlag: Namndrapport; organisation: string | null; utfall?: string[] }> => {
     const { from, to } = kvartalGranser(valtKvartal.ar, valtKvartal.kvartal)
     const [plans, sessions, medlemskap, handovers] = await Promise.all([
       aktivitetsplanApi.listAll(),
@@ -176,7 +177,22 @@ export function ReportGeneratorDialog({
     ])
     const organisation = medlemskap[0]?.organization?.name ?? null
     const underlag = namndrapportUnderlag(plans, sessions, valtKvartal, handovers)
-    const resultat = { underlag, organisation }
+    // FN7: utfallsraden för chef/admin. Bara när databasfunktionen finns — ur planerna ensamt
+    // går bara "avslut över hela tiden" att räkna, och det är inte ett kvartalsmått.
+    let utfall: string[] | undefined
+    const chef = medlemskap.find((m) => arEnhetsroll(m.role))
+    if (chef) {
+      try {
+        const lage = await enhetensUtfallApi.hamta(chef.org_id, chef.organization?.is_demo === true)
+        if (lage.status === 'klart' && lage.kalla === 'funktion') {
+          const rader = utfallTextrader(lage.rader)
+          if (rader.length > 0) utfall = rader
+        }
+      } catch {
+        utfall = undefined
+      }
+    }
+    const resultat = { underlag, organisation, utfall }
     setNamnd(resultat)
     return resultat
   }
@@ -201,8 +217,8 @@ export function ReportGeneratorDialog({
     setNamndFel(null)
     try {
       if (valdTyp === 'namnd') {
-        const { underlag, organisation } = await hamtaNamnd()
-        setPreviewUrl(await generateNamndrapportDataUrl(underlag, { organisation, konsulentNamn: consultantName, datum: formatLocalDate(new Date()), tillagg: tillaggTillPdf() }))
+        const { underlag, organisation, utfall } = await hamtaNamnd()
+        setPreviewUrl(await generateNamndrapportDataUrl(underlag, { organisation, konsulentNamn: consultantName, datum: formatLocalDate(new Date()), tillagg: tillaggTillPdf(), utfall: utfall }))
         setStep('preview')
         return
       }
@@ -232,7 +248,7 @@ export function ReportGeneratorDialog({
 
   const handleDownload = () => {
     if (valdTyp === 'namnd') {
-      if (namnd) void downloadNamndrapport(namnd.underlag, { organisation: namnd.organisation, konsulentNamn: consultantName, datum: formatLocalDate(new Date()), tillagg: tillaggTillPdf() })
+      if (namnd) void downloadNamndrapport(namnd.underlag, { organisation: namnd.organisation, konsulentNamn: consultantName, datum: formatLocalDate(new Date()), tillagg: tillaggTillPdf(), utfall: namnd.utfall })
       onClose()
       return
     }

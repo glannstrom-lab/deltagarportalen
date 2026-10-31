@@ -75,5 +75,20 @@ Om du uteblir utan giltigt skäl kan det påverka din ersättning.`
   ok(v.status === 200, `vad-har-jag-med-mig ${v.status} på ${v.ms} ms`)
   console.log('  ' + JSON.stringify(v.j).slice(0, 600))
 
+  // Pass 3: AIX9 (annons-matchning) — inget procenttal, citaten ur indata
+  const annons = 'Vi söker en lagerarbetare till vårt lager i Karlstad. Du har truckkort och erfarenhet av plock. Du är noggrann och trivs att arbeta i team. Heltid, start i januari.'
+  const cvText = 'Titel: Lagerarbetare\nSammanfattning: Fem år på lager, van vid truckkörning och plock.\nKompetenser: Truckkort A och B, plock, inventering'
+  const m = await anropa(tok, 'annons-matchning', { annons, cvText, titel: 'Lagerarbetare', foretag: 'Lagret AB' })
+  ok(m.status === 200, `annons-matchning ${m.status} på ${m.ms} ms`)
+  ok(!/%|procent/i.test(JSON.stringify(m.j)), 'annons-matchning: inget procenttal')
+  console.log('  ' + JSON.stringify(m.j).slice(0, 500))
+
+  // Pass 3: AIX8 (rensa-tal) — inget nytt innehåll
+  const tal = 'eh ja jag har liksom jobbat på lager i typ fem år och eh jag har truckkort och så'
+  const r = await anropa(tok, 'rensa-tal', { text: tal })
+  ok(r.status === 200, `rensa-tal ${r.status} på ${r.ms} ms`)
+  ok(siffror(JSON.stringify(r.j)).every((x) => tal.includes(x)), 'rensa-tal: inga nya siffror')
+  console.log('  ' + JSON.stringify(r.j).slice(0, 400))
+
   console.log(fel ? `\n${fel} fel` : '\nalla kontroller gröna'); process.exit(fel ? 1 : 0)
 })().catch((e) => { console.error(e); process.exit(1) })
