@@ -25,7 +25,7 @@ import { CELLGRANS } from '@/services/namndTextApi'
 import { mfaApi } from '@/services/mfaApi'
 
 /** Sätts till true när 20261031_fn7_enhetens_utfall.sql körts och schema:refresh/grants:refresh gjorts. */
-export const ENHETENS_UTFALL_RPC_FINNS = false
+export const ENHETENS_UTFALL_RPC_FINNS = true
 // Medvetet en konstant och inte ett strängliteral i .rpc(): lint:schema ska inte
 // fälla på en funktion som ännu inte finns. Byt till literalen när flaggan slås på,
 // så grinden börjar vakta namnet.

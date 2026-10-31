@@ -25,7 +25,7 @@ import { supabase } from '@/lib/supabase'
 import type { ArbetsgivarPost } from '@/lib/arbetsgivarregister'
 
 /** Sätts till true när migrationen körts och schema:refresh + grants:refresh gjorts. */
-export const ARBETSGIVARREGISTER_FINNS = false
+export const ARBETSGIVARREGISTER_FINNS = true
 // Medvetet en konstant och inte ett strängliteral i .rpc(): lint:schema ska inte fälla på
 // en funktion som ännu inte finns. Byt till literalen när flaggan slås på.
 const RPC_NAMN = 'arbetsgivarregister'

@@ -1,4 +1,4 @@
--- PENDING (Mikaels ja krävs) — KC13 2026-10-21: statuskort i chefsvyn.
+-- KÖRD mot prod 2026-10-31 (Mikaels ja) — KC13 2026-10-21: statuskort i chefsvyn.
 --
 -- Carriera visar "krav godkänt, andel aktiverade, dokumentation klar" per
 -- organisation. Jobin har datan men räknar den bara per deltagare. Tre nya

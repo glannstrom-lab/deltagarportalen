@@ -1,4 +1,4 @@
--- EJ KÖRD — väntar på ja (FN13, gemensamt arbetsgivarregister).
+-- KÖRD mot prod 2026-10-31 (Mikaels ja) (FN13, gemensamt arbetsgivarregister).
 --
 -- Varför en funktion: consultant_work_placements har bara två SELECT-policyer —
 -- deltagaren själv och har_aktiv_relation(participant_id), som kräver en rad i

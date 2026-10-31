@@ -130,8 +130,8 @@ describe('hittaDubbletter', () => {
 })
 
 describe('flaggan och migrationen', () => {
-  it('registret är avstängt tills migrationen körts', () => {
-    expect(ARBETSGIVARREGISTER_FINNS).toBe(false)
+  it('registret är påslaget (migrationen körd i prod 2026-10-31)', () => {
+    expect(ARBETSGIVARREGISTER_FINNS).toBe(true)
   })
   it('migrationen revokerar PUBLIC och anon, ger authenticated, kontrollerar personal och returnerar inga deltagarfält', () => {
     const sql = readFileSync(resolve(__dirname, '../../../supabase/migrations/20261031_fn13_arbetsgivarregister.sql'), 'utf8')

@@ -86,8 +86,12 @@ const RLS_UNDANTAG = {}
  *   26 → 27  2026-10-11, kopplingsförfrågan (Mikaels ja): `besvara_kopplingsforfragan(id, ja, text)` —
  *            deltagaren svarar på en konsulents förfrågan. Raden måste ha participant_id = auth.uid()
  *            (annars P0002, prövat som annan deltagare); ett ja skriver koppling + samtycke i en transaktion.
+ *   27 → 29  2026-10-31, FN13 + FN7 (Mikaels ja): `arbetsgivarregister(org)` (personal i organisationen)
+ *            och `enhetens_utfall(org)` (chef/admin, aal2 utom demo). Inget användar-id i argumenten;
+ *            båda kräver medlemskap via auth.uid() — prövat i prod: anon 401, deltagare 403 (42501),
+ *            chef 200.
  */
-const AUTH_TAK = 27
+const AUTH_TAK = 29
 
 const snapshot = JSON.parse(fs.readFileSync(SNAPSHOT, 'utf8'))
 const definerFunktioner = snapshot.functions.filter((f) => f.definer)

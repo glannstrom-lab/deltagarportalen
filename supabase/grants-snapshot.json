@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-20T12:31:09.825Z",
+  "generatedAt": "2026-10-31T17:41:11.750Z",
   "functions": [
     {
       "name": "activity_plan_handovers_guard",
@@ -54,6 +54,13 @@
       "name": "ar_personal",
       "signature": "ar_personal()",
       "definer": false,
+      "anon": false,
+      "authenticated": true
+    },
+    {
+      "name": "arbetsgivarregister",
+      "signature": "arbetsgivarregister(uuid)",
+      "definer": true,
       "anon": false,
       "authenticated": true
     },
@@ -245,6 +252,13 @@
       "definer": true,
       "anon": false,
       "authenticated": false
+    },
+    {
+      "name": "enhetens_utfall",
+      "signature": "enhetens_utfall(uuid)",
+      "definer": true,
+      "anon": false,
+      "authenticated": true
     },
     {
       "name": "execute_account_deletion_immediate",

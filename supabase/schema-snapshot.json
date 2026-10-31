@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-20T12:31:04.337Z",
+  "generatedAt": "2026-10-31T17:41:05.527Z",
   "note": "Genererad av client/scripts/refresh-schema-snapshot.cjs. Kör om efter varje migration och committa i samma commit. Läses av check-schema-drift.cjs.",
   "tables": {
     "account_deletion_requests": [
@@ -851,6 +851,13 @@
       "share_health_data",
       "share_wellness_data"
     ],
+    "deltagare_tidslinje": [
+      "antal",
+      "dag",
+      "participant_id",
+      "senast",
+      "typ"
+    ],
     "diary_entries": [
       "content",
       "created_at",
@@ -1457,7 +1464,10 @@
     "organization_caseload": [
       "antal_aktiva_planer",
       "antal_deltagare",
+      "antal_dokumentation_klar",
       "antal_uppfoljning",
+      "antal_veckomal_nadda",
+      "antal_veckomal_underlag",
       "consultant_id",
       "first_name",
       "last_name",
@@ -2150,6 +2160,7 @@
       "user_id"
     ],
     "user_preferences": [
+      "brev_stil",
       "calm_mode",
       "checklist_dismissed",
       "coach_voice",
@@ -2825,6 +2836,7 @@
     "activity_sessions_participant_guard",
     "ar_foretagsmedlem",
     "ar_personal",
+    "arbetsgivarregister",
     "audit_data_sharing_change",
     "auto_generate_recommendations",
     "besvara_kopplingsforfragan",
@@ -2852,6 +2864,7 @@
     "employer_messages_notify",
     "employer_place_status_from_proposal",
     "employer_proposals_update",
+    "enhetens_utfall",
     "execute_account_deletion_immediate",
     "execute_consultant_journal_retention",
     "execute_inactive_account_retention",

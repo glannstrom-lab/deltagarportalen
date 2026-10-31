@@ -1,4 +1,4 @@
--- PENDING (Mikaels ja krävs) — KC12 2026-10-21: aktivitetstidslinje.
+-- KÖRD mot prod 2026-10-31 (Mikaels ja) — KC12 2026-10-21: aktivitetstidslinje.
 --
 -- Carriera journalför deltagarens aktiviteter automatiskt. Jobin loggar redan
 -- (user_activity_log, via log_user_activity från CV, sparade jobb, ansökningar,

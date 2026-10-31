@@ -123,17 +123,21 @@ describe('flaggan och aal2', () => {
     rpc.mockReset()
     from.mockReset()
   })
-  it('funktionen är avstängd som standard', () => {
-    expect(ENHETENS_UTFALL_RPC_FINNS).toBe(false)
+  it('funktionen är påslagen (migrationen körd i prod 2026-10-31)', () => {
+    expect(ENHETENS_UTFALL_RPC_FINNS).toBe(true)
   })
-  it('anropar aldrig rpc medan flaggan är false, utan läser planerna', async () => {
+  it('läser funktionen med org-id, inte planerna', async () => {
     assurans.mockResolvedValue({ nuvarande: 'aal2', nasta: 'aal2' })
-    const eq = vi.fn().mockResolvedValue({ data: planer(6, 'ended'), error: null })
-    from.mockReturnValue({ select: () => ({ eq }) })
+    rpc.mockResolvedValue({ data: [rpcRad()], error: null })
     const lage = await enhetensUtfallApi.hamta('org1', false)
-    expect(rpc).not.toHaveBeenCalled()
-    expect(eq).toHaveBeenCalledWith('org_id', 'org1')
-    expect(lage.status).toBe('klart')
+    expect(rpc).toHaveBeenCalledWith('enhetens_utfall', { p_org: 'org1' })
+    expect(from).not.toHaveBeenCalled()
+    expect(lage).toMatchObject({ status: 'klart', kalla: 'funktion' })
+  })
+  it('ett fel från funktionen kastas, blir aldrig tomt utfall', async () => {
+    assurans.mockResolvedValue({ nuvarande: 'aal2', nasta: 'aal2' })
+    rpc.mockResolvedValue({ data: null, error: { message: 'nekad' } })
+    await expect(enhetensUtfallApi.hamta('org1', false)).rejects.toThrow('nekad')
   })
   it('utan aal2 läses ingenting', async () => {
     assurans.mockResolvedValue({ nuvarande: 'aal1', nasta: 'aal2' })
@@ -143,8 +147,7 @@ describe('flaggan och aal2', () => {
     expect(rpc).not.toHaveBeenCalled()
   })
   it('demoorganisation undantas från aal2', async () => {
-    const eq = vi.fn().mockResolvedValue({ data: [], error: null })
-    from.mockReturnValue({ select: () => ({ eq }) })
+    rpc.mockResolvedValue({ data: [rpcRad()], error: null })
     const lage = await enhetensUtfallApi.hamta('demo', true)
     expect(assurans).not.toHaveBeenCalled()
     expect(lage.status).toBe('klart')
