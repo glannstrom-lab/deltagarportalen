@@ -13,6 +13,11 @@
  */
 import { describe, it, expect, beforeEach } from 'vitest'
 import { USER_SCOPED_STORAGE_KEYS, clearUserScopedStorage } from './safeStorage'
+import {
+  INSTALLNINGAR_GAMMAL_NYCKEL,
+  INSTALLNINGAR_INNEHALL,
+  INSTALLNINGAR_TILLGANGLIGHET,
+} from '@/lib/installningarLagring'
 
 const NYA_NYCKLAR_UPPDRAG_B = [
   'savedJobs',
@@ -49,16 +54,16 @@ describe('USER_SCOPED_STORAGE_KEYS — uppdrag B, 2026-09-22', () => {
     }
   })
 
-  it('rör INTE deltagarportal-settings — nyckeln blandar innehåll med tillgänglighetsval som ska överleva', () => {
-    // Se motiveringen i safeStorage.ts: en blank removeItem() på den här
-    // nyckeln skulle nolla language/highContrast/largeText/calmMode/
-    // focusMode/grafikstil tillsammans med notisinställningarna, eftersom
-    // clearUserScopedStorage() inte gör partiell rensning.
-    expect(USER_SCOPED_STORAGE_KEYS).not.toContain('deltagarportal-settings')
+  it('ST3: rensar innehållsnyckeln men INTE tillgänglighetsnyckeln (utan att storen laddats)', () => {
+    expect(USER_SCOPED_STORAGE_KEYS).toContain(INSTALLNINGAR_INNEHALL)
+    expect(USER_SCOPED_STORAGE_KEYS).not.toContain(INSTALLNINGAR_TILLGANGLIGHET)
+    expect(USER_SCOPED_STORAGE_KEYS).not.toContain(INSTALLNINGAR_GAMMAL_NYCKEL)
 
-    localStorage.setItem('deltagarportal-settings', JSON.stringify({ state: { language: 'en', highContrast: true } }))
+    localStorage.setItem(INSTALLNINGAR_TILLGANGLIGHET, JSON.stringify({ state: { language: 'en', highContrast: true } }))
+    localStorage.setItem(INSTALLNINGAR_INNEHALL, JSON.stringify({ state: { energyLevel: 'low', weeklySummary: true } }))
     clearUserScopedStorage()
-    expect(localStorage.getItem('deltagarportal-settings')).not.toBeNull()
+    expect(localStorage.getItem(INSTALLNINGAR_TILLGANGLIGHET)).not.toBeNull()
+    expect(localStorage.getItem(INSTALLNINGAR_INNEHALL)).toBeNull()
   })
 
   it('USER_SCOPED_STORAGE_KEYS har inga dubbletter', () => {

@@ -36,6 +36,7 @@ import { formatLocalDate } from '@/services/aktivitetSchema'
 import { langtDatum } from './aktivitetEtiketter'
 import { resultatersattning, kr, ROM2_KALLA } from '@/services/rom2Ersattning'
 import type { Niva } from '@/services/placeringUtfall'
+import { ResultatTidslinje } from './ResultatTidslinje'
 import { BETALSTATUS_ETIKETT, RESULTAT_MSFA_FINNS, betalstatus, betalstatusDatum, nastaBetalsteg, resultatApi, type BetalPlacering } from '@/services/resultatklocka'
 
 export type PlaceringarLage =
@@ -185,6 +186,7 @@ export function PlaceringDeltagareKort({ lage, onForsokIgen, onRegistrera, onBet
                 <UppfoljningRad p={p} vilken="3m" idag={idag} onRegistrera={onRegistrera} onBetalstatusAndrad={onBetalstatusAndrad} visaRom2={visaRom2} />
                 <UppfoljningRad p={p} vilken="6m" idag={idag} onRegistrera={onRegistrera} onBetalstatusAndrad={onBetalstatusAndrad} visaRom2={visaRom2} />
               </ul>
+              {visaRom2 && <ResultatTidslinje placering={p} idag={idag} />}
             </li>
           )
         })}

@@ -14,6 +14,7 @@
  */
 
 import { useEffect, useMemo, useState } from 'react'
+import { byggRegister, hittaDubbletter } from '@/lib/arbetsgivarregister'
 import { Card } from '@/components/ui/Card'
 import { Button, CloseButton } from '@/components/ui/Button'
 import { Building2, AlertCircle } from '@/components/ui/icons'
@@ -49,6 +50,8 @@ interface Props {
   foretagsplatser?: Foretagsplats[]
   /** Felmeddelande om företagens platser inte kunde hämtas — visas i stället för väljaren. */
   foretagsplatserFel?: string | null
+  /** FN13: konsulentens egna platser — för dubblettvarning på företagsnamn/org.nr. */
+  egnaPlatser?: readonly Placering[]
   onSave: (input: PlaceringInput) => Promise<unknown>
   onClose: () => void
 }
@@ -147,11 +150,20 @@ export function PlaceringFormModal({
   forvaltForetag,
   foretagsplatser,
   foretagsplatserFel,
+  egnaPlatser,
   onSave,
   onClose,
 }: Props) {
   const [draft, setDraft] = useState<PlaceringInput>(tomtFormular(forcedParticipantId ?? ''))
   const [saving, setSaving] = useState(false)
+  const dubbletter = useMemo(
+    () =>
+      hittaDubbletter(
+        byggRegister((egnaPlatser ?? []).filter((p) => p.id !== existing?.id)),
+        { namn: draft.company_name, orgnr: draft.org_number },
+      ),
+    [egnaPlatser, existing?.id, draft.company_name, draft.org_number],
+  )
   const [error, setError] = useState<string | null>(null)
 
   const dialogRef = useFocusTrap<HTMLDivElement>(open, { onEscape: onClose })
@@ -335,6 +347,12 @@ export function PlaceringFormModal({
                 className="w-full px-3 py-2 rounded-lg border border-stone-200 text-sm"
                 placeholder="T.ex. Lidl Sundsvall"
               />
+              {dubbletter.length > 0 && (
+                <p className="mt-1 text-xs text-amber-700" role="status">
+                  Du har redan registrerat {dubbletter[0].namn} ({dubbletter[0].antalPlatser}{' '}
+                  {dubbletter[0].antalPlatser === 1 ? 'plats' : 'platser'}). Kontrollera att det inte är samma arbetsgivare.
+                </p>
+              )}
             </Field>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <Field label="Yrke">

@@ -372,13 +372,24 @@ describe('settingsStore', () => {
 describe('settingsStore — persist', () => {
   it('skriver grafikstil och tillgänglighetsvalen till localStorage', () => {
     useSettingsStore.setState({ grafikstil: 'action', calmMode: true, largeText: true, highContrast: true })
-    const sparat = JSON.parse(localStorage.getItem('deltagarportal-settings') ?? '{}')
+    const sparat = JSON.parse(localStorage.getItem('deltagarportal-tillganglighet') ?? '{}')
     expect(sparat.state).toMatchObject({ grafikstil: 'action', calmMode: true, largeText: true, highContrast: true })
   })
 
   it('sparar inte laddningsflaggan — den ska börja om vid varje start', () => {
     useSettingsStore.setState({ isLoading: true })
-    const sparat = JSON.parse(localStorage.getItem('deltagarportal-settings') ?? '{}')
+    const sparat = JSON.parse(localStorage.getItem('deltagarportal-tillganglighet') ?? '{}')
     expect(sparat.state).not.toHaveProperty('isLoading')
+  })
+
+  it('ST3: innehållsfälten hamnar i innehållsnyckeln, aldrig i tillgänglighetsnyckeln', () => {
+    useSettingsStore.setState({ energyLevel: 'low', weeklySummary: true, highContrast: true })
+    const t = JSON.parse(localStorage.getItem('deltagarportal-tillganglighet') ?? '{}')
+    const i = JSON.parse(localStorage.getItem('deltagarportal-innehall') ?? '{}')
+    expect(i.state).toMatchObject({ energyLevel: 'low', weeklySummary: true })
+    expect(t.state).toMatchObject({ highContrast: true })
+    expect(t.state).not.toHaveProperty('energyLevel')
+    expect(t.state).not.toHaveProperty('weeklySummary')
+    expect(i.state).not.toHaveProperty('highContrast')
   })
 })

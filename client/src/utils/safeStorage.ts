@@ -113,23 +113,15 @@ export const USER_SCOPED_STORAGE_KEYS: readonly string[] = [
   // AIX29 (2026-10-30): sparade "Gör det mindre"-listor (services/gorDetMindreLista.ts)
   // — personens egna ord om vad hen behöver göra.
   'gor-det-mindre',
-  // OBS, MEDVETET INTE MED: 'deltagarportal-settings' (settingsStore.ts).
-  // Den nyckelns `partialize` blandar innehåll (emailNotifications,
-  // pushNotifications, weeklySummary, energyLevel, hasCompletedOnboarding,
-  // lastSynced — nollställs redan via en egen `registreraRensning` i
-  // settingsStore.ts) med tillgänglighetsval som SKA överleva utloggning på
-  // en delad dator (calmMode, focusMode, highContrast, largeText, language,
-  // grafikstil). `clearUserScopedStorage()` gör bara `removeItem(key)` —
-  // ett rått "hela nyckeln bort" — och skulle därför nolla språk och hög
-  // kontrast tillsammans med notisinställningarna. Kvarstående risk (liten):
-  // om settingsStore-modulen ALDRIG laddats i sessionen innan utloggning
-  // (den importeras av Layout.tsx/useAuthInit.ts, så det kräver en
-  // utloggning innan layouten hunnit montera) hinner dess egen
-  // registreraRensning inte köras, och den gamla blobben ligger kvar orörd
-  // tills nästa inloggning skriver över den. En delnyckel-rensning (JSON.
-  // parse + ta bort bara innehållsfälten) vore rätt fix men är ett större
-  // ingrepp än den här listan gör för de andra nycklarna — rapporterat, inte
-  // byggt, i uppdrag B (2026-09-22).
+  // ST3 (2026-10-31): settingsStore delar sina inställningar över två nycklar
+  // (lib/installningarLagring.ts). Innehållsdelen — aviseringar, energinivå,
+  // onboarding, synkstämpel — står här och rensas alltid, även om storen
+  // aldrig laddats. MEDVETET INTE MED: 'deltagarportal-tillganglighet'
+  // (språk, kontrast, textstorlek, lugnt läge, fokusläge, grafikstil), som
+  // SKA överleva utloggning på en delad dator. Den gamla blandade nyckeln
+  // 'deltagarportal-settings' migreras bort vid uppstart och ska inte heller
+  // in här — den bär tillgänglighetsvalen tills migreringen körts.
+  'deltagarportal-innehall',
 ] as const
 
 /**

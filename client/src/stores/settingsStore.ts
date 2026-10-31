@@ -10,6 +10,15 @@ import { storageLogger } from '@/lib/logger'
 import { registreraRensning } from '@/lib/rensaVidUtloggning'
 
 import { anvandareFranSession } from '@/lib/anvandareFranSession'
+import {
+  INSTALLNINGAR_TILLGANGLIGHET,
+  installningarStorage,
+  migreraInstallningar,
+} from '@/lib/installningarLagring'
+
+// Måste ske före create(): persist hydrerar synkront vid skapandet.
+migreraInstallningar()
+
 export type EnergyLevel = 'low' | 'medium' | 'high'
 export type Language = 'sv' | 'en'
 /**
@@ -347,8 +356,9 @@ export const useSettingsStore = create<SettingsState>()(
       }
       }),
       {
-        name: 'deltagarportal-settings',
-        storage: createJSONStorage(() => localStorage),
+        // ST3: två nycklar bakom en adapter (lib/installningarLagring.ts).
+        name: INSTALLNINGAR_TILLGANGLIGHET,
+        storage: createJSONStorage(() => installningarStorage),
         partialize: (state) => ({
           calmMode: state.calmMode,
           focusMode: state.focusMode,

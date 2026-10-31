@@ -50,6 +50,7 @@ import { ForslagPanel } from '@/components/consultant/ForslagPanel'
 import { ForetagsTrad } from '@/components/consultant/ForetagsTrad'
 import { PLACERING_STATUS_LABEL, PLACERING_TYP_LABEL } from '@/components/consultant/placeringLabels'
 import { StodPanel } from '@/components/consultant/StodPanel'
+import { ArbetsgivarregisterPanel } from '@/components/consultant/ArbetsgivarregisterPanel'
 import { orgApi } from '@/services/orgApi'
 import { useAuthStore } from '@/stores/authStore'
 import { notifications } from '@/lib/toast'
@@ -380,6 +381,8 @@ export function PlatserTab() {
         </div>
       </Card>
 
+      <ArbetsgivarregisterPanel placeringar={placeringar ?? []} />
+
       {(placeringar ?? []).length === 0 ? (
         <Card variant="flat" padding="lg">
           <EmptyState
@@ -468,6 +471,7 @@ export function PlatserTab() {
         open={formOpen}
         existing={editing}
         deltagare={deltagare ?? []}
+        egnaPlatser={placeringar ?? []}
         forcedParticipantId={forval?.deltagare}
         forvaltForetag={forval?.foretag}
         foretagsplatser={foretagsplatser}
