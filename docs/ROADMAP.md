@@ -1161,6 +1161,32 @@ visuell design (täckt av dagens SKAV-omgång) eller SEO/innehåll (senast grans
 
 ---
 
+## Innehållsomgång 11 (2026-11-04) — 18 nya guider, 35 slipade sidor, och första utfallsmätningen
+
+**K4 är uppfylld, för första gången också för utfallet.** Mätpunkter: `docs/gsc/jobin-2026-11-04.json` och `docs/gsc/jobin-fragor-sida-2026-11-04.json`. Exponeringar per vecka har gått från cirka 4 700 till cirka 10 700 sedan 21 september, snittposition 23,7 → 18,2 och klick totalt 100 → 393.
+
+### Vad utfallet säger
+- **Sidor om ett enda ämne vinner.** Omgång 9: `offentligt-skyddat-arbete` 2 640 exp pos 6,2, `trygghetsanstallning` 943 exp pos 5,7, `andra-intervjun` 169 exp 17 klick pos 5,2.
+- **Testet från omgång 10 föll väl ut.** `byta-leverantor-rusta-och-matcha`: frågan "byta leverantör rusta och matcha" låg på 12–18 och ligger nu på 8–10. `rusta-och-matcha` har inte sjunkit nämnvärt (17,9 → 18,5). Ingen sammanslagning behövs.
+- **Lättlästa "Vad betyder …?" är bästa nischen.** `lattsvenska-heltid-och-deltid` 1 621 exp pos 6,9.
+- **CTR är flaskhalsen på plats 7–10.** "osa anställning" 486 exp 1 klick, "timanställd" 350 exp 0 klick. Därför slipades titel och ingress.
+- **Lättläst tar huvudfrågor från huvudguiden** ("personligt brev", "uppsägningstid", "kollektivavtal"). Titlarna justerades. Följs upp nästa mätning.
+
+### Nytt (18)
+`timanstalld-vad-galler`, `tjanstgoringsintyg-och-anstallningsintyg`, `hitta-kollektivavtal-pa-arbetsplatsen`, `tillsvidareanstallning`, `valja-leverantor-rusta-och-matcha`, `byta-handlaggare-arbetsformedlingen`, `sjukersattning-vem-kan-fa`, `yrkesbevis`, `aktivitetsstod-sa-fungerar-det`, `vad-ska-jag-jobba-med`, `yrkestest-sa-anvander-du-det`, `personliga-egenskaper-exempel`, samt lättlästa `lattsvenska-kompetens`, `lattsvenska-omstallningsstod`, `lattsvenska-lonebidrag`, `lattsvenska-aktivitetsstod`, `lattsvenska-rusta-och-matcha`, `lattsvenska-sjukersattning`. Prod: 294 → 312 artiklar (310 publicerade).
+
+### Slipat (35)
+Lista och titlar i `client/content/expansions/_metadata.json`, förtexter i `client/content/expansions/arkiv-2026-11/fore/`.
+
+### Rättelser vid handläsning
+Agenterna hade själva rensat bort siffror och flera felaktiga lugnande svar, och grinden var ren. Handläsningen mot myndigheterna fann ändå bland annat: TSN angavs som organisation för arbetare (rätt: TSL; TSN är statligt anställda, och felet kom ur uppdragsbeskrivningen), "jag kan inte säga" om ersättning i Rusta och matcha fast förmedlingsinsatser står på Försäkringskassans lista, och en titel som lovade "utan att förlora rätten". **Briefen är ingen källa, och det gäller också den som skriver uppdraget.**
+
+### Kvar
+- [ ] **OM11-1 Engelska versioner släpar.** 21 av de 35 slipade sidorna har `content_en` från före slipningen, bland dem `nystartsjobb-guide` (med gamla regeltal) och `a-kassa-sa-fungerar-det`. Översätt om dem. `apply-expansions` rör bara svenskan.
+- [ ] **OM11-2 Utfallsmätning** tidigast 2026-12-01 mot `docs/gsc/jobin-2026-11-04.json`: CTR på de slipade sidorna, om huvudguiderna tagit tillbaka huvudfrågorna, och om `valja-leverantor-rusta-och-matcha` lyfter leverantörsfrågorna utan att sänka `rusta-och-matcha`.
+- [ ] **OM11-3 Beslut: sifferförbudet mot sökintentionen.** "Hur lång uppsägningstid" går inte att besvara utan månadstal. LAS-tiderna ändras sällan. Ett smalt undantag för lagtext med källa och datum kan hjälpa, men är Mikaels beslut.
+- [ ] **OM11-4 Icke-medlem i a-kassan.** En sökträff hos Sveriges a-kassor använder ordet grundersättning för den som inte är medlem, medan `guides-avskaffade-regler.test.ts` säger att allt är inkomstbaserat sedan 2025-10-01. Texterna säger nu bara "lägsta nivån". Reds ut mot IAF.
+
 ## Innehållsomgång 10 (2026-09-21) — 20 guider, och tre gamla artiklar som beskrev en avskaffad a-kassa
 
 Tredje omgången på två dygn. **K4 är uppfylld för ämnesvalet men inte för utfallet:** varken

@@ -1,97 +1,81 @@
 {
-  "a-kassa-utan-facket": {
-    "title": "A-kassa utan facket – så går du med i bara a-kassan",
-    "summary": "A-kassa och fack är skilda organisationer. Så väljer du rätt a-kassa, så går ansökan till, och varför du bör gå med redan nu.",
+  "timanstalld-vad-galler": {
+    "title": "Timanställd – vad gäller för lön, schema och uppsägning?",
+    "summary": "Timanställd är ingen egen anställningsform. Så ser du vad som gäller för lön, pass, semesterersättning och a-kassa i just din anställning.",
     "category_key": "employment-law",
-    "subcategory": "a-kassa",
-    "tags": ["a-kassa", "facket", "medlemskap", "Alfa-kassan"],
+    "subcategory": "anstallningsformer",
+    "tags": ["timanställd", "behovsanställning", "timanställning", "visstid", "lön"],
+    "difficulty": "medium",
+    "energy_level": "medium",
+    "related_article_slugs": ["anstallningsformer-guide", "las-anstallningsavtal", "lattsvenska-timanstallning", "bemanningsforetag-guide"],
+    "related_tools": ["/resources"],
+    "checklist": [
+      "Hitta ditt anställningsavtal och se vilken form anställningen har",
+      "Fråga om timlön, tillägg och semesterersättning",
+      "Fråga vad som gäller om du tackar nej till ett pass",
+      "Be om svaren skriftligt",
+      "Kontakta a-kassan innan du tar nya timmar om du har ersättning"
+    ],
+    "actions": [
+      { "href": "/resources", "label": "Hitta stöd och vägar vidare", "type": "primary" },
+      { "href": "/knowledge-base/article/las-anstallningsavtal", "label": "Läs ditt anställningsavtal steg för steg", "type": "secondary" }
+    ]
+  },
+  "tjanstgoringsintyg-och-anstallningsintyg": {
+    "title": "Tjänstgöringsintyg och anställningsintyg – skillnaden",
+    "summary": "Orden förklarade, vad banken vill ha vid lån, hur du ber arbetsgivaren om intyget och vad du gör om du inte får svar.",
+    "category_key": "employment-law",
+    "subcategory": "intyg",
+    "tags": ["tjänstgöringsintyg", "anställningsintyg", "arbetsintyg", "intyg till banken"],
     "difficulty": "easy",
     "energy_level": "low",
-    "related_article_slugs": ["a-kassa-sa-fungerar-det", "facket-ska-jag-ga-med", "lattsvenska-a-kassa", "saga-upp-sig-och-a-kassa"],
+    "related_article_slugs": ["arbetsgivarintyg-och-betyg", "lattsvenska-arbetsgivarintyg", "referenser-guide", "provanstallning-guide"],
     "related_tools": [],
     "checklist": [
-      "Ta reda på vilken bransch som bäst beskriver ditt nuvarande eller senaste arbete",
-      "Sök upp rätt a-kassa via Sveriges a-kassors sökfunktion",
-      "Hittar du ingen som passar, kontrollera Alfa-kassan",
-      "Ansök om medlemskap direkt på a-kassans webbplats",
-      "Gå med medan du fortfarande har jobb, inte efter"
+      "Bestäm vad intyget ska användas till",
+      "Fråga mottagaren vilka uppgifter som krävs",
+      "Skicka en skriftlig förfrågan med syfte och datum",
+      "Följ upp efter några dagar",
+      "Spara en kopia digitalt"
     ],
     "actions": [
-      { "href": "/applications", "label": "Håll ordning på dina jobbansökningar", "type": "primary" }
+      { "href": "/knowledge-base/article/arbetsgivarintyg-och-betyg", "label": "Läs om arbetsgivarintyg till a-kassan", "type": "primary" }
     ]
   },
-  "sjuk-nar-du-ar-arbetslos": {
-    "title": "Sjuk när du är arbetslös – vem anmäler du till",
-    "summary": "Vem du sjukanmäler dig till som arbetssökande, varför du inte söker a-kassa för sjukdagar, och vad som gäller i ett program.",
+  "hitta-kollektivavtal-pa-arbetsplatsen": {
+    "title": "Har företaget kollektivavtal? Så tar du reda på det",
+    "summary": "Fråga arbetsgivaren eller facket. Så formulerar du frågan, även på intervjun, vad ett hängavtal är och vad du gör om avtal saknas.",
     "category_key": "employment-law",
-    "subcategory": "sjukdom",
-    "tags": ["sjukpenning", "Försäkringskassan", "arbetslös", "aktivitetsstöd"],
-    "difficulty": "medium",
+    "subcategory": "kollektivavtal",
+    "tags": ["kollektivavtal", "hängavtal", "fack", "lön enligt kollektivavtal"],
+    "difficulty": "easy",
     "energy_level": "low",
-    "related_article_slugs": ["sjuklon-karens-och-vab", "ersattning-under-program", "tillbaka-till-jobb-efter-sjukskrivning", "aktivitetsrapport-guide"],
+    "related_article_slugs": ["kollektivavtal-vad-det-betyder", "lattsvenska-kollektivavtal", "facket-ska-jag-ga-med", "fragor-att-stalla-till-arbetsgivaren"],
     "related_tools": [],
     "checklist": [
-      "Anmäl dig till Försäkringskassan samma dag du blir sjuk",
-      "Meddela Arbetsförmedlingen att du är sjuk",
-      "Fyll inte i sjukdagar som arbetssökande dagar hos a-kassan",
-      "Håll koll på vilken ersättning du har – a-kassa eller aktivitetsstöd",
-      "Meddela ändrade eller flyttade möten så tidigt du kan"
+      "Leta efter ordet kollektivavtal i annons och anställningsavtal",
+      "Fråga arbetsgivaren vilket avtal som gäller",
+      "Fråga ett fackförbund i branschen som andra källa",
+      "Be om att få läsa avtalet",
+      "Läs ditt personliga anställningsavtal extra noga om avtal saknas"
     ],
     "actions": [
-      { "href": "/wellness", "label": "Håll koll på ditt mående", "type": "primary" },
-      { "href": "/knowledge-base", "label": "Läs mer om ersättning under program", "type": "secondary" }
+      { "href": "/interview-simulator", "label": "Öva på att ställa frågan i en intervju", "type": "primary" }
     ]
   },
-  "saga-upp-sig-och-a-kassa": {
-    "title": "Säga upp sig själv – vad händer med a-kassan",
-    "summary": "Egen uppsägning utan giltig anledning kostar dig ersättning. Vad som kan räknas som giltigt, och varför du ska prata med a-kassan innan.",
+  "tillsvidareanstallning": {
+    "title": "Tillsvidareanställning – vad det betyder och vad det ger dig",
+    "summary": "Tillsvidare är det man kallar fast anställning. Så skiljer den sig från provanställning och visstid, och vad den betyder vid uppsägning och bolån.",
     "category_key": "employment-law",
-    "subcategory": "a-kassa",
-    "tags": ["egen uppsägning", "a-kassa", "giltig anledning", "omprövning"],
-    "difficulty": "medium",
-    "energy_level": "medium",
-    "related_article_slugs": ["a-kassa-sa-fungerar-det", "overklaga-ett-beslut", "uppsagningstid-och-uppsagningsbesked", "avsked-eller-uppsagning"],
+    "subcategory": "anstallningsformer",
+    "tags": ["tillsvidareanställning", "fast anställning", "LAS", "sakliga skäl"],
+    "difficulty": "easy",
+    "energy_level": "low",
+    "related_article_slugs": ["anstallningsformer-guide", "lattsvenska-tillsvidareanstallning", "provanstallning-guide", "uppsagningstid-och-uppsagningsbesked"],
     "related_tools": [],
     "checklist": [],
     "actions": [
-      { "href": "/job-search", "label": "Börja se dig om innan du bestämmer dig", "type": "primary" },
-      { "href": "/knowledge-base", "label": "Läs mer om hur a-kassan fungerar", "type": "secondary" }
-    ]
-  },
-  "lampligt-arbete-maste-jag-ta-jobbet": {
-    "title": "Måste jag ta jobbet? Så fungerar lämpligt arbete",
-    "summary": "Vad som gör ett jobb lämpligt, vem som bedömer, och vad som kan hända med din ersättning om du tackar nej.",
-    "category_key": "employment-law",
-    "subcategory": "arbetsformedlingen",
-    "tags": ["lämpligt arbete", "a-kassa", "Arbetsförmedlingen", "avstängning"],
-    "difficulty": "medium",
-    "energy_level": "medium",
-    "related_article_slugs": ["varning-fran-arbetsformedlingen", "aktivitetsrapport-guide", "ersattning-under-program", "overklaga-ett-beslut"],
-    "related_tools": [],
-    "checklist": [],
-    "actions": [
-      { "href": "/applications", "label": "Håll koll på jobb du sökt och blivit erbjuden", "type": "primary" }
-    ]
-  },
-  "resa-bort-som-arbetslos": {
-    "title": "Resa bort när du är arbetslös – vad gäller för ersättningen",
-    "summary": "Vad du behöver meddela innan en resa, hur du fyller i tidrapporten, och hur du söker jobb i ett annat EU-land med ersättningen kvar.",
-    "category_key": "employment-law",
-    "subcategory": "a-kassa",
-    "tags": ["resa", "tidrapport", "kassakort", "PD U2", "arbetslös"],
-    "difficulty": "medium",
-    "energy_level": "low",
-    "related_article_slugs": ["a-kassa-sa-fungerar-det", "aktivitetsrapport-guide", "sjuk-nar-du-ar-arbetslos", "lampligt-arbete-maste-jag-ta-jobbet"],
-    "related_tools": ["/international"],
-    "checklist": [
-      "Meddela Arbetsförmedlingen och din a-kassa innan du reser",
-      "Stäm av bokade möten som ligger under resan",
-      "Fyll i tidrapporten eller kassakortet för dagar du inte stått till förfogande",
-      "Vill du söka jobb i annat EU-land: ansök om PD U2 hos IAF i god tid"
-    ],
-    "actions": [
-      { "href": "/international", "label": "Utforska att jobba utomlands", "type": "primary" },
-      { "href": "/applications", "label": "Håll koll på dina ansökningar under resan", "type": "secondary" }
+      { "href": "/resources", "label": "Hitta stöd och vägar vidare", "type": "primary" }
     ]
   }
 }

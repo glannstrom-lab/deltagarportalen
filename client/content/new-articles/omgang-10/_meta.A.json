@@ -1,0 +1,97 @@
+{
+  "a-kassa-utan-facket": {
+    "title": "A-kassa utan facket – så går du med i bara a-kassan",
+    "summary": "A-kassa och fack är skilda organisationer. Så väljer du rätt a-kassa, så går ansökan till, och varför du bör gå med redan nu.",
+    "category_key": "employment-law",
+    "subcategory": "a-kassa",
+    "tags": ["a-kassa", "facket", "medlemskap", "Alfa-kassan"],
+    "difficulty": "easy",
+    "energy_level": "low",
+    "related_article_slugs": ["a-kassa-sa-fungerar-det", "facket-ska-jag-ga-med", "lattsvenska-a-kassa", "saga-upp-sig-och-a-kassa"],
+    "related_tools": [],
+    "checklist": [
+      "Ta reda på vilken bransch som bäst beskriver ditt nuvarande eller senaste arbete",
+      "Sök upp rätt a-kassa via Sveriges a-kassors sökfunktion",
+      "Hittar du ingen som passar, kontrollera Alfa-kassan",
+      "Ansök om medlemskap direkt på a-kassans webbplats",
+      "Gå med medan du fortfarande har jobb, inte efter"
+    ],
+    "actions": [
+      { "href": "/applications", "label": "Håll ordning på dina jobbansökningar", "type": "primary" }
+    ]
+  },
+  "sjuk-nar-du-ar-arbetslos": {
+    "title": "Sjuk när du är arbetslös – vem anmäler du till",
+    "summary": "Vem du sjukanmäler dig till som arbetssökande, varför du inte söker a-kassa för sjukdagar, och vad som gäller i ett program.",
+    "category_key": "employment-law",
+    "subcategory": "sjukdom",
+    "tags": ["sjukpenning", "Försäkringskassan", "arbetslös", "aktivitetsstöd"],
+    "difficulty": "medium",
+    "energy_level": "low",
+    "related_article_slugs": ["sjuklon-karens-och-vab", "ersattning-under-program", "tillbaka-till-jobb-efter-sjukskrivning", "aktivitetsrapport-guide"],
+    "related_tools": [],
+    "checklist": [
+      "Anmäl dig till Försäkringskassan samma dag du blir sjuk",
+      "Meddela Arbetsförmedlingen att du är sjuk",
+      "Fyll inte i sjukdagar som arbetssökande dagar hos a-kassan",
+      "Håll koll på vilken ersättning du har – a-kassa eller aktivitetsstöd",
+      "Meddela ändrade eller flyttade möten så tidigt du kan"
+    ],
+    "actions": [
+      { "href": "/wellness", "label": "Håll koll på ditt mående", "type": "primary" },
+      { "href": "/knowledge-base", "label": "Läs mer om ersättning under program", "type": "secondary" }
+    ]
+  },
+  "saga-upp-sig-och-a-kassa": {
+    "title": "Säga upp sig själv – vad händer med a-kassan",
+    "summary": "Egen uppsägning utan giltig anledning kostar dig ersättning. Vad som kan räknas som giltigt, och varför du ska prata med a-kassan innan.",
+    "category_key": "employment-law",
+    "subcategory": "a-kassa",
+    "tags": ["egen uppsägning", "a-kassa", "giltig anledning", "omprövning"],
+    "difficulty": "medium",
+    "energy_level": "medium",
+    "related_article_slugs": ["a-kassa-sa-fungerar-det", "overklaga-ett-beslut", "uppsagningstid-och-uppsagningsbesked", "avsked-eller-uppsagning"],
+    "related_tools": [],
+    "checklist": [],
+    "actions": [
+      { "href": "/job-search", "label": "Börja se dig om innan du bestämmer dig", "type": "primary" },
+      { "href": "/knowledge-base", "label": "Läs mer om hur a-kassan fungerar", "type": "secondary" }
+    ]
+  },
+  "lampligt-arbete-maste-jag-ta-jobbet": {
+    "title": "Måste jag ta jobbet? Så fungerar lämpligt arbete",
+    "summary": "Vad som gör ett jobb lämpligt, vem som bedömer, och vad som kan hända med din ersättning om du tackar nej.",
+    "category_key": "employment-law",
+    "subcategory": "arbetsformedlingen",
+    "tags": ["lämpligt arbete", "a-kassa", "Arbetsförmedlingen", "avstängning"],
+    "difficulty": "medium",
+    "energy_level": "medium",
+    "related_article_slugs": ["varning-fran-arbetsformedlingen", "aktivitetsrapport-guide", "ersattning-under-program", "overklaga-ett-beslut"],
+    "related_tools": [],
+    "checklist": [],
+    "actions": [
+      { "href": "/applications", "label": "Håll koll på jobb du sökt och blivit erbjuden", "type": "primary" }
+    ]
+  },
+  "resa-bort-som-arbetslos": {
+    "title": "Resa bort när du är arbetslös – vad gäller för ersättningen",
+    "summary": "Vad du behöver meddela innan en resa, hur du fyller i tidrapporten, och hur du söker jobb i ett annat EU-land med ersättningen kvar.",
+    "category_key": "employment-law",
+    "subcategory": "a-kassa",
+    "tags": ["resa", "tidrapport", "kassakort", "PD U2", "arbetslös"],
+    "difficulty": "medium",
+    "energy_level": "low",
+    "related_article_slugs": ["a-kassa-sa-fungerar-det", "aktivitetsrapport-guide", "sjuk-nar-du-ar-arbetslos", "lampligt-arbete-maste-jag-ta-jobbet"],
+    "related_tools": ["/international"],
+    "checklist": [
+      "Meddela Arbetsförmedlingen och din a-kassa innan du reser",
+      "Stäm av bokade möten som ligger under resan",
+      "Fyll i tidrapporten eller kassakortet för dagar du inte stått till förfogande",
+      "Vill du söka jobb i annat EU-land: ansök om PD U2 hos IAF i god tid"
+    ],
+    "actions": [
+      { "href": "/international", "label": "Utforska att jobba utomlands", "type": "primary" },
+      { "href": "/applications", "label": "Håll koll på dina ansökningar under resan", "type": "secondary" }
+    ]
+  }
+}

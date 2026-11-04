@@ -52,6 +52,7 @@ sidor summeras — analysskriptet gör det.
 |---|---|---|---|---|---|
 | `jobin-2026-09-15.json` | 2026-08-04 → 2026-09-13 (41 dagar) | 17 211 | 75 | 0,44 % | 24,4 |
 | `jobin-2026-09-21.json` | 2026-08-04 → 2026-09-19 (47 dagar) | 20 564 | 100 | 0,49 % | 23,7 |
+| `jobin-2026-11-04.json` | 2026-08-04 → 2026-11-03 (92 dagar) | 67 699 | 393 | 0,58 % | 18,2 |
 
 Mätpunkten 2026-09-21 togs inför innehållsomgång 9. Omgång 8 publicerades
 2026-09-20 och syns alltså **inte** i den — den säger var portalen vinner
@@ -62,3 +63,7 @@ Historiken börjar 4 augusti 2026 — inte för att sajten var osynlig dessföri
 utan för att egendomen verifierades då. Prerenderingen (K1–K6) gick live 5
 augusti, så mätningen och motorn är i praktiken jämnåriga. Det finns alltså
 **ingen före-bild** att jämföra mot, och kommer inte att finnas.
+
+`jobin-fragor-sida-2026-11-04.json` är fråga × sida för 2026-09-25 → 2026-11-02 (2 766 rader,
+21 364 av exponeringarna, resten anonymiserade). Det är den som ligger till grund för
+innehållsomgång 11, och den första mätningen där omgång 8–10 syns i utfallet.

@@ -36,7 +36,7 @@ function queryJson(sql) {
   const tmp = path.join(os.tmpdir(), `content-snapshot-${process.pid}.sql`)
   fs.writeFileSync(tmp, sql, 'utf8')
   try {
-    const raw = execSync(`npx supabase db query --linked -f "${tmp}" --output json`, {
+    const raw = execSync(`npx supabase db query --linked --read-only -f "${tmp}" --output json`, {
       cwd: REPO_ROOT,
       encoding: 'utf8',
       maxBuffer: 128 * 1024 * 1024,

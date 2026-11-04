@@ -40,7 +40,7 @@ function kor(sql) {
   const tmp = path.join(os.tmpdir(), `apply-expansions-${process.pid}.sql`)
   fs.writeFileSync(tmp, sql, 'utf8')
   try {
-    return execSync(`npx supabase db query --linked -f "${tmp}"`, {
+    return execSync(`npx supabase db query --linked${process.argv.includes("--yes") ? " --yes" : ""} -f "${tmp}"`, {
       cwd: REPO_ROOT,
       encoding: 'utf8',
       maxBuffer: 64 * 1024 * 1024,

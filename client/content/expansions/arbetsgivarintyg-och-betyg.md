@@ -1,94 +1,70 @@
-Arbetsgivarintyg, arbetsintyg, tjänstgöringsintyg, anställningsbevis, arbetsbetyg. Orden används om vartannat, och i praktiken handlar de om två olika papper med två olika syften: ett som a-kassan vill se, och ett du tar med dig till nästa arbetsgivare. Du får inte automatiskt något av dem bara för att du slutar.
+Ett arbetsgivarintyg är det underlag a-kassan använder för att pröva din rätt till ersättning när en anställning har tagit slut. Det fylls i av din tidigare arbetsgivare och är en uppgift om anställningen, inte ett omdöme om dig. Behöver du i stället ett papper till banken eller en ny arbetsgivare är det ett annat dokument.
 
-## Vilket papper menar de egentligen
+## Vad är ett arbetsgivarintyg?
 
-Det finns många ord för något som i grunden är två saker. Det gör det svårt att veta vad du
-ska be om, och svårt att veta om du fick rätt sak.
+Intyget ska visa fakta om anställningen. Sedan a-kassan fick nya regler 2025-10-01 hämtar kassan din inkomst från Skatteverket, och intyget har fått ett enklare innehåll. Bland det arbetsgivaren intygar finns uppgifter om anställningsformen och orsaken till att anställningen upphörde. Äldre ärenden som beslutades före reformen kan fortfarande kräva fler uppgifter, så fråga din a-kassa vad den behöver i just ditt fall.
 
-| Ordet du hör | Vad som brukar menas |
+Arbetsgivaren fyller i intyget digitalt, bland annat via [arbetsgivarintyg.nu](https://arbetsgivarintyg.nu). Du som anställd behöver alltså inte skriva intyget själv, men du behöver be om det. En arbetsgivare ska utfärda intyget när anställningen tar slut. Det gäller oavsett om du sa upp dig, blev uppsagd eller jobbat ut ett vikariat.
+
+## Arbetsgivarintyg, tjänstgöringsintyg och betyg – vad är skillnaden?
+
+Orden används om vartannat, men de är olika papper med olika syften.
+
+| Ordet du hör | Vad som menas |
 |---|---|
-| Arbetsgivarintyg | A-kassans blankett. Fakta om anställningen |
-| Arbetsintyg | Oftast samma sak som arbetsgivarintyg, ibland ett friare intyg om att du varit anställd |
-| Tjänstgöringsintyg | Ett intyg om att du varit anställd, och när. Ingen bedömning av dig |
-| Anställningsintyg, anställningsbevis | Används både om tjänstgöringsintyg och om själva anställningsavtalet – fråga vad som menas |
-| Tjänstgöringsbetyg, arbetsbetyg | Ett intyg **plus ett omdöme** om hur du skötte arbetet |
+| Arbetsgivarintyg | Underlaget till [a-kassan](https://www.sverigesakassor.se). Fakta om anställningen |
+| Arbetsintyg | Används för både arbetsgivarintyg och tjänstgöringsintyg – fråga vad som menas |
+| Tjänstgöringsintyg, anställningsintyg | Ett intyg om att du är eller har varit anställd, och vad du gjort. Inget omdöme |
+| Tjänstgöringsbetyg, arbetsbetyg | Ett intyg plus ett omdöme om hur du skötte arbetet |
 
-Skillnaden som betyder något är den sista raden: **ett intyg beskriver att du var där, ett
-betyg beskriver hur det gick.** Ber du om ett intyg får du inget omdöme, och ber du om ett
-betyg kan du få ett omdöme du inte hade tänkt dig.
+Ett intyg beskriver att du var där, ett betyg beskriver hur det gick. Behöver du pappret till a-kassan, säg arbetsgivarintyg. Behöver du det till en jobbansökan, säg vad du vill ha det till.
 
-Behöver du pappret till [a-kassan](https://www.sverigesakassor.se) – säg **arbetsgivarintyg**, inget annat ord. Behöver du det
-till en jobbansökan – säg vad du vill ha ut av det, så slipper ni missförståndet: "ett intyg
-på att jag jobbat här och med vad" är tydligare än att gissa rätt ord.
+## Arbetsgivarintyg till banken eller för ett lån
 
-### Och om arbetsgivaren använder ett annat ord än du
+Banken efterfrågar ett intyg om din anställning och vad du tjänar. Det är ett anställningsintyg, inte det arbetsgivarintyg som a-kassan använder. Fråga banken vilket dokument den vill ha och begär precis det av din arbetsgivare. Läs mer i [Tjänstgöringsintyg och anställningsintyg](/knowledge-base/article/tjanstgoringsintyg-och-anstallningsintyg).
 
-Det spelar mindre roll vad pappret heter än vad som står på det. Fick du ett
-tjänstgöringsintyg men a-kassan behöver arbetad tid och lön – be om ett kompletterande
-arbetsgivarintyg. Det är samma begäran med rätt ord, inte en ny.
+## Vad är en referens?
 
-## Vad är ett arbetsgivarintyg, egentligen
+En referens är inget dokument. Det är en person som kan svara på frågor om dig när en ny arbetsgivare ringer. Det finns ingen rätt att få en referens. Fråga personen i förväg, och skriv ner kontaktuppgifter innan du slutar.
 
-Arbetsgivarintyget är a-kassans underlag för att räkna ut om du har rätt till ersättning, och i så fall hur mycket. Det ska innehålla sådant som anställningstid, arbetstid, anställningsform, lön och anledningen till att anställningen tog slut. Det är inte en bedömning av dig som person eller anställd – bara fakta om anställningen.
+## Så begär du arbetsgivarintyget
 
-**Din tidigare arbetsgivare är skyldig enligt lag att lämna ett arbetsgivarintyg**, oavsett om du sa upp dig själv, blev uppsagd eller jobbade ut ett vikariat. Skyldigheten gäller alltid, inte bara när du "förtjänat" den.
+1. **Fråga på din sista arbetsdag**, eller i ett avslutande samtal. Då är allt färskt.
+2. **Använd a-kassans digitala tjänst** om den har en funktion för att skicka en begäran till arbetsgivaren. Hur det fungerar skiljer sig mellan kassorna, så titta på din kassas sida.
+3. **Skriv till arbetsgivaren** om du inte får svar. Ett mejl ger dig ett spår att peka på senare.
 
-## Tjänstgöringsbetyg och referens – två andra papper, andra syften
+## Om arbetsgivaren inte svarar
 
-Här är var sak för sig, eftersom de tre lätt blandas ihop:
+- Följ upp skriftligt och håll dig till fakta.
+- Sätt en rimlig tid för svar.
+- Ta hjälp av facket om du är medlem.
+- Berätta för a-kassan att du väntar. De kan säga vad de behöver medan du väntar. Är du osäker på ditt beslut kan du kontakta [Inspektionen för arbetslöshetsförsäkringen (IAF)](https://www.iaf.se), som har tillsyn över a-kassorna.
 
-| Dokument | Vad det visar | Vem har rätt att kräva det |
-|---|---|---|
-| Arbetsgivarintyg | Anställningstid, arbetstid, anställningsform, lön | Alla, lagstadgad rätt |
-| Tjänstgöringsbetyg | En bedömning av hur du skötte jobbet | Starkast rätt om arbetsplatsen har kollektivavtal, annars ingen given rätt i lag |
-| Referens | En person som kan svara på frågor om dig muntligt | Ingen rättighet – bygger på att någon går med på att ställa upp |
+Om arbetsgivaren inte betalar lön eller inte svarar alls kan det hänga ihop med större problem. Då kan [Lönen kom inte – vad gör du nu?](/knowledge-base/article/lonen-uteblir-vad-gor-jag) hjälpa. Har företaget gått i konkurs, se [Lönegaranti vid konkurs](/knowledge-base/article/lonegaranti-vid-konkurs).
 
-Ett tjänstgöringsbetyg är alltså något du kan **begära**, inte något som automatiskt skrivs. Vill du ha ett, säg det innan du slutar, medan din chef fortfarande minns vad du gjorde.
+## Begär det när du slutar, inte när du behöver det
 
-En referens är i sin tur inget dokument alls, utan ett namn och ett telefonnummer till någon som är villig att svara när en framtida arbetsgivare ringer. Fråga personen i förväg – att bli uppringd utan förvarning är obehagligt för de flesta.
+Det vanligaste misstaget är att vänta. Efter ett halvår kan kontaktpersonen ha bytt jobb eller bolaget ha bytt ägare. Begär intyget samtidigt som du lämnar in nycklarna, och spara en digital kopia.
 
-## Så begär du intyget
+Läser du hellre på lätt svenska finns [Vad är ett arbetsgivarintyg?](/knowledge-base/article/lattsvenska-arbetsgivarintyg).
 
-Du kan gå tre vägar, och de går att kombinera:
+## Vad gör jag nu?
 
-1. **Fråga direkt på din sista arbetsdag eller i ett avslutningssamtal.** Det är det enklaste läget – ni pratas ändå vid, och det är färskt i minnet.
-2. **Använd a-kassans digitala tjänst.** De flesta a-kassor har en funktion för att begära arbetsgivarintyg elektroniskt, ofta kopplad till en gemensam tjänst som arbetsgivaren fyller i.
-3. **Skriftligt, om du inte får svar.** Ladda ner blanketten, fyll i det du kan och skicka en tydlig begäran med posten eller mejl, så det finns svart på vitt att du frågat.
-
-## När arbetsgivaren inte svarar
-
-Det händer att förfrågningar hamnar mellan stolarna, särskilt på mindre arbetsplatser utan någon dedikerad HR-funktion. Gör så här i tur och ordning:
-
-- **Följ upp skriftligt**, även om första kontakten var muntlig. Ett mejl ger dig ett spår att peka på senare.
-- **Sätt en rimlig påminnelse**, till exempel en vecka senare, och håll dig till fakta i tonen.
-- **Ta hjälp av facket** om du är medlem – förhandlingsstöd är precis den typen av situation medlemskapet är till för.
-- **Kontakta a-kassan** och berätta att du väntar. De har sett problemet förut och kan ibland peka på alternativ dokumentation medan du väntar.
-
-## Om företaget har gått i konkurs
-
-Går inte att fråga arbetsgivaren längre eftersom bolaget inte finns kvar, är det inte kört. En konkursförvaltare tar över en del av arbetsgivarens skyldigheter under konkursen, och kan i många fall hjälpa till med underlag. Har du sparat lönespecifikationer och anställningsavtal fungerar de som stöd i väntan på ett formellt intyg – hör med a-kassan vad de kan acceptera i det läget. Det är precis den typen av situation där det lönar sig att redan ha kopiorna sparade, se nästa avsnitt.
-
-## Varför du ska begära det när du slutar, inte när du behöver det
-
-Det stora misstaget är att vänta. Ett halvår eller ett år senare kan din kontaktperson ha bytt jobb, bolaget ha bytt ägare, eller e-postadressen du hade sluta fungera. Medan du fortfarande är anställd eller precis har slutat är allt lättillgängligt: systemen är samma, personerna är samma, och det är ingens intresse att krångla. Begär arbetsgivarintyget och (om du vill ha det) tjänstgöringsbetyget samtidigt som du lämnar in nycklarna eller loggar ut sista gången.
-
-## Vad gör du nu
-
-Har du nyligen slutat ett jobb utan att ha begärt något av detta – gör det idag, inte när du väl behöver skicka in det till a-kassan. Spara kopior digitalt så du slipper leta fram dem igen. Och skriv ner namn och kontaktuppgifter till någon som kan vara referens medan du fortfarande har dem lätt tillgängliga.
-
-## Var du läser vidare
-
-- [Sveriges a-kassor](https://www.sverigesakassor.se) – vilken a-kassa som gäller för ditt yrke, och hur du begär arbetsgivarintyget digitalt.
-- [Inspektionen för arbetslöshetsförsäkringen](https://www.iaf.se) – tillsynsmyndigheten, om du tycker att din a-kassa hanterat ditt ärende fel.
-- [Arbetsförmedlingen](https://arbetsformedlingen.se) – vad som gäller för att vara inskriven, vilket är ett eget villkor vid sidan av intyget.
+Har du nyligen slutat ett jobb utan att begära något: gör det i dag. Kontrollera med din a-kassa vad den behöver från arbetsgivaren. Skriv ned kontaktuppgifter till en eventuell referens.
 
 ## Vanliga frågor
 
-### Måste jag ha ett arbetsgivarintyg för att söka nytt jobb?
-Nej. Det behövs för att söka ersättning från a-kassan, inte för en vanlig jobbansökan. Men det är smart att ha det liggande ändå – du vet aldrig när du behöver styrka en tidigare anställning.
+### Vad är ett arbetsgivarintyg?
+Ett underlag från din tidigare arbetsgivare som a-kassan använder för att pröva din rätt till ersättning. Det beskriver anställningen, inte dig som person.
 
-### Kan jag få arbetsgivarintyg om jag blev uppsagd eller sa upp mig själv?
-Ja. Skyldigheten att lämna intyget gäller oavsett anledning till att anställningen upphörde.
+### Måste jag ha ett arbetsgivarintyg för att söka nytt jobb?
+Nej, det behövs för a-kassan. Till en jobbansökan kan du behöva ett tjänstgöringsintyg eller en referens. Det är bra att ha båda liggande.
+
+### Kan jag få ett arbetsgivarintyg om jag sa upp mig själv?
+Ja, arbetsgivaren ska utfärda intyget oavsett varför anställningen tog slut. Att du sa upp dig kan däremot påverka din a-kassa, se [Säga upp sig själv](/knowledge-base/article/saga-upp-sig-och-a-kassa).
+
+### Vad är skillnaden mellan arbetsgivarintyg och tjänstgöringsintyg?
+Arbetsgivarintyget är a-kassans underlag. Tjänstgöringsintyget visar att du varit anställd och vad du gjort, och används till exempel mot en ny arbetsgivare eller banken.
 
 ### Vad gör jag om jag saknar tjänstgöringsbetyg från ett gammalt jobb?
-Kontakta arbetsgivaren och fråga, även om det gått en tid. Utan kollektivavtal finns ingen lagstadgad rätt, men många arbetsgivare skriver det ändå om du frågar konkret och artigt.
+Fråga arbetsgivaren, även om det gått en tid. Om du har rätt till betyg beror på kollektivavtal och anställningsavtal, så fråga också facket.

@@ -1,108 +1,109 @@
 {
-  "har-arbetsgivaren-betalat-in-skatten": {
-    "title": "Har arbetsgivaren betalat in din skatt? Så kollar du",
-    "summary": "Så ser du i Skatteverkets arbetsgivardeklaration om din lön och skatt är redovisad, rätt ordning att kontakta, och varför det spelar roll.",
-    "category_key": "employment-law",
-    "subcategory": "skatt",
-    "tags": ["skatt", "arbetsgivardeklaration", "Skatteverket", "lönebesked"],
-    "difficulty": "medium",
-    "energy_level": "low",
-    "related_article_slugs": ["skatt-pa-lon-forsta-jobbet", "lattsvenska-lon-och-skatt", "las-anstallningsavtal"],
-    "related_tools": ["/resources"],
-    "checklist": [
-      "Logga in på Mina sidor hos Skatteverket med e-legitimation",
-      "Jämför arbetsgivardeklarationen mot dina lönebesked, månad för månad",
-      "Vänta en kort tid om en enstaka månad saknas",
-      "Fråga arbetsgivaren skriftligt om uppgifter saknas återkommande",
-      "Kontakta Skatteverket om du inte får svar eller misstänker svart lön",
-      "Spara lönebesked och anställningsavtal som underlag"
-    ],
-    "actions": [
-      { "href": "/resources", "label": "Hitta stöd och vägar vidare", "type": "primary" },
-      { "href": "/knowledge-base/article/skatt-pa-lon-forsta-jobbet", "label": "Läs om ditt första lönebesked", "type": "secondary" }
-    ]
-  },
-  "lonegaranti-vid-konkurs": {
-    "title": "Lönegaranti – när arbetsgivaren går i konkurs",
-    "summary": "Vem som beslutar om statlig lönegaranti, vem som betalar ut den nu, och vad du själv behöver göra när arbetsgivaren gått i konkurs.",
-    "category_key": "employment-law",
-    "subcategory": "konkurs",
-    "tags": ["lönegaranti", "konkurs", "Kronofogden", "a-kassa"],
-    "difficulty": "medium",
-    "energy_level": "medium",
-    "related_article_slugs": ["skulder-och-kronofogden", "a-kassa-sa-fungerar-det", "skriva-in-dig-arbetsformedlingen", "bli-uppsagd-pa-grund-av-arbetsbrist"],
-    "related_tools": ["/job-search", "/cv"],
-    "checklist": [
-      "Ta reda på vem som är utsedd konkursförvaltare eller rekonstruktör",
-      "Lämna dina anställningsuppgifter till förvaltaren",
-      "Skriv in dig hos Arbetsförmedlingen samma dag",
-      "Kontakta facket och din a-kassa",
-      "Fråga förvaltaren eller Kronofogden vad tak och tidsgräns innebär för dig"
-    ],
-    "actions": [
-      { "href": "/job-search", "label": "Börja söka nästa jobb", "type": "primary" },
-      { "href": "/cv", "label": "Uppdatera ditt CV", "type": "secondary" }
-    ]
-  },
-  "lonen-uteblir-vad-gor-jag": {
-    "title": "Lönen kom inte – vad gör du nu",
-    "summary": "Stegen i rätt ordning när lönen uteblir: kontroll, skriftligt krav, facket, Kronofogden och i sista hand konkursansökan.",
-    "category_key": "employment-law",
-    "subcategory": "lon",
-    "tags": ["utebliven lön", "betalningsföreläggande", "Kronofogden", "facket"],
-    "difficulty": "medium",
-    "energy_level": "medium",
-    "related_article_slugs": ["lonegaranti-vid-konkurs", "skulder-och-kronofogden", "facket-ska-jag-ga-med", "a-kassa-sa-fungerar-det"],
-    "related_tools": ["/resources"],
-    "checklist": [
-      "Kontrollera om något enskilt gått fel innan du agerar",
-      "Skicka ett skriftligt krav till arbetsgivaren",
-      "Kontakta facket om du är medlem",
-      "Ansök om betalningsföreläggande hos Kronofogden vid behov",
-      "Kontakta a-kassan innan du säger upp dig själv",
-      "Spara bevis genom hela processen"
-    ],
-    "actions": [
-      { "href": "/resources", "label": "Hitta stöd och vägar vidare", "type": "primary" },
-      { "href": "/knowledge-base/article/skulder-och-kronofogden", "label": "Läs om skulder och Kronofogden", "type": "secondary" }
-    ]
-  },
-  "provjobba-utan-lon": {
-    "title": "Provjobba utan lön – vad som gäller",
-    "summary": "Skillnaden mellan ett kort arbetsprov och gratisarbete, vad som gäller för försäkring, och hur du frågar utan att tappa chansen.",
-    "category_key": "employment-law",
-    "subcategory": "provanstallning",
-    "tags": ["provjobba", "gratisarbete", "praktik", "provanställning"],
+  "valja-leverantor-rusta-och-matcha": {
+    "title": "Välja leverantör till Rusta och matcha – så jämför du",
+    "summary": "Var listan över leverantörer finns, vad du kan jämföra, vilka frågor du ska ställa och vad som händer om du inte väljer själv.",
+    "category_key": "job-search",
+    "subcategory": "arbetsformedlingen",
+    "tags": ["Rusta och matcha", "leverantör", "Arbetsförmedlingen", "betyg"],
     "difficulty": "easy",
     "energy_level": "low",
-    "related_article_slugs": ["provanstallning-guide", "praktik-som-vag-in", "arbetsprov-och-case", "kollektivavtal-vad-det-betyder"],
-    "related_tools": ["/interview-simulator", "/job-search"],
-    "checklist": [],
-    "actions": [
-      { "href": "/interview-simulator", "label": "Öva på att fråga om villkoren", "type": "primary" },
-      { "href": "/job-search", "label": "Sök jobb med tydliga villkor", "type": "secondary" }
-    ]
-  },
-  "varsel-vad-betyder-det": {
-    "title": "Varsel – vad det betyder för dig som anställd",
-    "summary": "Skillnaden mellan varsel och uppsägning, vad MBL-förhandlingen och turordningen avgör, och vad du kan göra medan du väntar.",
-    "category_key": "employment-law",
-    "subcategory": "varsel",
-    "tags": ["varsel", "uppsägning", "turordning", "MBL-förhandling"],
-    "difficulty": "medium",
-    "energy_level": "medium",
-    "related_article_slugs": ["bli-uppsagd-pa-grund-av-arbetsbrist", "omstallningsstod-nar-du-blivit-uppsagd", "a-kassa-sa-fungerar-det", "uppsagningstid-och-uppsagningsbesked"],
-    "related_tools": ["/cv", "/job-search"],
+    "related_article_slugs": ["rusta-och-matcha", "byta-leverantor-rusta-och-matcha", "ersattning-under-program", "aktivitetsrapport-guide"],
+    "related_tools": ["/calendar"],
     "checklist": [
-      "Ta reda på om förhandlingen med facket redan pågår",
-      "Kontrollera att ditt a-kassemedlemskap är i ordning",
-      "Se om en omställningsorganisation finns kopplad till arbetsplatsen",
-      "Uppdatera ditt CV i lugn och ro",
-      "Vänta med slutsatser tills turordningen är klar"
+      "Öppna Sök leverantör hos Arbetsförmedlingen",
+      "Filtrera på ort, språk och yrkesinriktning",
+      "Kontakta två eller tre leverantörer med samma frågor",
+      "Skriv upp KA-numret på den du väljer",
+      "Meddela ditt val innan tidsgränsen i ditt besked går ut"
     ],
     "actions": [
-      { "href": "/cv", "label": "Uppdatera ditt CV medan du väntar", "type": "primary" },
-      { "href": "/job-search", "label": "Börja se dig om i förväg", "type": "secondary" }
+      { "href": "/calendar", "label": "Lägg in tidsgränsen för ditt val", "type": "primary" },
+      { "href": "/job-search", "label": "Fortsätt söka jobb under tiden", "type": "secondary" }
+    ]
+  },
+  "byta-handlaggare-arbetsformedlingen": {
+    "title": "Kan man byta handläggare på Arbetsförmedlingen?",
+    "summary": "Så ber du om en annan handläggare, hur du lämnar synpunkter, skillnaden mot omprövning och vad du gör om kontakten inte fungerar.",
+    "category_key": "job-search",
+    "subcategory": "arbetsformedlingen",
+    "tags": ["handläggare", "Arbetsförmedlingen", "klagomål", "omprövning"],
+    "difficulty": "easy",
+    "energy_level": "low",
+    "related_article_slugs": ["din-planering-hos-arbetsformedlingen", "overklaga-ett-beslut", "varning-fran-arbetsformedlingen", "aktivitetsrapport-guide"],
+    "related_tools": [],
+    "checklist": [
+      "Skriv ner vad som inte fungerar, med datum",
+      "Be tydligt om en annan handläggare och ange varför",
+      "Skicka begäran skriftligt via Mina sidor",
+      "Lämna en synpunkt i formuläret om du inte får svar",
+      "Begär omprövning om det gäller ett beslut"
+    ],
+    "actions": [
+      { "href": "/diary", "label": "Skriv ner vad som hänt i din dagbok", "type": "primary" }
+    ]
+  },
+  "sjukersattning-vem-kan-fa": {
+    "title": "Sjukersättning – vem kan få den och hur ansöker du?",
+    "summary": "Vad sjukersättning (förr sjukpension) är, vad Försäkringskassan bedömer, vad läkarutlåtandet betyder och vad du gör vid avslag.",
+    "category_key": "employment-law",
+    "subcategory": "ersattning",
+    "tags": ["sjukersättning", "sjukpension", "Försäkringskassan", "läkarutlåtande"],
+    "difficulty": "medium",
+    "energy_level": "low",
+    "related_article_slugs": ["prova-jobb-med-sjukersattning-aktivitetsersattning", "sjuk-nar-du-ar-arbetslos", "tillbaka-till-jobb-efter-sjukskrivning", "overklaga-ett-beslut"],
+    "related_tools": ["/diary"],
+    "checklist": [
+      "Boka tid hos din läkare och ta upp sjukersättning",
+      "Skriv ner vad sjukdomen hindrar dig från i vardagen",
+      "Be läkaren skriva ett läkarutlåtande för sjukersättning",
+      "Ansök hos Försäkringskassan",
+      "Svara när Försäkringskassan ber om mer information"
+    ],
+    "actions": [
+      { "href": "/diary", "label": "Anteckna hur du mår och vad du klarar", "type": "primary" }
+    ]
+  },
+  "yrkesbevis": {
+    "title": "Yrkesbevis – vad det är och hur du får det",
+    "summary": "Vad ett yrkesbevis är, hur branscherna bedömer din yrkeskunskap och hur det skiljer sig från legitimation och utländsk utbildning.",
+    "category_key": "career-development",
+    "subcategory": "validering",
+    "tags": ["yrkesbevis", "branschvalidering", "validering", "legitimation"],
+    "difficulty": "medium",
+    "energy_level": "medium",
+    "related_article_slugs": ["validering-av-yrkeskunskaper", "lattsvenska-validering", "validera-utlandsk-utbildning", "kompetensinventering-guide"],
+    "related_tools": ["/cv"],
+    "checklist": [
+      "Skriv ner vilket yrke du arbetat i och hur länge",
+      "Kolla Branschvalideringskartan hos MYH",
+      "Fråga din arbetsförmedlare om validering inom yrket",
+      "Fråga vem som betalar innan du börjar",
+      "Lägg in beviset i ditt CV när du fått det"
+    ],
+    "actions": [
+      { "href": "/cv", "label": "Visa din yrkeskompetens i CV:t", "type": "primary" },
+      { "href": "/skills-gap-analysis", "label": "Se vilka kompetenser du saknar", "type": "secondary" }
+    ]
+  },
+  "aktivitetsstod-sa-fungerar-det": {
+    "title": "Aktivitetsstöd – vad det är och så ansöker du",
+    "summary": "Aktivitetsstöd betalas av Försäkringskassan när du deltar i Arbetsförmedlingens program. Så ansöker du och vad som gäller vid frånvaro.",
+    "category_key": "employment-law",
+    "subcategory": "ersattning",
+    "tags": ["aktivitetsstöd", "Försäkringskassan", "program", "ersättning"],
+    "difficulty": "medium",
+    "energy_level": "low",
+    "related_article_slugs": ["ersattning-under-program", "aktivitetsrapport-guide", "etableringsersattning", "varning-fran-arbetsformedlingen"],
+    "related_tools": ["/calendar"],
+    "checklist": [
+      "Läs vilken ersättning ditt programbeslut nämner",
+      "Lägg en påminnelse i kalendern för början av varje månad",
+      "Ansök hos Försäkringskassan när månaden är slut",
+      "Anmäl sjukdom till Arbetsförmedlingen första dagen",
+      "Be om godkännande i förväg för resor eller ledighet"
+    ],
+    "actions": [
+      { "href": "/calendar", "label": "Lägg in när du ska ansöka varje månad", "type": "primary" }
     ]
   }
 }

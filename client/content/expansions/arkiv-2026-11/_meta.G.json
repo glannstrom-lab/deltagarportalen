@@ -1,0 +1,50 @@
+{
+  "uppsagningstid-och-uppsagningsbesked": {
+    "title": "Uppsägningstid – hur lång är den och vad avgör den?",
+    "summary": "Hur lång uppsägningstid har du? Lagen, kollektivavtalet och ditt anställningsavtal avgör. Så tar du reda på din tid och vad beskedet ska innehålla."
+  },
+  "kollektivavtal-vad-det-betyder": {
+    "title": "Kollektivavtal – vad är det och vad betyder det för dig?",
+    "summary": "Vad ett kollektivavtal är, vad det reglerar som lagen inte gör och hur du tar reda på vilket avtal som gäller dig, även om du inte är med i facket."
+  },
+  "a-kassa-utan-facket": {
+    "title": "A-kassa utan fack – så går du med i bara a-kassan",
+    "summary": "Du behöver inte vara med i facket för att gå med i en a-kassa. Så väljer du kassa, ansöker, och vad som gäller om du inte är medlem alls."
+  },
+  "a-kassa-sa-fungerar-det": {
+    "title": "Hur fungerar a-kassan? Medlemskap, villkor och ansökan",
+    "summary": "Vad a-kassa är, hur du går med, när du har rätt till ersättning sedan reformen 2025-10-01 och vem som beslutar. Gå med innan du blir arbetslös."
+  },
+  "arbetsgivarintyg-och-betyg": {
+    "title": "Arbetsgivarintyg – vad är det och hur får du ett?",
+    "summary": "Arbetsgivarintyget är a-kassans underlag. Så begär du det, vad som skiljer det från tjänstgöringsintyg och betyg, och vad du gör om arbetsgivaren dröjer."
+  },
+  "omstallningsstod-nar-du-blivit-uppsagd": {
+    "title": "Omställningsstöd – vad är det och hur söker du?",
+    "summary": "Omställningsstöd ges av din omställningsorganisation när du sagts upp. Så tar du reda på vilken som gäller, och skillnaden mot omställningsstudiestöd."
+  },
+  "omstallningsstudiestod": {
+    "title": "Omställningsstudiestöd – vad är det och hur ansöker du?",
+    "summary": "Omställningsstudiestöd är ett studiestöd från CSN för dig som arbetat en längre tid. Så fungerar ansökan, yttrandet och skillnaden mot studiemedel."
+  },
+  "sjuk-nar-du-ar-arbetslos": {
+    "title": "Arbetslös och sjuk – vem sjukanmäler du dig till?",
+    "summary": "Arbetssökande sjukanmäler sig till Försäkringskassan, deltagare i program till Arbetsförmedlingen. Så gör du, och vad du gör med a-kassan."
+  },
+  "varsel-vad-betyder-det": {
+    "title": "Varsel – vad betyder det och vad händer sedan?",
+    "summary": "Varsel betyder förvarning om uppsägningar, inte att du blivit uppsagd. Så skiljer sig varsel från uppsägning, och vad du kan göra medan du väntar."
+  },
+  "facket-ska-jag-ga-med": {
+    "title": "Gå med i facket – vad ger det och vad kostar det?",
+    "summary": "Vad ett fackligt medlemskap ger, hur du går med, vad som avgör avgiften och skillnaden mot a-kassan. Så hittar du rätt förbund för ditt yrke."
+  },
+  "sjuklon-karens-och-vab": {
+    "title": "Sjuklön – vem betalar, och vad är karensavdrag?",
+    "summary": "Sjuklön betalas av arbetsgivaren, sedan tar Försäkringskassan över. Så fungerar karensavdrag, läkarintyg och vab, och vem du sjukanmäler dig till."
+  },
+  "lonegaranti-vid-konkurs": {
+    "title": "Lönegaranti vid konkurs – så fungerar den statliga garantin",
+    "summary": "Konkursförvaltaren beslutar och Skatteverket betalar ut lönegarantin sedan 2025-02-01. Vad du själv gör och vad som kan ersättas."
+  }
+}

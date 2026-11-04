@@ -1,54 +1,58 @@
-Vill du förstå hur a-kassan fungerar innan du behöver den? Bra tajming, för det är precis då det går att göra något åt det. Den här texten går igenom vad som skiljer a-kassa från facket, vad som prövas när du ansöker, och vad som gäller om du inte är medlem.
+A-kassan är en försäkring mot arbetslöshet. Du går med i en arbetslöshetskassa, betalar en medlemsavgift och kan få ersättning om du blir arbetslös och uppfyller villkoren. Det är a-kassan som beslutar, och sedan 2025-10-01 bygger ersättningen på din inkomst. Här står hur det fungerar, hur du går med och när du har rätt till ersättning.
 
-## A-kassa och fackförbund är inte samma sak
+## Vad är a-kassa?
 
-Lätt att blanda ihop, för de hänger ofta ihop i praktiken. Fackförbundet företräder dig gentemot arbetsgivaren: förhandlar löner, bevakar anställningsvillkor, ger juridiskt stöd i en tvist. A-kassan är en försäkring, en förening du betalar avgift till, som i sin tur kan betala ut ersättning till dig om du blir arbetslös och uppfyller villkoren. Du kan vara medlem i en a-kassa utan att vara med i facket, och tvärtom. De flesta a-kassor är yrkes- eller branschkopplade, men det finns även a-kassor öppna för alla oavsett yrke.
+A-kassa betyder arbetslöshetskassa. Det finns flera kassor, som är knutna till ett yrke eller en bransch, och en kassa som är öppen för alla yrken: [Alfa-kassan](https://www.alfakassan.se). Listan över kassor finns hos [Sveriges a-kassor](https://www.sverigesakassor.se). Tillsyn över kassorna sköter [Inspektionen för arbetslöshetsförsäkringen (IAF)](https://www.iaf.se).
 
-## Varför medlemskapet måste finnas innan du blir arbetslös
+A-kassan är inte samma sak som facket. Facket förhandlar och stöttar dig i frågor som rör jobbet, a-kassan betalar ersättning vid arbetslöshet. Du kan vara med i det ena utan det andra, se [A-kassa utan facket](/knowledge-base/article/a-kassa-utan-facket). Läser du hellre på lätt svenska finns [Vad är a-kassa?](/knowledge-base/article/lattsvenska-a-kassa).
 
-Det här är den vanligaste missuppfattningen, och den dyraste. A-kassan är en försäkring, och som de flesta försäkringar går det inte att teckna den efter att skadan redan skett. Du kan inte gå med i en a-kassa dagen du blir uppsagd och förvänta dig ersättning som om du varit medlem länge. Hur länge du varit medlem när du blir arbetslös avgör vilken nivå din ersättning hamnar på. Den som varit medlem länge får den högsta nivån, den som varit medlem en kortare tid en lägre, och den som gått med nyss eller inte är medlem alls hamnar på den lägsta. Det går inte att reparera i efterhand genom att stanna kvar i kassan.
+## Hur går jag med i a-kassan?
 
-Är du osäker på om du är medlem, eller sedan när, står det på din a-kassas medlemssidor när du loggar in med BankID.
+Du ansöker om medlemskap hos den kassa som täcker ditt yrke, genom ett formulär på kassans webbplats. Välj den kassa som passar det arbete du har eller senast hade. Passar ingen går du med i Alfa-kassan. Medlemsavgiften bestäms av varje kassa och betalas till kassan. Är du osäker på om du redan är medlem, och sedan när, står det på kassans inloggade sidor.
 
-## Två saker prövas: inkomstvillkoret och medlemstiden
+## När har man rätt till a-kassa?
 
-Sedan hösten 2025 gäller en ny lag om arbetslöshetsförsäkring. Den viktigaste ändringen är att rätten till ersättning bygger på vad du har tjänat, inte på hur många timmar du har arbetat. När du ansöker om ersättning prövar a-kassan två separata saker.
+Det är kassan som prövar rätten, och flera saker prövas var för sig.
 
-- **Inkomstvillkoret** – om du har haft tillräckligt höga arbetsinkomster under tiden före arbetslösheten. Det är det här villkoret som avgör om du får någon ersättning alls, och det prövas oavsett om du är medlem eller inte. A-kassan hämtar inkomstuppgifterna från Skatteverket, så det som räknas är den lön din arbetsgivare faktiskt har redovisat.
-- **Medlemstiden** – hur länge du varit medlem fram till att du blev arbetslös. Den avgör vilken av ersättningsnivåerna du hamnar på.
+- **Inkomstvillkoret.** Sedan reformen 2025-10-01 gäller ett inkomstvillkor i stället för det äldre arbetsvillkoret, som byggde på arbetade timmar. A-kassan hämtar inkomstuppgifterna från Skatteverket, så det som räknas är det din arbetsgivare redovisat.
+- **Att du är inskriven hos Arbetsförmedlingen** och står till arbetsmarknadens förfogande, alltså kan och vill ta ett arbete. [Arbetsförmedlingen](https://arbetsformedlingen.se) kontrollerar att du söker arbete aktivt. Se [Skriva in dig på Arbetsförmedlingen](/knowledge-base/article/skriva-in-dig-arbetsformedlingen).
+- **Medlemstiden.** Den påverkar vilken nivå ersättningen hamnar på, inte om du kan få något.
 
-Det äldre begreppet arbetsvillkor, som byggde på arbetade timmar, finns inte längre. Läser du en text som talar om arbetsvillkor eller grundbelopp beskriver den reglerna som gällde tidigare.
+Hur länge och med hur mycket ersättningen betalas ut följer av dina inkomster och din medlemstid. Beloppen och tidsgränserna ändras genom politiska beslut, så titta alltid på din kassas egen sida i stället för på något du läst för ett år sedan. Det gäller även dig som får ett beslut: reglerna beror på när beslutet fattades.
 
-Nivån och längden på det du kan få räknas sedan fram utifrån din tidigare inkomst under en period före arbetslösheten. Exakt hur den beräkningen görs, och vilka belopp och tidsgränser som gäller just nu, ändras då och då genom politiska beslut. Kolla alltid den aktuella regeln hos din a-kassa i stället för att lita på något du läst för ett år sedan.
+## Gå med i a-kassan innan du blir arbetslös
 
-## Vem beslutar, och vem du vänder dig till
+Tänk på a-kassan som en försäkring du tecknar i förväg. Hur länge du varit medlem när du blir arbetslös avgör ersättningsnivån, och den tiden går inte att köpa i efterhand. Det är den vanligaste missuppfattningen, och den dyraste.
 
-Det är din a-kassa som fattar beslutet om din ersättning, inte Arbetsförmedlingen. Arbetsförmedlingen intygar att du är inskriven och aktivt söker arbete, ett underlag a-kassan behöver, men själva prövningen och utbetalningen sköts av kassan du är medlem i (eller Alfa-kassan, se nedan). Är du missnöjd med ett beslut kan du begära omprövning hos din a-kassa. Hjälper inte det finns Inspektionen för arbetslöshetsförsäkringen (IAF) som tillsynsmyndighet.
+## Om jag inte är medlem
 
-## Om du inte är medlem: du kan få ersättning, men på den lägsta nivån
+Du är inte helt utan möjlighet. Uppfyller du inkomstvillkoret kan du ansöka om ersättning hos Alfa-kassan även utan medlemskap. Ersättningen hamnar då på den lägsta nivån, och hur den räknas ut står hos Alfa-kassan. Det är inkomstvillkoret som avgör om du kan få något, medlemskapet som avgör nivån.
 
-Är du inte medlem i någon a-kassa när du blir arbetslös står du inte helt utan skydd. Uppfyller du inkomstvillkoret kan du ansöka om ersättning hos Alfa-kassan även utan medlemskap. Ersättningen bygger också då på din tidigare inkomst, men på den lägsta av nivåerna. Någon fast grundersättning som är lika för alla finns inte längre. Det är alltså inkomstvillkoret, inte medlemskapet, som avgör om du får något alls. Medlemskapet och dess längd avgör hur stor del av din tidigare lön ersättningen motsvarar.
+## Hur ansöker jag om ersättning?
 
-## Så kontrollerar du vad som gäller dig
+Ersättning söks månadsvis hos din a-kassa, med en månadsansökan där du anger vilka dagar du varit arbetssökande. Något kassakort finns inte längre. Sjukdagar och dagar då du inte stått till arbetsmarknadens förfogande ska inte räknas med, se [Sjuk när du är arbetslös](/knowledge-base/article/sjuk-nar-du-ar-arbetslos). Behöver du ett arbetsgivarintyg från ditt förra jobb, läs [Arbetsgivarintyg – vad är det?](/knowledge-base/article/arbetsgivarintyg-och-betyg).
 
-Den här texten beskriver mekanismen, inte det aktuella beloppet, antal dagar eller procentsatsen, för de ändras, och en föråldrad siffra kan göra mer skada än ingen alls. För det som gäller just dig, just nu:
+## Vem beslutar om min ersättning?
 
-- Logga in hos din a-kassa och läs villkoren för din situation.
-- Vet du inte vilken a-kassa du tillhör, eller ska välja en: [Alfa-kassan](https://alfakassan.se) tar emot alla som inte hör hemma i en yrkeskassa.
-- Är du osäker på ett beslut, be din handläggare på a-kassan förklara vad som prövats, inte bara vad resultatet blev.
-- Skriv in dig hos [Arbetsförmedlingen](https://arbetsformedlingen.se) om du inte redan gjort det, för det är en del av underlaget din a-kassa behöver.
+Din a-kassa. Arbetsförmedlingen intygar och bevakar att du är inskriven och söker arbete, men beslutet och utbetalningen sköter kassan. Är du missnöjd med ett beslut kan du begära omprövning hos kassan. Att säga upp sig själv kan påverka ersättningen, vilket tas upp i [Säga upp sig själv – vad händer med a-kassan](/knowledge-base/article/saga-upp-sig-och-a-kassa).
 
-## Vad gör jag nu
+## Vad gör jag nu?
 
-Är du fortfarande anställd: kontrollera att du är medlem i en a-kassa redan i dag, inte den dagen du blir uppsagd. Är du redan arbetslös: skriv in dig hos Arbetsförmedlingen din första dag utan jobb och kontakta din a-kassa samma vecka för att få reda på exakt vad som krävs i din situation.
+Är du anställd: kontrollera att du är med i en a-kassa i dag. Är du arbetslös: skriv in dig hos Arbetsförmedlingen första dagen och kontakta din kassa den veckan. Fråga alltid kassan om dina egna villkor, och be handläggaren förklara vad som prövats, inte bara vad beslutet blev.
 
 ## Vanliga frågor
 
-### Måste jag vara med i facket för att få a-kassa?
-Nej. A-kassa och fackligt medlemskap är två separata medlemskap. Du kan vara med i en a-kassa utan att vara fackligt ansluten.
+### Hur fungerar a-kassa?
+Du är medlem i en arbetslöshetskassa och betalar avgift. Blir du arbetslös prövar kassan din rätt till ersättning utifrån bland annat inkomstvillkoret, och medlemstiden påverkar nivån.
+
+### Vad är skillnaden mellan a-kassa och facket?
+A-kassan är en arbetslöshetsförsäkring. Facket förhandlar villkor och stöttar dig i frågor som rör jobbet. Du går med i dem var för sig.
 
 ### Kan jag byta a-kassa om jag byter yrke?
-Ja, det går att gå med i en annan a-kassa. Fråga den nya kassan hur en eventuell tidigare medlemstid räknas med, reglerna för det skiljer sig åt beroende på situation.
+Ja, men fråga den nya kassan hur din tidigare medlemstid räknas.
 
 ### Vad händer om jag blir arbetslös samma dag jag går med?
-Då har du inte hunnit bygga upp någon medlemstid, och hamnar på den lägsta ersättningsnivån. Uppfyller du inkomstvillkoret har du ändå rätt till ersättning på den nivån.
+Du har då ingen medlemstid. Du kan ändå ansöka om ersättning om du uppfyller inkomstvillkoret, men kassan avgör vilken nivå som gäller.
+
+### Måste jag vara med i facket för att få a-kassa?
+Nej. De är två skilda medlemskap.

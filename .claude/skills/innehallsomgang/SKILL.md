@@ -5,7 +5,7 @@ description: Kör en komplett innehållsomgång i spår K — mät luckorna i ar
 
 # Innehållsomgång — spår K
 
-Proceduren är körd sju gånger (omgång 3–6, 8, 9, 10). Följ den. Uppfinn inte en ny.
+Proceduren är körd åtta gånger (omgång 3–6, 8, 9, 10, 11). Följ den. Uppfinn inte en ny.
 
 **Push är deployen.** Den här skillen stannar före `git push` och lämnar
 beslutet till Mikael. Artiklarna skrivs däremot till prod-databasen som en del
@@ -169,6 +169,30 @@ gradienter — sänk dem när du betalar av, höj dem aldrig.
 Hela släppproceduren, inklusive verifiering av deployen, ligger i skillen
 **`slapp`**. Den här skillen stannar före push.
 
+## Slipa befintliga sidor (omgång 11)
+
+Mätningen 2026-11-04 visade att klicken uteblir på plats 7–10, så en omgång kan lika gärna
+vara slipning. Hämta fråga × sida (`docs/gsc/jobin-fragor-sida-<datum>.json`, paginera) och
+ge varje agent sidans frågor, titel och förtext.
+
+- **`apply-expansions` läser VARJE `.md` i `content/expansions/`.** Arkivera förra omgångens
+  filer och `_metadata.json` först, annars skrivs gamla texter över nyare rättelser i prod.
+  Underlagsfiler och förtexter hör hemma i `arkiv-<år>-<mån>/`, aldrig i katalogens topp.
+- Agenterna skriver `<slug>.md` + `_meta.<X>.json`. Slå ihop till `_metadata.json` centralt.
+- `content:granska` kan inte köras på slipade sidor (den fäller på slugkrock). Mät ord, titel,
+  summary, länkar, siffror och föråldrade begrepp med ett eget skript.
+- Agenterna ska lista **SAKÄNDRINGAR**: `apply-expansions` rör bara svenskan och `content_en`
+  blir efter. Mät `content_en is not null` och för in resten i roadmapen.
+- En kortad artikel kan ändra `reading_time`, och `src/data/kurser.ts` har en kopia.
+  `kurser.test.ts` fäller. Synka mot snapshoten.
+
+## Skrivspärren i Supabase-CLI:n (sedan CLI 3.0)
+
+`supabase db query` vägrar i agentläge utan `--read-only` (läsning) eller `--yes` (skrivning).
+Lässkripten har `--read-only`. `content:new` och `apply-expansions` skickar `--yes` vidare
+**bara när flaggan anges**. Fråga Mikael först, och använd inte MCP-verktyget som omväg.
+`--read-only` saknas fortfarande i andra skript, som `schema:refresh` och `grants:refresh`.
+
 ## Fällor som kostat tid
 
 - **En ny prerenderad sidtyp rör fyra ställen:** `prerender-guides.cjs`,
@@ -182,6 +206,10 @@ Hela släppproceduren, inklusive verifiering av deployen, ligger i skillen
   död. `<a href>` gäller.
 - **En ny grind hör hemma i skillen `grind`** — den beskriver hur man gör en
   vakt som faktiskt kan falla, och mutationstestningen som avgör det.
-- **K4:s regel:** ingen omgång utan mätning från den föregående. K8 (Search
-  Console) har stått öppen sedan 5 augusti och regeln har frångåtts fyra gånger.
-  Säg det varje gång, låt Mikael välja.
+- **K4:s regel:** ingen omgång utan mätning från den föregående. Kör `node docs/gsc/hamta.mjs docs/gsc`
+  och välj ämnen ur datan. Search Console-åtkomsten fungerar, så det finns ingen ursäkt.
+- **Ge inga organisationsexempel i uppdraget som du inte själv kontrollerat.** Omgång 11: jag
+  skrev `tsn.se` som exempel, och agenten fyllde på ur minnet att TSN är för arbetare (rätt:
+  TSL). Grinden såg det inte, men handläsningen gjorde det.
+- **Lägg aldrig text med backtick i `node -e` eller en bash-sträng.** Skalet kör dem som
+  kommandon och sluggarna faller tyst bort. Skriv texten till en fil.

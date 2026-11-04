@@ -1,0 +1,26 @@
+{
+  "_kommentar": "Slugs som apply-new-articles.cjs lagt in i prod. Radera dem igen med `node scripts/apply-new-articles.cjs --rollback --skriv`.",
+  "skrivet": "2026-09-21",
+  "slugs": [
+    "a-kassa-utan-facket",
+    "byta-leverantor-rusta-och-matcha",
+    "din-planering-hos-arbetsformedlingen",
+    "etableringsersattning",
+    "fragor-arbetsgivaren-inte-far-stalla",
+    "har-arbetsgivaren-betalat-in-skatten",
+    "kladsel-pa-intervju",
+    "lampligt-arbete-maste-jag-ta-jobbet",
+    "lattsvenska-arbetsgivarintyg",
+    "lattsvenska-bemanningsforetag",
+    "lattsvenska-heltid-och-deltid",
+    "lattsvenska-tillsvidareanstallning",
+    "lattsvenska-uppsagningstid",
+    "lonegaranti-vid-konkurs",
+    "lonen-uteblir-vad-gor-jag",
+    "provjobba-utan-lon",
+    "resa-bort-som-arbetslos",
+    "saga-upp-sig-och-a-kassa",
+    "sjuk-nar-du-ar-arbetslos",
+    "varsel-vad-betyder-det"
+  ]
+}

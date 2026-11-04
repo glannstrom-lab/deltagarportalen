@@ -1,78 +1,92 @@
 {
-  "lattsvenska-tillsvidareanstallning": {
-    "title": "Vad betyder tillsvidareanställning?",
-    "summary": "Tillsvidareanställning är fast jobb utan slutdatum. Se skillnaden mot vikariat och provanställning, och vad som krävs för uppsägning.",
+  "lattsvenska-kompetens": {
+    "title": "Vad betyder kompetens?",
+    "summary": "Kompetens är det du kan: kunskaper, färdigheter och sätt att vara. Se vardagsexempel och hur du skriver om dina kompetenser i ett CV.",
     "category_key": "easy-swedish",
     "subcategory": "arbetsformedlingen",
-    "tags": ["tillsvidareanställning", "anställningsformer", "LAS"],
+    "tags": ["kompetens", "CV", "färdigheter"],
     "difficulty": "easy-swedish",
     "energy_level": "low",
-    "related_article_slugs": ["anstallningsformer-guide", "lattsvenska-vikariat", "lattsvenska-provanstallning"],
+    "related_article_slugs": ["kompetensutvardering", "lattsvenska-cv", "lattsvenska-validering"],
+    "related_tools": ["/skills-gap-analysis"],
+    "checklist": [],
+    "actions": [
+      { "href": "/cv", "label": "Skriv in dina kompetenser i ett CV", "type": "primary" }
+    ]
+  },
+  "lattsvenska-omstallningsstod": {
+    "title": "Vad är omställningsstöd?",
+    "summary": "Omställningsstöd är hjälp när du blivit uppsagd. Det ges av en trygghetsorganisation, inte en myndighet. Se vem du frågar och hur du söker.",
+    "category_key": "easy-swedish",
+    "subcategory": "arbetsformedlingen",
+    "tags": ["omställningsstöd", "uppsagd", "TRR", "TSN"],
+    "difficulty": "easy-swedish",
+    "energy_level": "low",
+    "related_article_slugs": ["omstallningsstod-nar-du-blivit-uppsagd", "omstallningsstudiestod", "lattsvenska-bli-uppsagd"],
     "related_tools": ["/job-search"],
     "checklist": [],
     "actions": [
-      { "href": "/job-search", "label": "Hitta lediga jobb", "type": "primary" },
-      { "href": "/knowledge-base/article/anstallningsformer-guide", "label": "Läs mer om anställningsformer", "type": "secondary" }
+      { "href": "/job-search", "label": "Hitta lediga jobb", "type": "primary" }
     ]
   },
-  "lattsvenska-arbetsgivarintyg": {
-    "title": "Vad är ett arbetsgivarintyg?",
-    "summary": "Ett arbetsgivarintyg visar hur mycket du har arbetat. A-kassan behöver det, och det ska alltid vara gratis att få.",
+  "lattsvenska-lonebidrag": {
+    "title": "Vad är lönebidrag?",
+    "summary": "Lönebidrag är pengar till arbetsgivaren som anställer dig. Arbetsförmedlingen beslutar. Se vem som får pengarna och hur det går till.",
     "category_key": "easy-swedish",
     "subcategory": "arbetsformedlingen",
-    "tags": ["arbetsgivarintyg", "a-kassa", "ersättning"],
+    "tags": ["lönebidrag", "funktionsnedsättning", "Arbetsförmedlingen"],
     "difficulty": "easy-swedish",
     "energy_level": "low",
-    "related_article_slugs": ["arbetsgivarintyg-och-betyg", "lattsvenska-a-kassa"],
-    "related_tools": ["/externa-resurser"],
+    "related_article_slugs": ["lonebidrag-sa-fungerar-det", "trygghetsanstallning", "lattsvenska-arbetsformedlingen"],
+    "related_tools": ["/job-search"],
+    "checklist": [],
+    "actions": [
+      { "href": "/job-search", "label": "Hitta lediga jobb", "type": "primary" }
+    ]
+  },
+  "lattsvenska-aktivitetsstod": {
+    "title": "Vad är aktivitetsstöd?",
+    "summary": "Aktivitetsstöd är pengar när du deltar i ett program. Arbetsförmedlingen anvisar dig och Försäkringskassan betalar ut. Se vem du frågar.",
+    "category_key": "easy-swedish",
+    "subcategory": "arbetsformedlingen",
+    "tags": ["aktivitetsstöd", "Försäkringskassan", "program"],
+    "difficulty": "easy-swedish",
+    "energy_level": "low",
+    "related_article_slugs": ["ersattning-under-program", "lattsvenska-arbetsformedlingen", "lattsvenska-a-kassa"],
+    "related_tools": [],
     "checklist": [],
     "actions": [
       { "href": "/externa-resurser", "label": "Hitta fler stöd och kontakter", "type": "primary" }
     ]
   },
-  "lattsvenska-uppsagningstid": {
-    "title": "Vad är uppsägningstid?",
-    "summary": "Uppsägningstid är tiden du jobbar och får lön mellan uppsägningen och sista dagen. Se vad som styr längden och vem du ska fråga.",
+  "lattsvenska-rusta-och-matcha": {
+    "title": "Vad är Rusta och matcha?",
+    "summary": "Rusta och matcha är en tjänst från Arbetsförmedlingen där en leverantör hjälper dig mot jobb eller studier. Se vad som ingår och hur det funkar.",
     "category_key": "easy-swedish",
     "subcategory": "arbetsformedlingen",
-    "tags": ["uppsägningstid", "anställningsavtal", "a-kassa"],
+    "tags": ["Rusta och matcha", "Arbetsförmedlingen", "leverantör"],
     "difficulty": "easy-swedish",
     "energy_level": "low",
-    "related_article_slugs": ["uppsagningstid-och-uppsagningsbesked", "lattsvenska-bli-uppsagd"],
-    "related_tools": ["/applications"],
+    "related_article_slugs": ["rusta-och-matcha", "byta-leverantor-rusta-och-matcha", "lattsvenska-arbetsformedlingen"],
+    "related_tools": [],
     "checklist": [],
     "actions": [
-      { "href": "/applications", "label": "Håll koll på dina ansökningar", "type": "primary" }
+      { "href": "/externa-resurser", "label": "Hitta fler stöd och kontakter", "type": "primary" }
     ]
   },
-  "lattsvenska-heltid-och-deltid": {
-    "title": "Vad betyder heltid och deltid?",
-    "summary": "Heltid är hela arbetstiden, deltid är mindre. Se hur jobbannonser skriver procent, och vad du ska berätta för a-kassan.",
+  "lattsvenska-sjukersattning": {
+    "title": "Vad är sjukersättning?",
+    "summary": "Sjukersättning är pengar när sjukdom eller skada gör att du inte kan jobba under lång tid. Försäkringskassan beslutar. Se hur du ansöker.",
     "category_key": "easy-swedish",
     "subcategory": "arbetsformedlingen",
-    "tags": ["heltid", "deltid", "jobbannons"],
+    "tags": ["sjukersättning", "Försäkringskassan", "sjukpension"],
     "difficulty": "easy-swedish",
     "energy_level": "low",
-    "related_article_slugs": ["lattsvenska-lasa-jobbannons", "lattsvenska-timanstallning"],
-    "related_tools": ["/job-search"],
+    "related_article_slugs": ["prova-jobb-med-sjukersattning-aktivitetsersattning", "lattsvenska-nar-du-blir-sjuk", "lattsvenska-overklaga"],
+    "related_tools": [],
     "checklist": [],
     "actions": [
-      { "href": "/job-search", "label": "Hitta lediga jobb", "type": "primary" }
-    ]
-  },
-  "lattsvenska-bemanningsforetag": {
-    "title": "Vad är ett bemanningsföretag?",
-    "summary": "Ett bemanningsföretag anställer dig och hyr ut dig till andra företag. Se vem som betalar och vad du bör fråga om.",
-    "category_key": "easy-swedish",
-    "subcategory": "arbetsformedlingen",
-    "tags": ["bemanningsföretag", "kollektivavtal", "anställning"],
-    "difficulty": "easy-swedish",
-    "energy_level": "low",
-    "related_article_slugs": ["bemanningsforetag-guide", "lattsvenska-kollektivavtal"],
-    "related_tools": ["/job-search"],
-    "checklist": [],
-    "actions": [
-      { "href": "/job-search", "label": "Hitta lediga jobb", "type": "primary" }
+      { "href": "/externa-resurser", "label": "Hitta fler stöd och kontakter", "type": "primary" }
     ]
   }
 }

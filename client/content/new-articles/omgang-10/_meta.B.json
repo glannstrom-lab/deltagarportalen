@@ -1,0 +1,108 @@
+{
+  "har-arbetsgivaren-betalat-in-skatten": {
+    "title": "Har arbetsgivaren betalat in din skatt? Så kollar du",
+    "summary": "Så ser du i Skatteverkets arbetsgivardeklaration om din lön och skatt är redovisad, rätt ordning att kontakta, och varför det spelar roll.",
+    "category_key": "employment-law",
+    "subcategory": "skatt",
+    "tags": ["skatt", "arbetsgivardeklaration", "Skatteverket", "lönebesked"],
+    "difficulty": "medium",
+    "energy_level": "low",
+    "related_article_slugs": ["skatt-pa-lon-forsta-jobbet", "lattsvenska-lon-och-skatt", "las-anstallningsavtal"],
+    "related_tools": ["/resources"],
+    "checklist": [
+      "Logga in på Mina sidor hos Skatteverket med e-legitimation",
+      "Jämför arbetsgivardeklarationen mot dina lönebesked, månad för månad",
+      "Vänta en kort tid om en enstaka månad saknas",
+      "Fråga arbetsgivaren skriftligt om uppgifter saknas återkommande",
+      "Kontakta Skatteverket om du inte får svar eller misstänker svart lön",
+      "Spara lönebesked och anställningsavtal som underlag"
+    ],
+    "actions": [
+      { "href": "/resources", "label": "Hitta stöd och vägar vidare", "type": "primary" },
+      { "href": "/knowledge-base/article/skatt-pa-lon-forsta-jobbet", "label": "Läs om ditt första lönebesked", "type": "secondary" }
+    ]
+  },
+  "lonegaranti-vid-konkurs": {
+    "title": "Lönegaranti – när arbetsgivaren går i konkurs",
+    "summary": "Vem som beslutar om statlig lönegaranti, vem som betalar ut den nu, och vad du själv behöver göra när arbetsgivaren gått i konkurs.",
+    "category_key": "employment-law",
+    "subcategory": "konkurs",
+    "tags": ["lönegaranti", "konkurs", "Kronofogden", "a-kassa"],
+    "difficulty": "medium",
+    "energy_level": "medium",
+    "related_article_slugs": ["skulder-och-kronofogden", "a-kassa-sa-fungerar-det", "skriva-in-dig-arbetsformedlingen", "bli-uppsagd-pa-grund-av-arbetsbrist"],
+    "related_tools": ["/job-search", "/cv"],
+    "checklist": [
+      "Ta reda på vem som är utsedd konkursförvaltare eller rekonstruktör",
+      "Lämna dina anställningsuppgifter till förvaltaren",
+      "Skriv in dig hos Arbetsförmedlingen samma dag",
+      "Kontakta facket och din a-kassa",
+      "Fråga förvaltaren eller Kronofogden vad tak och tidsgräns innebär för dig"
+    ],
+    "actions": [
+      { "href": "/job-search", "label": "Börja söka nästa jobb", "type": "primary" },
+      { "href": "/cv", "label": "Uppdatera ditt CV", "type": "secondary" }
+    ]
+  },
+  "lonen-uteblir-vad-gor-jag": {
+    "title": "Lönen kom inte – vad gör du nu",
+    "summary": "Stegen i rätt ordning när lönen uteblir: kontroll, skriftligt krav, facket, Kronofogden och i sista hand konkursansökan.",
+    "category_key": "employment-law",
+    "subcategory": "lon",
+    "tags": ["utebliven lön", "betalningsföreläggande", "Kronofogden", "facket"],
+    "difficulty": "medium",
+    "energy_level": "medium",
+    "related_article_slugs": ["lonegaranti-vid-konkurs", "skulder-och-kronofogden", "facket-ska-jag-ga-med", "a-kassa-sa-fungerar-det"],
+    "related_tools": ["/resources"],
+    "checklist": [
+      "Kontrollera om något enskilt gått fel innan du agerar",
+      "Skicka ett skriftligt krav till arbetsgivaren",
+      "Kontakta facket om du är medlem",
+      "Ansök om betalningsföreläggande hos Kronofogden vid behov",
+      "Kontakta a-kassan innan du säger upp dig själv",
+      "Spara bevis genom hela processen"
+    ],
+    "actions": [
+      { "href": "/resources", "label": "Hitta stöd och vägar vidare", "type": "primary" },
+      { "href": "/knowledge-base/article/skulder-och-kronofogden", "label": "Läs om skulder och Kronofogden", "type": "secondary" }
+    ]
+  },
+  "provjobba-utan-lon": {
+    "title": "Provjobba utan lön – vad som gäller",
+    "summary": "Skillnaden mellan ett kort arbetsprov och gratisarbete, vad som gäller för försäkring, och hur du frågar utan att tappa chansen.",
+    "category_key": "employment-law",
+    "subcategory": "provanstallning",
+    "tags": ["provjobba", "gratisarbete", "praktik", "provanställning"],
+    "difficulty": "easy",
+    "energy_level": "low",
+    "related_article_slugs": ["provanstallning-guide", "praktik-som-vag-in", "arbetsprov-och-case", "kollektivavtal-vad-det-betyder"],
+    "related_tools": ["/interview-simulator", "/job-search"],
+    "checklist": [],
+    "actions": [
+      { "href": "/interview-simulator", "label": "Öva på att fråga om villkoren", "type": "primary" },
+      { "href": "/job-search", "label": "Sök jobb med tydliga villkor", "type": "secondary" }
+    ]
+  },
+  "varsel-vad-betyder-det": {
+    "title": "Varsel – vad det betyder för dig som anställd",
+    "summary": "Skillnaden mellan varsel och uppsägning, vad MBL-förhandlingen och turordningen avgör, och vad du kan göra medan du väntar.",
+    "category_key": "employment-law",
+    "subcategory": "varsel",
+    "tags": ["varsel", "uppsägning", "turordning", "MBL-förhandling"],
+    "difficulty": "medium",
+    "energy_level": "medium",
+    "related_article_slugs": ["bli-uppsagd-pa-grund-av-arbetsbrist", "omstallningsstod-nar-du-blivit-uppsagd", "a-kassa-sa-fungerar-det", "uppsagningstid-och-uppsagningsbesked"],
+    "related_tools": ["/cv", "/job-search"],
+    "checklist": [
+      "Ta reda på om förhandlingen med facket redan pågår",
+      "Kontrollera att ditt a-kassemedlemskap är i ordning",
+      "Se om en omställningsorganisation finns kopplad till arbetsplatsen",
+      "Uppdatera ditt CV i lugn och ro",
+      "Vänta med slutsatser tills turordningen är klar"
+    ],
+    "actions": [
+      { "href": "/cv", "label": "Uppdatera ditt CV medan du väntar", "type": "primary" },
+      { "href": "/job-search", "label": "Börja se dig om i förväg", "type": "secondary" }
+    ]
+  }
+}
