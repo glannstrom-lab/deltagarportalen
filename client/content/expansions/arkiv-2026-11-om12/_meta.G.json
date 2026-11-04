@@ -1,0 +1,46 @@
+{
+  "trygghetsanstallning": {
+    "title": "Trygghetsanställning (lönebidrag för trygghet)",
+    "summary": "Vad trygghetsanställning (lönebidrag för trygghet i anställning) är, vem som beslutar och hur den skiljer sig från utvecklingsanställning."
+  },
+  "utvecklingsanstallning": {
+    "title": "Utvecklingsanställning (lönebidrag för utveckling)",
+    "summary": "Vad utvecklingsanställning (lönebidrag för utveckling i anställning) är, vem som beslutar och vad som händer när beslutet tar slut."
+  },
+  "personligt-bitrade": {
+    "title": "Personligt biträde på jobbet – bidrag och vem som ansöker",
+    "summary": "Vad ett personligt biträde gör, vem som kan få bidraget och varför det är arbetsgivaren som kontaktar Arbetsförmedlingen, inte du."
+  },
+  "arbetshjalpmedel-pa-jobbet": {
+    "title": "Arbetshjälpmedel – bidrag på jobbet, vem betalar och äger",
+    "summary": "Arbetsförmedlingen eller Försäkringskassan, ansök före köp, och vem som äger hjälpmedlet och vad som händer om du byter jobb."
+  },
+  "anpassningar-arbetsplatsen": {
+    "title": "Arbetsanpassning – exempel på anpassningar på jobbet",
+    "summary": "Exempel på arbetsanpassning vid funktionsnedsättning, vad lagen säger och hur du tar upp det med din chef."
+  },
+  "forstarkt-arbetstraning": {
+    "title": "Förstärkt arbetsträning – skillnaden mot arbetsträning",
+    "summary": "Så fungerar arbetsträning, vad förstärkt arbetsträning innebär, vem som bedömer vilken du får och vad som gäller för ersättningen."
+  },
+  "saga-upp-sig-och-a-kassa": {
+    "title": "Egen uppsägning och a-kassa – det här gäller",
+    "summary": "Säger du upp dig utan giltig anledning kan a-kassan stänga av dig. Vad som är giltig anledning och varför du ska fråga a-kassan innan."
+  },
+  "provanstallning-guide": {
+    "title": "Provanställning – regler, semester och hur den avslutas",
+    "summary": "Vad som gäller under provanställning: lön, semester, hur den avslutas, om den kan förlängas och när den övergår till fast anställning."
+  },
+  "anstallningsformer-guide": {
+    "title": "Anställningsformer – fast, visstid och timanställning",
+    "summary": "Tillsvidare, särskild visstid, vikariat, provanställning och timanställning: vad som skiljer dem och vad du ska fråga innan du skriver under."
+  },
+  "bakgrundskontroll-och-belastningsregistret": {
+    "title": "Bakgrundskontroll – vad får arbetsgivaren kontrollera?",
+    "summary": "Vad en bakgrundskontroll kan innehålla, hur du beställer registerutdrag hos Polisen och vad arbetsgivaren får göra med utdraget."
+  },
+  "las-anstallningsavtal": {
+    "title": "Anställningsavtal – läs det och få hjälp att granska",
+    "summary": "Vad du ska kontrollera i ett anställningsavtal, vilka klausuler som är viktiga och var du kan få hjälp att granska avtalet."
+  }
+}

@@ -5,7 +5,7 @@ description: Kör en komplett innehållsomgång i spår K — mät luckorna i ar
 
 # Innehållsomgång — spår K
 
-Proceduren är körd åtta gånger (omgång 3–6, 8, 9, 10, 11). Följ den. Uppfinn inte en ny.
+Proceduren är körd nio gånger (omgång 3–6, 8, 9, 10, 11, 12). Följ den. Uppfinn inte en ny.
 
 **Push är deployen.** Den här skillen stannar före `git push` och lämnar
 beslutet till Mikael. Artiklarna skrivs däremot till prod-databasen som en del
@@ -185,6 +185,13 @@ ge varje agent sidans frågor, titel och förtext.
   blir efter. Mät `content_en is not null` och för in resten i roadmapen.
 - En kortad artikel kan ändra `reading_time`, och `src/data/kurser.ts` har en kopia.
   `kurser.test.ts` fäller. Synka mot snapshoten.
+
+## Engelskan och den oberoende faktagranskningen (omgång 12)
+
+- **Engelskan skrivs med `scripts/apply-oversattningar.cjs <katalog>`.** Katalogen har `kalla/<slug>.md` och `en/<slug>.md`, se `content/oversattning-2026-11/`. Skriptet fäller på ändrade länkmål, nya siffror och skadade krisnummer, och sparar prods text först. Översätt EFTER faktagranskningen, annars översätts felen.
+- **Skicka alltid oberoende faktagranskare på regelsidorna, skilda från författarna.** Be om BELAGT FEL och MISSTANKE, med citat och källa. Omgång 12: två granskare gav ett tiotal rättelser efter att författaragenterna själva sagt att de kontrollerat sidorna. Även de missade mindre än handläsningen av LAS: läs lagtexten själv på det som är viktigast.
+- **En portalrutt i brödtexten är tillåten.** `[x](/cv)` skrivs om till `/verktyg/cv/` vid prerendering. Bygget fäller om en rutt ur `tools.json` blir kvar.
+- **Lägg inte skript med snedstreck i regex i en heredoc via Bash-verktyget.** `\/` blev `/` och två ändringar gick förlorade tyst. Använd Edit.
 
 ## Skrivspärren i Supabase-CLI:n (sedan CLI 3.0)
 

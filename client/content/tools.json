@@ -4,18 +4,19 @@
     {
       "slug": "cv",
       "route": "/cv",
-      "h1": "Gör ett CV som håller — gratis",
-      "title": "Gratis CV-mall och CV-byggare på svenska",
-      "description": "Bygg ditt CV steg för steg, välj bland 12 mallar och ladda ner som PDF. Gratis, på svenska, utan att du behöver kunna layout.",
-      "lead": "Du fyller i dina uppgifter en gång. Sedan väljer du hur det ska se ut och laddar ner en färdig PDF. Ingen layout att pilla med, inget Word som hoppar.",
+      "h1": "Skapa ett CV gratis: välj mall och ladda ner",
+      "title": "Gratis CV-mall: skapa ditt CV online på svenska",
+      "description": "Skapa ditt CV online med 12 mallar. Fyll i en gång, byt mall när du vill och ladda ner som PDF eller Word. Gratis, på svenska, med konto.",
+      "lead": "Du fyller i dina uppgifter en gång, väljer bland 12 CV-mallar och laddar ner en färdig PDF. Ingen layout att pilla med, inget Word som hoppar. Du kan byta mall när som helst utan att skriva om något.",
       "steg": [
         ["Fyll i det du har", "Kontaktuppgifter, jobb, utbildning och det du kan. Du kan spara och fortsätta senare — allt ligger kvar."],
         ["Välj en mall", "12 mallar att välja mellan, från strikt och traditionell till mer personlig. Du kan byta när som helst utan att skriva om något."],
-        ["Ladda ner som PDF", "Färdig fil att bifoga i ansökan. Svenska tecken och avstavning blir rätt, och flersidiga CV:n bryts där de ska."]
+        ["Ladda ner som PDF eller Word", "PDF är den färdiga filen att bifoga i ansökan, med mallens utseende. Svenska tecken och avstavning blir rätt, och flersidiga CV:n bryts där de ska. Word-filen har en fast layout med sidokolumn, oavsett vilken mall du valt."]
       ],
       "punkter": [
         "12 mallar, byt fritt mellan dem",
         "PDF-export som ser likadan ut hos mottagaren",
+        "Word-fil (.docx) i en fast layout, om mottagaren vill ha det",
         "Hjälp att formulera dina arbetsuppgifter när orden inte kommer",
         "Matchning mot en jobbannons — se vad som saknas innan du skickar"
       ],
@@ -24,33 +25,37 @@
         ["Kostar det något?", "Nej. Alla verktyg i Jobin är kostnadsfria. Du skapar ett konto med e-post, och sedan är allt öppet."],
         ["Måste jag kunna dator?", "Du behöver kunna fylla i ett formulär. Resten sköter portalen — layout, typsnitt och sidbrytningar sätts automatiskt."],
         ["Vad händer med mina uppgifter?", "De sparas på ditt konto så att du kan fortsätta senare. Du kan när som helst ladda ner allt du lagt in eller radera ditt konto."],
-        ["Kan jag ha flera olika CV:n?", "Ja. Många har ett grund-CV och anpassar det per ansökan. Du kan spara flera versioner."]
+        ["Kan jag ha flera olika CV:n?", "Ja. Många har ett grund-CV och anpassar det per ansökan. Du kan spara flera versioner."],
+        ["Finns det en enkel CV-mall?", "Ja. Minimal är en luftig mall med stor text, och Centrerad är en klassisk layout med centrerat namn. Alla 12 mallar går att byta mellan utan att du skriver om något, så du kan prova flera."],
+        ["Kan jag ladda ner mitt CV som Word-fil?", "Ja. Förutom PDF finns en Word-fil (.docx). Den har en fast layout med sidokolumn och följer inte den mall du valt, så välj PDF om du vill ha mallens utseende."]
       ],
       "guider": ["cv-grunder", "cv-utan-erfarenhet", "cv-mallar-exempel", "checklista-innan-ansokan"]
     },
     {
       "slug": "personligt-brev",
       "route": "/cover-letter",
-      "h1": "Personligt brev — få igång skrivandet",
-      "title": "Skriv personligt brev — gratis hjälp på svenska",
-      "description": "Fastnar du på första meningen? Få ett utkast anpassat efter annonsen, som du sedan gör till ditt eget. Gratis och på svenska.",
-      "lead": "Det svåraste med ett personligt brev är att komma igång. Här får du ett utkast utifrån annonsen och din bakgrund — sedan skriver du om det så att det låter som du.",
+      "h1": "Hjälp med personligt brev: få igång skrivandet",
+      "title": "Personligt brev: få hjälp att skriva, gratis",
+      "description": "Få hjälp med personligt brev: ett utkast anpassat efter jobbet som du gör till ditt eget, och sedan en PDF att ladda ner. Gratis, på svenska, med konto.",
+      "lead": "Det svåraste med ett personligt brev är ofta att komma igång. Här anger du vilket jobb det gäller, klistrar gärna in annonsen, och får ett utkast utifrån din bakgrund. Sedan skriver du om det så att det låter som du.",
       "steg": [
-        ["Klistra in annonsen", "Portalen läser vad tjänsten kräver, så att brevet handlar om det jobbet och inte om jobb i allmänhet."],
-        ["Få ett utkast", "Ett förslag byggt på dina uppgifter i portalen. Det är en startpunkt, inte ett färdigt brev."],
+        ["Berätta vilket jobb det gäller", "Du anger jobbtitel och gärna företag, eller väljer ett av dina sparade jobb. Har du annonstexten kan du klistra in den, så handlar brevet om just det jobbet och inte om jobb i allmänhet."],
+        ["Få ett utkast", "Ett förslag byggt på ditt CV och det du själv skrivit. Har du inte fyllt i något om dig får du i stället en mall med luckor att fylla i, som inte är skriven av AI och säger det. Utkastet är en startpunkt, inte ett färdigt brev."],
         ["Gör det till ditt", "Ändra, stryk och lägg till. Ett brev som låter som en mall känns igen direkt — det är dina egna formuleringar som gör skillnad."]
       ],
       "punkter": [
-        "Utkast anpassat efter den specifika annonsen",
+        "Utkast som utgår från jobbet, och från annonsen om du klistrar in den",
         "Bygger på det du redan fyllt i, så du slipper skriva samma sak två gånger",
-        "Export till PDF",
-        "Fungerar lika bra för spontanansökningar"
+        "Ladda ner som PDF",
+        "Annonstexten är valfri, men jobbtiteln behövs"
       ],
       "for": "Dig som vet vad du vill säga men inte hur du ska formulera det, och dig som skrivit tjugo brev och tappat orken.",
       "faq": [
-        ["Blir alla brev likadana?", "Utkastet utgår från din bakgrund och den annons du klistrar in, så det skiljer sig åt. Men skriv om det med egna ord — det är då det blir bra."],
-        ["Märker arbetsgivaren att jag fått hjälp?", "Inte om du gör om texten till din egen. Använd utkastet som en start, inte som ett färdigt brev."],
-        ["Hur långt ska ett personligt brev vara?", "Håll det på en A4. Rekryteraren läser oftast snabbt, och det du säger först är det som räknas."],
+        ["Blir alla brev likadana?", "Utkastet utgår från din bakgrund och jobbet du anger, så det blir inte likadant för alla. Skriv ändå om det med egna ord och egna exempel. Det är då det blir ditt."],
+        ["Märker arbetsgivaren att jag fått hjälp?", "Det går inte att lova åt något håll. Ett utkast som används orört låter lätt som en mall, så skriv om det med dina egna formuleringar."],
+        ["Behöver jag klistra in en annons?", "Nej, men då blir brevet mer träffsäkert. Jobbtiteln behöver du ange."],
+        ["Vad är skillnaden mellan ett utkast och en mall?", "Har du ett CV eller egna rader skriver en AI-modell ett utkast, och det märks som AI-genererat. Har du inget av det får du en handskriven mall med luckor, eftersom en AI annars skulle hitta på saker om dig. Utkastet kräver att AI-funktionerna är påslagna, mallen gör det inte."],
+        ["Hur långt ska ett personligt brev vara?", "Sikta på en A4. Ett kortare brev är lättare att läsa, och det du skriver först är det som syns först."],
         ["Kostar det något?", "Nej, verktyget är kostnadsfritt."]
       ],
       "guider": ["personligt-brev", "cv-grunder", "checklista-innan-ansokan"]
@@ -58,26 +63,28 @@
     {
       "slug": "intervjutraning",
       "route": "/interview-simulator",
-      "h1": "Öva inför intervjun — utan att någon tittar på",
-      "title": "Intervjuträning online — öva gratis på svenska",
-      "description": "Träna på vanliga intervjufrågor i din egen takt. Du svarar med rösten och får feedback. Gratis, på svenska, ingen som ser dig.",
-      "lead": "Det som gör intervjuer svåra är sällan frågorna — det är att man aldrig får öva. Här kan du svara högt, hur många gånger du vill, utan att någon bedömer dig.",
+      "h1": "Intervjuträning: öva inför intervjun i din egen takt",
+      "title": "Intervjuträning: träna inför intervjun gratis",
+      "description": "Träna inför intervjun med frågor för just ditt yrke. Svara med rösten eller i text, få feedback på varje svar och öva i din takt. Gratis och på svenska.",
+      "lead": "Det som gör intervjuer svåra är sällan frågorna, det är att man aldrig får öva. Här skriver du vilket jobb du söker, får frågor för just det jobbet och svarar högt eller i text, så många pass du vill.",
       "steg": [
-        ["Välj vad du vill träna på", "Vanliga frågor, eller frågor som passar den typ av jobb du söker."],
-        ["Svara högt", "Du pratar och portalen skriver ner vad du sagt. Att säga svaret högt är hela poängen — det är något helt annat än att tänka det."],
-        ["Läs igenom och gör om", "Du får återkoppling på dina svar och en sammanfattning. Sedan tar du om samma fråga tills den sitter."]
+        ["Skriv vilket jobb du söker", "Ange yrket och gärna företaget. Du kan välja en kategori: om dig själv, erfarenhet och färdigheter, motivation och mål eller tekniska frågor, eller låta frågorna blandas."],
+        ["Svara högt eller skriv", "Med mikrofon skriver portalen ner det du säger, om din webbläsare klarar det. Att säga svaret högt är hela poängen, det är något helt annat än att tänka det. Vill du hellre skriva går det också."],
+        ["Läs feedbacken och fortsätt", "Varje svar får kort feedback. Efter passet får du en sammanfattning med vad du gjorde bra och vad du kan öva vidare på. Sedan kan du öva igen när du vill."]
       ],
       "punkter": [
-        "Du svarar med rösten — portalen omvandlar tal till text",
-        "Återkoppling på hur svaret hänger ihop",
-        "Sammanfattning efter passet",
-        "Ingen tidsgräns, inga åskådare, obegränsat antal försök"
+        "Frågor för det yrke du anger, i fyra kategorier eller blandat",
+        "Du kan svara med rösten, om din webbläsare har taligenkänning, eller skriva",
+        "När du svarar med rösten ser du hur många ord i minuten du pratade och vilka utfyllnadsord du använde, som siffror att jämföra med och inte som omdöme",
+        "Sammanfattning efter passet och ingen tidsgräns"
       ],
       "for": "Dig som blir nervös, dig som inte varit på intervju på flera år, och dig som kommer till intervju men aldrig vidare.",
       "faq": [
-        ["Behöver jag mikrofon?", "En vanlig mobil eller dator med mikrofon räcker. Du kan också skriva svaren om du hellre vill det."],
-        ["Spelas mina svar in och sparas?", "Dina svar hanteras i portalen på ditt konto. Du kan radera dem, och du kan ladda ner allt som finns om dig."],
-        ["Är frågorna verkliga?", "De bygger på frågor som är vanliga i svenska anställningsintervjuer. Ingen kan lova exakt vilka frågor som kommer — poängen är att du ska ha tänkt igenom svaren."],
+        ["Behöver jag mikrofon?", "Nej, du kan skriva dina svar. Vill du svara högt behöver du en mikrofon och en webbläsare med taligenkänning. Saknas stödet visas ingen mikrofonknapp."],
+        ["Spelas mina svar in och sparas?", "Portalen sparar inget ljud. Taligenkänningen sköts av din webbläsare, och portalen får bara texten. Dina svar och din övning sparas på ditt konto så att du kan titta på dem igen. Du kan radera hela kontot och ladda ner dina uppgifter."],
+        ["Är frågorna verkliga?", "Frågorna skrivs av en AI-modell utifrån yrket du anger, och är den sortens frågor som är vanliga på intervjuer. Svarar AI-tjänsten inte får du i stället en färdig fråga ur en kort lista. Ingen kan lova vilka frågor du får på riktigt. Poängen är att du har tänkt igenom svaren."],
+        ["Vad får jag för feedback?", "Varje svar får kort feedback på hur det är uppbyggt och hur konkret det är, och efter passet en sammanfattning. Det är en AI-modell som skriver den, så läs den som ett förslag och inte som en dom."],
+        ["Kan jag träna för vilket yrke som helst?", "Ja, du skriver själv in yrket och eventuellt företag. Frågorna anpassas efter det du skriver."],
         ["Kostar det något?", "Nej."]
       ],
       "guider": ["intervju-fragor", "intervju-forberedelser", "digital-intervju"]
@@ -85,25 +92,27 @@
     {
       "slug": "kompetensanalys",
       "route": "/skills-gap-analysis",
-      "h1": "Vad saknas mellan dig och jobbet du vill ha?",
-      "title": "Kompetensanalys — se vad som saknas till drömjobbet",
-      "description": "Jämför det du kan mot det ett jobb kräver, och se vad som skiljer. Gratis verktyg på svenska för dig som söker jobb eller vill byta bana.",
-      "lead": "Ibland är avståndet till ett jobb mindre än det känns — och ibland är det en kurs bort. Det här verktyget visar vilket.",
+      "h1": "Kompetensanalys: vad skiljer dig från jobbet du vill ha?",
+      "title": "Kompetensanalys: se vad som saknas till jobbet",
+      "description": "Gratis kompetensanalys: jämför ditt CV mot ett yrke eller en annons, se vad som skiljer och få förslag på nästa steg och utbildningar.",
+      "lead": "Ibland är avståndet till ett jobb mindre än det känns. Skriv vilket jobb du siktar på, eller klistra in en annons, så jämför verktyget ditt CV med vad yrket brukar kräva och föreslår vad du kan göra först.",
       "steg": [
-        ["Beskriv vad du kan", "Utgår från det du redan fyllt i om utbildning och erfarenhet."],
-        ["Välj ett jobb eller en roll", "Ett konkret jobb du vill ha, eller en yrkesroll du funderar på."],
-        ["Se skillnaden", "Vad du redan uppfyller, vad som saknas, och vilket av det som går att göra något åt närmast i tid."]
+        ["Börja med ditt CV", "Analysen utgår från erfarenhet, utbildning och kompetenser du fyllt i i CV-byggaren. Saknas något säger verktyget vilka delar som behövs."],
+        ["Skriv vilket jobb du vill ha", "En yrkestitel räcker, eller så klistrar du in en hel annons."],
+        ["Se skillnaden", "För några av yrkets viktigaste kompetenser ser du vad ditt CV visar mot vad yrket brukar kräva, och du får en handlingsplan med ett första steg att börja med. Har du angett en yrkestitel hämtas utbildningar som kan passa från Arbetsförmedlingens utbildningsdatabas."]
       ],
       "punkter": [
-        "Jämförelse mot en riktig roll, inte allmänna råd",
-        "Skiljer på det som går att lära sig snabbt och det som tar längre tid",
-        "Kopplar vidare till utbildningsvägar",
-        "Går att göra om när din situation ändras"
+        "Jämförelse mot en yrkesroll eller en annons, inte allmänna råd",
+        "Nivåerna beskriver vad yrket brukar kräva, inte ett omdöme om dig",
+        "Utbildningsförslag hämtas från Arbetsförmedlingens utbildningsdatabas, inte från en språkmodell",
+        "Analyserna sparas, så du kan göra om den när din situation ändras och lägga handlingsplanen i din karriärplan"
       ],
-      "for": "Dig som funderar på att byta bransch, dig som får avslag utan att förstå varför, och dig som vill veta om en utbildning är värd tiden.",
+      "for": "Dig som funderar på att byta bransch, dig som vill veta vad som skiljer dig från ett visst jobb, och dig som letar efter en utbildning som täcker en lucka.",
       "faq": [
-        ["Är det ett test?", "Nej, och det finns inget resultat som är rätt eller fel. Det är en jämförelse mellan två beskrivningar."],
-        ["Vad gör jag med resultatet?", "Använd det för att prioritera. Allt behöver sällan åtgärdas — ofta räcker det att kunna förklara hur du täcker en lucka."],
+        ["Är det ett test?", "Nej, och det finns inget resultat som är rätt eller fel. Det är en jämförelse mellan två beskrivningar: vad ditt CV visar och vad yrket brukar kräva."],
+        ["Får jag en procent?", "Nej. Du ser nivåer för några av yrkets viktigaste kompetenser och hur många som redan är på plats, inget samlat omdöme om dig."],
+        ["Hur görs jämförelsen?", "En AI-modell jämför det du fyllt i i ditt CV med yrket eller annonsen du anger. Den ska inte hitta på meriter du inte uppgett, men läs resultatet som ett förslag. Funktionen kräver att AI-funktionerna är påslagna för ditt konto."],
+        ["Vad gör jag med resultatet?", "Du behöver inte åtgärda allt. Välj det som känns görbart först, och lägg gärna handlingsplanen i din karriärplan."],
         ["Kostar det något?", "Nej."]
       ],
       "guider": ["kompetensinventering-guide", "karriarplanering-guide", "upptack-dina-styrkor"]
@@ -111,14 +120,14 @@
     {
       "slug": "yrkestest",
       "route": "/interest-guide",
-      "h1": "Vilket yrke passar dig?",
-      "title": "Yrkestest — hitta ett yrke som passar dig",
-      "description": "Svara på frågor om vad som intresserar dig och få en lista över yrken att utforska. Inget facit, ingen matchningsprocent. Gratis och på svenska.",
-      "lead": "Ett yrkestest utan rätta svar. Du svarar på frågor om vad som intresserar dig och hur du fungerar, och får en lista över yrken att utforska — inte ett facit.",
+      "h1": "Yrkestest: vilket yrke passar dig?",
+      "title": "Yrkestest gratis: vilket yrke passar dig?",
+      "description": "Gratis yrkestest på svenska. Svara på 34 frågor och få en lista över 165 yrken att utforska. Inte vetenskapligt validerat, ingen matchningsprocent.",
+      "lead": "Ett gratis yrkestest utan rätta svar. Du svarar på 34 frågor om vad som intresserar dig och hur du fungerar, och får en lista över yrken att utforska. Testet är portalens eget och inte vetenskapligt validerat, så se listan som idéer och inte som ett facit.",
       "steg": [
         ["Svara på frågorna", "34 frågor om dina intressen, din personlighet och dina förutsättningar. Ingen tidsgräns — du kan spara och fortsätta senare."],
         ["Se din profil", "En sammanställning av vad du svarat. Ingen diagnos, inget personlighetsutlåtande."],
-        ["Utforska yrken som matchar", "165 yrken rangordnade efter dina svar, med en förklaring till varför varje yrke hamnar där det gör."]
+        ["Utforska yrken", "165 yrken rangordnade efter dina svar, med en förklaring till varför varje yrke hamnar där det gör."]
       ],
       "punkter": [
         "34 frågor om intressen, personlighet och dina förutsättningar",
@@ -131,6 +140,8 @@
         ["Är det ett vetenskapligt test?", "Nej. Det är portalens eget verktyg och inte validerat som ett psykologiskt test. Se det som ett sätt att sätta ord på vad som intresserar dig — inte en diagnos."],
         ["Får jag en matchningsprocent?", "Nej, du får en plats i listan och en förklaring till den. En procentsats hade gett ett falskt intryck av exakthet."],
         ["Måste jag svara på alla frågor?", "Ja, annars vilar resultatet på ofullständigt underlag. Du kan spara och fortsätta när du orkar."],
+        ["Vilka frågor ställs?", "Frågorna handlar om intressen, personlighet och förutsättningar som ork och koncentration. Frågorna om förutsättningar är hälsonära: svaren på dem sparas bara om du gett ditt samtycke. Resultatet sparas ändå, men utan den delen."],
+        ["Kan testet säga vilket jobb jag ska ha?", "Nej. Det visar vilka yrken i listan som ligger närmast dina svar, och varför. Det vet inget om din utbildning, din erfarenhet eller vilka jobb som finns att söka just nu. Använd listan för att hitta yrken att läsa mer om, och prata gärna med en arbetskonsulent eller en studie- och yrkesvägledare."],
         ["Kostar det något?", "Nej."]
       ],
       "guider": ["hitta-ditt-drommjobb", "hitta-dina-varderingar", "personlighetstyper-arbete", "upptack-dina-styrkor"]
@@ -192,25 +203,26 @@
     {
       "slug": "lon",
       "route": "/salary",
-      "h1": "Räkna ut vad du får kvar i lön",
-      "title": "Lönekalkylator — räkna ut nettolön, gratis",
-      "description": "Se vad du får kvar efter skatt, jämför ett ungefärligt lönespann för din bransch och förbered en löneförhandling. Gratis och på svenska.",
-      "lead": "Lönefrågor är svåra att prata om utan siffror. Här räknar du ut vad du faktiskt får kvar efter skatt, får en fingervisning om vad som är rimligt att begära, och förbereder dig inför förhandlingen.",
+      "h1": "Lönekalkylator: vad blir kvar efter skatt?",
+      "title": "Lönekalkylator: räkna ut nettolön efter skatt",
+      "description": "Se ungefär vad som blir kvar efter skatt för ett yrke, en region och en erfarenhetsnivå, och förbered löneförhandlingen. Grova uppskattningar, gratis.",
+      "lead": "Lönefrågor är svåra att prata om utan siffror. Här väljer du bransch, region och erfarenhet, får ett grovt lönespann och ser ungefär vad som blir kvar efter skatt. Spannet är en uppskattning och inte statistik. Inför samtalet om lön finns en egen flik att förbereda sig i.",
       "steg": [
-        ["Räkna ut nettolön", "Ange din bruttolön och se vad som blir kvar — kalkylatorn följer hur skatten faktiskt beräknas: grundavdrag, kommunal skatt, statlig skatt och jobbskatteavdrag."],
-        ["Jämför ett ungefärligt spann", "Välj bransch, region och erfarenhet för en grov uppskattning, tydligt märkt som just det — inte officiell statistik — med länkar vidare till SCB och Medlingsinstitutet för de riktiga siffrorna."],
-        ["Förbered förhandlingen", "Konkreta situationer och strategier för själva samtalet, inte bara allmänna råd om att vara påläst."]
+        ["Välj bransch, region och erfarenhet", "Du får ett grovt lönespann för ditt val, tydligt märkt som en uppskattning och inte officiell statistik. Regionen kan fyllas i från din profil."],
+        ["Se vad som blir kvar", "Nettolönen räknas på mittvärdet i spannet. Du kan fälla ut hur skatten är uppdelad: kommunal skatt, statlig skatt och jobbskatteavdrag, och ändra kommunalskatten om du vet din kommuns sats. Länkar finns till SCB:s Lönesök, Medlingsinstitutet och Skatteverket."],
+        ["Förbered förhandlingen", "Fyra vanliga lägen att tänka igenom, en checklista och tre fält för nivån du siktar på, din lägsta nivå och dina argument. Det du skriver sparas i den webbläsare du använder."]
       ],
       "punkter": [
-        "Nettolön beräknad enligt hur svensk inkomstskatt faktiskt fungerar",
+        "Nettolön räknad enligt hur svensk inkomstskatt är uppbyggd, med skatteåret utskrivet",
         "Ett ungefärligt lönespann för 12 branscher, 7 regioner och 4 erfarenhetsnivåer",
-        "Tydligt märkt som uppskattning — med länkar till SCB och Medlingsinstitutet för riktig statistik",
-        "Konkreta strategier för löneförhandling"
+        "Tydligt märkt som uppskattning, med länkar till SCB, Medlingsinstitutet och Skatteverket",
+        "Förberedelse inför löneförhandling: vanliga lägen, checklista och egna anteckningar"
       ],
-      "for": "Dig som ska förhandla lön för första gången, dig som bytt jobb och vill veta vad du får kvar, och dig som vill ha en fingervisning innan du sätter ett lönekrav.",
+      "for": "Dig som ska förhandla lön för första gången, dig som bytt jobb och vill veta ungefär vad som blir kvar, och dig som vill ha en fingervisning innan du sätter ett lönekrav.",
       "faq": [
-        ["Är lönesiffrorna officiell statistik?", "Nej. Branschspannen är grova uppskattningar för att ge en fingervisning, inte hämtade från SCB eller Medlingsinstitutet. Verktyget länkar vidare dit om du vill ha exakta siffror för ditt yrke."],
-        ["Hur räknas nettolönen ut?", "Kalkylatorn följer hur svensk inkomstskatt faktiskt beräknas — grundavdrag, kommunal skatt, statlig skatt över skiktgränsen och jobbskatteavdrag. Kyrkoavgift och avdrag som ROT/RUT ingår inte."],
+        ["Är lönesiffrorna officiell statistik?", "Nej. Lönespannen är grova uppskattningar för hela yrkesområdet, justerade för region och erfarenhet. De kommer inte från SCB eller Medlingsinstitutet. Verktyget länkar dit, och till Skatteverket, om du vill ha exakta uppgifter."],
+        ["Kan jag räkna ut nettolönen på min egen lön?", "Inte i lönekalkylatorn. Den räknar på mittvärdet i det uppskattade spannet för bransch, region och erfarenhet du väljer, inte på en lön du skriver in. Du kan däremot ändra kommunalskatten. Vill du veta vad som gäller för din exakta lön, kontrollera mot Skatteverket."],
+        ["Räknar den ut löneskatt?", "Den räknar ut inkomstskatten på lönen: grundavdrag, kommunal skatt, statlig skatt över skiktgränsen och jobbskatteavdrag, enligt det skatteår som står i verktyget. Arbetsgivarens avgifter ingår inte. Det gör inte heller kyrkoavgift, förhöjt grundavdrag för äldre eller avdrag som ROT och RUT."],
         ["Kan jag ändra kommunalskatten?", "Ja, om du vet din kommuns skattesats. Annars används ett riksgenomsnitt."],
         ["Kostar det något?", "Nej."]
       ],
@@ -297,24 +309,26 @@
     {
       "slug": "utbildning",
       "route": "/education",
-      "h1": "Hitta en utbildning som tar dig vidare",
-      "title": "Hitta rätt utbildning — sök gratis på svenska",
-      "description": "Sök bland utbildningar från hela Sverige — yrkeshögskola, högskola, komvux och folkhögskola — hämtat från Arbetsförmedlingens register. Gratis.",
-      "lead": "Vill du vidareutbilda dig eller byta bana helt? Här söker du bland utbildningar från hela Sverige — yrkeshögskola, högskola, komvux och folkhögskola — med data hämtad från Arbetsförmedlingens eget register.",
+      "h1": "Sök utbildning som tar dig vidare",
+      "title": "Sök utbildning: yh, högskola, komvux, folkhögskola",
+      "description": "Sök utbildningar i hela Sverige och filtrera på studieform, region eller bara distans. Data från Arbetsförmedlingens JobEd Connect. Gratis, på svenska.",
+      "lead": "Funderar du på att vidareutbilda dig eller byta bana? Här söker du utbildningar från hela Sverige: yrkeshögskola, högskola och universitet, komvux och folkhögskola. Listan hämtas från Arbetsförmedlingens tjänst JobEd Connect, och du ansöker hos utbildningsanordnaren.",
       "steg": [
-        ["Sök och filtrera", "Sök på ord eller ort, och begränsa till en utbildningsform om du redan vet vilken väg du är intresserad av."],
+        ["Sök och filtrera", "Sök på ämne, utbildning eller skola, och begränsa efter studieform, region eller bara distans om du redan vet vilken väg du är intresserad av."],
         ["Jämför alternativen", "Se studieform, ort och utbildningsanordnare för varje träff, och gå vidare till anordnarens egen sida för att ansöka."],
         ["Koppla till din kompetensanalys", "Ser du att en utbildning täcker det som Kompetensanalysen visade att du saknade, är det ett tecken på att den är värd att titta närmare på."]
       ],
       "punkter": [
-        "Data från JobEd Connect (Arbetsförmedlingen/JobTech) — inte påhittat av en språkmodell",
-        "Filtrera på utbildningsform: yrkeshögskola, högskola, komvux och folkhögskola",
-        "Sök på ort för att hitta utbildningar där du bor eller kan tänka dig att flytta",
-        "Går att koppla till det Kompetensanalysen visar att du saknar"
+        "Data från JobEd Connect (Arbetsförmedlingen/JobTech), inte påhittad av en språkmodell",
+        "Filtrera på studieform: yrkeshögskola, högskola och universitet, komvux och folkhögskola",
+        "Filtrera på region, eller välj bara distans för utbildningar du kan läsa hemifrån",
+        "Länkar till Kompetensanalysen och Yrkestestet om du är osäker på vad du saknar eller vill"
       ],
       "for": "Dig som vill byta bana men inte vet vilken utbildning som krävs, och dig som redan vet vad du vill läsa men inte var den finns.",
       "faq": [
-        ["Var kommer utbildningarna ifrån?", "Från JobEd Connect, Arbetsförmedlingens register över utbildningar — inte från en språkmodell som gissar."],
+        ["Var kommer utbildningarna ifrån?", "Från JobEd Connect, Arbetsförmedlingens tjänst för utbildningsdata, och inte från en språkmodell som gissar. Den omfattar bland annat yrkeshögskola, högskola och universitet, komvux, folkhögskola och arbetsmarknadsutbildning."],
+        ["Kan jag söka distansutbildningar?", "Ja. Slå på Bara distans så visas utbildningar du kan läsa hemifrån. Du kan kombinera det med studieform och region."],
+        ["Står det vad utbildningen kostar eller om jag är behörig?", "Nej. Portalen visar vad som finns och var, inte vad det kostar eller om du är behörig. Det ser du hos utbildningsanordnaren när du går vidare till deras sida."],
         ["Kan jag ansöka direkt i Jobin?", "Nej, ansökan görs hos utbildningsanordnaren. Portalen hjälper dig hitta rätt utbildning och länkar vidare."],
         ["Kostar det något?", "Nej."]
       ],
@@ -537,23 +551,23 @@
       "slug": "kunskapsbank",
       "route": "/knowledge-base",
       "h1": "Läs om det som gäller just din situation",
-      "title": "Kunskapsbank för jobbsökande — 310 artiklar",
-      "description": "310 artiklar i 13 ämnen, från att komma igång till arbetsrätt. Sök eller bläddra bland kategorierna, allt på svenska och gratis att läsa.",
-      "lead": "310 artiklar samlade i 13 ämnen, från de första stegen i jobbsökningen till arbetsrätt och digital närvaro. Sök på det du undrar över, eller bläddra bland kategorierna.",
+      "title": "Kunskapsbank för jobbsökande — 319 artiklar",
+      "description": "319 artiklar i 13 ämnen, från att komma igång till arbetsrätt. Sök eller bläddra bland kategorierna, allt på svenska och gratis att läsa.",
+      "lead": "319 artiklar samlade i 13 ämnen, från de första stegen i jobbsökningen till arbetsrätt och digital närvaro. Sök på det du undrar över, eller bläddra bland kategorierna.",
       "steg": [
         ["Sök eller bläddra", "Skriv det du undrar över i sökrutan, eller välj en av de tretton kategorierna för att se allt som hör dit."],
         ["Läs, lyssna eller skriv ut", "Varje artikel går att läsa upp, skriva ut eller ladda ner som PDF. En del har en checklista att bocka av direkt i texten."],
         ["Gå vidare till rätt verktyg", "Många artiklar länkar till det verktyg som hör till ämnet, så du kan gå direkt från att läsa till att göra."]
       ],
       "punkter": [
-        "310 artiklar i 13 ämnen, sök eller bläddra",
+        "319 artiklar i 13 ämnen, sök eller bläddra",
         "Varje artikel kan läsas upp, skrivas ut eller laddas ner som PDF",
         "En del artiklar har en checklista du kan bocka av direkt i texten",
         "En stor del av artiklarna finns även på engelska"
       ],
       "for": "Dig som vill läsa på om ett ämne innan du bestämmer dig, eller som letar efter ett konkret svar på en fråga just nu.",
       "faq": [
-        ["Hur många artiklar finns det?", "310 stycken, fördelade på 13 ämnen från att komma igång i portalen till arbetsrätt och digital närvaro."],
+        ["Hur många artiklar finns det?", "319 stycken, fördelade på 13 ämnen från att komma igång i portalen till arbetsrätt och digital närvaro."],
         ["Kan jag lyssna på artiklarna?", "Ja, varje artikel har en uppläsningsfunktion om du hellre vill lyssna än läsa."],
         ["Finns artiklarna på engelska?", "En stor del av artiklarna finns på engelska. Saknas en översättning visas den svenska texten i stället, så du aldrig möts av en tom sida."],
         ["Kostar det något?", "Nej."]

@@ -1,143 +1,167 @@
 {
-  "_kommentar": "Innehållsomgång 11 (2026-11-04). Titlar och ingresser skrivna ur Search Console-frågor per sida, se docs/gsc/jobin-fragor-sida-2026-11-04.json.",
-  "styrkor-svagheter-intervju": {
-    "title": "Styrkor och svagheter på intervju – exempel på svar",
-    "summary": "Exempelsvar om styrkor och svagheter, vad du kan säga om tre dåliga egenskaper och hur du undviker klyschorna på arbetsintervjun."
+  "_kommentar": "Innehållsomgång 12 (2026-11-04). Titlar och ingresser ur docs/gsc/jobin-fragor-sida-2026-11-04.json.",
+  "arbetspsykologiska-tester": {
+    "title": "Arbetspsykologiska tester – exempel och vad de mäter",
+    "summary": "Exempel på uppgifter i arbetspsykologiska tester, skillnaden mellan begåvnings- och personlighetstest och hur du förbereder dig utan att gissa rätt svar."
   },
-  "telefonintervju-tips": {
-    "title": "Telefonintervju – frågor du får och hur du svarar",
-    "summary": "Vanliga frågor i en telefonintervju, hur du tänker när du svarar och vad du gör före och efter samtalet. Tips för korta och långa samtal."
+  "ats-system-guide": {
+    "title": "ATS-system och CV – så fungerar det och så anpassar du",
+    "summary": "Vad ett ATS-system är, vad det gör med ditt CV och hur du gör ett ATS-anpassat CV som också är lätt för en människa att läsa."
   },
-  "grupperintervju-guide": {
-    "title": "Gruppintervju – vad det är och hur du klarar den",
-    "summary": "Vad är en gruppintervju? Så går den till, vilka frågor och övningar som kan dyka upp och hur du syns utan att ta över."
+  "cv-mallar-exempel": {
+    "title": "Gratis CV-mall – enkel mall och exempel på svenska",
+    "summary": "En enkel CV-mall att kopiera, vad som ska stå i varje del och exempel för dig med lite erfarenhet, lucka eller nytt yrke. Plus gratis CV-byggare."
   },
-  "referenssamtal-guide": {
-    "title": "Referenssamtal – frågor, tidpunkt och hur du förbereder dig",
-    "summary": "När kontaktas referenser, vilka frågor ställs vid referenstagning och hur du frågar och förbereder dina referenser. Med mall för meddelandet."
+  "varfor-vill-du-jobba-hos-oss": {
+    "title": "Varför vill du jobba hos oss? Exempel på bra svar",
+    "summary": "Vad frågan prövar, hur du hittar något sant om arbetsplatsen och hur du svarar ärligt även när du främst behöver ett jobb."
   },
-  "kompetensbaserad-intervju-star-metoden": {
-    "title": "STAR-metoden – så svarar du på intervjufrågor",
-    "summary": "Vad STAR-metoden (eller STAR-modellen) är, hur du bygger ett svar i fyra steg och ett färdigt exempelsvar du kan använda som mall."
+  "rekryteringsprocessen-steg-for-steg": {
+    "title": "Rekryteringsprocessen steg för steg – från ansökan till svar",
+    "summary": "Gallring, urval, intervjuer, test, referenser och erbjudande: vad som avgör i varje steg och vad du kan göra när du inte hör något."
   },
-  "personligt-brev": {
-    "title": "Personligt brev – så skriver du ett bra ansökningsbrev",
-    "summary": "Hur skriver man ett personligt brev? Steg för steg, med exempel på inledning och avslutning och tre kompletta brev att utgå från."
+  "provjobba-utan-lon": {
+    "title": "Provjobba utan lön – får man det och vad gäller?",
+    "summary": "Arbetsförmedlingen råder dig att aldrig provjobba gratis. Skillnaden mot arbetsprov och praktik, och vad du frågar innan du tackar ja."
   },
-  "latt-svenska-personligt-brev": {
-    "title": "Personligt brev på lätt svenska – så skriver du ett",
-    "summary": "Vad är ett personligt brev och hur skriver du ett? En enkel guide på lätt svenska med ett kort exempel."
+  "forsta-90-dagarna": {
+    "title": "30-60-90-dagarsplan – dina första 90 dagar på nya jobbet",
+    "summary": "Mall för en 30-60-90-dagarsplan: vad du gör första månaden, andra och tredje på nya jobbet, och hur du anpassar planen till din roll."
   },
-  "kladsel-pa-intervju": {
-    "title": "Klädsel på intervju – vad ska man ha på sig?",
-    "summary": "Vad du kan ha på dig på en arbetsintervju: principen, hur du tar reda på klädkoden och exempel för kontor, butik, vård och lager."
+  "forsta-dagen-nytt-jobb": {
+    "title": "Första dagen på nya jobbet – tips när du är ny på jobbet",
+    "summary": "Vad du frågar och förbereder innan, hur första dagen kan gå till och hur du kommer in i första veckan och månaden som ny på jobbet."
   },
-  "bemanningsforetag-guide": {
-    "title": "Bemanningsföretag – så fungerar det och vad du ska fråga",
-    "summary": "Så fungerar ett bemanningsföretag, skillnaden mot rekrytering, vad lagen säger om dina villkor och frågorna du ställer innan du tackar ja."
+  "upptack-dina-styrkor": {
+    "title": "Vad är dina styrkor? Så hittar du dem – övningar och exempel",
+    "summary": "Vad styrkor betyder, fyra frågor för att hitta dina egna, övningar att göra i din takt och hur du berättar om dem på intervjun."
   },
-  "offentligt-skyddat-arbete": {
-    "title": "OSA-anställning – vad är offentligt skyddat arbete?",
-    "summary": "Vad en OSA-anställning är, vem som kan få den, vem som är arbetsgivare och hur du går till väga via Arbetsförmedlingen. Lön, tid och skillnad mot Samhall."
+  "kompetensutvardering": {
+    "title": "Kompetensinventering och kompetenskartläggning – så gör du",
+    "summary": "Så gör du en kompetensinventering steg för steg, med mall för kompetensmatris i Excel och skillnaden mot kompetensanalys."
   },
-  "varning-fran-arbetsformedlingen": {
-    "title": "Varning från Arbetsförmedlingen – vem beslutar, vad gör du",
-    "summary": "Fått en varning från AF eller a-kassan? Så skiljer det sig om du har a-kassa eller är i program, hur du förklarar dig och begär omprövning."
+  "kompetensutveckling-guide": {
+    "title": "Kompetensutveckling – vad det är och hur du utvecklar din",
+    "summary": "Vad kompetens betyder och hur du väljer rätt sätt att utveckla den, med en enkel plan som fungerar både utan jobb och på jobbet."
   },
-  "lonebidrag-sa-fungerar-det": {
-    "title": "Lönebidrag – så fungerar det, för dig och arbetsgivaren",
-    "summary": "Vad lönebidrag är, vem som kan få det, hur arbetsgivaren ansöker och vad som gäller för lön och uppsägning. Så tar du upp det med en arbetsgivare."
+  "branscher-brist": {
+    "title": "Bristyrken i Sverige – så läser du yrkesbarometern",
+    "summary": "Vilka yrken det är brist på avgörs yrke för yrke. Så läser du Arbetsförmedlingens yrkesbarometer och vad brist, balans och paradox betyder."
   },
-  "skriva-in-dig-arbetsformedlingen": {
-    "title": "Skriva in sig på Arbetsförmedlingen – så gör du",
-    "summary": "När du ska skriva in dig, hur du gör med och utan e-legitimation, vad som händer efter inskrivningen och vad du tar med till planeringssamtalet."
+  "karriarplanering-guide": {
+    "title": "Karriärplanering – så gör du en karriärplan steg för steg",
+    "summary": "Så gör du en karriärplan: se var du står, sätt karriärmål du kan följa upp, välj väg och ta nästa steg. Med exempel och mall."
   },
-  "aktivitetsrapport-guide": {
-    "title": "Aktivitetsrapport – så fungerar aktivitetsrapporteringen",
-    "summary": "Vad du ska skriva i aktivitetsrapporten, hur du lämnar in den med eller utan e-legitimation och vad du gör om du missar fönstret."
+  "stresshantering": {
+    "title": "Stresshantering – råd från 1177 för dig som söker jobb",
+    "summary": "Vad stress är, tecken på att du mår dåligt av den, vad du kan göra själv enligt 1177 och när det är dags att söka vård."
   },
-  "sius-stod-vid-introduktion": {
-    "title": "SIUS – stödperson när du ska in i ett nytt jobb",
-    "summary": "Vad SIUS är, vad en SIUS-konsulent kan hjälpa dig med före och efter att du börjat jobba, och hur du tar upp det med din handläggare."
+  "starta-eget-guide": {
+    "title": "Starta eget – är det för dig? Stöd och första steg",
+    "summary": "Passar det dig att starta eget? Vad Arbetsförmedlingens stöd till start av näringsverksamhet kräver, vilka företagsformer som finns och vad du gör först."
   },
-  "etableringsprogrammet": {
-    "title": "Etableringsprogrammet – vad ingår och vem omfattas",
-    "summary": "Vad etableringsprogrammet är, vilka insatser som ingår, vem som bestämmer vad och vad som gäller om du uteblir. Läs innan ditt nästa möte."
+  "yrkessvenska": {
+    "title": "Yrkessvenska – vad det är och hur du kommer in",
+    "summary": "Yrkessvenska är svenska för just ditt yrke. Så skiljer den sig från sfi och så får du plats via Arbetsförmedlingen."
   },
-  "etableringsersattning": {
-    "title": "Etableringsersättning – ansökan, barntillägg och ändringar",
-    "summary": "Så ansöker du om etableringsersättning, vad som hänt med etableringstillägg och bostadsersättning och hur barntillägget fungerar sedan 1 september 2026."
+  "praktik-som-vag-in": {
+    "title": "Arbetspraktik via Arbetsförmedlingen – och ersättningen",
+    "summary": "Så fungerar arbetspraktik, vem som kan få den, och vad du ska fråga om ersättning hos Arbetsförmedlingen och Försäkringskassan innan du börjar."
   },
-  "rusta-och-matcha": {
-    "title": "Rusta och matcha – vad är det och hur funkar det?",
-    "summary": "Vad som ingår i Rusta och matcha, vem som kan få det, hur länge det pågår och vem som beslutar. Länkar till hur du väljer och byter leverantör."
+  "trygghetsanstallning": {
+    "title": "Trygghetsanställning (lönebidrag för trygghet)",
+    "summary": "Vad trygghetsanställning (lönebidrag för trygghet i anställning) är, vem som beslutar och hur den skiljer sig från utvecklingsanställning."
   },
-  "nystartsjobb-guide": {
-    "title": "Nystartsjobb – regler, ansökan och förlängning",
-    "summary": "Hur nystartsjobb fungerar för dig och arbetsgivaren: vem som kan få det, hur ansökan går till, förlängning och vad du säger till en arbetsgivare."
+  "utvecklingsanstallning": {
+    "title": "Utvecklingsanställning (lönebidrag för utveckling)",
+    "summary": "Vad utvecklingsanställning (lönebidrag för utveckling i anställning) är, vem som beslutar och vad som händer när beslutet tar slut."
   },
-  "ersattning-under-program": {
-    "title": "Ersättning i Rusta och matcha och andra program",
-    "summary": "Vilken ersättning du får i ett program, hur du ansöker hos Försäkringskassan och vad som minskar den. Skillnaden mot aktivitetsrapporten."
+  "personligt-bitrade": {
+    "title": "Personligt biträde på jobbet – bidrag och vem som ansöker",
+    "summary": "Vad ett personligt biträde gör, vem som kan få bidraget och varför det är arbetsgivaren som kontaktar Arbetsförmedlingen, inte du."
   },
-  "arbetstraning-vad-innebar-det": {
-    "title": "Arbetsträning – så fungerar det och vilken ersättning du får",
-    "summary": "Vad arbetsträning är, vem som planerar den, vad som gäller för ersättning och skillnaden mot förstärkt arbetsträning. Och om den leder till jobb."
+  "arbetshjalpmedel-pa-jobbet": {
+    "title": "Arbetshjälpmedel – bidrag på jobbet, vem betalar och äger",
+    "summary": "Arbetsförmedlingen eller Försäkringskassan, ansök före köp, och vem som äger hjälpmedlet och vad som händer om du byter jobb."
   },
-  "tillbaka-till-jobb-efter-sjukskrivning": {
-    "title": "Börja jobba efter sjukskrivning – så går återgången till",
-    "summary": "Rehabiliteringskedjan, arbetsträning, arbetsprövning och upptrappning. Och vad som gäller om du blir sjukskriven igen efter en lång sjukskrivning."
+  "anpassningar-arbetsplatsen": {
+    "title": "Arbetsanpassning – exempel på anpassningar på jobbet",
+    "summary": "Exempel på arbetsanpassning vid funktionsnedsättning, vad lagen säger och hur du tar upp det med din chef."
   },
-  "prova-jobb-med-sjukersattning-aktivitetsersattning": {
-    "title": "Vilande sjukersättning – så provar du att jobba",
-    "summary": "Så fungerar vilande sjukersättning och aktivitetsersättning när du vill prova arbeta eller studera, varför du ansöker i förväg och skillnaden mot indragen."
+  "forstarkt-arbetstraning": {
+    "title": "Förstärkt arbetsträning – skillnaden mot arbetsträning",
+    "summary": "Så fungerar arbetsträning, vad förstärkt arbetsträning innebär, vem som bedömer vilken du får och vad som gäller för ersättningen."
   },
-  "uppsagningstid-och-uppsagningsbesked": {
-    "title": "Uppsägningstid – hur lång är den och vad avgör den?",
-    "summary": "Hur lång uppsägningstid har du? Lagen, kollektivavtalet och ditt anställningsavtal avgör. Så tar du reda på din tid och vad beskedet ska innehålla."
+  "saga-upp-sig-och-a-kassa": {
+    "title": "Egen uppsägning och a-kassa – det här gäller",
+    "summary": "Säger du upp dig utan giltig anledning kan a-kassan stänga av dig. Vad som är giltig anledning och varför du ska fråga a-kassan innan."
   },
-  "kollektivavtal-vad-det-betyder": {
-    "title": "Kollektivavtal – vad är det och vad betyder det för dig?",
-    "summary": "Vad ett kollektivavtal är, vad det reglerar som lagen inte gör och hur du tar reda på vilket avtal som gäller dig, även om du inte är med i facket."
+  "provanstallning-guide": {
+    "title": "Provanställning – regler, semester och hur den avslutas",
+    "summary": "Vad som gäller under provanställning: lön, semester, hur den avslutas, om den kan förlängas och när den övergår till fast anställning."
   },
-  "a-kassa-utan-facket": {
-    "title": "A-kassa utan fack – så går du med i bara a-kassan",
-    "summary": "Du behöver inte vara med i facket för att gå med i en a-kassa. Så väljer du kassa, ansöker, och vad som gäller om du inte är medlem alls."
+  "anstallningsformer-guide": {
+    "title": "Anställningsformer – fast, visstid och timanställning",
+    "summary": "Tillsvidare, särskild visstid, vikariat, provanställning och timanställning: vad som skiljer dem och vad du ska fråga innan du skriver under."
   },
-  "a-kassa-sa-fungerar-det": {
-    "title": "Hur fungerar a-kassan? Medlemskap, villkor och ansökan",
-    "summary": "Vad a-kassa är, hur du går med, när du har rätt till ersättning sedan reformen 2025-10-01 och vem som beslutar. Gå med innan du blir arbetslös."
+  "bakgrundskontroll-och-belastningsregistret": {
+    "title": "Bakgrundskontroll – vad får arbetsgivaren kontrollera?",
+    "summary": "Vad en bakgrundskontroll kan innehålla, hur du beställer registerutdrag hos Polisen och vad arbetsgivaren får göra med utdraget."
   },
-  "arbetsgivarintyg-och-betyg": {
-    "title": "Arbetsgivarintyg – vad är det och hur får du ett?",
-    "summary": "Arbetsgivarintyget är a-kassans underlag. Så begär du det, vad som skiljer det från tjänstgöringsintyg och betyg, och vad du gör om arbetsgivaren dröjer."
+  "las-anstallningsavtal": {
+    "title": "Anställningsavtal – läs det och få hjälp att granska",
+    "summary": "Vad du ska kontrollera i ett anställningsavtal, vilka klausuler som är viktiga och var du kan få hjälp att granska avtalet."
   },
-  "omstallningsstod-nar-du-blivit-uppsagd": {
-    "title": "Omställningsstöd – vad är det och hur söker du?",
-    "summary": "Omställningsstöd ges av din omställningsorganisation när du sagts upp. Så tar du reda på vilken som gäller, och skillnaden mot omställningsstudiestöd."
+  "lattsvenska-timanstallning": {
+    "title": "Vad betyder timanställd? Enkel förklaring",
+    "summary": "Timanställd betyder att du jobbar pass och får betalt per timme. Enkel förklaring av lön, avtal och vad du ska berätta för a-kassan."
   },
-  "omstallningsstudiestod": {
-    "title": "Omställningsstudiestöd – vad är det och hur ansöker du?",
-    "summary": "Omställningsstudiestöd är ett studiestöd från CSN för dig som arbetat en längre tid. Så fungerar ansökan, yttrandet och skillnaden mot studiemedel."
+  "lattsvenska-heltid-och-deltid": {
+    "title": "Vad betyder deltid och heltid? Enkel förklaring",
+    "summary": "Deltid betyder att du jobbar färre timmar än heltid. Enkel förklaring av deltid, deltidsjobb och procent i jobbannonser."
   },
-  "sjuk-nar-du-ar-arbetslos": {
-    "title": "Arbetslös och sjuk – vem sjukanmäler du dig till?",
-    "summary": "Arbetssökande sjukanmäler sig till Försäkringskassan, deltagare i program till Arbetsförmedlingen. Så gör du, och vad du gör med a-kassan."
+  "lattsvenska-validering": {
+    "title": "Vad betyder validering? Enkel förklaring",
+    "summary": "Validering betyder att någon bedömer vad du redan kan. Enkel förklaring av vad validera är, hur det går till och vem du frågar."
   },
-  "varsel-vad-betyder-det": {
-    "title": "Varsel – vad betyder det och vad händer sedan?",
-    "summary": "Varsel betyder förvarning om uppsägningar, inte att du blivit uppsagd. Så skiljer sig varsel från uppsägning, och vad du kan göra medan du väntar."
+  "lattsvenska-vikariat": {
+    "title": "Vad betyder vikariat? Enkel förklaring",
+    "summary": "Vikariat betyder att du jobbar i stället för någon som är borta. Enkel förklaring av vikarie, avtal och hur ett vikariat tar slut."
   },
-  "facket-ska-jag-ga-med": {
-    "title": "Gå med i facket – vad ger det och vad kostar det?",
-    "summary": "Vad ett fackligt medlemskap ger, hur du går med, vad som avgör avgiften och skillnaden mot a-kassan. Så hittar du rätt förbund för ditt yrke."
+  "lattsvenska-praktik": {
+    "title": "Vad betyder praktik? Enkel förklaring",
+    "summary": "Praktik betyder att du är på en arbetsplats för att lära dig ett jobb. Enkel förklaring av lön, ersättning och vem som bestämmer."
   },
-  "sjuklon-karens-och-vab": {
-    "title": "Sjuklön – vem betalar, och vad är karensavdrag?",
-    "summary": "Sjuklön betalas av arbetsgivaren, sedan tar Försäkringskassan över. Så fungerar karensavdrag, läkarintyg och vab, och vem du sjukanmäler dig till."
+  "lattsvenska-vad-ar-cv": {
+    "title": "Vad betyder CV på svenska? Enkel förklaring",
+    "summary": "CV är en lista över dina jobb, utbildningar och kunskaper. Enkel förklaring av vad CV betyder, vad det står för och vad som ska stå i det."
   },
-  "lonegaranti-vid-konkurs": {
-    "title": "Lönegaranti vid konkurs – så fungerar den statliga garantin",
-    "summary": "Konkursförvaltaren beslutar och Skatteverket betalar ut lönegarantin sedan 2025-02-01. Vad du själv gör och vad som kan ersättas."
+  "lattsvenska-anstallningsavtal": {
+    "title": "Vad är ett anställningsavtal? Enkel förklaring",
+    "summary": "Ett anställningsavtal visar vad du och arbetsgivaren kommit överens om. Enkel förklaring av vad som ska stå i det innan du skriver under."
+  },
+  "lattsvenska-lon-och-skatt": {
+    "title": "Vad betyder brutto och netto? Enkel förklaring",
+    "summary": "Brutto är lönen före skatt, netto är lönen efter skatt. Enkel förklaring av lön, A-skatt och lönebesked, och vad du gör om lönen blir fel."
+  },
+  "lattsvenska-arbetstraning": {
+    "title": "Vad är arbetsträning? Enkel förklaring",
+    "summary": "Arbetsträning är att träna på en arbetsplats utan krav på att prestera som anställd. Enkel förklaring av vem som beslutar och vilken ersättning du kan få."
+  },
+  "lattsvenska-arbetshjalpmedel": {
+    "title": "Vad är arbetshjälpmedel? Enkel förklaring",
+    "summary": "Arbetshjälpmedel hjälper dig att klara jobbet trots en funktionsnedsättning. Enkel förklaring av vem som kan få bidrag, vem som ansöker och betalar."
+  },
+  "lattsvenska-etableringsjobb": {
+    "title": "Vad är etableringsjobb? Enkel förklaring",
+    "summary": "Etableringsjobb är en anställning där staten hjälper till med pengarna. Enkel förklaring av vem det är för och skillnaden mot etableringsprogrammet."
+  },
+  "lattsvenska-bemanningsforetag": {
+    "title": "Vad är ett bemanningsföretag? Enkel förklaring",
+    "summary": "Ett bemanningsföretag anställer dig och hyr ut dig till andra företag. Enkel förklaring av vem som är din arbetsgivare och vad du bör fråga om."
+  },
+  "lattsvenska-tillsvidareanstallning": {
+    "title": "Vad betyder tillsvidareanställning? Enkel förklaring",
+    "summary": "Tillsvidareanställning är en fast anställning utan slutdatum. Enkel förklaring av uppsägning, uppsägningstid och skillnaden mot vikariat."
   }
 }

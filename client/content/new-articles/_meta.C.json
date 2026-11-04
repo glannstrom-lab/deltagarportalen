@@ -1,68 +1,54 @@
 {
-  "vad-ska-jag-jobba-med": {
-    "title": "Vad ska jag jobba med? Så tar du reda på det",
-    "summary": "Sex övningar du kan göra i dag för att hitta en riktning, även om du inte vet alls eller har begränsad ork. Ingen behöver ett drömjobb.",
-    "category_key": "self-awareness",
-    "subcategory": "yrkesval",
-    "tags": ["vad ska jag jobba med", "yrkesval", "vilket yrke passar mig", "intresseguide"],
-    "difficulty": "easy",
+  "indragen-sjukersattning": {
+    "title": "Indragen sjukersättning – vad kan hända och vad du kan göra",
+    "summary": "Skillnaden mellan avslag och indragning, vad som kan leda till det, hur omprövning och överklagande går till och var pengarna kan komma ifrån.",
+    "category_key": "accessibility",
+    "subcategory": "ersattning",
+    "tags": ["indragen sjukersättning", "sjukersättning", "aktivitetsersättning", "Försäkringskassan", "omprövning", "överklaga"],
+    "difficulty": "medium",
     "energy_level": "low",
-    "related_article_slugs": ["upptack-dina-styrkor", "hitta-dina-varderingar", "praktik-som-vag-in", "dromjobbsanalys"],
-    "related_tools": ["/interest-guide"],
+    "related_article_slugs": ["sjukersattning-vem-kan-fa", "overklaga-ett-beslut", "sjuk-nar-du-ar-arbetslos", "forsorjningsstod-nar-pengarna-tar-slut"],
+    "related_tools": ["/resources"],
     "checklist": [
-      "Skriv en lista över vad du gillat och en över vad du orkat",
-      "Skriv ner vad kroppen, orken och miljön inte klarar",
-      "Gör ett yrkestest och markera förslag som väcker nyfikenhet",
-      "Fråga någon som jobbar i ett yrke hur en vanlig dag ser ut",
-      "Fundera på praktik eller arbetsträning för att prova",
-      "Välj en väg som är okej, inte perfekt"
+      "Läs beslutet och leta upp fristen och vart du ska skicka",
+      "Skriv ner datumet du tog del av beslutet",
+      "Be Försäkringskassan förklara det du inte förstår",
+      "Boka tid hos din läkare",
+      "Begär omprövning skriftligt innan fristen går ut",
+      "Ta reda på hur du försörjer dig under tiden"
     ],
     "actions": [
-      { "href": "/interest-guide", "label": "Få förslag på yrken att utforska", "type": "primary" },
-      { "href": "/career", "label": "Tänk vidare om din riktning", "type": "secondary" }
+      { "href": "/resources", "label": "Hitta stöd och vägar vidare", "type": "primary" }
     ]
   },
-  "yrkestest-sa-anvander-du-det": {
-    "title": "Yrkestest gratis – vad ett test kan och inte kan säga",
-    "summary": "Vad ett yrkestest mäter, vad det missar och hur du läser svaret. Plus vad du gör efter testet, och tester du kan prova gratis.",
-    "category_key": "self-awareness",
-    "subcategory": "yrkesval",
-    "tags": ["yrkestest", "yrkestest gratis", "karriärtest", "intresseguide", "jobbtest"],
-    "difficulty": "easy",
+  "lattsvenska-etableringsersattning": {
+    "title": "Vad är etableringsersättning?",
+    "summary": "Etableringsersättning är pengar när du går i etableringsprogrammet. Läs vem som betalar, hur du ansöker och vad som ändrades för tilläggen.",
+    "category_key": "easy-swedish",
+    "subcategory": "ersattning",
+    "tags": ["etableringsersättning", "etableringsprogrammet", "Försäkringskassan", "lättläst", "nyanländ"],
+    "difficulty": "easy-swedish",
     "energy_level": "low",
-    "related_article_slugs": ["upptack-dina-styrkor", "hitta-dina-varderingar", "personlighetstyper-arbete", "hitta-ditt-drommjobb"],
-    "related_tools": ["/interest-guide"],
-    "checklist": [
-      "Gör ett test när du har en lugn stund",
-      "Sortera förslagen i intressant, nej och vet inte",
-      "Välj två eller tre förslag att undersöka",
-      "Läs vad yrket innebär en vanlig dag",
-      "Prata med någon som jobbar där"
-    ],
+    "related_article_slugs": ["etableringsersattning", "etableringsprogrammet", "lattsvenska-etableringsjobb", "lattsvenska-a-kassa"],
+    "related_tools": [],
+    "checklist": [],
     "actions": [
-      { "href": "/interest-guide", "label": "Gör yrkestestet och få en lista att utforska", "type": "primary" }
+      { "href": "/knowledge-base/article/etableringsersattning", "label": "Läs mer om etableringsersättning", "type": "primary" }
     ]
   },
-  "personliga-egenskaper-exempel": {
-    "title": "Personliga egenskaper – exempel till CV och intervju",
-    "summary": "Lista över personliga egenskaper och vad de betyder i arbetet, hur du väljer tre som stämmer och visar dem med exempel i CV och brev.",
-    "category_key": "self-awareness",
-    "subcategory": "styrkor",
-    "tags": ["personliga egenskaper", "detaljorienterad", "styrkor", "CV", "personligt brev"],
-    "difficulty": "easy",
+  "lattsvenska-varsel": {
+    "title": "Vad är varsel?",
+    "summary": "Ett varsel är en förvarning om att jobb kan försvinna. Läs vad det betyder, om du är uppsagd och vad du kan göra medan du väntar.",
+    "category_key": "easy-swedish",
+    "subcategory": "anstallning",
+    "tags": ["varsel", "uppsägning", "arbetsbrist", "lättläst"],
+    "difficulty": "easy-swedish",
     "energy_level": "low",
-    "related_article_slugs": ["styrkor-svagheter-intervju", "upptack-dina-styrkor", "cv-grunder", "personligt-brev"],
-    "related_tools": ["/cv", "/cover-letter"],
-    "checklist": [
-      "Fråga någon som känner dig vad de uppskattar hos dig",
-      "Välj tre egenskaper ur tabellen som stämmer",
-      "Skriv en mening med ett konkret exempel för varje",
-      "Stryk egenskaper du inte kan ge exempel på",
-      "Lägg in exemplen i CV:t och brevet"
-    ],
+    "related_article_slugs": ["varsel-vad-betyder-det", "lattsvenska-bli-uppsagd", "lattsvenska-a-kassa", "lattsvenska-uppsagningstid"],
+    "related_tools": [],
+    "checklist": [],
     "actions": [
-      { "href": "/cv", "label": "Lägg in dina egenskaper i ditt CV", "type": "primary" },
-      { "href": "/cover-letter", "label": "Skriv ett brev med dina exempel", "type": "secondary" }
+      { "href": "/knowledge-base/article/varsel-vad-betyder-det", "label": "Läs mer om varsel", "type": "primary" }
     ]
   }
 }

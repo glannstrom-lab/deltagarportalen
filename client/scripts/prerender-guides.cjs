@@ -23,6 +23,7 @@ const {
   KATEGORIER,
 } = require('./lib/guides.cjs')
 const {
+  VERKTYGSRUTTER,
   renderGuide,
   renderIndex,
   renderKategori,
@@ -184,8 +185,12 @@ for (const artikel of publicerade) {
     b2bInviter.get(artikel.slug) || [],
     publiceradeSlugs
   )
-  for (const m of html.matchAll(/href="(\/knowledge-base\/[^"]*)"/g)) {
-    portallankar.push(`/guider/${artikel.slug}/ → ${m[1]}`)
+  for (const m of html.matchAll(/href="(\/[^"#?]*)"/g)) {
+    let rutt = m[1]
+    try { rutt = decodeURI(rutt) } catch { /* behåll råvärdet */ }
+    if (rutt.startsWith('/knowledge-base/') || VERKTYGSRUTTER.has(rutt)) {
+      portallankar.push(`/guider/${artikel.slug}/ → ${m[1]}`)
+    }
   }
   skrivSida(path.join(dir, 'index.html'), html, 'utf8')
   skrivna++
@@ -194,7 +199,7 @@ for (const artikel of publicerade) {
 if (portallankar.length) {
   console.error(
     `\nprerender-guides: ${portallankar.length} portallänk(ar) i publika guider. På en publik sida ` +
-      `landar /knowledge-base/… på startsidan. Peka om i publikaArtikellankar() ` +
+      `landar /knowledge-base/… och /cv på startsidan. Peka om i publikaArtikellankar() eller publikaVerktygslankar() ` +
       `(scripts/lib/guide-template.cjs), inte här:\n  ` +
       portallankar.slice(0, 15).join('\n  ')
   )

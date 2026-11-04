@@ -113,7 +113,7 @@ npm run content:new            # Lägger in NYA artiklar ur content/new-articles
 npm run content:granska        # Oberoende granskning av en innehållsomgång innan den skrivs (2026-09-21). Fäller på ordantal, titel/summary-längd, slugkrock, saknad källank, rå H1, obelagd generalisering. **Kör den — agenternas egenrapport har sagt "rent" sex omgångar i rad medan grinden hittat fel**
 # ⚠️ Artikeltalet står på SEX ställen i content/tools.json (kunskapsbanken) och
 # fräts av varje omgång. Bygget fäller om det inte stämmer — rätta talet, inte grinden.
-# 312 artiklar i prod / 310 publicerade (2026-11-04, omgång 11).
+# 321 artiklar i prod / 319 publicerade (2026-11-04, omgång 12).
 # En artikel om regler har en hållbarhetstid. Tre artiklar beskrev 2026-09-21 en a-kassa som
 # avskaffades 2025-10-01 (arbetsvillkor, grundersättning, kassakort) — på båda språken.
 # src/test/guides-avskaffade-regler.test.ts håller dem rättade; lägg till en rad i AVSKAFFAT

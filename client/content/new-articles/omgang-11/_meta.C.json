@@ -1,0 +1,68 @@
+{
+  "vad-ska-jag-jobba-med": {
+    "title": "Vad ska jag jobba med? Så tar du reda på det",
+    "summary": "Sex övningar du kan göra i dag för att hitta en riktning, även om du inte vet alls eller har begränsad ork. Ingen behöver ett drömjobb.",
+    "category_key": "self-awareness",
+    "subcategory": "yrkesval",
+    "tags": ["vad ska jag jobba med", "yrkesval", "vilket yrke passar mig", "intresseguide"],
+    "difficulty": "easy",
+    "energy_level": "low",
+    "related_article_slugs": ["upptack-dina-styrkor", "hitta-dina-varderingar", "praktik-som-vag-in", "dromjobbsanalys"],
+    "related_tools": ["/interest-guide"],
+    "checklist": [
+      "Skriv en lista över vad du gillat och en över vad du orkat",
+      "Skriv ner vad kroppen, orken och miljön inte klarar",
+      "Gör ett yrkestest och markera förslag som väcker nyfikenhet",
+      "Fråga någon som jobbar i ett yrke hur en vanlig dag ser ut",
+      "Fundera på praktik eller arbetsträning för att prova",
+      "Välj en väg som är okej, inte perfekt"
+    ],
+    "actions": [
+      { "href": "/interest-guide", "label": "Få förslag på yrken att utforska", "type": "primary" },
+      { "href": "/career", "label": "Tänk vidare om din riktning", "type": "secondary" }
+    ]
+  },
+  "yrkestest-sa-anvander-du-det": {
+    "title": "Yrkestest gratis – vad ett test kan och inte kan säga",
+    "summary": "Vad ett yrkestest mäter, vad det missar och hur du läser svaret. Plus vad du gör efter testet, och tester du kan prova gratis.",
+    "category_key": "self-awareness",
+    "subcategory": "yrkesval",
+    "tags": ["yrkestest", "yrkestest gratis", "karriärtest", "intresseguide", "jobbtest"],
+    "difficulty": "easy",
+    "energy_level": "low",
+    "related_article_slugs": ["upptack-dina-styrkor", "hitta-dina-varderingar", "personlighetstyper-arbete", "hitta-ditt-drommjobb"],
+    "related_tools": ["/interest-guide"],
+    "checklist": [
+      "Gör ett test när du har en lugn stund",
+      "Sortera förslagen i intressant, nej och vet inte",
+      "Välj två eller tre förslag att undersöka",
+      "Läs vad yrket innebär en vanlig dag",
+      "Prata med någon som jobbar där"
+    ],
+    "actions": [
+      { "href": "/interest-guide", "label": "Gör yrkestestet och få en lista att utforska", "type": "primary" }
+    ]
+  },
+  "personliga-egenskaper-exempel": {
+    "title": "Personliga egenskaper – exempel till CV och intervju",
+    "summary": "Lista över personliga egenskaper och vad de betyder i arbetet, hur du väljer tre som stämmer och visar dem med exempel i CV och brev.",
+    "category_key": "self-awareness",
+    "subcategory": "styrkor",
+    "tags": ["personliga egenskaper", "detaljorienterad", "styrkor", "CV", "personligt brev"],
+    "difficulty": "easy",
+    "energy_level": "low",
+    "related_article_slugs": ["styrkor-svagheter-intervju", "upptack-dina-styrkor", "cv-grunder", "personligt-brev"],
+    "related_tools": ["/cv", "/cover-letter"],
+    "checklist": [
+      "Fråga någon som känner dig vad de uppskattar hos dig",
+      "Välj tre egenskaper ur tabellen som stämmer",
+      "Skriv en mening med ett konkret exempel för varje",
+      "Stryk egenskaper du inte kan ge exempel på",
+      "Lägg in exemplen i CV:t och brevet"
+    ],
+    "actions": [
+      { "href": "/cv", "label": "Lägg in dina egenskaper i ditt CV", "type": "primary" },
+      { "href": "/cover-letter", "label": "Skriv ett brev med dina exempel", "type": "secondary" }
+    ]
+  }
+}

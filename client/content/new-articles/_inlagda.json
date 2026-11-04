@@ -2,23 +2,14 @@
   "_kommentar": "Slugs som apply-new-articles.cjs lagt in i prod. Radera dem igen med `node scripts/apply-new-articles.cjs --rollback --skriv`.",
   "skrivet": "2026-11-04",
   "slugs": [
-    "aktivitetsstod-sa-fungerar-det",
-    "byta-handlaggare-arbetsformedlingen",
-    "hitta-kollektivavtal-pa-arbetsplatsen",
-    "lattsvenska-aktivitetsstod",
-    "lattsvenska-kompetens",
-    "lattsvenska-lonebidrag",
-    "lattsvenska-omstallningsstod",
-    "lattsvenska-rusta-och-matcha",
-    "lattsvenska-sjukersattning",
-    "personliga-egenskaper-exempel",
-    "sjukersattning-vem-kan-fa",
-    "tillsvidareanstallning",
-    "timanstalld-vad-galler",
-    "tjanstgoringsintyg-och-anstallningsintyg",
-    "vad-ska-jag-jobba-med",
-    "valja-leverantor-rusta-och-matcha",
-    "yrkesbevis",
-    "yrkestest-sa-anvander-du-det"
+    "anstallningsbevis",
+    "hjalp-att-soka-jobb",
+    "indragen-sjukersattning",
+    "intervjutraning-sa-ovar-du",
+    "lattsvenska-anstallningsbevis",
+    "lattsvenska-etableringsersattning",
+    "lattsvenska-varsel",
+    "nuvarande-uppsagningstid-i-ansokan",
+    "vilka-kompetenser-har-jag"
   ]
 }

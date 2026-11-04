@@ -1,0 +1,109 @@
+{
+  "valja-leverantor-rusta-och-matcha": {
+    "title": "Välja leverantör till Rusta och matcha – så jämför du",
+    "summary": "Var listan över leverantörer finns, vad du kan jämföra, vilka frågor du ska ställa och vad som händer om du inte väljer själv.",
+    "category_key": "job-search",
+    "subcategory": "arbetsformedlingen",
+    "tags": ["Rusta och matcha", "leverantör", "Arbetsförmedlingen", "betyg"],
+    "difficulty": "easy",
+    "energy_level": "low",
+    "related_article_slugs": ["rusta-och-matcha", "byta-leverantor-rusta-och-matcha", "ersattning-under-program", "aktivitetsrapport-guide"],
+    "related_tools": ["/calendar"],
+    "checklist": [
+      "Öppna Sök leverantör hos Arbetsförmedlingen",
+      "Filtrera på ort, språk och yrkesinriktning",
+      "Kontakta två eller tre leverantörer med samma frågor",
+      "Skriv upp KA-numret på den du väljer",
+      "Meddela ditt val innan tidsgränsen i ditt besked går ut"
+    ],
+    "actions": [
+      { "href": "/calendar", "label": "Lägg in tidsgränsen för ditt val", "type": "primary" },
+      { "href": "/job-search", "label": "Fortsätt söka jobb under tiden", "type": "secondary" }
+    ]
+  },
+  "byta-handlaggare-arbetsformedlingen": {
+    "title": "Kan man byta handläggare på Arbetsförmedlingen?",
+    "summary": "Så ber du om en annan handläggare, hur du lämnar synpunkter, skillnaden mot omprövning och vad du gör om kontakten inte fungerar.",
+    "category_key": "job-search",
+    "subcategory": "arbetsformedlingen",
+    "tags": ["handläggare", "Arbetsförmedlingen", "klagomål", "omprövning"],
+    "difficulty": "easy",
+    "energy_level": "low",
+    "related_article_slugs": ["din-planering-hos-arbetsformedlingen", "overklaga-ett-beslut", "varning-fran-arbetsformedlingen", "aktivitetsrapport-guide"],
+    "related_tools": [],
+    "checklist": [
+      "Skriv ner vad som inte fungerar, med datum",
+      "Be tydligt om en annan handläggare och ange varför",
+      "Skicka begäran skriftligt via Mina sidor",
+      "Lämna en synpunkt i formuläret om du inte får svar",
+      "Begär omprövning om det gäller ett beslut"
+    ],
+    "actions": [
+      { "href": "/diary", "label": "Skriv ner vad som hänt i din dagbok", "type": "primary" }
+    ]
+  },
+  "sjukersattning-vem-kan-fa": {
+    "title": "Sjukersättning – vem kan få den och hur ansöker du?",
+    "summary": "Vad sjukersättning (förr sjukpension) är, vad Försäkringskassan bedömer, vad läkarutlåtandet betyder och vad du gör vid avslag.",
+    "category_key": "employment-law",
+    "subcategory": "ersattning",
+    "tags": ["sjukersättning", "sjukpension", "Försäkringskassan", "läkarutlåtande"],
+    "difficulty": "medium",
+    "energy_level": "low",
+    "related_article_slugs": ["prova-jobb-med-sjukersattning-aktivitetsersattning", "sjuk-nar-du-ar-arbetslos", "tillbaka-till-jobb-efter-sjukskrivning", "overklaga-ett-beslut"],
+    "related_tools": ["/diary"],
+    "checklist": [
+      "Boka tid hos din läkare och ta upp sjukersättning",
+      "Skriv ner vad sjukdomen hindrar dig från i vardagen",
+      "Be läkaren skriva ett läkarutlåtande för sjukersättning",
+      "Ansök hos Försäkringskassan",
+      "Svara när Försäkringskassan ber om mer information"
+    ],
+    "actions": [
+      { "href": "/diary", "label": "Anteckna hur du mår och vad du klarar", "type": "primary" }
+    ]
+  },
+  "yrkesbevis": {
+    "title": "Yrkesbevis – vad det är och hur du får det",
+    "summary": "Vad ett yrkesbevis är, hur branscherna bedömer din yrkeskunskap och hur det skiljer sig från legitimation och utländsk utbildning.",
+    "category_key": "career-development",
+    "subcategory": "validering",
+    "tags": ["yrkesbevis", "branschvalidering", "validering", "legitimation"],
+    "difficulty": "medium",
+    "energy_level": "medium",
+    "related_article_slugs": ["validering-av-yrkeskunskaper", "lattsvenska-validering", "validera-utlandsk-utbildning", "kompetensinventering-guide"],
+    "related_tools": ["/cv"],
+    "checklist": [
+      "Skriv ner vilket yrke du arbetat i och hur länge",
+      "Kolla Branschvalideringskartan hos MYH",
+      "Fråga din arbetsförmedlare om validering inom yrket",
+      "Fråga vem som betalar innan du börjar",
+      "Lägg in beviset i ditt CV när du fått det"
+    ],
+    "actions": [
+      { "href": "/cv", "label": "Visa din yrkeskompetens i CV:t", "type": "primary" },
+      { "href": "/skills-gap-analysis", "label": "Se vilka kompetenser du saknar", "type": "secondary" }
+    ]
+  },
+  "aktivitetsstod-sa-fungerar-det": {
+    "title": "Aktivitetsstöd – vad det är och så ansöker du",
+    "summary": "Aktivitetsstöd betalas av Försäkringskassan när du deltar i Arbetsförmedlingens program. Så ansöker du och vad som gäller vid frånvaro.",
+    "category_key": "employment-law",
+    "subcategory": "ersattning",
+    "tags": ["aktivitetsstöd", "Försäkringskassan", "program", "ersättning"],
+    "difficulty": "medium",
+    "energy_level": "low",
+    "related_article_slugs": ["ersattning-under-program", "aktivitetsrapport-guide", "etableringsersattning", "varning-fran-arbetsformedlingen"],
+    "related_tools": ["/calendar"],
+    "checklist": [
+      "Läs vilken ersättning ditt programbeslut nämner",
+      "Lägg en påminnelse i kalendern för början av varje månad",
+      "Ansök hos Försäkringskassan när månaden är slut",
+      "Anmäl sjukdom till Arbetsförmedlingen första dagen",
+      "Be om godkännande i förväg för resor eller ledighet"
+    ],
+    "actions": [
+      { "href": "/calendar", "label": "Lägg in när du ska ansöka varje månad", "type": "primary" }
+    ]
+  }
+}

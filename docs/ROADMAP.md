@@ -1161,6 +1161,26 @@ visuell design (täckt av dagens SKAV-omgång) eller SEO/innehåll (senast grans
 
 ---
 
+## Innehållsomgång 12 (2026-11-04) — 9 nya guider, 41 slipade sidor, 44 engelska omöversättningar
+
+**K4 är inte uppfylld för omgång 11**, som publicerades samma dag och kan mätas tidigast 2026-12-01. Mikael gav ordern ändå. Ämnena valdes därför ur samma mätpunkt (`docs/gsc/jobin-fragor-sida-2026-11-04.json`) och bara där omgång 11 inte tagit frågan. Utfallet går inte att skilja från omgång 11 per vecka, bara per sida.
+
+### Nytt (9)
+`anstallningsbevis`, `nuvarande-uppsagningstid-i-ansokan`, `intervjutraning-sa-ovar-du`, `hjalp-att-soka-jobb`, `vilka-kompetenser-har-jag`, `indragen-sjukersattning`, samt lättlästa `lattsvenska-anstallningsbevis`, `lattsvenska-etableringsersattning`, `lattsvenska-varsel`. Prod: 312 → 321 artiklar (319 publicerade).
+
+### Slipat (41 + 7 verktygssidor)
+Lista i `client/content/expansions/_metadata.json`, förtexter i `client/content/expansions/arkiv-2026-11-om12/fore/`. Verktygssidorna cv, yrkestest, personligt-brev, lon, kompetensanalys, intervjutraning och utbildning är lästa mot koden. Lönesidan påstod att man anger sin bruttolön, och det fältet finns inte.
+
+### Buggar som hittades
+- **43 verktygslänkar i publika guider ledde till startsidan.** `/cv` och liknande fungerar i appen, men på en publik sida svarar servern med index.html. `publikaVerktygslankar()` pekar nu om dem till `/verktyg/<slug>/`, och prerenderingen fäller på rutter ur `tools.json`. Mutationstestad: utan omskrivningen fäller bygget på 43 länkar.
+- **Provanställning:** agenten avfärdade LAS 31 § (underrättelse i förväg, varsel till facket) som kollektivavtalsregel. Handläsningen hittade felet, och lagtexten bekräftade det.
+- **Två oberoende faktagranskare gav ett tiotal rättelser** som författaragenterna missat: besked vid visstid (15 §), lönebidrag kan inte beslutas i efterhand, Polisen skickar inte utdrag till arbetsgivare, "du är inte anställd" stämmer inte vid arbetsträning hos egen arbetsgivare, AF har ingen roll i LAS-frister.
+
+### Kvar
+- [ ] **OM12-1 Engelska saknas helt på 157 artiklar** (`content_en` är null, 164 av 321 har den). De visas på svenska för engelska läsare. `scripts/apply-oversattningar.cjs` och `client/content/oversattning-2026-11/` är mönstret. Mikaels beslut om det är värt pengarna.
+- [ ] **OM12-2 Engelskan har ingen grind för avskaffade regler.** `guides-avskaffade-regler.test.ts` ser inte `content_en`. Omöversättningen rättade 44 sidor, men de övriga 120 är inte lästa.
+- [ ] **OM12-3 IAF:s regelsamling** för `saga-upp-sig-och-a-kassa` är inte läst i original (övergångsregler, läkarintyg). Bör läsas av någon mot iaf.se/lag-ratt/regelsamlingar/.
+
 ## Innehållsomgång 11 (2026-11-04) — 18 nya guider, 35 slipade sidor, och första utfallsmätningen
 
 **K4 är uppfylld, för första gången också för utfallet.** Mätpunkter: `docs/gsc/jobin-2026-11-04.json` och `docs/gsc/jobin-fragor-sida-2026-11-04.json`. Exponeringar per vecka har gått från cirka 4 700 till cirka 10 700 sedan 21 september, snittposition 23,7 → 18,2 och klick totalt 100 → 393.
@@ -1182,7 +1202,7 @@ Lista och titlar i `client/content/expansions/_metadata.json`, förtexter i `cli
 Agenterna hade själva rensat bort siffror och flera felaktiga lugnande svar, och grinden var ren. Handläsningen mot myndigheterna fann ändå bland annat: TSN angavs som organisation för arbetare (rätt: TSL; TSN är statligt anställda, och felet kom ur uppdragsbeskrivningen), "jag kan inte säga" om ersättning i Rusta och matcha fast förmedlingsinsatser står på Försäkringskassans lista, och en titel som lovade "utan att förlora rätten". **Briefen är ingen källa, och det gäller också den som skriver uppdraget.**
 
 ### Kvar
-- [ ] **OM11-1 Engelska versioner släpar.** 21 av de 35 slipade sidorna har `content_en` från före slipningen, bland dem `nystartsjobb-guide` (med gamla regeltal) och `a-kassa-sa-fungerar-det`. Översätt om dem. `apply-expansions` rör bara svenskan.
+- [x] **OM11-1 Engelska versioner släpar. Löst 2026-11-04 i omgång 12.** 21 av de 35 slipade sidorna har `content_en` från före slipningen, bland dem `nystartsjobb-guide` (med gamla regeltal) och `a-kassa-sa-fungerar-det`. Översätt om dem. `apply-expansions` rör bara svenskan.
 - [ ] **OM11-2 Utfallsmätning** tidigast 2026-12-01 mot `docs/gsc/jobin-2026-11-04.json`: CTR på de slipade sidorna, om huvudguiderna tagit tillbaka huvudfrågorna, och om `valja-leverantor-rusta-och-matcha` lyfter leverantörsfrågorna utan att sänka `rusta-och-matcha`.
 - [ ] **OM11-3 Beslut: sifferförbudet mot sökintentionen.** "Hur lång uppsägningstid" går inte att besvara utan månadstal. LAS-tiderna ändras sällan. Ett smalt undantag för lagtext med källa och datum kan hjälpa, men är Mikaels beslut.
 - [ ] **OM11-5 Supabase-CLI v3 i CI.** v3 (2026-11-02) fällde `deploy.yml` (edge-funktioner, röktestet hoppades över) och `backup.yml` (ingen lyckad backup 3–4 november) via `version: latest`. Båda låsta till 2.122.0 2026-11-04. Gå över till v3 medvetet: `--yes` på hosted-ändringar, `--remote` i stället för `--linked`, och läs migreringsguiden för `db dump`. Lokala skript kör redan v3 och saknar `--read-only` i `schema:refresh` och `grants:refresh`.

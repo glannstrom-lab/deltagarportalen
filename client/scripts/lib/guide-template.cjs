@@ -366,6 +366,25 @@ function publikaArtikellankar(html, publiceradeSlugs) {
 }
 
 /**
+ * Brödtextens länkar till portalens verktyg (`/cv`, `/interview-simulator`) fungerar
+ * inne i appen, men på en publik sida svarar servern med index.html och läsaren landar
+ * på startsidan. Mätt 2026-11-04: 33 länkar i publicerade guider. Peka om dem till den
+ * prerenderade verktygssidan. Rutten står i content/tools.json, så listan kan inte glida.
+ */
+const VERKTYGSRUTTER = new Map(
+  require('../../content/tools.json').verktyg.map((v) => [v.route, `/verktyg/${v.slug}/`])
+)
+
+function publikaVerktygslankar(html) {
+  return html.replace(/<a href="(\/[^"#?]*)"/g, (hel, rutt) => {
+    let avkodad = rutt
+    try { avkodad = decodeURI(rutt) } catch { /* behåll råvärdet */ }
+    const mal = VERKTYGSRUTTER.get(avkodad)
+    return mal ? `<a href="${mal}"` : hel
+  })
+}
+
+/**
  * Markerar myndighetsnamn `translate="no"` så Chromes och Googles översättning
  * lämnar dem (FN19). Bara textnoder: allt mellan `<` och `>` rörs inte, och
  * innehållet i <code>, <script> och <style> hoppas över. Regeln är densamma som
@@ -413,7 +432,9 @@ function renderGuide(a, relaterade, b2b = [], publiceradeSlugs = new Set()) {
   const kategori = KATEGORI_NAMN[a.category_key] || 'Guide'
   const verktyg = verktygFor(a)
   const primart = verktyg[0]
-  const body = skyddaNamn(publikaArtikellankar(markdownToHtml(a.content), publiceradeSlugs))
+  const body = skyddaNamn(
+    publikaVerktygslankar(publikaArtikellankar(markdownToHtml(a.content), publiceradeSlugs))
+  )
   // Beskrivningen tas ur summary; faller tillbaka på inledningen om den saknas.
   const beskrivning = (a.summary || markdownToPlain(a.content).slice(0, 160)).trim().slice(0, 160)
   // Används av både vadArDetHar och krisstod — samma sida ska inte kunna få
@@ -1969,6 +1990,7 @@ ${krisstod()}
 }
 
 module.exports = {
+  VERKTYGSRUTTER,
   skyddaNamn,
   renderOmOss,
   renderGuide,

@@ -46,7 +46,7 @@ export const KURSER: readonly Kurs[] = [
       { slug: 'cv-grunder', minuter: 5 },
       { slug: 'ansokningsstrategi', minuter: 2 },
       { slug: 'intervju-fragor', minuter: 4 },
-      { slug: 'forsta-dagen-nytt-jobb', minuter: 2 },
+      { slug: 'forsta-dagen-nytt-jobb', minuter: 4 },
     ],
   },
   {
@@ -54,8 +54,8 @@ export const KURSER: readonly Kurs[] = [
     namn: 'Den svenska arbetsplatsen',
     beskrivning: 'Anställningsavtal, kollektivavtal, facket, sjukdom och dina rättigheter när du är ny på ett jobb.',
     delar: [
-      { slug: 'anstallningsformer-guide', minuter: 6 },
-      { slug: 'las-anstallningsavtal', minuter: 3 },
+      { slug: 'anstallningsformer-guide', minuter: 4 },
+      { slug: 'las-anstallningsavtal', minuter: 4 },
       { slug: 'kollektivavtal-vad-det-betyder', minuter: 4 },
       { slug: 'facket-ska-jag-ga-med', minuter: 3 },
       { slug: 'sjuklon-karens-och-vab', minuter: 4 },

@@ -1,81 +1,59 @@
 {
-  "timanstalld-vad-galler": {
-    "title": "Timanställd – vad gäller för lön, schema och uppsägning?",
-    "summary": "Timanställd är ingen egen anställningsform. Så ser du vad som gäller för lön, pass, semesterersättning och a-kassa i just din anställning.",
+  "anstallningsbevis": {
+    "title": "Anställningsbevis – vad arbetsgivaren ska ge dig skriftligt",
+    "summary": "Vad ett anställningsbevis är, vad som ska stå i det, skillnaden mot anställningsavtal och vad du gör om du inte har fått något.",
     "category_key": "employment-law",
     "subcategory": "anstallningsformer",
-    "tags": ["timanställd", "behovsanställning", "timanställning", "visstid", "lön"],
-    "difficulty": "medium",
-    "energy_level": "medium",
-    "related_article_slugs": ["anstallningsformer-guide", "las-anstallningsavtal", "lattsvenska-timanstallning", "bemanningsforetag-guide"],
-    "related_tools": ["/resources"],
-    "checklist": [
-      "Hitta ditt anställningsavtal och se vilken form anställningen har",
-      "Fråga om timlön, tillägg och semesterersättning",
-      "Fråga vad som gäller om du tackar nej till ett pass",
-      "Be om svaren skriftligt",
-      "Kontakta a-kassan innan du tar nya timmar om du har ersättning"
-    ],
-    "actions": [
-      { "href": "/resources", "label": "Hitta stöd och vägar vidare", "type": "primary" },
-      { "href": "/knowledge-base/article/las-anstallningsavtal", "label": "Läs ditt anställningsavtal steg för steg", "type": "secondary" }
-    ]
-  },
-  "tjanstgoringsintyg-och-anstallningsintyg": {
-    "title": "Tjänstgöringsintyg och anställningsintyg – skillnaden",
-    "summary": "Orden förklarade, vad banken vill ha vid lån, hur du ber arbetsgivaren om intyget och vad du gör om du inte får svar.",
-    "category_key": "employment-law",
-    "subcategory": "intyg",
-    "tags": ["tjänstgöringsintyg", "anställningsintyg", "arbetsintyg", "intyg till banken"],
+    "tags": ["anställningsbevis", "anställningsavtal", "LAS", "arbetsgivarintyg", "anställningsvillkor"],
     "difficulty": "easy",
     "energy_level": "low",
-    "related_article_slugs": ["arbetsgivarintyg-och-betyg", "lattsvenska-arbetsgivarintyg", "referenser-guide", "provanstallning-guide"],
+    "related_article_slugs": ["las-anstallningsavtal", "arbetsgivarintyg-och-betyg", "tjanstgoringsintyg-och-anstallningsintyg", "anstallningsformer-guide"],
     "related_tools": [],
     "checklist": [
-      "Bestäm vad intyget ska användas till",
-      "Fråga mottagaren vilka uppgifter som krävs",
-      "Skicka en skriftlig förfrågan med syfte och datum",
-      "Följ upp efter några dagar",
-      "Spara en kopia digitalt"
+      "Leta fram avtal och papper du fått av arbetsgivaren",
+      "Kontrollera att arbetsgivare, startdag, lön och arbetstid står där",
+      "Kontrollera att anställningsform och uppsägningsregler står där",
+      "Be skriftligt om det som saknas",
+      "Spara svaret digitalt"
     ],
     "actions": [
-      { "href": "/knowledge-base/article/arbetsgivarintyg-och-betyg", "label": "Läs om arbetsgivarintyg till a-kassan", "type": "primary" }
+      { "href": "/knowledge-base/article/las-anstallningsavtal", "label": "Läs ditt anställningsavtal steg för steg", "type": "primary" }
     ]
   },
-  "hitta-kollektivavtal-pa-arbetsplatsen": {
-    "title": "Har företaget kollektivavtal? Så tar du reda på det",
-    "summary": "Fråga arbetsgivaren eller facket. Så formulerar du frågan, även på intervjun, vad ett hängavtal är och vad du gör om avtal saknas.",
-    "category_key": "employment-law",
-    "subcategory": "kollektivavtal",
-    "tags": ["kollektivavtal", "hängavtal", "fack", "lön enligt kollektivavtal"],
+  "nuvarande-uppsagningstid-i-ansokan": {
+    "title": "Nuvarande uppsägningstid i ansökan – så svarar du",
+    "summary": "Vad frågan om din uppsägningstid betyder, hur du tar reda på den och vad du svarar som arbetslös, timanställd eller visstidsanställd.",
+    "category_key": "job-search",
+    "subcategory": "ansokan",
+    "tags": ["uppsägningstid", "ansökningsformulär", "när kan du börja", "intervju"],
     "difficulty": "easy",
     "energy_level": "low",
-    "related_article_slugs": ["kollektivavtal-vad-det-betyder", "lattsvenska-kollektivavtal", "facket-ska-jag-ga-med", "fragor-att-stalla-till-arbetsgivaren"],
-    "related_tools": [],
+    "related_article_slugs": ["uppsagningstid-och-uppsagningsbesked", "lattsvenska-uppsagningstid", "las-anstallningsavtal", "anstallningsformer-guide"],
+    "related_tools": ["/interview-simulator"],
     "checklist": [
-      "Leta efter ordet kollektivavtal i annons och anställningsavtal",
-      "Fråga arbetsgivaren vilket avtal som gäller",
-      "Fråga ett fackförbund i branschen som andra källa",
-      "Be om att få läsa avtalet",
-      "Läs ditt personliga anställningsavtal extra noga om avtal saknas"
+      "Hitta ditt anställningsavtal eller anställningsbevis",
+      "Skriv ner uppsägningstiden och var du hittade den",
+      "Kolla kollektivavtalet om din arbetsplats har ett",
+      "Förbered en kort mening för formulär och intervju",
+      "Fråga HR eller facket om du är osäker"
     ],
     "actions": [
-      { "href": "/interview-simulator", "label": "Öva på att ställa frågan i en intervju", "type": "primary" }
+      { "href": "/interview-simulator", "label": "Öva på att svara i en intervju", "type": "primary" }
     ]
   },
-  "tillsvidareanstallning": {
-    "title": "Tillsvidareanställning – vad det betyder och vad det ger dig",
-    "summary": "Tillsvidare är det man kallar fast anställning. Så skiljer den sig från provanställning och visstid, och vad den betyder vid uppsägning och bolån.",
-    "category_key": "employment-law",
-    "subcategory": "anstallningsformer",
-    "tags": ["tillsvidareanställning", "fast anställning", "LAS", "sakliga skäl"],
-    "difficulty": "easy",
+  "lattsvenska-anstallningsbevis": {
+    "title": "Vad är ett anställningsbevis? – lättläst",
+    "summary": "Lättläst om anställningsbevis: vad det är, vad som står i det och vad du gör om du inte har fått något från din arbetsgivare.",
+    "category_key": "easy-swedish",
+    "subcategory": "anstallning",
+    "tags": ["anställningsbevis", "lättläst", "anställningsavtal", "arbetsgivare"],
+    "difficulty": "easy-swedish",
     "energy_level": "low",
-    "related_article_slugs": ["anstallningsformer-guide", "lattsvenska-tillsvidareanstallning", "provanstallning-guide", "uppsagningstid-och-uppsagningsbesked"],
+    "related_article_slugs": ["lattsvenska-anstallningsavtal", "lattsvenska-arbetsgivarintyg", "lattsvenska-uppsagningstid", "anstallningsformer-guide"],
     "related_tools": [],
     "checklist": [],
     "actions": [
-      { "href": "/resources", "label": "Hitta stöd och vägar vidare", "type": "primary" }
+      { "href": "/knowledge-base/article/lattsvenska-anstallningsavtal", "label": "Läs om anställningsavtal", "type": "primary" }
     ]
   }
 }

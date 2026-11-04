@@ -1,0 +1,34 @@
+{
+  "kompetensutvardering": {
+    "title": "Kompetensinventering och kompetenskartläggning – så gör du",
+    "summary": "Så gör du en kompetensinventering steg för steg, med mall för kompetensmatris i Excel och skillnaden mot kompetensanalys."
+  },
+  "kompetensutveckling-guide": {
+    "title": "Kompetensutveckling – vad det är och hur du utvecklar din",
+    "summary": "Vad kompetens betyder och hur du väljer rätt sätt att utveckla den, med en enkel plan som fungerar både utan jobb och på jobbet."
+  },
+  "branscher-brist": {
+    "title": "Bristyrken i Sverige – så läser du yrkesbarometern",
+    "summary": "Vilka yrken det är brist på avgörs yrke för yrke. Så läser du Arbetsförmedlingens yrkesbarometer och vad brist, balans och paradox betyder."
+  },
+  "karriarplanering-guide": {
+    "title": "Karriärplanering – så gör du en karriärplan steg för steg",
+    "summary": "Så gör du en karriärplan: se var du står, sätt karriärmål du kan följa upp, välj väg och ta nästa steg. Med exempel och mall."
+  },
+  "stresshantering": {
+    "title": "Stresshantering – råd från 1177 för dig som söker jobb",
+    "summary": "Vad stress är, tecken på att du mår dåligt av den, vad du kan göra själv enligt 1177 och när det är dags att söka vård."
+  },
+  "starta-eget-guide": {
+    "title": "Starta eget – är det för dig? Stöd och första steg",
+    "summary": "Passar det dig att starta eget? Vad Arbetsförmedlingens stöd till start av näringsverksamhet kräver, vilka företagsformer som finns och vad du gör först."
+  },
+  "yrkessvenska": {
+    "title": "Yrkessvenska – vad det är och hur du kommer in",
+    "summary": "Yrkessvenska är svenska för just ditt yrke. Så skiljer den sig från sfi och så får du plats via Arbetsförmedlingen."
+  },
+  "praktik-som-vag-in": {
+    "title": "Arbetspraktik via Arbetsförmedlingen – och ersättningen",
+    "summary": "Så fungerar arbetspraktik, vem som kan få den, och vad du ska fråga om ersättning hos Arbetsförmedlingen och Försäkringskassan innan du börjar."
+  }
+}
