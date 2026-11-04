@@ -1,6 +1,6 @@
 ---
 name: innehallsomgang
-description: Kör en komplett innehållsomgång i spår K — mät luckorna i artikelkorpusen, skicka ut Sonnet-agenter som skriver nya SEO-anpassade guider och landningssidor, granska deras arbete oberoende, skriv till prod och verifiera bygget. Använd när Mikael säger "skicka ut sonnetagenter och skriv nya seo anpassade landningssidor och innehåll", "kör en innehållsomgång", "ny omgång", "fler guider", eller ber om nytt publikt innehåll till jobin.se.
+description: Kör en komplett innehållsomgång i spår K — mät i Search Console, skicka ut Sonnet-agenter som skriver nya guider, slipar befintliga sidor och verktygssidor, faktagranska oberoende, översätt till engelska, skriv till prod och verifiera bygget. Använd när Mikael säger "fortsätt jobbet med seo", "slipa på befintligt", "skicka ut sonnetagenter och skriv nya seo anpassade landningssidor och innehåll", "kör en innehållsomgång", "ny omgång", "fler guider", "översätt guiderna", eller ber om nytt publikt innehåll till jobin.se.
 ---
 
 # Innehållsomgång — spår K
@@ -10,6 +10,19 @@ Proceduren är körd nio gånger (omgång 3–6, 8, 9, 10, 11, 12). Följ den. U
 **Push är deployen.** Den här skillen stannar före `git push` och lämnar
 beslutet till Mikael. Artiklarna skrivs däremot till prod-databasen som en del
 av omgången — det är reversibelt med `--rollback`.
+
+---
+
+## Ordningen när en omgång både skriver nytt och slipar
+
+1. Mät (steg 3 och K4 nedan). Säg om föregående omgång inte går att mäta än.
+2. Städa båda katalogerna (steg 1).
+3. Skicka ut skrivare, slipare och verktygssidor samtidigt. Bokstäver: A–D nytt, E–K slipning.
+4. Maskinell granskning och handläsning (steg 5).
+5. Oberoende faktagranskare på regelsidorna. Rätta.
+6. Översätt sidor som redan har `content_en`.
+7. Fråga Mikael, och skriv sedan i den här ordningen: `content:new`, `apply-expansions`, `apply-oversattningar`, `content:refresh`, `content:triage`.
+8. Räkna om artikeltalet (steg 6), bygg och kör `verify` (steg 7), släpp med skillen `slapp`.
 
 ---
 
@@ -24,6 +37,16 @@ mkdir -p omgang-<N-1>
 mv _meta.*.json _inlagda.json omgang-<N-1>/
 for f in *.md; do [ "$f" = "BRIEF.md" ] || mv "$f" omgang-<N-1>/; done
 ```
+
+Slipade sidor ligger kvar i `content/expansions/` på samma sätt, och `apply-expansions` läser varje `.md` där. Arkivera dem också:
+
+```bash
+cd client/content/expansions
+mkdir -p arkiv-om<N-1>/slipat
+mv *.md _metadata.json arkiv-om<N-1>/slipat/   # _backup.json stannar
+```
+
+Äldre arkiv heter `arkiv-2026-11` (omgång 11) och `arkiv-2026-11-om12` (omgång 12).
 
 `BRIEF.md` och `_befintliga-slugs.txt` stannar kvar. Uppdatera rubrikraden i
 `BRIEF.md` till rätt omgångsnummer.
@@ -144,16 +167,20 @@ Kontrollera dessutom **för hand**:
 ```bash
 cd client
 npm run content:new                    # torrläge, validerar allt
-npm run content:new -- --skriv         # skriver till prod
+npm run content:new -- --skriv --yes   # skriver till prod, efter Mikaels ja
+node scripts/apply-expansions.cjs --skriv --yes              # slipade sidor
+node scripts/apply-oversattningar.cjs <katalog> --skriv --yes # engelskan
 npm run content:refresh                # snapshot ur prod
 npm run content:triage -- --skriv      # publiceringslistan
 ```
+
+Räkna sedan om artikeltalet: det står i `content/tools.json` (posten `kunskapsbank` och `_kommentar`) och i `CLAUDE.md`. Bygget fäller om `tools.json` inte stämmer. De publika guidesidorna syns inte förrän efter push, men portalen läser databasen direkt.
 
 ## 7. Bygg och verifiera
 
 ```bash
 npm run build          # prerender + sitemap
-npm run verify         # alla tio grindar, inkl. coverage
+npm run verify         # hela grinduppsättningen, inkl. coverage
 ```
 
 Kontrollera i **byggd HTML**, inte i källkoden: en `<h1>` per sida, `<title>`
@@ -163,11 +190,12 @@ en sida i `dist/`. (Portallänkar, `href="/knowledge-base/…"`, fäller bygget
 självt sedan omgång 9 — 73 sidor ledde till startsidan i sju veckor innan
 någon läste den byggda sidan i stället för källan.)
 
-**Rör aldrig ett tak för att bli grön.** 122 warnings, 356 typfel, 52
-gradienter — sänk dem när du betalar av, höj dem aldrig.
+**Rör aldrig ett tak för att bli grön.** Taken står i `CLAUDE.md` och i takskripten.
+Sänk dem när du betalar av, höj dem aldrig.
 
 Hela släppproceduren, inklusive verifiering av deployen, ligger i skillen
-**`slapp`**. Den här skillen stannar före push.
+**`slapp`**. Den här skillen stannar före push. Kontrollera efter deployen att en ny
+`/guider/<slug>/` svarar 200 på jobin.se och att en rättad mening är live.
 
 ## Slipa befintliga sidor (omgång 11)
 
@@ -215,6 +243,8 @@ Lässkripten har `--read-only`. `content:new` och `apply-expansions` skickar `--
   vakt som faktiskt kan falla, och mutationstestningen som avgör det.
 - **K4:s regel:** ingen omgång utan mätning från den föregående. Kör `node docs/gsc/hamta.mjs docs/gsc`
   och välj ämnen ur datan. Search Console-åtkomsten fungerar, så det finns ingen ursäkt.
+  `hamta.mjs` hämtar inte fråga × sida. Den filen tas fram med samma anrop, `dimensions: ['query','page']`
+  och `startRow`-paginering, och sparas som `docs/gsc/jobin-fragor-sida-<datum>.json`.
 - **Ge inga organisationsexempel i uppdraget som du inte själv kontrollerat.** Omgång 11: jag
   skrev `tsn.se` som exempel, och agenten fyllde på ur minnet att TSN är för arbetare (rätt:
   TSL). Grinden såg det inte, men handläsningen gjorde det.
