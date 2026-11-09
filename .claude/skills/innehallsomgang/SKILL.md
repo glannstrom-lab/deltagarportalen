@@ -190,6 +190,21 @@ en sida i `dist/`. (Portallänkar, `href="/knowledge-base/…"`, fäller bygget
 självt sedan omgång 9 — 73 sidor ledde till startsidan i sju veckor innan
 någon läste den byggda sidan i stället för källan.)
 
+### Sidbilder till nya sidor
+
+Varje publik sida har en fotobild i hjälteblocket (`public/guidebilder/<nyckel>.webp`,
+sedan 2026-11-09). En ny guide utan bild bygger ändå, men utan bild. Kör
+
+```bash
+npm run guidebilder -- --saknas      # listar sidor utan bild, exit 1 om några
+```
+
+och generera de saknade i ElevenLabs med `recraft-v4.1-flash` (48 krediter per bild),
+en tagning per sida, prompt = `STIL_PROMPT` i `client/scripts/lib/guidebild.cjs` + ett
+konkret motiv på engelska (förlagorna: `design-source/sidbilder-seo/omgang-*-motiv.json`). Lägg originalen i
+`design-source/sidbilder-seo/raw/<slug>.webp` och kör `npm run guidebilder`.
+Titta på bilderna (kontaktark) innan commit: ansikten i fokus, läsbar text och logotyper är fel.
+
 **Rör aldrig ett tak för att bli grön.** Taken står i `CLAUDE.md` och i takskripten.
 Sänk dem när du betalar av, höj dem aldrig.
 

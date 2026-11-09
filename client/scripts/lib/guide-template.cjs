@@ -21,6 +21,7 @@
 const { markdownToHtml, markdownToPlain, renderInline, escapeHtml } = require('./markdown.cjs')
 // KG3: en delningsbild per kategori/sidtyp i stället för samma på alla sidor.
 const { ogBildFor } = require('./og-bild.cjs')
+const { guidebildHtml, GUIDEBILD_CSS } = require('./guidebild.cjs')
 const { SITE, TOOLS, KATEGORI_NAMN, KATEGORIER, kategoriUrl, appUrl, verktygFor, guideUrl } =
   require('./guides.cjs')
 // FN19: samma lista som appen (src/i18n/skyddadeNamn.ts) — datan bor i JSON.
@@ -75,7 +76,7 @@ img{max-width:100%;height:auto}
 .lyssna-status{margin:0;font-size:.875rem;color:var(--muted);flex-basis:100%}
 .lyssna-status:empty{display:none}
 
-.hero{background:var(--c-bg);border-bottom:1px solid var(--c-accent);padding:2.5rem 0 2.25rem}
+.hero{background:var(--c-bg);border-bottom:1px solid var(--c-accent);padding:2.5rem 0 2.25rem}${GUIDEBILD_CSS}
 .crumb{font-size:.85rem;color:var(--c-text);margin-bottom:.9rem}
 .crumb a{color:var(--c-text)}
 h1{font-size:clamp(1.75rem,5vw,2.4rem);line-height:1.2;margin:0 0 .75rem;letter-spacing:-.02em}
@@ -556,6 +557,7 @@ ${vadArDetHar({ lattlast: arLattlastSida })}
       <span class="chip">Gratis</span>
     </div>
     <a class="btn" href="${appUrl(primart)}">${escapeHtml(TOOLS[primart].namn)} — kom igång</a>
+    ${guidebildHtml(a.slug)}
   </div>
 </div>
 
@@ -1049,6 +1051,7 @@ function renderTool(t, guider) {
       <span class="chip">Inget att installera</span>
     </div>
     <a class="btn" href="${appLank}">Kom igång</a>
+    ${guidebildHtml(`verktyg--${t.slug}`)}
   </div>
 </div>
 
@@ -1292,6 +1295,7 @@ function renderB2B(b, guider) {
     <p class="lead">${escapeHtml(b.lead)}</p>
     <div class="facts">${factsHtml}</div>
     <a class="btn" href="${demoHref(b.ctaAmne)}">${escapeHtml(b.ctaLabel)}</a>
+    ${guidebildHtml(`b2b--${b.slug}`)}
   </div>
 </div>
 
@@ -1512,6 +1516,7 @@ ${vadArDetHar()}
       <span class="chip">Inget att installera</span>
     </div>
     <a class="btn" href="${appUrl('/oversikt')}">${escapeHtml(s.ctaLabel)}</a>
+    ${guidebildHtml(`for-dig-som--${s.slug}`)}
   </div>
 </div>
 

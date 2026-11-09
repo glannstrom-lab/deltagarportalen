@@ -122,6 +122,7 @@ npm run content:granska        # Oberoende granskning av en innehållsomgång in
 # till /guider/<slug>/ (publikaArtikellankar i scripts/lib/guide-template.cjs) och bygget
 # fäller om en portallänk blir kvar — på en publik sida landar den på startsidan.
 npm run guides                 # Genererar de publika guidesidorna (dist/guider/) + sitemap.xml, körs efter build (K1/K2)
+npm run guidebilder            # Fotobilden i hjälteblocket på varje publik sida (public/guidebilder/, 2026-11-09); --saknas listar luckor. Se skillen innehallsomgang
 npm run icons                  # Genererar app-ikonerna (favicon, apple-touch-icon, pwa-*) ur public/logo-icon.svg
 npm run analyze                # vite build --mode analyze — bundlestorlek/chunk-inspektion
 npm run report:i18n            # Heuristisk rapport (report-only) över hårdkodad svenska (å/ä/ö) utanför t()
