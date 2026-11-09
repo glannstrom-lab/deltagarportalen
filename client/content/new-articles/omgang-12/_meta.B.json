@@ -1,0 +1,69 @@
+{
+  "intervjutraning-sa-ovar-du": {
+    "title": "Intervjuträning – så övar du inför en intervju",
+    "summary": "Så tränar du inför en intervju: ensam, med en vän eller med inspelning. Vilka frågor du börjar med och vad du gör när nerverna tar över.",
+    "category_key": "interview",
+    "subcategory": "forberedelse",
+    "tags": ["intervjuträning", "träna inför intervju", "öva intervju", "nervositet", "intervjufrågor"],
+    "difficulty": "easy",
+    "energy_level": "medium",
+    "related_article_slugs": ["intervju-fragor", "beratta-om-dig-sjalv", "telefonintervju-tips", "kompetensbaserad-intervju-star-metoden"],
+    "related_tools": ["/interview-simulator"],
+    "checklist": [
+      "Välj tre frågor att börja med",
+      "Skriv tre stolpar per svar, inget manus",
+      "Svara högt en gång på varje fråga",
+      "Spela in ett svar och lyssna på det",
+      "Öva en gång med en vän eller i simulatorn",
+      "Skriv ner vad som gick bra och en sak att ändra"
+    ],
+    "actions": [
+      { "href": "/interview-simulator", "label": "Öva intervju i din egen takt", "type": "primary" }
+    ]
+  },
+  "hjalp-att-soka-jobb": {
+    "title": "Hjälp att söka jobb – vem kan hjälpa dig?",
+    "summary": "En ärlig karta över vem som kan hjälpa dig att söka jobb, vad de gör och hur du tar första kontakten. Från Arbetsförmedlingen till biblioteket.",
+    "category_key": "job-search",
+    "subcategory": "stod",
+    "tags": ["hjälp att söka jobb", "hjälp att hitta jobb", "Arbetsförmedlingen", "Rusta och matcha", "stöd"],
+    "difficulty": "easy",
+    "energy_level": "low",
+    "related_article_slugs": ["skriva-in-dig-arbetsformedlingen", "rusta-och-matcha", "latt-svenska-soka-jobb", "samordningsforbund-stod-fran-flera-hall"],
+    "related_tools": ["/job-search", "/applications"],
+    "checklist": [
+      "Skriv ner vad du vill ha hjälp med",
+      "Välj ett ställe att börja på",
+      "Fråga vilket stöd som finns för dig",
+      "Be om svaret skriftligt om det rör pengar eller krav",
+      "Fråga efter en person att återkomma till"
+    ],
+    "actions": [
+      { "href": "/job-search", "label": "Sök och spara jobb", "type": "primary" },
+      { "href": "/applications", "label": "Håll ordning på dina ansökningar", "type": "secondary" }
+    ]
+  },
+  "vilka-kompetenser-har-jag": {
+    "title": "Vilka kompetenser har jag? Så hittar du dem",
+    "summary": "Hitta dina kompetenser ur jobb, hem, ideellt och utbildning. Skillnaden mellan kompetens, egenskap och erfarenhet, och hur du skriver dem i CV:t.",
+    "category_key": "self-awareness",
+    "subcategory": "kompetens",
+    "tags": ["kompetenser", "vilka kompetenser har jag", "vad betyder kompetens", "kompetens CV", "kartlägga"],
+    "difficulty": "easy",
+    "energy_level": "medium",
+    "related_article_slugs": ["kompetensinventering-guide", "personliga-egenskaper-exempel", "upptack-dina-styrkor", "cv-grunder"],
+    "related_tools": ["/skills-gap-analysis", "/cv"],
+    "checklist": [
+      "Skriv ner jobb du haft, även korta",
+      "Skriv ner vad du gör eller har gjort hemma och i föreningar",
+      "Skriv kurser, certifikat och körkort",
+      "Gör om varje uppgift till vad du behövde kunna",
+      "Sortera i kan bra, kan lite och vill inte använda",
+      "Lägg de som passar jobbet i ditt CV"
+    ],
+    "actions": [
+      { "href": "/cv", "label": "Bygg ditt CV", "type": "primary" },
+      { "href": "/skills-gap-analysis", "label": "Jämför det du kan med ett jobb", "type": "secondary" }
+    ]
+  }
+}

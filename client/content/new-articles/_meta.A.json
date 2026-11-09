@@ -1,59 +1,74 @@
 {
-  "anstallningsbevis": {
-    "title": "Anställningsbevis – vad arbetsgivaren ska ge dig skriftligt",
-    "summary": "Vad ett anställningsbevis är, vad som ska stå i det, skillnaden mot anställningsavtal och vad du gör om du inte har fått något.",
+  "ob-tillagg-och-overtid": {
+    "title": "OB-tillägg och övertid – vad som gäller och hur du ser det",
+    "summary": "Vad OB-tillägg, övertid och mertid är, varför avtalet avgör ersättningen och hur du tar reda på vad som gäller för dig.",
     "category_key": "employment-law",
-    "subcategory": "anstallningsformer",
-    "tags": ["anställningsbevis", "anställningsavtal", "LAS", "arbetsgivarintyg", "anställningsvillkor"],
-    "difficulty": "easy",
+    "subcategory": "lon-och-villkor",
+    "tags": ["OB-tillägg", "övertid", "mertid", "komptid", "kollektivavtal", "lönespecifikation"],
+    "difficulty": "medium",
     "energy_level": "low",
-    "related_article_slugs": ["las-anstallningsavtal", "arbetsgivarintyg-och-betyg", "tjanstgoringsintyg-och-anstallningsintyg", "anstallningsformer-guide"],
+    "related_article_slugs": ["kollektivavtal-vad-det-betyder", "lon-och-formaner-guide", "timanstalld-vad-galler", "facket-ska-jag-ga-med"],
     "related_tools": [],
     "checklist": [
-      "Leta fram avtal och papper du fått av arbetsgivaren",
-      "Kontrollera att arbetsgivare, startdag, lön och arbetstid står där",
-      "Kontrollera att anställningsform och uppsägningsregler står där",
-      "Be skriftligt om det som saknas",
-      "Spara svaret digitalt"
+      "Hitta anställningsavtalet och se om ett kollektivavtal nämns",
+      "Titta på senaste lönespecifikationen efter OB och övertid",
+      "Skriv ner de pass du undrar över med datum och tid",
+      "Fråga lönekontoret hur tilläggen räknas",
+      "Fråga facket om du är medlem och är osäker"
     ],
     "actions": [
-      { "href": "/knowledge-base/article/las-anstallningsavtal", "label": "Läs ditt anställningsavtal steg för steg", "type": "primary" }
+      { "href": "/knowledge-base/article/kollektivavtal-vad-det-betyder", "label": "Läs om vad kollektivavtalet betyder för dig", "type": "primary" }
     ]
   },
-  "nuvarande-uppsagningstid-i-ansokan": {
-    "title": "Nuvarande uppsägningstid i ansökan – så svarar du",
-    "summary": "Vad frågan om din uppsägningstid betyder, hur du tar reda på den och vad du svarar som arbetslös, timanställd eller visstidsanställd.",
-    "category_key": "job-search",
-    "subcategory": "ansokan",
-    "tags": ["uppsägningstid", "ansökningsformulär", "när kan du börja", "intervju"],
-    "difficulty": "easy",
+  "inkomstforsakring-och-a-kassa": {
+    "title": "Inkomstförsäkring och a-kassa – så hänger de ihop",
+    "summary": "Vad en inkomstförsäkring är, varför a-kassan är grunden och vilka frågor du ska ställa till facket eller försäkringsbolaget.",
+    "category_key": "employment-law",
+    "subcategory": "arbetsloshet",
+    "tags": ["inkomstförsäkring", "a-kassa", "facket", "arbetslöshet", "försäkring"],
+    "difficulty": "medium",
     "energy_level": "low",
-    "related_article_slugs": ["uppsagningstid-och-uppsagningsbesked", "lattsvenska-uppsagningstid", "las-anstallningsavtal", "anstallningsformer-guide"],
-    "related_tools": ["/interview-simulator"],
+    "related_article_slugs": ["a-kassa-sa-fungerar-det", "a-kassa-utan-facket", "facket-ska-jag-ga-med", "lattsvenska-a-kassa"],
+    "related_tools": [],
     "checklist": [
-      "Hitta ditt anställningsavtal eller anställningsbevis",
-      "Skriv ner uppsägningstiden och var du hittade den",
-      "Kolla kollektivavtalet om din arbetsplats har ett",
-      "Förbered en kort mening för formulär och intervju",
-      "Fråga HR eller facket om du är osäker"
+      "Kontrollera att du är medlem i en a-kassa",
+      "Fråga facket eller försäkringsbolaget om du har en inkomstförsäkring",
+      "Be om villkoren skriftligt",
+      "Fråga om kvalificeringstid och karens",
+      "Spara villkoren där du hittar dem"
     ],
     "actions": [
-      { "href": "/interview-simulator", "label": "Öva på att svara i en intervju", "type": "primary" }
+      { "href": "/knowledge-base/article/a-kassa-sa-fungerar-det", "label": "Läs hur a-kassan fungerar", "type": "primary" }
     ]
   },
-  "lattsvenska-anstallningsbevis": {
-    "title": "Vad är ett anställningsbevis? – lättläst",
-    "summary": "Lättläst om anställningsbevis: vad det är, vad som står i det och vad du gör om du inte har fått något från din arbetsgivare.",
+  "lattsvenska-ob-tillagg": {
+    "title": "Vad är OB-tillägg? – lättläst",
+    "summary": "Lättläst om OB-tillägg: vad det är, varför ditt avtal avgör om du får det och hur du tar reda på vad som gäller för dig.",
     "category_key": "easy-swedish",
-    "subcategory": "anstallning",
-    "tags": ["anställningsbevis", "lättläst", "anställningsavtal", "arbetsgivare"],
+    "subcategory": "lon",
+    "tags": ["OB-tillägg", "lättläst", "obekväm arbetstid", "lön"],
     "difficulty": "easy-swedish",
     "energy_level": "low",
-    "related_article_slugs": ["lattsvenska-anstallningsavtal", "lattsvenska-arbetsgivarintyg", "lattsvenska-uppsagningstid", "anstallningsformer-guide"],
+    "related_article_slugs": ["lattsvenska-kollektivavtal", "lattsvenska-facket", "lattsvenska-anstallningsavtal", "lattsvenska-lon-och-skatt"],
     "related_tools": [],
     "checklist": [],
     "actions": [
-      { "href": "/knowledge-base/article/lattsvenska-anstallningsavtal", "label": "Läs om anställningsavtal", "type": "primary" }
+      { "href": "/knowledge-base/article/lattsvenska-kollektivavtal", "label": "Läs om kollektivavtal", "type": "primary" }
+    ]
+  },
+  "lattsvenska-inkomstforsakring": {
+    "title": "Vad är en inkomstförsäkring? – lättläst",
+    "summary": "Lättläst om inkomstförsäkring: vad den är, hur den hänger ihop med a-kassan och vad du kan fråga facket om.",
+    "category_key": "easy-swedish",
+    "subcategory": "arbetsloshet",
+    "tags": ["inkomstförsäkring", "lättläst", "a-kassa", "facket"],
+    "difficulty": "easy-swedish",
+    "energy_level": "low",
+    "related_article_slugs": ["lattsvenska-a-kassa", "lattsvenska-facket", "a-kassa-sa-fungerar-det", "lattsvenska-kollektivavtal"],
+    "related_tools": [],
+    "checklist": [],
+    "actions": [
+      { "href": "/knowledge-base/article/lattsvenska-a-kassa", "label": "Läs om a-kassa", "type": "primary" }
     ]
   }
 }

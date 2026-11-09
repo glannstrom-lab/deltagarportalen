@@ -1,69 +1,85 @@
 {
-  "intervjutraning-sa-ovar-du": {
-    "title": "Intervjuträning – så övar du inför en intervju",
-    "summary": "Så tränar du inför en intervju: ensam, med en vän eller med inspelning. Vilka frågor du börjar med och vad du gör när nerverna tar över.",
+  "spontanansokan-sa-gor-du": {
+    "title": "Spontanansökan – så skriver och skickar du den",
+    "summary": "Så väljer du arbetsplats, hittar rätt person, skriver ett kort brev och följer upp en spontanansökan när det inte finns någon annons.",
+    "category_key": "job-search",
+    "subcategory": "ansokan",
+    "tags": ["spontanansökan", "skriva spontanansökan", "ansöka utan annons", "personligt brev", "jobbsökning"],
+    "difficulty": "medium",
+    "energy_level": "medium",
+    "related_article_slugs": ["dolda-jobbmarknaden", "personligt-brev", "folja-upp-din-ansokan", "natverka-for-jobb"],
+    "related_tools": ["/spontanansökan", "/cv"],
+    "checklist": [
+      "Välj tre arbetsplatser du vill veta mer om",
+      "Leta efter ett formulär eller en person att skicka till",
+      "Skriv varför just de och vad du kan bidra med",
+      "Bifoga ett CV som PDF eller Word",
+      "Skriv in när du hör av dig igen",
+      "Anteckna vem du skickat till och när du följer upp"
+    ],
+    "actions": [
+      { "href": "/spontanansökan", "label": "Hitta företag att skriva till", "type": "primary" },
+      { "href": "/cv", "label": "Bygg ditt CV", "type": "secondary" }
+    ]
+  },
+  "lattsvenska-spontanansokan": {
+    "title": "Vad är en spontanansökan? Enkel förklaring",
+    "summary": "En spontanansökan är en ansökan utan annons. Här får du veta vem du skickar till, vad du skriver och hur du hör av dig igen. På lätt svenska.",
+    "category_key": "easy-swedish",
+    "subcategory": "begrepp",
+    "tags": ["spontanansökan", "vad är spontanansökan", "lätt svenska", "söka jobb"],
+    "difficulty": "easy-swedish",
+    "energy_level": "low",
+    "related_article_slugs": ["spontanansokan-sa-gor-du", "latt-svenska-cv", "latt-svenska-personligt-brev", "lattsvenska-avslag"],
+    "related_tools": ["/spontanansökan"],
+    "checklist": [],
+    "actions": [
+      { "href": "/spontanansökan", "label": "Hitta företag att skriva till", "type": "primary" }
+    ]
+  },
+  "intervju-pa-engelska": {
+    "title": "Intervju på engelska – så förbereder du dig",
+    "summary": "Så förbereder du en jobbintervju på engelska: frågor att öva, ord du behöver, fraser när du inte förstår och hur du ber om omformulering.",
     "category_key": "interview",
     "subcategory": "forberedelse",
-    "tags": ["intervjuträning", "träna inför intervju", "öva intervju", "nervositet", "intervjufrågor"],
-    "difficulty": "easy",
+    "tags": ["intervju på engelska", "jobbintervju engelska", "intervjufrågor engelska", "fraser intervju", "språk"],
+    "difficulty": "medium",
     "energy_level": "medium",
-    "related_article_slugs": ["intervju-fragor", "beratta-om-dig-sjalv", "telefonintervju-tips", "kompetensbaserad-intervju-star-metoden"],
+    "related_article_slugs": ["intervju-fragor", "intervjutraning-sa-ovar-du", "digital-intervju", "beratta-om-dig-sjalv"],
     "related_tools": ["/interview-simulator"],
     "checklist": [
-      "Välj tre frågor att börja med",
-      "Skriv tre stolpar per svar, inget manus",
-      "Svara högt en gång på varje fråga",
-      "Spela in ett svar och lyssna på det",
-      "Öva en gång med en vän eller i simulatorn",
-      "Skriv ner vad som gick bra och en sak att ändra"
+      "Fråga vilket språk som gäller i jobbet",
+      "Skriv din yrkestitel och dina uppgifter på engelska",
+      "Skriv tre exempel med nyckelord på engelska",
+      "Lär dig fraserna för att be om omformulering",
+      "Säg svaren högt på engelska",
+      "Testa ljud och bild om intervjun är på video"
     ],
     "actions": [
       { "href": "/interview-simulator", "label": "Öva intervju i din egen takt", "type": "primary" }
     ]
   },
-  "hjalp-att-soka-jobb": {
-    "title": "Hjälp att söka jobb – vem kan hjälpa dig?",
-    "summary": "En ärlig karta över vem som kan hjälpa dig att söka jobb, vad de gör och hur du tar första kontakten. Från Arbetsförmedlingen till biblioteket.",
+  "cv-pa-engelska": {
+    "title": "CV på engelska – så översätter du ditt svenska CV",
+    "summary": "Vad som skiljer ett CV på engelska från ett svenskt, och hur du översätter titlar, utbildningar och betyg utan att hitta på motsvarigheter.",
     "category_key": "job-search",
-    "subcategory": "stod",
-    "tags": ["hjälp att söka jobb", "hjälp att hitta jobb", "Arbetsförmedlingen", "Rusta och matcha", "stöd"],
-    "difficulty": "easy",
-    "energy_level": "low",
-    "related_article_slugs": ["skriva-in-dig-arbetsformedlingen", "rusta-och-matcha", "latt-svenska-soka-jobb", "samordningsforbund-stod-fran-flera-hall"],
-    "related_tools": ["/job-search", "/applications"],
-    "checklist": [
-      "Skriv ner vad du vill ha hjälp med",
-      "Välj ett ställe att börja på",
-      "Fråga vilket stöd som finns för dig",
-      "Be om svaret skriftligt om det rör pengar eller krav",
-      "Fråga efter en person att återkomma till"
-    ],
-    "actions": [
-      { "href": "/job-search", "label": "Sök och spara jobb", "type": "primary" },
-      { "href": "/applications", "label": "Håll ordning på dina ansökningar", "type": "secondary" }
-    ]
-  },
-  "vilka-kompetenser-har-jag": {
-    "title": "Vilka kompetenser har jag? Så hittar du dem",
-    "summary": "Hitta dina kompetenser ur jobb, hem, ideellt och utbildning. Skillnaden mellan kompetens, egenskap och erfarenhet, och hur du skriver dem i CV:t.",
-    "category_key": "self-awareness",
-    "subcategory": "kompetens",
-    "tags": ["kompetenser", "vilka kompetenser har jag", "vad betyder kompetens", "kompetens CV", "kartlägga"],
-    "difficulty": "easy",
+    "subcategory": "cv",
+    "tags": ["CV på engelska", "översätta CV", "engelskt CV", "yrkestitlar engelska", "utbildning engelska"],
+    "difficulty": "medium",
     "energy_level": "medium",
-    "related_article_slugs": ["kompetensinventering-guide", "personliga-egenskaper-exempel", "upptack-dina-styrkor", "cv-grunder"],
-    "related_tools": ["/skills-gap-analysis", "/cv"],
+    "related_article_slugs": ["cv-grunder", "utlandsk-erfarenhet-i-cv", "bild-pa-cv-eller-inte", "validera-utlandsk-utbildning"],
+    "related_tools": ["/cv"],
     "checklist": [
-      "Skriv ner jobb du haft, även korta",
-      "Skriv ner vad du gör eller har gjort hemma och i föreningar",
-      "Skriv kurser, certifikat och körkort",
-      "Gör om varje uppgift till vad du behövde kunna",
-      "Sortera i kan bra, kan lite och vill inte använda",
-      "Lägg de som passar jobbet i ditt CV"
+      "Uppdatera först ditt svenska CV",
+      "Översätt rubrikerna",
+      "Beskriv varje titel med vad du gjorde",
+      "Behåll svenska utbildningsnamn och förklara dem kort",
+      "Lämna personnummer utanför",
+      "Läs högt och be någon läsa igenom",
+      "Spara som PDF"
     ],
     "actions": [
-      { "href": "/cv", "label": "Bygg ditt CV", "type": "primary" },
-      { "href": "/skills-gap-analysis", "label": "Jämför det du kan med ett jobb", "type": "secondary" }
+      { "href": "/cv", "label": "Bygg ditt CV", "type": "primary" }
     ]
   }
 }

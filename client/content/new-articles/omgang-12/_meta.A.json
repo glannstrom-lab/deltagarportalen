@@ -1,0 +1,59 @@
+{
+  "anstallningsbevis": {
+    "title": "Anställningsbevis – vad arbetsgivaren ska ge dig skriftligt",
+    "summary": "Vad ett anställningsbevis är, vad som ska stå i det, skillnaden mot anställningsavtal och vad du gör om du inte har fått något.",
+    "category_key": "employment-law",
+    "subcategory": "anstallningsformer",
+    "tags": ["anställningsbevis", "anställningsavtal", "LAS", "arbetsgivarintyg", "anställningsvillkor"],
+    "difficulty": "easy",
+    "energy_level": "low",
+    "related_article_slugs": ["las-anstallningsavtal", "arbetsgivarintyg-och-betyg", "tjanstgoringsintyg-och-anstallningsintyg", "anstallningsformer-guide"],
+    "related_tools": [],
+    "checklist": [
+      "Leta fram avtal och papper du fått av arbetsgivaren",
+      "Kontrollera att arbetsgivare, startdag, lön och arbetstid står där",
+      "Kontrollera att anställningsform och uppsägningsregler står där",
+      "Be skriftligt om det som saknas",
+      "Spara svaret digitalt"
+    ],
+    "actions": [
+      { "href": "/knowledge-base/article/las-anstallningsavtal", "label": "Läs ditt anställningsavtal steg för steg", "type": "primary" }
+    ]
+  },
+  "nuvarande-uppsagningstid-i-ansokan": {
+    "title": "Nuvarande uppsägningstid i ansökan – så svarar du",
+    "summary": "Vad frågan om din uppsägningstid betyder, hur du tar reda på den och vad du svarar som arbetslös, timanställd eller visstidsanställd.",
+    "category_key": "job-search",
+    "subcategory": "ansokan",
+    "tags": ["uppsägningstid", "ansökningsformulär", "när kan du börja", "intervju"],
+    "difficulty": "easy",
+    "energy_level": "low",
+    "related_article_slugs": ["uppsagningstid-och-uppsagningsbesked", "lattsvenska-uppsagningstid", "las-anstallningsavtal", "anstallningsformer-guide"],
+    "related_tools": ["/interview-simulator"],
+    "checklist": [
+      "Hitta ditt anställningsavtal eller anställningsbevis",
+      "Skriv ner uppsägningstiden och var du hittade den",
+      "Kolla kollektivavtalet om din arbetsplats har ett",
+      "Förbered en kort mening för formulär och intervju",
+      "Fråga HR eller facket om du är osäker"
+    ],
+    "actions": [
+      { "href": "/interview-simulator", "label": "Öva på att svara i en intervju", "type": "primary" }
+    ]
+  },
+  "lattsvenska-anstallningsbevis": {
+    "title": "Vad är ett anställningsbevis? – lättläst",
+    "summary": "Lättläst om anställningsbevis: vad det är, vad som står i det och vad du gör om du inte har fått något från din arbetsgivare.",
+    "category_key": "easy-swedish",
+    "subcategory": "anstallning",
+    "tags": ["anställningsbevis", "lättläst", "anställningsavtal", "arbetsgivare"],
+    "difficulty": "easy-swedish",
+    "energy_level": "low",
+    "related_article_slugs": ["lattsvenska-anstallningsavtal", "lattsvenska-arbetsgivarintyg", "lattsvenska-uppsagningstid", "anstallningsformer-guide"],
+    "related_tools": [],
+    "checklist": [],
+    "actions": [
+      { "href": "/knowledge-base/article/lattsvenska-anstallningsavtal", "label": "Läs om anställningsavtal", "type": "primary" }
+    ]
+  }
+}

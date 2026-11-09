@@ -80,7 +80,7 @@ export const KURSER: readonly Kurs[] = [
     beskrivning: 'Arbetsförmedlingen, a-kassan och vad du gör om du inte håller med om ett beslut.',
     delar: [
       { slug: 'skriva-in-dig-arbetsformedlingen', minuter: 4 },
-      { slug: 'din-planering-hos-arbetsformedlingen', minuter: 5 },
+      { slug: 'din-planering-hos-arbetsformedlingen', minuter: 2 },
       { slug: 'aktivitetsrapport-guide', minuter: 4 },
       { slug: 'a-kassa-sa-fungerar-det', minuter: 4 },
       { slug: 'overklaga-ett-beslut', minuter: 4 },

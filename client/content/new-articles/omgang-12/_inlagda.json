@@ -1,0 +1,15 @@
+{
+  "_kommentar": "Slugs som apply-new-articles.cjs lagt in i prod. Radera dem igen med `node scripts/apply-new-articles.cjs --rollback --skriv`.",
+  "skrivet": "2026-11-04",
+  "slugs": [
+    "anstallningsbevis",
+    "hjalp-att-soka-jobb",
+    "indragen-sjukersattning",
+    "intervjutraning-sa-ovar-du",
+    "lattsvenska-anstallningsbevis",
+    "lattsvenska-etableringsersattning",
+    "lattsvenska-varsel",
+    "nuvarande-uppsagningstid-i-ansokan",
+    "vilka-kompetenser-har-jag"
+  ]
+}

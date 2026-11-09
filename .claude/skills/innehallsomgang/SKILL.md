@@ -218,6 +218,11 @@ Mätningen 2026-11-04 visade att klicken uteblir på plats 7–10, så en omgån
 vara slipning. Hämta fråga × sida (`docs/gsc/jobin-fragor-sida-<datum>.json`, paginera) och
 ge varje agent sidans frågor, titel och förtext.
 
+- **Slipa aldrig om en sida som slipats i de två senaste omgångarna** — effekten syns inte i
+  28-dagarsdatan än. Uteslut dem med `find content/expansions/arkiv-* -path '*slipat*' -name '*.md'`.
+  Omgång 13: ett filter som läste `arkiv-2026-11/` i stället för `arkiv-2026-11/slipat/` lade
+  21 av 21 nyss slipade sidor på sliplistan — och de såg ut som de bästa kandidaterna, för det
+  var just därför de valts förra gången.
 - **`apply-expansions` läser VARJE `.md` i `content/expansions/`.** Arkivera förra omgångens
   filer och `_metadata.json` först, annars skrivs gamla texter över nyare rättelser i prod.
   Underlagsfiler och förtexter hör hemma i `arkiv-<år>-<mån>/`, aldrig i katalogens topp.
