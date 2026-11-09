@@ -441,8 +441,12 @@ describe('Min vecka', () => {
     ])
     render(<MinVecka />)
     expect(await screen.findByText(/Möte med din konsulent/)).toBeInTheDocument()
-    expect(screen.getByText(/12:00–12:45/)).toBeInTheDocument()
-    expect(screen.getByText('Rum 2')).toBeInTheDocument()
+    // Riktat till dagens sektion: en måndag före kl 12 visas mötet också som
+    // kommande möte överst, och en global getByText hittar då två (CI 2026-11-09).
+    const dagSektion = document.querySelector(`section[aria-labelledby="dag-${dag}"]`) as HTMLElement
+    expect(dagSektion).not.toBeNull()
+    expect(within(dagSektion).getByText(/12:00–12:45/)).toBeInTheDocument()
+    expect(within(dagSektion).getByText('Rum 2')).toBeInTheDocument()
     expect(hamtaMoten).toHaveBeenCalledWith(mandag, addDays(mandag, 6))
     // En vecka med bara ett möte är ingen "ledig vecka"
     expect(screen.queryByText(/En ledig vecka enligt planen/)).toBeNull()

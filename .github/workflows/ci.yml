@@ -306,7 +306,10 @@ jobs:
   e2e-smoke:
     name: E2E Smoke (public pages)
     if: github.event_name != 'push'
-    runs-on: ubuntu-latest
+    # 2026-11-09: låst till 24.04. ubuntu-latest flyttas till Ubuntu 26 från
+    # 2026-10-19, och 'playwright install --with-deps' föll i varje schemalagd
+    # körning från 28 okt. Lyft när Playwright stöder 26.04.
+    runs-on: ubuntu-24.04
     needs: build
 
     steps:
@@ -353,7 +356,10 @@ jobs:
   e2e-authenticated:
     name: E2E Authenticated (golden path)
     if: github.event_name != 'push'
-    runs-on: ubuntu-latest
+    # 2026-11-09: låst till 24.04. ubuntu-latest flyttas till Ubuntu 26 från
+    # 2026-10-19, och 'playwright install --with-deps' föll i varje schemalagd
+    # körning från 28 okt. Lyft när Playwright stöder 26.04.
+    runs-on: ubuntu-24.04
     needs: build
 
     steps:
