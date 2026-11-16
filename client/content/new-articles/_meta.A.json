@@ -1,74 +1,45 @@
 {
-  "ob-tillagg-och-overtid": {
-    "title": "OB-tillägg och övertid – vad som gäller och hur du ser det",
-    "summary": "Vad OB-tillägg, övertid och mertid är, varför avtalet avgör ersättningen och hur du tar reda på vad som gäller för dig.",
-    "category_key": "employment-law",
-    "subcategory": "lon-och-villkor",
-    "tags": ["OB-tillägg", "övertid", "mertid", "komptid", "kollektivavtal", "lönespecifikation"],
-    "difficulty": "medium",
+  "vad-ar-kompetens": {
+    "title": "Vad är kompetens? Betydelse och exempel i arbetslivet",
+    "summary": "Vad kompetens betyder: kunskaper, färdigheter och egenskaper, formell och reell kompetens, och exempel från vardagen och tiden utanför jobb.",
+    "category_key": "self-awareness",
+    "subcategory": "kompetens",
+    "tags": ["kompetens", "reell kompetens", "formell kompetens", "överförbara kompetenser", "färdigheter"],
+    "difficulty": "easy",
     "energy_level": "low",
-    "related_article_slugs": ["kollektivavtal-vad-det-betyder", "lon-och-formaner-guide", "timanstalld-vad-galler", "facket-ska-jag-ga-med"],
-    "related_tools": [],
+    "related_article_slugs": ["kompetensinventering-guide", "vilka-kompetenser-har-jag", "personliga-egenskaper-exempel", "validering-av-yrkeskunskaper"],
+    "related_tools": ["/skills-gap-analysis"],
     "checklist": [
-      "Hitta anställningsavtalet och se om ett kollektivavtal nämns",
-      "Titta på senaste lönespecifikationen efter OB och övertid",
-      "Skriv ner de pass du undrar över med datum och tid",
-      "Fråga lönekontoret hur tilläggen räknas",
-      "Fråga facket om du är medlem och är osäker"
+      "Skriv ner tre saker du gjort det senaste året, även obetalda",
+      "Skriv vad varje sak krävde av dig",
+      "Sortera i kunskap, färdighet, erfarenhet och egenskap",
+      "Välj ett jobb och markera vilka punkter som passar",
+      "Hitta ett konkret exempel till varje punkt"
     ],
     "actions": [
-      { "href": "/knowledge-base/article/kollektivavtal-vad-det-betyder", "label": "Läs om vad kollektivavtalet betyder för dig", "type": "primary" }
+      { "href": "/skills-gap-analysis", "label": "Se vad som skiljer dig från ditt drömjobb", "type": "primary" }
     ]
   },
-  "inkomstforsakring-och-a-kassa": {
-    "title": "Inkomstförsäkring och a-kassa – så hänger de ihop",
-    "summary": "Vad en inkomstförsäkring är, varför a-kassan är grunden och vilka frågor du ska ställa till facket eller försäkringsbolaget.",
-    "category_key": "employment-law",
-    "subcategory": "arbetsloshet",
-    "tags": ["inkomstförsäkring", "a-kassa", "facket", "arbetslöshet", "försäkring"],
+  "karriarvagledning": {
+    "title": "Karriärvägledning – var du får den och vad den ger",
+    "summary": "Vad karriärvägledning är, vem som erbjuder den till vuxna, hur länge den pågår och hur du förbereder dig inför samtalet.",
+    "category_key": "career-development",
+    "subcategory": "vagledning",
+    "tags": ["karriärvägledning", "studie- och yrkesvägledning", "Arbetsförmedlingen", "komvux", "omställning"],
     "difficulty": "medium",
-    "energy_level": "low",
-    "related_article_slugs": ["a-kassa-sa-fungerar-det", "a-kassa-utan-facket", "facket-ska-jag-ga-med", "lattsvenska-a-kassa"],
-    "related_tools": [],
+    "energy_level": "medium",
+    "related_article_slugs": ["karriarplanering-guide", "karriarbyte-guide", "yrkestest-sa-anvander-du-det", "omstallningsstod-nar-du-blivit-uppsagd"],
+    "related_tools": ["/interest-guide", "/career"],
     "checklist": [
-      "Kontrollera att du är medlem i en a-kassa",
-      "Fråga facket eller försäkringsbolaget om du har en inkomstförsäkring",
-      "Be om villkoren skriftligt",
-      "Fråga om kvalificeringstid och karens",
-      "Spara villkoren där du hittar dem"
+      "Bestäm vilken aktör som passar din situation",
+      "Skriv din fråga i en mening",
+      "Lista vad du redan vet om dina intressen och din erfarenhet",
+      "Skriv ner det som begränsar, som ork, ekonomi eller språk",
+      "Boka tid och fråga hur länge och hur ofta ni träffas",
+      "Anteckna under samtalet"
     ],
     "actions": [
-      { "href": "/knowledge-base/article/a-kassa-sa-fungerar-det", "label": "Läs hur a-kassan fungerar", "type": "primary" }
-    ]
-  },
-  "lattsvenska-ob-tillagg": {
-    "title": "Vad är OB-tillägg? – lättläst",
-    "summary": "Lättläst om OB-tillägg: vad det är, varför ditt avtal avgör om du får det och hur du tar reda på vad som gäller för dig.",
-    "category_key": "easy-swedish",
-    "subcategory": "lon",
-    "tags": ["OB-tillägg", "lättläst", "obekväm arbetstid", "lön"],
-    "difficulty": "easy-swedish",
-    "energy_level": "low",
-    "related_article_slugs": ["lattsvenska-kollektivavtal", "lattsvenska-facket", "lattsvenska-anstallningsavtal", "lattsvenska-lon-och-skatt"],
-    "related_tools": [],
-    "checklist": [],
-    "actions": [
-      { "href": "/knowledge-base/article/lattsvenska-kollektivavtal", "label": "Läs om kollektivavtal", "type": "primary" }
-    ]
-  },
-  "lattsvenska-inkomstforsakring": {
-    "title": "Vad är en inkomstförsäkring? – lättläst",
-    "summary": "Lättläst om inkomstförsäkring: vad den är, hur den hänger ihop med a-kassan och vad du kan fråga facket om.",
-    "category_key": "easy-swedish",
-    "subcategory": "arbetsloshet",
-    "tags": ["inkomstförsäkring", "lättläst", "a-kassa", "facket"],
-    "difficulty": "easy-swedish",
-    "energy_level": "low",
-    "related_article_slugs": ["lattsvenska-a-kassa", "lattsvenska-facket", "a-kassa-sa-fungerar-det", "lattsvenska-kollektivavtal"],
-    "related_tools": [],
-    "checklist": [],
-    "actions": [
-      { "href": "/knowledge-base/article/lattsvenska-a-kassa", "label": "Läs om a-kassa", "type": "primary" }
+      { "href": "/interest-guide", "label": "Utforska yrken som passar dig", "type": "primary" }
     ]
   }
 }

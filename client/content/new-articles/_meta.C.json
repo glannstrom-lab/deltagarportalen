@@ -1,0 +1,32 @@
+{
+  "psykisk-ohalsa-och-jobbsokning": {
+    "title": "Söka jobb när du mår psykiskt dåligt",
+    "summary": "Depression, ångest eller utmattning medan du söker jobb: anpassa takten, hitta vård via 1177 och se vilket stöd Arbetsförmedlingen beskriver.",
+    "category_key": "wellness",
+    "subcategory": "psykisk-halsa",
+    "tags": ["psykisk ohälsa", "depression", "ångest", "utmattning", "1177", "Arbetsförmedlingen"],
+    "difficulty": "easy",
+    "energy_level": "low",
+    "related_article_slugs": ["mental-halsa-guide", "struktur-jobbsokning", "beratta-om-diagnos-eller-inte", "funktionsnedsattning-jobbsokning"],
+    "related_tools": ["/wellness", "/diary"],
+    "checklist": [],
+    "actions": [
+      { "href": "/wellness", "label": "Följ hur du mår och hur mycket ork du har", "type": "primary" }
+    ]
+  },
+  "ensam-som-arbetslos": {
+    "title": "Ensam som arbetslös – små sätt att bryta isoleringen",
+    "summary": "Du har förlorat kollegor och rutin. Här är små kontakter som inte kräver mycket ork, och när det är läge att ta upp ensamheten med vården.",
+    "category_key": "wellness",
+    "subcategory": "psykisk-halsa",
+    "tags": ["ensamhet", "isolering", "arbetslöshet", "volontär", "studiecirkel", "1177"],
+    "difficulty": "easy",
+    "energy_level": "low",
+    "related_article_slugs": ["mental-halsa-guide", "natverka-for-jobb", "efter-manga-ar-utan-jobb", "struktur-jobbsokning"],
+    "related_tools": ["/wellness", "/calendar"],
+    "checklist": [],
+    "actions": [
+      { "href": "/wellness", "label": "Följ hur du mår och hur mycket ork du har", "type": "primary" }
+    ]
+  }
+}

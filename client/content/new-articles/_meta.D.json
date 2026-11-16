@@ -1,0 +1,32 @@
+{
+  "lattsvenska-vad-ar-kompetens": {
+    "title": "Vad är kompetens? Enkel förklaring",
+    "summary": "Kompetens är det du kan, också från hem, förening och hemland. Lätt svenska: vad ordet betyder och hur du skriver det i ditt CV.",
+    "category_key": "easy-swedish",
+    "subcategory": "cv",
+    "tags": ["kompetens", "lättläst", "CV", "nyanländ"],
+    "difficulty": "easy-swedish",
+    "energy_level": "low",
+    "related_article_slugs": ["lattsvenska-kompetens", "kompetensinventering-guide", "lattsvenska-validering", "lattsvenska-vad-ar-cv"],
+    "related_tools": ["/cv"],
+    "checklist": [],
+    "actions": [
+      { "href": "/cv", "label": "Skriv ner det du kan i ditt CV", "type": "primary" }
+    ]
+  },
+  "lattsvenska-karriarvagledning": {
+    "title": "Vad är karriärvägledning? Enkel förklaring",
+    "summary": "Någon hjälper dig tänka på vilket jobb eller vilken utbildning som passar. Lätt svenska: vem som kan hjälpa och hur du förbereder dig.",
+    "category_key": "easy-swedish",
+    "subcategory": "vagledning",
+    "tags": ["karriärvägledning", "studie- och yrkesvägledning", "lättläst", "nyanländ"],
+    "difficulty": "easy-swedish",
+    "energy_level": "low",
+    "related_article_slugs": ["lattsvenska-kompetens", "yrkestest-sa-anvander-du-det", "lattsvenska-arbetsformedlingen", "lattsvenska-validering"],
+    "related_tools": ["/interest-guide"],
+    "checklist": [],
+    "actions": [
+      { "href": "/interest-guide", "label": "Hitta yrken som kan passa dig", "type": "primary" }
+    ]
+  }
+}

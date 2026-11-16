@@ -1,4 +1,4 @@
-# Alla 321 slugs som redan finns i prod-tabellen articles.
+# Alla 329 slugs som redan finns i prod-tabellen articles.
 
 a-kassa-sa-fungerar-det                       employment-law      Hur fungerar a-kassan? Medlemskap, villkor och ansökan
 a-kassa-utan-facket                           employment-law      A-kassa utan fack – så går du med i bara a-kassan
@@ -7,7 +7,7 @@ ai-jobbsokning-guide                          digital-presence    AI i jobbsökn
 aktivitetskrav-forsorjningsstod               employment-law      Aktivitetskravet för försörjningsstöd – vad gäller för dig
 aktivitetsrapport-guide                       job-search          Aktivitetsrapport – så fungerar aktivitetsrapporteringen
 aktivitetsstod-sa-fungerar-det                employment-law      Aktivitetsstöd – vad det är och så ansöker du
-andra-intervjun                               interview           Andra intervjun – vad som är annorlunda den här gången
+andra-intervjun                               interview           Andra intervjun – frågor och hur du förbereder dig
 anpassningar-arbetsplats                      accessibility       Anpassningar på arbetsplatsen – vad du kan be om
 anpassningar-arbetsplatsen                    accessibility       Arbetsanpassning – exempel på anpassningar på jobbet
 ansokningsstrategi                            job-search          Effektiv ansökningsstrategi – kvalitet före kvantitet
@@ -45,28 +45,29 @@ branschguide-vard-omsorg                      job-market          Branschguide: 
 bygg-ditt-personliga-varumarke                digital-presence    Bygg ditt personliga varumärke online
 bygga-natverk-introverta                      networking          Nätverka som introvert – strategier som fungerar
 byta-handlaggare-arbetsformedlingen           job-search          Kan man byta handläggare på Arbetsförmedlingen?
-byta-leverantor-rusta-och-matcha              job-search          Byta leverantör i Rusta och matcha – steg för steg
+byta-leverantor-rusta-och-matcha              job-search          Byta leverantör i Rusta och matcha – så gör du
 checklista-ansoka-jobb                        tools               Checklista: Innan du söker ett jobb
 checklista-fore-intervju                      tools               Checklista: Dagen före intervjun
 checklista-innan-ansokan                      tools               Checklista: Innan du skickar ansökan
 cv-grunder                                    job-search          Så skriver du ett CV som får resultat
 cv-mallar-exempel                             tools               Gratis CV-mall – enkel mall och exempel på svenska
+cv-pa-engelska                                job-search          CV på engelska – så översätter du ditt svenska CV
 cv-utan-erfarenhet                            job-search          Skriva CV utan formell erfarenhet
 cv-utan-gymnasieexamen                        job-search          CV utan gymnasieexamen – så skriver du det sant
 digital-intervju                              interview           Digital intervju – så lyckas du på Zoom/Teams
 digital-narvaro-rensning                      digital-presence    Rensa och förbättra din digitala närvaro
 digitala-tjanster-du-behover                  tools               Digitala tjänster du behöver för att söka jobb
-din-planering-hos-arbetsformedlingen          job-search          Din planering hos Arbetsförmedlingen – så påverkar du den
+din-planering-hos-arbetsformedlingen          job-search          Handlingsplan hos Arbetsförmedlingen – så påverkar du den
 diskriminering-jobbsokning                    employment-law      Diskriminering vid jobbsökning – dina rättigheter
 distansarbete-guide                           career-development  Så lyckas du med distansarbete
 dolda-jobbmarknaden                           job-market          Den dolda jobbmarknaden – så hittar du jobb som aldrig annonseras
-dromjobbsanalys                               career-development  Drömjobbsanalys – från vision till handling
+dromjobbsanalys                               career-development  Drömjobb – så gör du en drömjobbsanalys steg för steg
 dyslexi-i-ansokan-och-pa-jobbet               accessibility       Dyslexi i ansökan och på jobbet – rätt hjälpmedel
 efter-manga-ar-utan-jobb                      accessibility       Efter många år utan jobb – så går du vidare
 ersattning-nar-du-borjar-jobba                employment-law      Ersättning när du börjar jobba – så avslutar du den rätt
 ersattning-under-program                      employment-law      Ersättning i Rusta och matcha och andra program
 etableringsersattning                         job-search          Etableringsersättning – ansökan, barntillägg och ändringar
-etableringsjobb                               employment-law      Etableringsjobb – en riktig anställning, inte ett program
+etableringsjobb                               employment-law      Etableringsjobb – vad är det och vem kan få det?
 etableringsprogrammet                         job-search          Etableringsprogrammet – vad ingår och vem omfattas
 extratjanst-vad-ar-det                        employment-law      Extratjänst – vad det var, och vad som gäller idag
 facket-ska-jag-ga-med                         employment-law      Gå med i facket – vad ger det och vad kostar det?
@@ -100,8 +101,10 @@ imposter-syndrome                             wellness            Imposter syndr
 individuellt-pedagogiskt-stod                 accessibility       Individuellt pedagogiskt stöd vid utbildning – IPSU
 indragen-sjukersattning                       accessibility       Indragen sjukersättning – vad kan hända och vad du kan göra
 informationsintervju-guide                    networking          Informationsintervju – din hemliga jobbsökarstrategi
+inkomstforsakring-och-a-kassa                 employment-law      Inkomstförsäkring och a-kassa – så hänger de ihop
 intervju-forberedelser                        interview           Förbered dig inför intervjun – den ultimata guiden
 intervju-fragor                               interview           Vanliga intervjufrågor och hur du svarar
+intervju-pa-engelska                          interview           Intervju på engelska – så förbereder du dig
 intervjutraning-sa-ovar-du                    interview           Intervjuträning – så övar du inför en intervju
 introduktionsjobb                             employment-law      Introduktionsjobb – vad stödet innebär för dig
 jobb-och-utvecklingsgarantin                  job-search          Jobb- och utvecklingsgarantin – så fungerar den
@@ -148,17 +151,17 @@ lampligt-arbete-maste-jag-ta-jobbet           employment-law      Måste jag ta 
 las-anstallningsavtal                         employment-law      Anställningsavtal – läs det och få hjälp att granska
 lasa-arbetsmarknaden                          job-market          Att läsa arbetsmarknaden
 latt-svenska-avslag                           wellness            Du fick inte jobbet - vad gör du nu?
-latt-svenska-cv                               job-search          Vad ska stå i ett CV?
-latt-svenska-intervju                         interview           Vad händer på en intervju?
+latt-svenska-cv                               job-search          Vad är ett CV och vad ska stå i det?
+latt-svenska-intervju                         interview           Vad är en jobbintervju? Så går den till
 latt-svenska-personligt-brev                  job-search          Personligt brev på lätt svenska – så skriver du ett
-latt-svenska-soka-jobb                        job-search          Hur söker man jobb?
+latt-svenska-soka-jobb                        job-search          Hur söker man jobb? Enkel guide steg för steg
 lattsvenska-a-kassa                           easy-swedish        Vad är a-kassa?
 lattsvenska-adhd-och-jobb                     easy-swedish        ADHD och jobbet – vad kan du göra?
 lattsvenska-aktivitetsstod                    easy-swedish        Vad är aktivitetsstöd?
 lattsvenska-anstallningsavtal                 easy-swedish        Vad är ett anställningsavtal? Enkel förklaring
 lattsvenska-anstallningsbevis                 easy-swedish        Vad är ett anställningsbevis? – lättläst
 lattsvenska-arbetsformedlingen                easy-swedish        Arbetsförmedlingen – hur fungerar det?
-lattsvenska-arbetsgivarintyg                  easy-swedish        Vad är ett arbetsgivarintyg?
+lattsvenska-arbetsgivarintyg                  easy-swedish        Vad är ett arbetsgivarintyg och hur får jag ett?
 lattsvenska-arbetshjalpmedel                  easy-swedish        Vad är arbetshjälpmedel? Enkel förklaring
 lattsvenska-arbetsmiljo                       easy-swedish        Vad är arbetsmiljö?
 lattsvenska-arbetstraning                     easy-swedish        Vad är arbetsträning? Enkel förklaring
@@ -177,14 +180,16 @@ lattsvenska-forsta-dagen-pa-jobbet            easy-swedish        Vad händer di
 lattsvenska-forsta-jobbet                     easy-swedish        Ditt första jobb i Sverige
 lattsvenska-fragor-intervju                   easy-swedish        Vanliga frågor på intervju
 lattsvenska-heltid-och-deltid                 easy-swedish        Vad betyder deltid och heltid? Enkel förklaring
+lattsvenska-inkomstforsakring                 easy-swedish        Vad är en inkomstförsäkring? – lättläst
 lattsvenska-intervju                          easy-swedish        Så klarar du jobbintervjun
-lattsvenska-kollektivavtal                    easy-swedish        Vad är ett kollektivavtal?
+lattsvenska-kollektivavtal                    easy-swedish        Vad är ett kollektivavtal? Enkel förklaring
 lattsvenska-kompetens                         easy-swedish        Vad betyder kompetens?
 lattsvenska-lasa-jobbannons                   easy-swedish        Hur läser jag en jobbannons?
 lattsvenska-lon-och-skatt                     easy-swedish        Vad betyder brutto och netto? Enkel förklaring
 lattsvenska-lonebidrag                        easy-swedish        Vad är lönebidrag?
 lattsvenska-nar-du-blir-sjuk                  easy-swedish        När du blir sjuk på jobbet
 lattsvenska-nystartsjobb                      easy-swedish        Vad är ett nystartsjobb?
+lattsvenska-ob-tillagg                        easy-swedish        Vad är OB-tillägg? – lättläst
 lattsvenska-omstallningsstod                  easy-swedish        Vad är omställningsstöd?
 lattsvenska-overklaga                         easy-swedish        Vad betyder det att överklaga ett beslut?
 lattsvenska-personligt-bitrade                easy-swedish        Vad är ett personligt biträde på jobbet?
@@ -198,10 +203,11 @@ lattsvenska-sjukanmalan                       easy-swedish        Vad gör jag f
 lattsvenska-sjukersattning                    easy-swedish        Vad är sjukersättning?
 lattsvenska-skriva-mail                       easy-swedish        Skriva bra jobbmail
 lattsvenska-skulder                           easy-swedish        Vad gör jag om jag har skulder?
+lattsvenska-spontanansokan                    easy-swedish        Vad är en spontanansökan? Enkel förklaring
 lattsvenska-tillsvidareanstallning            easy-swedish        Vad betyder tillsvidareanställning? Enkel förklaring
 lattsvenska-timanstallning                    easy-swedish        Vad betyder timanställd? Enkel förklaring
 lattsvenska-tips-bra-cv                       easy-swedish        10 tips för ett bra CV
-lattsvenska-uppsagningstid                    easy-swedish        Vad är uppsägningstid?
+lattsvenska-uppsagningstid                    easy-swedish        Vad är uppsägningstid? Enkel förklaring
 lattsvenska-vad-ar-cv                         easy-swedish        Vad betyder CV på svenska? Enkel förklaring
 lattsvenska-validering                        easy-swedish        Vad betyder validering? Enkel förklaring
 lattsvenska-varsel                            easy-swedish        Vad är varsel?
@@ -227,22 +233,23 @@ natverka-for-jobb                             networking          Nätverkande �
 natverksbyggande-guide                        networking          Bygg ditt professionella nätverk från grunden
 nuvarande-uppsagningstid-i-ansokan            job-search          Nuvarande uppsägningstid i ansökan – så svarar du
 nystartsjobb-guide                            accessibility       Nystartsjobb – regler, ansökan och förlängning
+ob-tillagg-och-overtid                        employment-law      OB-tillägg och övertid – vad som gäller och hur du ser det
 offentligt-skyddat-arbete                     accessibility       OSA-anställning – vad är offentligt skyddat arbete?
 omstallningsstod-nar-du-blivit-uppsagd        employment-law      Omställningsstöd – vad är det och hur söker du?
 omstallningsstudiestod                        career-development  Omställningsstudiestöd – vad är det och hur ansöker du?
 ordlista-jobbsokning                          tools               Ordlista: Vanliga termer i jobbsökning
 ordna-din-jobbmejl                            tools               Ordna din jobbmejl – så missar du inget svar
 overklaga-ett-beslut                          employment-law      Överklaga ett beslut – så gör du, och till vem
-panelintervju                                 interview           Panelintervju – när flera personer intervjuar dig
+panelintervju                                 interview           Panelintervju – så klarar du flera intervjuare samtidigt
 personlig-ekonomi-jobbsokning                 employment-law      Personlig ekonomi under jobbsökning
 personliga-egenskaper-exempel                 self-awareness      Personliga egenskaper – exempel till CV och intervju
 personlighetstyper-arbete                     self-awareness      Personlighetstyper och arbetsstilar
 personlighetstyper-i-arbetslivet              self-awareness      Personlighetstyper i arbetslivet – hitta din profil
-personlighetstyper-jobb                       self-awareness      Personlighetstyper och karriärval
+personlighetstyper-jobb                       self-awareness      Personlighetstyper och karriärval – vad testerna säger
 personligt-bitrade                            accessibility       Personligt biträde på jobbet – bidrag och vem som ansöker
 personligt-brev                               job-search          Personligt brev – så skriver du ett bra ansökningsbrev
 personligt-brev-mall                          job-search          Personligt brev – mallar och exempel
-personligt-varumarke                          digital-presence    Bygg ditt personliga varumärke
+personligt-varumarke                          digital-presence    Personligt varumärke och personlig profil – så bygger du dem
 personuppgifter-i-cv                          job-search          Vilka personuppgifter ska stå i ditt CV?
 portfolio-guide                               digital-presence    Så bygger du en professionell portfolio
 praktik-som-vag-in                            job-market          Arbetspraktik via Arbetsförmedlingen – och ersättningen
@@ -269,11 +276,12 @@ skatt-pa-lon-forsta-jobbet                    employment-law      Skatt på lön
 skriva-in-dig-arbetsformedlingen              job-search          Skriva in sig på Arbetsförmedlingen – så gör du
 skulder-och-kronofogden                       employment-law      Skulder och Kronofogden – vad som faktiskt händer
 skyddat-arbete-och-samhall                    accessibility       Skyddat arbete och Samhall – vad det innebär
-sociala-medier-jobbsokning                    digital-presence    Sociala medier i jobbsökningen - mer än bara LinkedIn
+sociala-medier-jobbsokning                    digital-presence    Rekrytering via sociala medier – så använder du det
 sociala-medier-jobsokning                     digital-presence    Sociala medier i jobbsökningen – mer än LinkedIn
 soka-jobb-efter-avtjanat-straff               job-search          Söka jobb efter avtjänat straff – vad som gäller
 soka-jobb-fran-mobilen                        job-search          Söka jobb från mobilen – så löser du det som är svårt
 sommarjobb-och-extrajobb                      job-search          Sommarjobb och extrajobb – vägen in när du saknar erfarenhet
+spontanansokan-sa-gor-du                      job-search          Spontanansökan – så skriver och skickar du den
 sta-fem-faktorer                              wellness            Fem faktorer för hållbar aktivitet
 sta-hard-talk                                 wellness            Hard Talk — så för du svåra samtal
 sta-saga-nej                                  wellness            Att säga nej — gränssättning utan dåligt samvete
@@ -305,7 +313,7 @@ utlandsk-erfarenhet-i-cv                      job-search          CV med utländ
 utvecklingsanstallning                        accessibility       Utvecklingsanställning (lönebidrag för utveckling)
 vad-ska-jag-jobba-med                         self-awareness      Vad ska jag jobba med? Så tar du reda på det
 validera-utlandsk-utbildning                  career-development  Bedömning av utländsk utbildning – så går det till
-validering-av-yrkeskunskaper                  career-development  Validering av yrkeskunskaper – få det du kan bedömt
+validering-av-yrkeskunskaper                  career-development  Validering av yrkeskunskaper – så får du ett intyg
 valja-leverantor-rusta-och-matcha             job-search          Välja leverantör till Rusta och matcha – så jämför du
 var-ser-du-dig-om-fem-ar                      interview           Var ser du dig själv om fem år? Så svarar du ärligt
 varderingar-i-arbetslivet                     self-awareness      Vanliga arbetsvärderingar – och vad de betyder

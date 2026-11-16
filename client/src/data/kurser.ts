@@ -45,7 +45,7 @@ export const KURSER: readonly Kurs[] = [
       { slug: 'rekryteringsprocessen-steg-for-steg', minuter: 4 },
       { slug: 'cv-grunder', minuter: 5 },
       { slug: 'ansokningsstrategi', minuter: 2 },
-      { slug: 'intervju-fragor', minuter: 4 },
+      { slug: 'intervju-fragor', minuter: 5 },
       { slug: 'forsta-dagen-nytt-jobb', minuter: 4 },
     ],
   },

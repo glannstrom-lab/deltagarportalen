@@ -1,0 +1,14 @@
+{
+  "_kommentar": "Slugs som apply-new-articles.cjs lagt in i prod. Radera dem igen med `node scripts/apply-new-articles.cjs --rollback --skriv`.",
+  "skrivet": "2026-11-09",
+  "slugs": [
+    "cv-pa-engelska",
+    "inkomstforsakring-och-a-kassa",
+    "intervju-pa-engelska",
+    "lattsvenska-inkomstforsakring",
+    "lattsvenska-ob-tillagg",
+    "lattsvenska-spontanansokan",
+    "ob-tillagg-och-overtid",
+    "spontanansokan-sa-gor-du"
+  ]
+}
